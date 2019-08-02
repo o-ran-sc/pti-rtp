@@ -1,0 +1,4 @@
+This is a temporary template for testing the low latency performace
+of wrlinux preempt-rt kernel.
+
+* The test will be ran on HP DL380P server, so hpsa driver is needed
