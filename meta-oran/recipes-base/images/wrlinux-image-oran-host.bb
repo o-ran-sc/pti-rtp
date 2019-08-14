@@ -44,6 +44,7 @@ IMAGE_INSTALL += " \
    dpdk \
    system-report \
    ceph \
+   rt-tests \
    "
 
 IMAGE_FEATURES += " \
