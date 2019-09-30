@@ -2,9 +2,7 @@
 # Copyright (C) 2019 Wind River Systems, Inc.
 #
 
-do_compile_prepend() {
-    unset GOCACHE
-}
+inherit ${@bb.utils.contains('GOVERSION', '1.2.%', 'go112', '', d)}
 
 do_compile_append() {
     # build ipam plugins
