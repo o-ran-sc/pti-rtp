@@ -50,7 +50,7 @@ echo_cmd "Cloning wrlinux 1018 source from github:"
 cd ${SRC_WRL_DIR}
 ${RUN_CMD}
 
-RUN_CMD="./wrlinux-x/setup.sh --machines intel-x86-64 --layers wrlinux-ovp meta-cloud-services"
+RUN_CMD="./wrlinux-x/setup.sh --machines intel-x86-64 --layers meta-cloud-services"
 echo_cmd "Setup wrlinux build project:"
 ${RUN_CMD}
 
