@@ -84,4 +84,4 @@ EOF
 # Build the oran-inf-host image
 mkdir -p logs
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
-bitbake wrlinux-image-oran-host 2>&1|tee logs/bitbake_wrlinux-image-oran-host_${TIMESTAMP}.log
+bitbake oran-image-inf-host 2>&1|tee logs/bitbake_oran-image-inf-host_${TIMESTAMP}.log
