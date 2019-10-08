@@ -11,32 +11,23 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 require recipes-base/images/oran-image-inf-minimal.bb
 
 IMAGE_INSTALL += " \
-    kernel-modules \
-    packagegroup-base-extended \
-    packagegroup-wr-base \
-    packagegroup-wr-base-net \
-    packagegroup-wr-boot \
-"
-
-IMAGE_INSTALL += " \
     aufs-util \
     celt051 \
     ceph \
     dpdk \
     hwloc \
+    kernel-modules \
     openvswitch \
-    packagegroup-containers \
-    packagegroup-glusterfs \
-    packagegroup-oran-criu \
-    packagegroup-oran-debug \
-    packagegroup-oran-default-monitoring \
+    packagegroup-base-extended \
     packagegroup-oran-docker \
+    packagegroup-oran-glusterfs \
     packagegroup-oran-lttng-toolchain \
+    packagegroup-wr-base \
+    packagegroup-wr-base-net \
     python-pyparsing \
     rt-tests \
     schedtool-dl \
     spice \
-    system-report \
 "
 
 IMAGE_FEATURES += " \

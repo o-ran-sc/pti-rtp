@@ -15,12 +15,9 @@ IMAGE_INSTALL += " \
     hwloc \
     kernel-modules \
     packagegroup-base-extended \
-    packagegroup-containers \
     packagegroup-oran-trace-tools \
     packagegroup-wr-base \
     packagegroup-wr-base-net \
-    packagegroup-wr-boot \
-    system-report \
 "
 IMAGE_INSTALL_append_qemux86-64 = " dpdk"
 

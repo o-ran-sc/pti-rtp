@@ -18,9 +18,9 @@ PACKAGES = " \
     ${PN}-docker \
     ${PN}-k8s \
     ${PN}-vm \
-    ${PN}-criu \
     ${PN}-trace-tools \
     ${PN}-lttng-toolchain \
+    ${PN}-glusterfs \
 "
 
 RDEPENDS_${PN} = "\
@@ -28,9 +28,9 @@ RDEPENDS_${PN} = "\
     ${PN}-docker \
     ${PN}-k8s \
     ${PN}-vm \
-    ${PN}-criu \
     ${PN}-trace-tools \
     ${PN}-lttng-toolchain \
+    ${PN}-glusterfs \
 "
 
 RDEPENDS_${PN}-base = "\
@@ -66,18 +66,27 @@ RRECOMMENDS_${PN}-vm = "\
     kernel-module-kvm-amd \
 "
 
-RDEPENDS_${PN}-criu = "\
-    criu \
-    protobuf-c \
-"
-
 RDEPENDS_${PN}-trace-tools = "\
-    diod \
     socat \
 "
+# It's blacklisted becasue of build failure
+#    diod
 
-RDEPENDS_${PN}-trace-tools = "\
+RDEPENDS_${PN}-lttng-toolchain = "\
     babeltrace \
     lttng-tools \
     lttng-ust \
+"
+
+RDEPENDS_${PN}-glusterfs = "\
+    fuse \
+    fuse-utils \
+    libulockmgr \
+    glusterfs \
+    glusterfs-rdma \
+    glusterfs-geo-replication \
+    glusterfs-fuse \
+    glusterfs-server \
+    xfsdump \
+    xfsprogs \
 "
