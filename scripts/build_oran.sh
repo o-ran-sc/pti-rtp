@@ -58,7 +58,7 @@ ${RUN_CMD}
 echo_info "Cloning oran layer:"
 
 cd ${SRC_ORAN_DIR}
-RUN_CMD="git clone http://stash.wrs.com/scm/~jhuang0/o-ran-pti-rtp.git"
+RUN_CMD="git clone https://gerrit.o-ran-sc.org/r/pti/rtp"
 echo_cmd "Cloing with:"
 ${RUN_CMD}
 
@@ -70,7 +70,7 @@ set ${PRJ_BUILD_DIR}
 
 # Add the meta-oran layer and required layers
 cd ${PRJ_BUILD_DIR}
-bitbake-layers add-layer ${SRC_ORAN_DIR}/o-ran-pti-rtp/meta-oran
+bitbake-layers add-layer ${SRC_ORAN_DIR}/rtp/meta-oran
 
 # Add extra configs into local.conf
 cat << EOF >> conf/local.conf
