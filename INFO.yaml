@@ -1,10 +1,9 @@
--
--
+---
 project: 'infrastructure'
 project_creation_date: '2019-08-07'
 project_category: ''
-#lifecycle_state: 'Incubation'
-project_lead: &inf__ptl
+# lifecycle_state: 'Incubation'
+project_lead: &inf_ptl
     name: 'Xiaohua Zhang'
     email: 'xiaohua.zhang@windriver.com'
     company: 'Windriver'
@@ -30,10 +29,6 @@ meetings:
       time: '14:00 UTC'
 repositories:
     - 'pti/rtp'
-    - 'aal/lib'
-    - 'aal/logic'
-    - 'aal/mgmt'
-    - 'aal/virt'
 committers:
     - name: 'Xiaohua Zhang'
       email: 'Xiaohua.Zhang@windriver.com'
