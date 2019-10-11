@@ -30,10 +30,6 @@ meetings:
       time: '14:00 UTC'
 repositories:
     - 'pti/rtp'
-    - 'aal/lib'
-    - 'aal/logic'
-    - 'aal/mgmt'
-    - 'aal/virt'
 committers:
     - name: 'Xiaohua Zhang'
       email: 'Xiaohua.Zhang@windriver.com'
