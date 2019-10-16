@@ -3,9 +3,11 @@
 help_info () {
 cat << ENDHELP
 Usage:
-$(basename $0) WORKSPACE_DIR
+$(basename $0) <-w WORKSPACE_DIR> [-n] [-h]
 where:
-    WORKSPACE_DIR is the path for the project
+    -w WORKSPACE_DIR is the path for the project
+    -n dry-run only for bitbake
+    -h this help info
 ENDHELP
 }
 
@@ -24,14 +26,35 @@ echo_cmd () {
 }
 
 if [ $# -eq 0 ]; then
+    echo "Missing options!"
     help_info
     exit
 fi
 
+DRYRUN=""
+
 SCRIPTS_DIR=`dirname $0`
 SCRIPTS_DIR=`readlink -f $SCRIPTS_DIR`
 
-WORKSPACE=`readlink -f $1`
+while getopts "w:nh" OPTION; do
+    case ${OPTION} in
+        w)
+            WORKSPACE=`readlink -f ${OPTARG}`
+            ;;
+        n)
+            DRYRUN="-n"
+            ;;
+        h)
+            help_info
+            exit
+            ;;
+    esac
+done
+
+if [ -z ${WORKSPACE} ]; then
+    echo_info "No workspace specified, a directory 'workspace' will be created in current directory as the workspace"
+    WORKSPACE=`readlink -f workspace`
+fi
 
 SRC_WRL_DIR=${WORKSPACE}/src_wrl1018
 SRC_ORAN_DIR=${WORKSPACE}/src_oran
@@ -84,4 +107,4 @@ EOF
 # Build the oran-inf-host image
 mkdir -p logs
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
-bitbake oran-image-inf-host 2>&1|tee logs/bitbake_oran-image-inf-host_${TIMESTAMP}.log
+bitbake ${DRYRUN} oran-image-inf-host 2>&1|tee logs/bitbake_oran-image-inf-host_${TIMESTAMP}.log
