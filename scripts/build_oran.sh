@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 help_info () {
 cat << ENDHELP
@@ -107,4 +107,5 @@ EOF
 # Build the oran-inf-host image
 mkdir -p logs
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
+set -o pipefail
 bitbake ${DRYRUN} oran-image-inf-host 2>&1|tee logs/bitbake_oran-image-inf-host_${TIMESTAMP}.log
