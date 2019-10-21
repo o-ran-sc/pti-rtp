@@ -102,6 +102,7 @@ cat << EOF >> conf/local.conf
 ########################
 DISTRO = "oran-inf"
 BB_NO_NETWORK = '0'
+WRTEMPLATE += "feature/oran-host-rt-tune"
 EOF
 
 # Build the oran-inf-host image
