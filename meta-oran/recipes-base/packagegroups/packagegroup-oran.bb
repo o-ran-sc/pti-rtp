@@ -13,7 +13,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 inherit packagegroup
 
 PROVIDES = "${PACKAGES}"
-PACKAGES = " \
+PACKAGES += " \
     ${PN}-base \
     ${PN}-docker \
     ${PN}-k8s \
