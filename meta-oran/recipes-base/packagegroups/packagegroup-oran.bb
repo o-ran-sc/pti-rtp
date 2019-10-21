@@ -52,6 +52,10 @@ RDEPENDS_${PN}-k8s = "\
     kubernetes \
 "
 
+RRECOMMENDS_${PN}-k8s = "\
+    kubernetes-img \
+"
+
 RDEPENDS_${PN}-vm = "\
     qemu \
     libvirt \
