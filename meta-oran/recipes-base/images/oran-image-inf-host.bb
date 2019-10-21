@@ -19,9 +19,7 @@ IMAGE_INSTALL += " \
     kernel-modules \
     openvswitch \
     packagegroup-base-extended \
-    packagegroup-oran-docker \
-    packagegroup-oran-glusterfs \
-    packagegroup-oran-lttng-toolchain \
+    packagegroup-oran \
     packagegroup-wr-base \
     packagegroup-wr-base-net \
     python-pyparsing \
