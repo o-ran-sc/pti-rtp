@@ -51,11 +51,13 @@ RDEPENDS_${PN}-k8s = "\
     flannel \
     iproute2-tc \
     kubernetes \
+    kubernetes-dashboard \
 "
 
 RRECOMMENDS_${PN}-k8s = "\
     flannel-img \
     kubernetes-img \
+    kubernetes-dashboard-img \
 "
 
 RDEPENDS_${PN}-vm = "\
