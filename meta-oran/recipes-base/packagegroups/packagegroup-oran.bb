@@ -48,11 +48,13 @@ RDEPENDS_${PN}-docker = "\
 
 RDEPENDS_${PN}-k8s = "\
     cni \
+    flannel \
     iproute2-tc \
     kubernetes \
 "
 
 RRECOMMENDS_${PN}-k8s = "\
+    flannel-img \
     kubernetes-img \
 "
 
