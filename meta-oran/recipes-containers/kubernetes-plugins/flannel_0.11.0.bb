@@ -36,6 +36,7 @@ do_install() {
     install -d ${D}${K8S_PLUGINS}
     install -m 644 ${S}/README.md ${D}${K8S_PLUGINS}
     install -m 644 ${S}/Documentation/kube-flannel.yml ${D}${K8S_PLUGINS}
+    sed -i -e 's/v0.10.0/v0.11.0/' ${D}${K8S_PLUGINS}/kube-flannel.yml
 
     # Install the saved docker image
     install -d ${D}${DOCKER_IMG}
