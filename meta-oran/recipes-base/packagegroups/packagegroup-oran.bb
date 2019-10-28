@@ -53,6 +53,7 @@ RDEPENDS_${PN}-k8s = "\
     kubernetes \
     kubernetes-dashboard \
     multus-cni \
+    cmk \
 "
 
 RRECOMMENDS_${PN}-k8s = "\
@@ -60,6 +61,7 @@ RRECOMMENDS_${PN}-k8s = "\
     kubernetes-img \
     kubernetes-dashboard-img \
     multus-cni-img \
+    cmk-img \
 "
 
 RDEPENDS_${PN}-vm = "\
