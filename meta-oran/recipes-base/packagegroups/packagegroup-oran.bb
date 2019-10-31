@@ -52,16 +52,9 @@ RDEPENDS_${PN}-k8s = "\
     iproute2-tc \
     kubernetes \
     kubernetes-dashboard \
+    node-feature-discovery \
     multus-cni \
     cmk \
-"
-
-RRECOMMENDS_${PN}-k8s = "\
-    flannel-img \
-    kubernetes-img \
-    kubernetes-dashboard-img \
-    multus-cni-img \
-    cmk-img \
 "
 
 RDEPENDS_${PN}-vm = "\
