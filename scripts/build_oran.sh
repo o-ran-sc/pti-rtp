@@ -8,6 +8,7 @@ where:
     -w WORKSPACE_DIR is the path for the project
     -n dry-run only for bitbake
     -h this help info
+    -e EXTRA_CONF is the pat for extra config file
 ENDHELP
 }
 
@@ -21,7 +22,7 @@ echo_error () {
 
 echo_cmd () {
     echo
-    echo "$1"
+    echo_info "$1"
     echo "CMD: ${RUN_CMD}"
 }
 
@@ -32,15 +33,19 @@ if [ $# -eq 0 ]; then
 fi
 
 DRYRUN=""
+EXTRA_CONF=""
 
 SCRIPTS_DIR=`dirname $0`
 SCRIPTS_DIR=`readlink -f $SCRIPTS_DIR`
 
-while getopts "w:nh" OPTION; do
+while getopts "w:e:nh" OPTION; do
     case ${OPTION} in
         w)
             WORKSPACE=`readlink -f ${OPTARG}`
             ;;
+        e)
+            EXTRA_CONF=`readlink -f ${OPTARG}`
+	    ;;
         n)
             DRYRUN="-n"
             ;;
@@ -77,13 +82,19 @@ RUN_CMD="./wrlinux-x/setup.sh --machines intel-x86-64 --layers meta-cloud-servic
 echo_cmd "Setup wrlinux build project:"
 ${RUN_CMD}
 
-# Clone extra layers
-echo_info "Cloning oran layer:"
-
+# Clone the oran layer if it's not already cloned
 cd ${SRC_ORAN_DIR}
-RUN_CMD="git clone https://gerrit.o-ran-sc.org/r/pti/rtp"
-echo_cmd "Cloing with:"
-${RUN_CMD}
+# Check if the script is inside the repo
+if git -C ${SCRIPTS_DIR} rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    CLONED_ORAN_REPO=`dirname ${SCRIPTS_DIR}`
+    echo_info "Use the cloned oran repo: ${CLONED_ORAN_REPO}"
+    ln -sf ${CLONED_ORAN_REPO}
+else
+    echo_info "Cloning oran layer:"
+    RUN_CMD="git clone https://gerrit.o-ran-sc.org/r/pti/rtp"
+    echo_cmd "Cloing with:"
+    ${RUN_CMD}
+fi
 
 # Source the build env
 cd ${SRC_WRL_DIR}
@@ -91,9 +102,11 @@ cd ${SRC_WRL_DIR}
 set ${PRJ_BUILD_DIR}
 . ./oe-init-build-env ${PRJ_BUILD_DIR}
 
-# Add the meta-oran layer and required layers
+# Add the meta-oran layer
 cd ${PRJ_BUILD_DIR}
-bitbake-layers add-layer ${SRC_ORAN_DIR}/rtp/meta-oran
+RUN_CMD="bitbake-layers add-layer ${SRC_ORAN_DIR}/rtp/meta-oran"
+echo_cmd "Add the meta-oran layer into the build project"
+${RUN_CMD}
 
 # Add extra configs into local.conf
 cat << EOF >> conf/local.conf
@@ -105,8 +118,16 @@ BB_NO_NETWORK = '0'
 WRTEMPLATE += "feature/oran-host-rt-tune"
 EOF
 
+if [ "${EXTRA_CONF}" != "" ] && [ -f "${EXTRA_CONF}" ]; then
+    cat ${EXTRA_CONF} >> conf/local.conf
+fi
+
 # Build the oran-inf-host image
 mkdir -p logs
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 set -o pipefail
+RUN_CMD="bitbake ${DRYRUN} oran-image-inf-host"
+echo_cmd "Build the oran-image-inf-host image"
 bitbake ${DRYRUN} oran-image-inf-host 2>&1|tee logs/bitbake_oran-image-inf-host_${TIMESTAMP}.log
+
+echo_info "Build succeeded, you can get the image in ${PRJ_BUILD_DIR}/tmp-glibc/deploy/images/intel-x86-64/oran-image-inf-host-intel-x86-64.iso"
