@@ -20,8 +20,8 @@ SRC_URI = "\
     https://github.com/intel/${BPN}/archive/v${PV}.tar.gz;downloadfilename=${BPN}-v${PV}.tar.gz \
 "
 
-SRC_URI[md5sum] = "7782df1ea42a8e5a41c71b623080ef2a"
-SRC_URI[sha256sum] = "8b52f9de389d6500be47424ce7876e16d98b9d4547056d666dc588673f1d6842"
+SRC_URI[md5sum] = "fa75272319b19a6192f9d607b79829ea"
+SRC_URI[sha256sum] = "9544fca58e6d1f3943159086651ceb228242b5fd85688bd424d7504c197ec49a"
 
 S = "${WORKDIR}/${BPN}-${PV}"
 
