@@ -2,6 +2,10 @@
 .. http://creativecommons.org/licenses/by/4.0
 
 
+Release-notes
+=============
+
+
 This document provides the release notes for <RELEASE> of <COMPONENT>.
 
 .. contents::
@@ -28,7 +32,7 @@ Version history
 
 
 Summary
-=======
+-------
 
 <SUMMARIZE THE RELEASE - THE CONTENT - AND OTHER IMPORTANT HIGH LEVEL PROPERTIES>
 
@@ -36,13 +40,13 @@ Summary
 
 
 Release Data
-============
+------------
 <STATE RELEVANT RELEASE DATA/RECORDS>
 
 <EXAMPLE>:
 
 +--------------------------------------+--------------------------------------+
-| **Project**                          | E.g. Arno/genesis/fuel@opnfv         |
+| **Project**                          | E.g. project  		              |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Repo/commit-ID**                   | E.g. genesis/adf634a0d4.....         |
@@ -54,7 +58,7 @@ Release Data
 | **Release date**                     | E.g. 2015-04-16                      |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Purpose of the delivery**          | E.g. OPNFV Internal quality assurance|
+| **Purpose of the delivery**          | 	 		     	      |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
@@ -62,7 +66,7 @@ Release Data
 
 
 Feature additions
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 <STATE ADDED FEATURES BY REFERENCE TO JIRA>
 
 <EXAMPLE>:
@@ -83,7 +87,7 @@ Feature additions
 +--------------------------------------+--------------------------------------+
 
 Bug corrections
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^
 
 **JIRA TICKETS:**
 
@@ -101,34 +105,34 @@ Bug corrections
 +--------------------------------------+--------------------------------------+
 
 Deliverables
-----------------
+^^^^^^^^^^^^
 
 Software deliverables
-^^^^^^^^^^^^^^^^^^^^^^^
++++++++++++++++++++++
 
 <STATE WHAT SOFTWARE DELIVERABLES THAT ARE RELATED TO THIS VERSION, AND WHERE THOSE CAN BE RETRIEVED>
 
-<EXAMPLE>:
+
 
 Documentation deliverables
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+++++++++++++++++++++++++++
 
 <STATE WHAT DOCUMENTATION DELIVERABLES THAT ARE RELATED TO THIS VERSION, AND WHERE THOSE CAN BE RETRIEVED>
 
-<EXAMPLE>:
+
 
 
 Known Limitations, Issues and Workarounds
-=========================================
+-----------------------------------------
 
 System Limitations
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 <STATE ALL RELEVANT SYSTEM LIMITATIONS, IF THERE IS ANY>
 
 
 
 Known issues
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^
 <STATE ALL KNOWN ISSUES WITH JIRA REFERENCE>
 
 <EXAMPLE>:
@@ -149,7 +153,7 @@ Known issues
 +--------------------------------------+--------------------------------------+
 
 Workarounds
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
 
 <STATE ALL KNOWN WORKAROUNDS TO THE ISSUES STATED ABOVE, IF THERE IS ANY>
 
@@ -157,7 +161,7 @@ Workarounds
 
 
 References
-==========
+----------
 <STATE RELEVANT REFERENCES FOR THIS RELEASE/VERSION>
 
 
