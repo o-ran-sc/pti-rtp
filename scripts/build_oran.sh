@@ -83,14 +83,15 @@ echo_cmd "Setup wrlinux build project:"
 ${RUN_CMD}
 
 # Clone the oran layer if it's not already cloned
-cd ${SRC_ORAN_DIR}
 # Check if the script is inside the repo
-if git -C ${SCRIPTS_DIR} rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+if cd ${SCRIPTS_DIR} && git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     CLONED_ORAN_REPO=`dirname ${SCRIPTS_DIR}`
     echo_info "Use the cloned oran repo: ${CLONED_ORAN_REPO}"
+    cd ${SRC_ORAN_DIR}
     ln -sf ${CLONED_ORAN_REPO}
 else
     echo_info "Cloning oran layer:"
+    cd ${SRC_ORAN_DIR}
     RUN_CMD="git clone https://gerrit.o-ran-sc.org/r/pti/rtp"
     echo_cmd "Cloing with:"
     ${RUN_CMD}
