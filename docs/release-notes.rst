@@ -2,7 +2,7 @@
 .. http://creativecommons.org/licenses/by/4.0
 
 
-Release-Notes
+Release-notes
 =============
 
 
@@ -65,7 +65,7 @@ Release Data
 
 
 
-Feature Additions
+Feature additions
 ^^^^^^^^^^^^^^^^^
 <STATE ADDED FEATURES BY REFERENCE TO JIRA>
 
@@ -86,7 +86,7 @@ Feature Additions
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
-Bug Corrections
+Bug corrections
 ^^^^^^^^^^^^^^^
 
 **JIRA TICKETS:**
@@ -107,14 +107,14 @@ Bug Corrections
 Deliverables
 ^^^^^^^^^^^^
 
-Software Deliverables
+Software deliverables
 +++++++++++++++++++++
 
 <STATE WHAT SOFTWARE DELIVERABLES THAT ARE RELATED TO THIS VERSION, AND WHERE THOSE CAN BE RETRIEVED>
 
 
 
-Documentation Deliverables
+Documentation deliverables
 ++++++++++++++++++++++++++
 
 <STATE WHAT DOCUMENTATION DELIVERABLES THAT ARE RELATED TO THIS VERSION, AND WHERE THOSE CAN BE RETRIEVED>
@@ -131,7 +131,7 @@ System Limitations
 
 
 
-Known Issues
+Known issues
 ^^^^^^^^^^^^
 <STATE ALL KNOWN ISSUES WITH JIRA REFERENCE>
 

@@ -1,12 +1,13 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. http://creativecommons.org/licenses/by/4.0
 
-Developer-Guide
-===============
-
 .. contents::
    :depth: 3
    :local:
+
+Developer-Guide
+===============
+
 
 .. note:
 ..   * This section is used to describe what a contributor needs to know in order to work on the componenta
