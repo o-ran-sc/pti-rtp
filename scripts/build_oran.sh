@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Ensure we fail the job if any steps fail.
+set -eu -o pipefail
+
 help_info () {
 cat << ENDHELP
 Usage:
@@ -126,7 +129,6 @@ fi
 # Build the oran-inf-host image
 mkdir -p logs
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
-set -o pipefail
 RUN_CMD="bitbake ${DRYRUN} oran-image-inf-host"
 echo_cmd "Build the oran-image-inf-host image"
 bitbake ${DRYRUN} oran-image-inf-host 2>&1|tee logs/bitbake_oran-image-inf-host_${TIMESTAMP}.log
