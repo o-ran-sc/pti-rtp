@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ensure we fail the job if any steps fail.
-set -eu -o pipefail
+set -e -o pipefail
 
 help_info () {
 cat << ENDHELP
