@@ -88,7 +88,7 @@ if cd ${SCRIPTS_DIR} && git rev-parse --is-inside-work-tree > /dev/null 2>&1; th
     CLONED_ORAN_REPO=`dirname ${SCRIPTS_DIR}`
     echo_info "Use the cloned oran repo: ${CLONED_ORAN_REPO}"
     cd ${SRC_ORAN_DIR}
-    ln -sf ${CLONED_ORAN_REPO}
+    ln -sf ${CLONED_ORAN_REPO} rtp
 else
     echo_info "Cloning oran layer:"
     cd ${SRC_ORAN_DIR}
