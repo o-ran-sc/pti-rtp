@@ -23,3 +23,9 @@ is developed by the OpenEmbedded community, which was formally established in 20
 OpenEmbedded is the recommended build system of the Yocto Project, which is a Linux
 Foundation workgroup that assists commercial companies in the development of Linux-based
 systems for embedded products.
+
+Contact info
+------------
+If you need support or add new features/components, please feel free to contact the following:
+- Jackie Huang <jackie.huang@windriver.com>
+- Xiaohua Zhang <xiaohua.zhang@windriver.com>
