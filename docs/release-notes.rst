@@ -1,12 +1,13 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
-.. http://creativecommons.org/licenses/by/4.0
+.. SPDX-License-Identifier: CC-BY-4.0
+.. Copyright (C) 2019 Wind River Systems, Inc.
 
 
 Release-notes
 =============
 
 
-This document provides the release notes for <RELEASE> of <COMPONENT>.
+This document provides the release notes for 1.0.0 of RTP.
 
 .. contents::
    :depth: 3
@@ -20,150 +21,27 @@ Version history
 | **Date**           | **Ver.**           | **Author**         | **Comment**        |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-| 20XX-XX-XX         | 0.1.0              |                    | First draft        |
+| 2019-11-02         | 1.0.0              | Jackie Huang       | Initial version    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-|                    | 0.1.1              |                    |                    |
+|                    |                    |                    |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-|                    | 1.0                |                    |                    |
+|                    |                    |                    |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 
+Version 1.0.0, 2019-11-02
+-------------------------
+- Initial Version
+- Based on Yocto version 2.6 ('thud' branch)
+- Linux kernel 4.18.41 with preempt-rt patches
+- Add Docker-18.09.0, kubernetes-1.15.2
+- Add kubernetes plugins:
 
-Summary
--------
-
-<SUMMARIZE THE RELEASE - THE CONTENT - AND OTHER IMPORTANT HIGH LEVEL PROPERTIES>
-
-
-
-
-Release Data
-------------
-<STATE RELEVANT RELEASE DATA/RECORDS>
-
-<EXAMPLE>:
-
-+--------------------------------------+--------------------------------------+
-| **Project**                          | E.g. project  		              |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| **Repo/commit-ID**                   | E.g. genesis/adf634a0d4.....         |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| **Release designation**              | E.g. Arno RC2                        |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| **Release date**                     | E.g. 2015-04-16                      |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| **Purpose of the delivery**          | 	 		     	      |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-
-
-
-
-Feature additions
-^^^^^^^^^^^^^^^^^
-<STATE ADDED FEATURES BY REFERENCE TO JIRA>
-
-<EXAMPLE>:
-
-**JIRA BACK-LOG:**
-
-+--------------------------------------+--------------------------------------+
-| **JIRA REFERENCE**                   | **SLOGAN**                           |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| 		                       | 				      |
-|                                      | 				      |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| 	                               |  				      |
-|                                      |  				      |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-
-Bug corrections
-^^^^^^^^^^^^^^^
-
-**JIRA TICKETS:**
-
-+--------------------------------------+--------------------------------------+
-| **JIRA REFERENCE**                   | **SLOGAN**                           |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| 		                       | 				      |
-|                                      | 				      |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| 	                               |  				      |
-|                                      |  				      |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-
-Deliverables
-^^^^^^^^^^^^
-
-Software deliverables
-+++++++++++++++++++++
-
-<STATE WHAT SOFTWARE DELIVERABLES THAT ARE RELATED TO THIS VERSION, AND WHERE THOSE CAN BE RETRIEVED>
-
-
-
-Documentation deliverables
-++++++++++++++++++++++++++
-
-<STATE WHAT DOCUMENTATION DELIVERABLES THAT ARE RELATED TO THIS VERSION, AND WHERE THOSE CAN BE RETRIEVED>
-
-
-
-
-Known Limitations, Issues and Workarounds
------------------------------------------
-
-System Limitations
-^^^^^^^^^^^^^^^^^^
-<STATE ALL RELEVANT SYSTEM LIMITATIONS, IF THERE IS ANY>
-
-
-
-Known issues
-^^^^^^^^^^^^
-<STATE ALL KNOWN ISSUES WITH JIRA REFERENCE>
-
-<EXAMPLE>:
-
-**JIRA TICKETS:**
-
-+--------------------------------------+--------------------------------------+
-| **JIRA REFERENCE**                   | **SLOGAN**                           |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| 		                       | 				      |
-|                                      | 				      |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-| 	                               |  				      |
-|                                      |  				      |
-|                                      |                                      |
-+--------------------------------------+--------------------------------------+
-
-Workarounds
-^^^^^^^^^^^
-
-<STATE ALL KNOWN WORKAROUNDS TO THE ISSUES STATED ABOVE, IF THERE IS ANY>
-
-
-
-
-References
-----------
-<STATE RELEVANT REFERENCES FOR THIS RELEASE/VERSION>
-
-
-
+  - kubernetes-dashboard-1.8.3
+  - flannel-0.11.0
+  - multus-cni-3.3
+  - node-feature-discovery-0.4.0
+  - cpu-manager-for-kubernetes-1.3.1
 
