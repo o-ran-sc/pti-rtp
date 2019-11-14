@@ -348,7 +348,7 @@ Verify that the cmk cluster init completed and the pods for nodereport and webho
 
 - For detail usage, please refer to `CMK user manual`_
 
-.. _`CMK user manual`: https://github.com/intel/CPU-Manager-for-Kubernetes/blob/master/docs/user.md)
+.. _`CMK user manual`: https://github.com/intel/CPU-Manager-for-Kubernetes/blob/master/docs/user.md
 
 References
 ----------

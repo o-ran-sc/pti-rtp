@@ -41,7 +41,7 @@ Processes
   * To install the required packages for Ubuntu 16.04/18.04:
 
 .. _`Compatible Linux Distribution`: https://www.yoctoproject.org/docs/2.6.3/brief-yoctoprojectqs/brief-yoctoprojectqs.html#brief-compatible-distro
-.. _`Supported Linux Distributions`: https://www.yoctoproject.org/docs/2.6.3/ref-manual/ref-manual.html#detailed-supported-distros)
+.. _`Supported Linux Distributions`: https://www.yoctoproject.org/docs/2.6.3/ref-manual/ref-manual.html#detailed-supported-distros
 .. _`Required Packages for the Build Host`: https://www.yoctoproject.org/docs/2.6.3/ref-manual/ref-manual.html#required-packages-for-the-build-host
 
 ::
