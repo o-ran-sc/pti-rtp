@@ -42,8 +42,8 @@ $ sudo yum install -y epel-release
 $ sudo yum makecache
 $ sudo yum install gawk make wget tar bzip2 gzip python unzip perl patch \
   diffutils diffstat git cpp gcc gcc-c++ glibc-devel texinfo chrpath socat \
-  perl-Data-Dumper perl-Text-ParseWords perl-Thread-Queue python34-pip xz \
-  which SDL-devel xterm
+  perl-Data-Dumper perl-Text-ParseWords perl-Thread-Queue perl-Digest-SHA \
+  python34-pip xz which SDL-devel xterm
 ```
 ### Use wrapper script build_oran.sh to build the image
 
