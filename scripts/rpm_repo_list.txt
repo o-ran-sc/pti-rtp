@@ -1,0 +1,7 @@
+# recipe #	# rpm #
+virtual/kernel  kernel-vmlinux-4.18.45+git0+748e4eb3d4_dea1a8c936-r0.intel_x86_64.rpm
+virtual/kernel  kernel-dev-4.18.45+git0+748e4eb3d4_dea1a8c936-r0.intel_x86_64.rpm
+dpdk		dpdk-dev-17.11.3-r0.intel_x86_64.rpm
+dpdk		dpdk-examples-17.11.3-r0.intel_x86_64.rpm
+dpdk		dpdk-staticdev-17.11.3-r0.intel_x86_64.rpm
+dpdk		dpdk-test-17.11.3-r0.intel_x86_64.rpm
