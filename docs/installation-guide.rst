@@ -235,7 +235,7 @@ Verify that the dashboard is up and running
   root@oran-aio:~# kubectl get pods --all-namespaces |grep dashboard
   kube-system   kubernetes-dashboard-5b67bf4d5f-ghg4f   1/1     Running   0          64s
 
-Access the dashboard UI in a web browser with the url: https://<aio_host_ip>:30443
+Access the dashboard UI in a web browser with the https url, port number is 30443.
 
 - For detail usage, please refer to `Doc for dashboard`_
 
