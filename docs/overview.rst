@@ -7,6 +7,23 @@ RTP Overview
 
 This project implements a real time platform to deploy the O-CU and O-DU.
 
+In O-RAN architecture, the O-DU and O-CU could have different deployed scenarios. 
+In general the performance sensitive parts of the 5G stack require real time platform, 
+the platform should support the Preemptive Scheduling feature. 
+
+For example, from implementation perspective, the non-virtualized DU, 
+VM based DU and container based DU are requiring a real time host system. 
+Following requirements are going to address the container based solution:
+
+1.Support Node Feature Discovery
+2.Support CPU Affinity and Isolation
+3.Support Dynamic HugePages Allocation
+
+And for the network requirements, the following should be supported:
+1.Multiple Networking Interface
+2.High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
+
+
 This is based on Yocto/OpenEmbedded, so it includes a Yocto/OpenEmbedded compatible
 layers meta-oran and wrapper scripts to pull all required Yocto/OE layers to build
 out the reference platform.
