@@ -16,11 +16,18 @@ VM based DU and container based DU are requiring a real time host system.
 Following requirements are going to address the container based solution:
 
 1.Support Node Feature Discovery
+
+
 2.Support CPU Affinity and Isolation
+
+
 3.Support Dynamic HugePages Allocation
+
 
 And for the network requirements, the following should be supported:
 1.Multiple Networking Interface
+
+
 2.High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
 
 
