@@ -134,6 +134,9 @@ cat << EOF >> conf/local.conf
 DISTRO = "oran-inf"
 BB_NO_NETWORK = '0'
 WRTEMPLATE += "feature/oran-host-rt-tune"
+
+# Work around for CI build
+IMAGE_INSTALL_remove = "ceph"
 EOF
 
 if [ "${EXTRA_CONF}" != "" ] && [ -f "${EXTRA_CONF}" ]; then
