@@ -104,8 +104,10 @@ ${RUN_CMD}
 if cd ${SCRIPTS_DIR} && git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     CLONED_ORAN_REPO=`dirname ${SCRIPTS_DIR}`
     echo_info "Use the cloned oran repo: ${CLONED_ORAN_REPO}"
-    cd ${SRC_ORAN_DIR}
-    ln -sf ${CLONED_ORAN_REPO} rtp
+    mkdir ${SRC_ORAN_DIR}/rtp
+    cd ${SRC_ORAN_DIR}/rtp
+    ln -sf ${CLONED_ORAN_REPO}/meta-oran meta-oran
+    ln -sf ${CLONED_ORAN_REPO}/scripts scripts
 else
     echo_info "Cloning oran layer:"
     cd ${SRC_ORAN_DIR}
