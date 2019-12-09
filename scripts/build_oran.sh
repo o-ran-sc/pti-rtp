@@ -26,6 +26,7 @@ where:
     -n dry-run only for bitbake
     -h this help info
     -e EXTRA_CONF is the pat for extra config file
+    -r whether to inherit rm_work (default is Yes)
 ENDHELP
 }
 
@@ -49,22 +50,43 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
+check_yn_rm_work () {
+    yn="$1"
+    case ${yn} in
+        [Yy]|[Yy]es)
+            RM_WORK="Yes"
+            ;;
+        [Nn]|[Nn]o)
+            RM_WORK="No"
+            ;;
+        *)
+            echo "Invalid arg for -r option."
+            help_info
+            exit 1
+            ;;
+    esac
+}
+
 DRYRUN=""
 EXTRA_CONF=""
+RM_WORK="Yes"
 
 SCRIPTS_DIR=`dirname $0`
 SCRIPTS_DIR=`readlink -f $SCRIPTS_DIR`
 
-while getopts "w:e:nh" OPTION; do
+while getopts "w:e:r:nh" OPTION; do
     case ${OPTION} in
         w)
             WORKSPACE=`readlink -f ${OPTARG}`
             ;;
         e)
             EXTRA_CONF=`readlink -f ${OPTARG}`
-	    ;;
+            ;;
         n)
             DRYRUN="-n"
+            ;;
+        r)
+            check_yn_rm_work ${OPTARG}
             ;;
         h)
             help_info
@@ -140,6 +162,10 @@ WRTEMPLATE += "feature/oran-host-rt-tune"
 # Work around for CI build
 IMAGE_INSTALL_remove = "ceph"
 EOF
+
+if [ "${RM_WORK}" == "Yes" ]; then
+    echo "INHERIT += 'rm_work'" >> conf/local.conf
+fi
 
 if [ "${EXTRA_CONF}" != "" ] && [ -f "${EXTRA_CONF}" ]; then
     cat ${EXTRA_CONF} >> conf/local.conf
