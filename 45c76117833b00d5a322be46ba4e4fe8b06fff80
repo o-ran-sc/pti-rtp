@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2c2ba073_16919bea",
+        "filename": "scripts/build_oran.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1000014
+      },
+      "writtenOn": "2019-12-27T11:02:55Z",
+      "side": 1,
+      "message": "Bin Yang, these are the symbolic links that I asked about in my email.",
+      "range": {
+        "startLine": 131,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 3
+      },
+      "revId": "45c76117833b00d5a322be46ba4e4fe8b06fff80",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}
