@@ -31,6 +31,9 @@ And for the network requirements, the following should be supported:
 2.High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
 
 
+It will support the X86_64 and ARM.
+
+
 This is based on Yocto/OpenEmbedded, so it includes a Yocto/OpenEmbedded compatible
 layers meta-oran and wrapper scripts to pull all required Yocto/OE layers to build
 out the reference platform.
