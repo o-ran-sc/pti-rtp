@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b45bbc3d_88a49278",
+        "filename": "meta-oran/templates/default/require",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000109
+      },
+      "writtenOn": "2020-03-04T00:30:21Z",
+      "side": 0,
+      "message": "Remove these for IA and ARM, is this correct?",
+      "revId": "f87e7ddc6c57b1f2f38727a24408d52c2872cc18",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}
