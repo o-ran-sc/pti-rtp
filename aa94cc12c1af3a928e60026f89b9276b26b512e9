@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e6de06c_9a558869",
+        "filename": "scripts/build_oran.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1000109
+      },
+      "writtenOn": "2020-03-04T00:28:27Z",
+      "side": 1,
+      "message": "Is there default BSP selection, and it should not affect the jenkens job for now. What I mean current changes of build_oran.sh could be used by the jenkens job for verify and merge.",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 18
+      },
+      "revId": "aa94cc12c1af3a928e60026f89b9276b26b512e9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}
