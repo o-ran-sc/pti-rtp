@@ -1,0 +1,37 @@
+From e49c87267262cb7172281007717e45acd3918278 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 7 Nov 2019 08:58:44 +0000
+Subject: [PATCH] Revert "nxp-lx2xxx: remove preempt-rt related file"
+
+This reverts commit 3fa6ccab0f46ecdaa6f0f528633c6d53f3cc5f62.
+---
+ README                                            | 2 +-
+ recipes-kernel/linux/linux-yocto-rt_4.18.bbappend | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+ create mode 100755 recipes-kernel/linux/linux-yocto-rt_4.18.bbappend
+
+diff --git a/README b/README
+index ff42782..73a1d36 100755
+--- a/README
++++ b/README
+@@ -166,7 +166,7 @@ Note: Use 'i2c mw 66 50 20;sf probe 0:0' to program DEV#1, while use
+ NXP provides a pre-built image which contains U-Boot, RCW, etc.
+ Please download it through:
+ 
+- wget http://www.nxp.com/lgfiles/sdk/lsdk1903/firmware_lx2160ardb_uboot_xspiboot.img
++ wget http://www.nxp.com/lgfiles/sdk/lsdk1906/firmware_lx2160ardb_uboot_xspiboot.img
+ and burn it to the target board under the U-Boot prompt using the commands below:
+ 
+ $i2c mw 66 50 20;sf probe 0:0;
+diff --git a/recipes-kernel/linux/linux-yocto-rt_4.18.bbappend b/recipes-kernel/linux/linux-yocto-rt_4.18.bbappend
+new file mode 100755
+index 0000000..07c6519
+--- /dev/null
++++ b/recipes-kernel/linux/linux-yocto-rt_4.18.bbappend
+@@ -0,0 +1,3 @@
++require linux-yocto-nxp-lx2xxx.inc
++
++KBRANCH_nxp-lx2xxx  = "v4.18/standard/preempt-rt/nxp-ls/lsdk-1906/${KMACHINE}"
+-- 
+2.18.1
+
