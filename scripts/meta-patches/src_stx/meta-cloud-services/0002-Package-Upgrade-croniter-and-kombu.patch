@@ -1,0 +1,64 @@
+From 19abab88b100547c69eff4229724634acc6294a5 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Wed, 22 Jan 2020 16:38:55 -0800
+Subject: [PATCH 2/5] Package Upgrade croniter and kombu
+
+---
+ .../python/python-croniter_0.3.31.bb          | 21 +++++++++++++++++++
+ .../python/python-kombu_4.6.7.bb              | 16 ++++++++++++++
+ 2 files changed, 37 insertions(+)
+ create mode 100644 meta-openstack/recipes-devtools/python/python-croniter_0.3.31.bb
+ create mode 100644 meta-openstack/recipes-devtools/python/python-kombu_4.6.7.bb
+
+diff --git a/meta-openstack/recipes-devtools/python/python-croniter_0.3.31.bb b/meta-openstack/recipes-devtools/python/python-croniter_0.3.31.bb
+new file mode 100644
+index 0000000..c6e6eb8
+--- /dev/null
++++ b/meta-openstack/recipes-devtools/python/python-croniter_0.3.31.bb
+@@ -0,0 +1,21 @@
++DESCRIPTION = "croniter provides iteration for datetime object with cron like format"
++HOMEPAGE = "https://pypi.python.org/pypi/croniter/0.3.4"
++SECTION = "devel/python"
++LICENSE = "MIT"
++LIC_FILES_CHKSUM = "file://PKG-INFO;md5=03c210f850d2e973a2599fa42308cdc0"
++
++# Archived version so we have to overwrite what the pypi class will derive
++PYPI_SRC_URI = "https://pypi.python.org/packages/source/c/croniter/croniter-${PV}.tar.gz"
++
++SRC_URI[md5sum] = "84020f61103e8d715256547207fefe79"
++SRC_URI[sha256sum] = "8984b4b27ddfc4b95b2bcec17ee31f827426cf1d717c2af79eff4b4435e23197"
++
++inherit setuptools pypi
++
++DEPENDS += " \
++        python-pip \
++        "
++
++RDEPENDS_${PN} += " \
++        python-dateutil \
++        "
+diff --git a/meta-openstack/recipes-devtools/python/python-kombu_4.6.7.bb b/meta-openstack/recipes-devtools/python/python-kombu_4.6.7.bb
+new file mode 100644
+index 0000000..8977820
+--- /dev/null
++++ b/meta-openstack/recipes-devtools/python/python-kombu_4.6.7.bb
+@@ -0,0 +1,16 @@
++DESCRIPTION = "A messaging framework for Python"
++HOMEPAGE = "http://kombu.readthedocs.org"
++SECTION = "devel/python"
++LICENSE = "BSD"
++LIC_FILES_CHKSUM = "file://LICENSE;md5=daea7c168428449fbee05e644df929f4"
++
++SRC_URI[md5sum] = "7fe3e4e60926625b9a47a07e4f3ade2d"
++SRC_URI[sha256sum] = "67b32ccb6fea030f8799f8fd50dd08e03a4b99464ebc4952d71d8747b1a52ad1"
++
++inherit setuptools pypi
++
++FILES_${PN}-doc += "${datadir}/${SRCNAME}"
++
++RDEPENDS_${PN} = " \
++        python-amqp \
++        "
+-- 
+2.23.0
+

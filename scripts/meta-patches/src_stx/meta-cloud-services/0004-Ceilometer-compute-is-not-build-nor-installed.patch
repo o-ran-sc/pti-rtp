@@ -1,0 +1,34 @@
+From 0980b3e83cd10d0d952f659a6c5435c78d3621f2 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Thu, 23 Jan 2020 13:37:26 -0800
+Subject: [PATCH 4/5] Ceilometer-compute is not build nor installed
+
+Workaround to continue the build
+---
+ .../recipes-extended/packagegroups/packagegroup-cloud-compute.bb       | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/meta-openstack/recipes-extended/packagegroups/packagegroup-cloud-compute.bb b/meta-openstack/recipes-extended/packagegroups/packagegroup-cloud-compute.bb
+index 2e9446d..fc01e2b 100644
+--- a/meta-openstack/recipes-extended/packagegroups/packagegroup-cloud-compute.bb
++++ b/meta-openstack/recipes-extended/packagegroups/packagegroup-cloud-compute.bb
+@@ -6,6 +6,8 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
+ 
+ inherit packagegroup
+ 
++# FIXME:
++#    ceilometer-compute
+ RDEPENDS_${PN} = " \
+     cloud-init \
+     postgresql-setup \
+@@ -15,7 +17,6 @@ RDEPENDS_${PN} = " \
+     libvirt-libvirtd \
+     libvirt-virsh \
+     nova-compute \
+-    ceilometer-compute \
+     python-novaclient \
+     neutron-plugin-openvswitch \
+     openvswitch-switch \
+-- 
+2.7.4
+

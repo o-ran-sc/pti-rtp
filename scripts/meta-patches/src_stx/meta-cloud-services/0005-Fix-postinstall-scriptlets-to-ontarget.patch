@@ -1,0 +1,33 @@
+From 888c8f594b3b56a374710b06bf5f32fc8aaf06c8 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Thu, 23 Jan 2020 14:33:13 -0800
+Subject: [PATCH 5/5] Fix postinstall scriptlets to ontarget
+
+rootfs assembly fails without this patch
+---
+ meta-openstack/recipes-devtools/python/python-horizon_git.bb | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/meta-openstack/recipes-devtools/python/python-horizon_git.bb b/meta-openstack/recipes-devtools/python/python-horizon_git.bb
+index fa831cb..098604c 100644
+--- a/meta-openstack/recipes-devtools/python/python-horizon_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-horizon_git.bb
+@@ -158,13 +158,8 @@ do_install_append() {
+     ln -fs openstack_dashboard/static ${DASHBOARD_SHARE_DIR}/static
+ }
+ 
+-pkg_postinst_${SRCNAME} () {
+-    if [ -n "$D" ]; then
+-        exit 1
+-    else
+-        # Regenerate the django static files
+-        sudo -u horizon /usr/bin/env python ${datadir}/openstack-dashboard/manage.py collectstatic --noinput --clear 
+-    fi
++pkg_postinst_ontarget_${SRCNAME} () {
++	sudo -u horizon /usr/bin/env python ${datadir}/openstack-dashboard/manage.py collectstatic --noinput --clear
+ }
+ 
+ PACKAGES += "${SRCNAME}-tests ${SRCNAME} ${SRCNAME}-apache ${SRCNAME}-standalone"
+-- 
+2.7.4
+

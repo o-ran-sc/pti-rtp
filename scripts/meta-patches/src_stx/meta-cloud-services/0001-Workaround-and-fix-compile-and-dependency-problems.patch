@@ -1,0 +1,1229 @@
+From 743a95f637e68916bcb8fdc82b9672a3b2fd3f6a Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Thu, 23 Jan 2020 14:00:56 -0800
+Subject: [PATCH 1/5] Workaround and fix compile and dependency problems.
+
+---
+ meta-openstack/recipes-devtools/python/python-barbican_git.bb   | 2 +-
+ .../recipes-devtools/python/python-barbicanclient_git.bb        | 2 +-
+ meta-openstack/recipes-devtools/python/python-castellan_git.bb  | 2 +-
+ meta-openstack/recipes-devtools/python/python-ceilometer_git.bb | 2 +-
+ .../recipes-devtools/python/python-ceilometerclient_git.bb      | 2 +-
+ meta-openstack/recipes-devtools/python/python-cinder_git.bb     | 2 +-
+ .../recipes-devtools/python/python-cinderclient_git.bb          | 2 +-
+ meta-openstack/recipes-devtools/python/python-cliff_2.14.1.bb   | 2 +-
+ meta-openstack/recipes-devtools/python/python-cursive_git.bb    | 2 +-
+ .../recipes-devtools/python/python-debtcollector_1.17.1.bb      | 2 +-
+ .../recipes-devtools/python/python-designateclient_git.bb       | 2 +-
+ .../recipes-devtools/python/python-django-openstack-auth_git.bb | 2 +-
+ meta-openstack/recipes-devtools/python/python-ecdsa_0.13.bb     | 2 +-
+ meta-openstack/recipes-devtools/python/python-fasteners_git.bb  | 2 +-
+ meta-openstack/recipes-devtools/python/python-fixtures_3.0.0.bb | 2 +-
+ .../recipes-devtools/python/python-functools32_git.bb           | 2 +-
+ .../recipes-devtools/python/python-glance-store_git.bb          | 2 +-
+ meta-openstack/recipes-devtools/python/python-glance_git.bb     | 2 +-
+ .../recipes-devtools/python/python-glanceclient_git.bb          | 2 +-
+ .../recipes-devtools/python/python-glancestore_git.bb           | 2 +-
+ .../recipes-devtools/python/python-heat-cfntools_1.2.8.bb       | 2 +-
+ meta-openstack/recipes-devtools/python/python-heat_git.bb       | 2 +-
+ meta-openstack/recipes-devtools/python/python-heatclient_git.bb | 2 +-
+ meta-openstack/recipes-devtools/python/python-horizon_git.bb    | 2 +-
+ meta-openstack/recipes-devtools/python/python-ipaddr_2.1.11.bb  | 2 +-
+ .../recipes-devtools/python/python-jsonpath-rw-ext_git.bb       | 2 +-
+ meta-openstack/recipes-devtools/python/python-kafka_git.bb      | 2 +-
+ meta-openstack/recipes-devtools/python/python-keystone_git.bb   | 2 +-
+ .../recipes-devtools/python/python-keystoneauth1_3.2.0.bb       | 2 +-
+ .../recipes-devtools/python/python-keystoneclient_git.bb        | 2 +-
+ .../recipes-devtools/python/python-keystonemiddleware_git.bb    | 2 +-
+ .../recipes-devtools/python/python-lockfile_0.12.2.bb           | 2 +-
+ .../recipes-devtools/python/python-magnumclient_git.bb          | 2 +-
+ .../recipes-devtools/python/python-manilaclient_git.bb          | 2 +-
+ .../recipes-devtools/python/python-mistralclient_git.bb         | 2 +-
+ meta-openstack/recipes-devtools/python/python-monotonic_git.bb  | 2 +-
+ meta-openstack/recipes-devtools/python/python-mox3_0.26.0.bb    | 2 +-
+ .../recipes-devtools/python/python-neutron-lib_git.bb           | 2 +-
+ meta-openstack/recipes-devtools/python/python-neutron_git.bb    | 2 +-
+ .../recipes-devtools/python/python-neutronclient_git.bb         | 2 +-
+ meta-openstack/recipes-devtools/python/python-nova_git.bb       | 2 +-
+ meta-openstack/recipes-devtools/python/python-novaclient_git.bb | 2 +-
+ .../recipes-devtools/python/python-openstackclient_git.bb       | 2 +-
+ .../recipes-devtools/python/python-openstacksdk_git.bb          | 2 +-
+ meta-openstack/recipes-devtools/python/python-os-brick_git.bb   | 2 +-
+ .../recipes-devtools/python/python-os-client-config_git.bb      | 2 +-
+ meta-openstack/recipes-devtools/python/python-os-traits_git.bb  | 2 +-
+ meta-openstack/recipes-devtools/python/python-os-vif_git.bb     | 2 +-
+ meta-openstack/recipes-devtools/python/python-os-win_git.bb     | 2 +-
+ meta-openstack/recipes-devtools/python/python-os-xenapi_git.bb  | 2 +-
+ meta-openstack/recipes-devtools/python/python-oslo.cache_git.bb | 2 +-
+ .../recipes-devtools/python/python-oslo.concurrency_git.bb      | 2 +-
+ .../recipes-devtools/python/python-oslo.config_git.bb           | 2 +-
+ .../recipes-devtools/python/python-oslo.context_git.bb          | 2 +-
+ meta-openstack/recipes-devtools/python/python-oslo.db_git.bb    | 2 +-
+ .../recipes-devtools/python/python-oslo.i18n_3.20.0.bb          | 2 +-
+ meta-openstack/recipes-devtools/python/python-oslo.i18n_git.bb  | 2 +-
+ meta-openstack/recipes-devtools/python/python-oslo.log_git.bb   | 2 +-
+ .../recipes-devtools/python/python-oslo.messaging_git.bb        | 2 +-
+ .../recipes-devtools/python/python-oslo.middleware_git.bb       | 2 +-
+ .../recipes-devtools/python/python-oslo.policy_git.bb           | 2 +-
+ .../recipes-devtools/python/python-oslo.privsep_git.bb          | 2 +-
+ .../recipes-devtools/python/python-oslo.reports_git.bb          | 2 +-
+ .../recipes-devtools/python/python-oslo.rootwrap_git.bb         | 2 +-
+ .../recipes-devtools/python/python-oslo.serialization_git.bb    | 2 +-
+ .../recipes-devtools/python/python-oslo.service_git.bb          | 2 +-
+ meta-openstack/recipes-devtools/python/python-oslo.utils_git.bb | 2 +-
+ .../recipes-devtools/python/python-oslo.versionedobjects_git.bb | 2 +-
+ .../recipes-devtools/python/python-oslo.vmware_git.bb           | 2 +-
+ meta-openstack/recipes-devtools/python/python-oslotest_git.bb   | 2 +-
+ .../recipes-devtools/python/python-osprofiler_1.5.0.bb          | 2 +-
+ meta-openstack/recipes-devtools/python/python-ovsdbapp_git.bb   | 2 +-
+ meta-openstack/recipes-devtools/python/python-pycadf_git.bb     | 2 +-
+ meta-openstack/recipes-devtools/python/python-rally_git.bb      | 2 +-
+ meta-openstack/recipes-devtools/python/python-ryu_git.bb        | 2 +-
+ .../recipes-devtools/python/python-saharaclient_git.bb          | 2 +-
+ meta-openstack/recipes-devtools/python/python-swift_git.bb      | 2 +-
+ .../recipes-devtools/python/python-swiftclient_git.bb           | 2 +-
+ meta-openstack/recipes-devtools/python/python-taskflow_git.bb   | 2 +-
+ .../recipes-devtools/python/python-testscenarios_0.5.0.bb       | 2 +-
+ .../recipes-devtools/python/python-testtools_2.3.0.bb           | 2 +-
+ meta-openstack/recipes-devtools/python/python-tooz_1.48.0.bb    | 2 +-
+ meta-openstack/recipes-devtools/python/python-trove_git.bb      | 2 +-
+ .../recipes-devtools/python/python-troveclient_git.bb           | 2 +-
+ meta-openstack/recipes-devtools/python/python-unicodecsv_git.bb | 2 +-
+ meta-openstack/recipes-devtools/python/python-wsme_0.9.2.bb     | 2 +-
+ .../recipes-devtools/python/python-zaqarclient_git.bb           | 2 +-
+ 87 files changed, 87 insertions(+), 87 deletions(-)
+
+diff --git a/meta-openstack/recipes-devtools/python/python-barbican_git.bb b/meta-openstack/recipes-devtools/python/python-barbican_git.bb
+index 579413c..ebb93b1 100644
+--- a/meta-openstack/recipes-devtools/python/python-barbican_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-barbican_git.bb
+@@ -93,7 +93,7 @@ pkg_postinst_${SRCNAME}-setup () {
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${SRCNAME} = "${PN} \
+diff --git a/meta-openstack/recipes-devtools/python/python-barbicanclient_git.bb b/meta-openstack/recipes-devtools/python/python-barbicanclient_git.bb
+index 2d57158..06a75c2 100644
+--- a/meta-openstack/recipes-devtools/python/python-barbicanclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-barbicanclient_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-castellan_git.bb b/meta-openstack/recipes-devtools/python/python-castellan_git.bb
+index 9401ad9..909ed91 100644
+--- a/meta-openstack/recipes-devtools/python/python-castellan_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-castellan_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-ceilometer_git.bb b/meta-openstack/recipes-devtools/python/python-ceilometer_git.bb
+index 4b01022..911b9cd 100644
+--- a/meta-openstack/recipes-devtools/python/python-ceilometer_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-ceilometer_git.bb
+@@ -175,7 +175,7 @@ FILES_${SRCNAME}-controller = "${bindir}/* \
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-ceilometerclient_git.bb b/meta-openstack/recipes-devtools/python/python-ceilometerclient_git.bb
+index 1a13198..678867f 100644
+--- a/meta-openstack/recipes-devtools/python/python-ceilometerclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-ceilometerclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=34400b68072d710fecd0a2940a0d1658"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-cinder_git.bb b/meta-openstack/recipes-devtools/python/python-cinder_git.bb
+index 5274698..78d4533 100644
+--- a/meta-openstack/recipes-devtools/python/python-cinder_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-cinder_git.bb
+@@ -196,7 +196,7 @@ FILES_${SRCNAME} = "${bindir}/* \
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-cinderclient_git.bb b/meta-openstack/recipes-devtools/python/python-cinderclient_git.bb
+index e425237..a932abb 100644
+--- a/meta-openstack/recipes-devtools/python/python-cinderclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-cinderclient_git.bb
+@@ -20,7 +20,7 @@ inherit setuptools monitor
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-cliff_2.14.1.bb b/meta-openstack/recipes-devtools/python/python-cliff_2.14.1.bb
+index 70ac4e6..1103eca 100644
+--- a/meta-openstack/recipes-devtools/python/python-cliff_2.14.1.bb
++++ b/meta-openstack/recipes-devtools/python/python-cliff_2.14.1.bb
+@@ -10,7 +10,7 @@ SRC_URI[sha256sum] = "b47387a344898ccb28ca7f386f017ade9eb66dc1713e5c642a0bc09ec6
+ inherit setuptools pypi
+ 
+ DEPENDS += "\
+-    python-pbr \
++    python-pbr-native\
+     "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-cursive_git.bb b/meta-openstack/recipes-devtools/python/python-cursive_git.bb
+index 1a677f1..124821b 100644
+--- a/meta-openstack/recipes-devtools/python/python-cursive_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-cursive_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-debtcollector_1.17.1.bb b/meta-openstack/recipes-devtools/python/python-debtcollector_1.17.1.bb
+index 52b1319..231a5a6 100644
+--- a/meta-openstack/recipes-devtools/python/python-debtcollector_1.17.1.bb
++++ b/meta-openstack/recipes-devtools/python/python-debtcollector_1.17.1.bb
+@@ -11,7 +11,7 @@ inherit setuptools pypi
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-designateclient_git.bb b/meta-openstack/recipes-devtools/python/python-designateclient_git.bb
+index a6f7cbf..b4aa968 100644
+--- a/meta-openstack/recipes-devtools/python/python-designateclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-designateclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-django-openstack-auth_git.bb b/meta-openstack/recipes-devtools/python/python-django-openstack-auth_git.bb
+index 0df4efb..406a92d 100644
+--- a/meta-openstack/recipes-devtools/python/python-django-openstack-auth_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-django-openstack-auth_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-ecdsa_0.13.bb b/meta-openstack/recipes-devtools/python/python-ecdsa_0.13.bb
+index 8fe492c..e3e2577 100644
+--- a/meta-openstack/recipes-devtools/python/python-ecdsa_0.13.bb
++++ b/meta-openstack/recipes-devtools/python/python-ecdsa_0.13.bb
+@@ -11,7 +11,7 @@ inherit setuptools pypi
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # RDEPENDS_default:
+diff --git a/meta-openstack/recipes-devtools/python/python-fasteners_git.bb b/meta-openstack/recipes-devtools/python/python-fasteners_git.bb
+index 5f496bc..44092ff 100644
+--- a/meta-openstack/recipes-devtools/python/python-fasteners_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-fasteners_git.bb
+@@ -17,7 +17,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # RDEPENDS_default:
+diff --git a/meta-openstack/recipes-devtools/python/python-fixtures_3.0.0.bb b/meta-openstack/recipes-devtools/python/python-fixtures_3.0.0.bb
+index dc03a5b..2f0b540 100644
+--- a/meta-openstack/recipes-devtools/python/python-fixtures_3.0.0.bb
++++ b/meta-openstack/recipes-devtools/python/python-fixtures_3.0.0.bb
+@@ -15,7 +15,7 @@ DISTUTILS_INSTALL_ARGS = "--root=${D} \
+     --install-data=${datadir}"
+ 
+ DEPENDS += " \
+-	python-pbr \
++	python-pbr-native\
+ 	"
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-functools32_git.bb b/meta-openstack/recipes-devtools/python/python-functools32_git.bb
+index f167e7d..9fb7205 100644
+--- a/meta-openstack/recipes-devtools/python/python-functools32_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-functools32_git.bb
+@@ -21,7 +21,7 @@ DISTUTILS_INSTALL_ARGS = "--root=${D} \
+     --install-data=${datadir}"
+ 
+ DEPENDS += " \
+-	python-pbr \
++	python-pbr-native\
+ 	"
+ 
+ RDEPENDS_${PN} += "python-testtools \
+diff --git a/meta-openstack/recipes-devtools/python/python-glance-store_git.bb b/meta-openstack/recipes-devtools/python/python-glance-store_git.bb
+index f6cfaa7..405d49d 100644
+--- a/meta-openstack/recipes-devtools/python/python-glance-store_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-glance-store_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-glance_git.bb b/meta-openstack/recipes-devtools/python/python-glance_git.bb
+index 6a6cded..f6b2353 100644
+--- a/meta-openstack/recipes-devtools/python/python-glance_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-glance_git.bb
+@@ -166,7 +166,7 @@ FILES_${SRCNAME}-registry = "\
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-glanceclient_git.bb b/meta-openstack/recipes-devtools/python/python-glanceclient_git.bb
+index 00ea2ab..6b2fbb4 100644
+--- a/meta-openstack/recipes-devtools/python/python-glanceclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-glanceclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=34400b68072d710fecd0a2940a0d1658"
+ DEPENDS += " \
+         gmp \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ SRCREV = "13b25ff1fed908cfe7b4e719a97efd7121e3be96"
+diff --git a/meta-openstack/recipes-devtools/python/python-glancestore_git.bb b/meta-openstack/recipes-devtools/python/python-glancestore_git.bb
+index 0abf521..f45abed 100644
+--- a/meta-openstack/recipes-devtools/python/python-glancestore_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-glancestore_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ DEPENDS += " \
+         gmp \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} = " \
+diff --git a/meta-openstack/recipes-devtools/python/python-heat-cfntools_1.2.8.bb b/meta-openstack/recipes-devtools/python/python-heat-cfntools_1.2.8.bb
+index ca6a48d..aebfa1d 100644
+--- a/meta-openstack/recipes-devtools/python/python-heat-cfntools_1.2.8.bb
++++ b/meta-openstack/recipes-devtools/python/python-heat-cfntools_1.2.8.bb
+@@ -10,7 +10,7 @@ SRC_URI[sha256sum] = "de7d93338d3afb71cc4c53d713740316ead0af3a9c869b1231617347e9
+ inherit setuptools pypi
+ 
+ DEPENDS += "\
+-    python-pbr \
++    python-pbr-native\
+     "
+ 
+ RDPENDS_${PN} += "\
+diff --git a/meta-openstack/recipes-devtools/python/python-heat_git.bb b/meta-openstack/recipes-devtools/python/python-heat_git.bb
+index 2cf7ce4..8f538a5 100644
+--- a/meta-openstack/recipes-devtools/python/python-heat_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-heat_git.bb
+@@ -157,7 +157,7 @@ FILES_${SRCNAME}-engine = "${bindir}/heat-engine \
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-heatclient_git.bb b/meta-openstack/recipes-devtools/python/python-heatclient_git.bb
+index 9440f95..7d97b44 100644
+--- a/meta-openstack/recipes-devtools/python/python-heatclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-heatclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=34400b68072d710fecd0a2940a0d1658"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-horizon_git.bb b/meta-openstack/recipes-devtools/python/python-horizon_git.bb
+index 5e12e87..fa831cb 100644
+--- a/meta-openstack/recipes-devtools/python/python-horizon_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-horizon_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-ipaddr_2.1.11.bb b/meta-openstack/recipes-devtools/python/python-ipaddr_2.1.11.bb
+index 501e895..02cfd76 100644
+--- a/meta-openstack/recipes-devtools/python/python-ipaddr_2.1.11.bb
++++ b/meta-openstack/recipes-devtools/python/python-ipaddr_2.1.11.bb
+@@ -11,7 +11,7 @@ inherit distutils pypi
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-jsonpath-rw-ext_git.bb b/meta-openstack/recipes-devtools/python/python-jsonpath-rw-ext_git.bb
+index 53cc1c4..c059942 100644
+--- a/meta-openstack/recipes-devtools/python/python-jsonpath-rw-ext_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-jsonpath-rw-ext_git.bb
+@@ -16,7 +16,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-	python-pbr \
++	python-pbr-native\
+ 	"
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-kafka_git.bb b/meta-openstack/recipes-devtools/python/python-kafka_git.bb
+index 7fbb826..737c95c 100644
+--- a/meta-openstack/recipes-devtools/python/python-kafka_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-kafka_git.bb
+@@ -16,7 +16,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-	python-pbr \
++	python-pbr-native\
+ 	"
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-keystone_git.bb b/meta-openstack/recipes-devtools/python/python-keystone_git.bb
+index b8b4fb0..423134c 100644
+--- a/meta-openstack/recipes-devtools/python/python-keystone_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-keystone_git.bb
+@@ -224,7 +224,7 @@ FILES_${SRCNAME} = "${bindir}/* \
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-keystoneauth1_3.2.0.bb b/meta-openstack/recipes-devtools/python/python-keystoneauth1_3.2.0.bb
+index 6466056..469a31e 100644
+--- a/meta-openstack/recipes-devtools/python/python-keystoneauth1_3.2.0.bb
++++ b/meta-openstack/recipes-devtools/python/python-keystoneauth1_3.2.0.bb
+@@ -10,7 +10,7 @@ SRC_URI[sha256sum] = "768036ee66372df2ad56716b8be4965cef9a59a01647992919516defb2
+ inherit setuptools pypi
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-keystoneclient_git.bb b/meta-openstack/recipes-devtools/python/python-keystoneclient_git.bb
+index e82c5f6..ecff38a 100644
+--- a/meta-openstack/recipes-devtools/python/python-keystoneclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-keystoneclient_git.bb
+@@ -21,7 +21,7 @@ FILES_${PN}-doc += "${datadir}/keystoneclient"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-keystonemiddleware_git.bb b/meta-openstack/recipes-devtools/python/python-keystonemiddleware_git.bb
+index 557a557..526b48f 100644
+--- a/meta-openstack/recipes-devtools/python/python-keystonemiddleware_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-keystonemiddleware_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-lockfile_0.12.2.bb b/meta-openstack/recipes-devtools/python/python-lockfile_0.12.2.bb
+index 6191577..f954b65 100644
+--- a/meta-openstack/recipes-devtools/python/python-lockfile_0.12.2.bb
++++ b/meta-openstack/recipes-devtools/python/python-lockfile_0.12.2.bb
+@@ -10,7 +10,7 @@ SRC_URI[sha256sum] = "6aed02de03cba24efabcd600b30540140634fc06cfa603822d508d5361
+ inherit distutils pypi
+ 
+ DEPENDS += "\
+-    python-pbr \
++    python-pbr-native\
+     "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-magnumclient_git.bb b/meta-openstack/recipes-devtools/python/python-magnumclient_git.bb
+index 1bed1ed..3d0e779 100644
+--- a/meta-openstack/recipes-devtools/python/python-magnumclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-magnumclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=d2794c0df5b907fdace235a619d80314"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-manilaclient_git.bb b/meta-openstack/recipes-devtools/python/python-manilaclient_git.bb
+index d547717..ee75ab3 100644
+--- a/meta-openstack/recipes-devtools/python/python-manilaclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-manilaclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=9edbbf5857ab51214ef0e8b79069bb07"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-mistralclient_git.bb b/meta-openstack/recipes-devtools/python/python-mistralclient_git.bb
+index 1c6a9bd..855ebd3 100644
+--- a/meta-openstack/recipes-devtools/python/python-mistralclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-mistralclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=34400b68072d710fecd0a2940a0d1658"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-monotonic_git.bb b/meta-openstack/recipes-devtools/python/python-monotonic_git.bb
+index 2552409..bffc6af 100644
+--- a/meta-openstack/recipes-devtools/python/python-monotonic_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-monotonic_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit distutils
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-mox3_0.26.0.bb b/meta-openstack/recipes-devtools/python/python-mox3_0.26.0.bb
+index c420bc2..9da45b7 100644
+--- a/meta-openstack/recipes-devtools/python/python-mox3_0.26.0.bb
++++ b/meta-openstack/recipes-devtools/python/python-mox3_0.26.0.bb
+@@ -10,7 +10,7 @@ SRC_URI[sha256sum] = "b13c0b8459d6fb0688f9a4e70feeec43fa2cca05b727fc01156789596e
+ inherit setuptools pypi
+ 
+ DEPENDS += "\
+-    python-pbr \
++    python-pbr-native\
+     "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-neutron-lib_git.bb b/meta-openstack/recipes-devtools/python/python-neutron-lib_git.bb
+index 1ac7dca..1e7447e 100644
+--- a/meta-openstack/recipes-devtools/python/python-neutron-lib_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-neutron-lib_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-neutron_git.bb b/meta-openstack/recipes-devtools/python/python-neutron_git.bb
+index a054551..630bbce 100644
+--- a/meta-openstack/recipes-devtools/python/python-neutron_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-neutron_git.bb
+@@ -330,7 +330,7 @@ FILES_${SRCNAME}-setup = " \
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-neutronclient_git.bb b/meta-openstack/recipes-devtools/python/python-neutronclient_git.bb
+index 204f19b..8cbee0c 100644
+--- a/meta-openstack/recipes-devtools/python/python-neutronclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-neutronclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-nova_git.bb b/meta-openstack/recipes-devtools/python/python-nova_git.bb
+index 3e646df..9946582 100644
+--- a/meta-openstack/recipes-devtools/python/python-nova_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-nova_git.bb
+@@ -262,7 +262,7 @@ FILES_${SRCNAME}-controller = "${bindir}/* \
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-novaclient_git.bb b/meta-openstack/recipes-devtools/python/python-novaclient_git.bb
+index 44f73fa..363d0a3 100644
+--- a/meta-openstack/recipes-devtools/python/python-novaclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-novaclient_git.bb
+@@ -17,7 +17,7 @@ inherit setuptools monitor rmargparse
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-openstackclient_git.bb b/meta-openstack/recipes-devtools/python/python-openstackclient_git.bb
+index ce33f0c..a7e2b8c 100644
+--- a/meta-openstack/recipes-devtools/python/python-openstackclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-openstackclient_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += "\
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-openstacksdk_git.bb b/meta-openstack/recipes-devtools/python/python-openstacksdk_git.bb
+index 12472ec..ee8942d 100644
+--- a/meta-openstack/recipes-devtools/python/python-openstacksdk_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-openstacksdk_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += "\
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-os-brick_git.bb b/meta-openstack/recipes-devtools/python/python-os-brick_git.bb
+index f266f70..65d3ddf 100644
+--- a/meta-openstack/recipes-devtools/python/python-os-brick_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-os-brick_git.bb
+@@ -17,7 +17,7 @@ inherit setuptools
+ FILES_${PN} += "${datadir}/etc/*"
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-os-client-config_git.bb b/meta-openstack/recipes-devtools/python/python-os-client-config_git.bb
+index a48f2c4..c49c710 100644
+--- a/meta-openstack/recipes-devtools/python/python-os-client-config_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-os-client-config_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ # Satisfy setup.py 'setup_requires'
+ DEPENDS += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-os-traits_git.bb b/meta-openstack/recipes-devtools/python/python-os-traits_git.bb
+index 8d4079b..d983252 100644
+--- a/meta-openstack/recipes-devtools/python/python-os-traits_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-os-traits_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-os-vif_git.bb b/meta-openstack/recipes-devtools/python/python-os-vif_git.bb
+index 52fa05e..656f5ab 100644
+--- a/meta-openstack/recipes-devtools/python/python-os-vif_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-os-vif_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-os-win_git.bb b/meta-openstack/recipes-devtools/python/python-os-win_git.bb
+index a742506..882c1b7 100644
+--- a/meta-openstack/recipes-devtools/python/python-os-win_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-os-win_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-os-xenapi_git.bb b/meta-openstack/recipes-devtools/python/python-os-xenapi_git.bb
+index f3d54f6..ea46a60 100644
+--- a/meta-openstack/recipes-devtools/python/python-os-xenapi_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-os-xenapi_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ # DEPENDS_default: python-pip
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.cache_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.cache_git.bb
+index e71a815..9d07f74 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.cache_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.cache_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.concurrency_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.concurrency_git.bb
+index fe095d0..f91ff98 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.concurrency_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.concurrency_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.config_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.config_git.bb
+index eed00c5..f0156b1 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.config_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.config_git.bb
+@@ -15,7 +15,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools rmargparse
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         python-pip \
+         "
+ 
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.context_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.context_git.bb
+index bf1ae7a..05674c9 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.context_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.context_git.bb
+@@ -15,7 +15,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.db_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.db_git.bb
+index d693570..2e1ec5e 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.db_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.db_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.i18n_3.20.0.bb b/meta-openstack/recipes-devtools/python/python-oslo.i18n_3.20.0.bb
+index 76a8b53..100c44f 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.i18n_3.20.0.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.i18n_3.20.0.bb
+@@ -17,7 +17,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.i18n_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.i18n_git.bb
+index 9f7ddc5..599d30c 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.i18n_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.i18n_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.log_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.log_git.bb
+index d6ca0ee..7b0c946 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.log_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.log_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ DEPENDS += " \
+         python-pip \
+         python-babel \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.messaging_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.messaging_git.bb
+index 7fe66f1..2f7ba98 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.messaging_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.messaging_git.bb
+@@ -17,7 +17,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.middleware_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.middleware_git.bb
+index 3a1d4d9..2b255c9 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.middleware_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.middleware_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ # Satisfy setup.py 'setup_requires'
+ DEPENDS += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.policy_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.policy_git.bb
+index 0e7a6ad..e2afd98 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.policy_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.policy_git.bb
+@@ -17,7 +17,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+ "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.privsep_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.privsep_git.bb
+index 83504b6..73e4d44 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.privsep_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.privsep_git.bb
+@@ -14,7 +14,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # RDEPENDS_default:
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.reports_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.reports_git.bb
+index 2db5aae..f1a5767 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.reports_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.reports_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.rootwrap_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.rootwrap_git.bb
+index 2dbbfe8..8ebdf8d 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.rootwrap_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.rootwrap_git.bb
+@@ -18,7 +18,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # RDEPENDS_default: 
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.serialization_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.serialization_git.bb
+index b11957d..42f282a 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.serialization_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.serialization_git.bb
+@@ -17,7 +17,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.service_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.service_git.bb
+index 7b72ad2..4ad6593 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.service_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.service_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.utils_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.utils_git.bb
+index e73bf53..9ce6a7f 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.utils_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.utils_git.bb
+@@ -17,7 +17,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.versionedobjects_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.versionedobjects_git.bb
+index 574ac88..7dae91d 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.versionedobjects_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.versionedobjects_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-oslo.vmware_git.bb b/meta-openstack/recipes-devtools/python/python-oslo.vmware_git.bb
+index f6e7b5e..89d9381 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslo.vmware_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslo.vmware_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-oslotest_git.bb b/meta-openstack/recipes-devtools/python/python-oslotest_git.bb
+index 20c0b53..3a6c171 100644
+--- a/meta-openstack/recipes-devtools/python/python-oslotest_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-oslotest_git.bb
+@@ -17,7 +17,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += "\
+-    python-pbr \
++    python-pbr-native\
+     "
+ 
+ RDEPENDS_${PN} = "python-fixtures \
+diff --git a/meta-openstack/recipes-devtools/python/python-osprofiler_1.5.0.bb b/meta-openstack/recipes-devtools/python/python-osprofiler_1.5.0.bb
+index efb38a0..ffef6be 100644
+--- a/meta-openstack/recipes-devtools/python/python-osprofiler_1.5.0.bb
++++ b/meta-openstack/recipes-devtools/python/python-osprofiler_1.5.0.bb
+@@ -13,7 +13,7 @@ inherit setuptools pypi
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-ovsdbapp_git.bb b/meta-openstack/recipes-devtools/python/python-ovsdbapp_git.bb
+index cc1f424..f1b1b36 100644
+--- a/meta-openstack/recipes-devtools/python/python-ovsdbapp_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-ovsdbapp_git.bb
+@@ -17,7 +17,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-pycadf_git.bb b/meta-openstack/recipes-devtools/python/python-pycadf_git.bb
+index 58cb5bf..fedab3b 100644
+--- a/meta-openstack/recipes-devtools/python/python-pycadf_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-pycadf_git.bb
+@@ -18,7 +18,7 @@ FILES_${PN} += "${datadir}/etc/${SRCNAME}/*"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ # Satisfy setup.py 'setup_requires'
+ DEPENDS += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-rally_git.bb b/meta-openstack/recipes-devtools/python/python-rally_git.bb
+index 31d4242..194e549 100644
+--- a/meta-openstack/recipes-devtools/python/python-rally_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-rally_git.bb
+@@ -97,7 +97,7 @@ FILES_${SRCNAME}-api = "${bindir}/rally-api \
+ 
+ DEPENDS += " \
+     python-pip \
+-    python-pbr \
++    python-pbr-native\
+     "
+ 
+ RDEPENDS_${PN} += " python-babel \
+diff --git a/meta-openstack/recipes-devtools/python/python-ryu_git.bb b/meta-openstack/recipes-devtools/python/python-ryu_git.bb
+index b5ee113..9a3bad5 100644
+--- a/meta-openstack/recipes-devtools/python/python-ryu_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-ryu_git.bb
+@@ -18,7 +18,7 @@ FILES_${PN} += "${datadir}/etc/${SRCNAME}/*"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-saharaclient_git.bb b/meta-openstack/recipes-devtools/python/python-saharaclient_git.bb
+index 170d460..b9522ba 100644
+--- a/meta-openstack/recipes-devtools/python/python-saharaclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-saharaclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-swift_git.bb b/meta-openstack/recipes-devtools/python/python-swift_git.bb
+index fc7c258..f52b47e 100644
+--- a/meta-openstack/recipes-devtools/python/python-swift_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-swift_git.bb
+@@ -150,7 +150,7 @@ FILES_${SRCNAME} = "${bindir}/* \
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-swiftclient_git.bb b/meta-openstack/recipes-devtools/python/python-swiftclient_git.bb
+index 0ee9680..f7f5343 100644
+--- a/meta-openstack/recipes-devtools/python/python-swiftclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-swiftclient_git.bb
+@@ -21,7 +21,7 @@ do_install_append() {
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-taskflow_git.bb b/meta-openstack/recipes-devtools/python/python-taskflow_git.bb
+index 1717617..ce860d0 100644
+--- a/meta-openstack/recipes-devtools/python/python-taskflow_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-taskflow_git.bb
+@@ -16,7 +16,7 @@ inherit setuptools
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-testscenarios_0.5.0.bb b/meta-openstack/recipes-devtools/python/python-testscenarios_0.5.0.bb
+index 18971d6..ef0acd7 100644
+--- a/meta-openstack/recipes-devtools/python/python-testscenarios_0.5.0.bb
++++ b/meta-openstack/recipes-devtools/python/python-testscenarios_0.5.0.bb
+@@ -10,7 +10,7 @@ SRC_URI[sha256sum] = "c257cb6b90ea7e6f8fef3158121d430543412c9a87df30b5dde6ec8b9b
+ inherit setuptools pypi
+ 
+ DEPENDS += "\
+-    python-pbr \
++    python-pbr-native\
+     "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-testtools_2.3.0.bb b/meta-openstack/recipes-devtools/python/python-testtools_2.3.0.bb
+index bbf1d01..51d7613 100644
+--- a/meta-openstack/recipes-devtools/python/python-testtools_2.3.0.bb
++++ b/meta-openstack/recipes-devtools/python/python-testtools_2.3.0.bb
+@@ -9,7 +9,7 @@ SRC_URI[sha256sum] = "5827ec6cf8233e0f29f51025addd713ca010061204fdea77484a293469
+ 
+ inherit setuptools pypi
+ DEPENDS += " \
+-    python-pbr \
++    python-pbr-native\
+     "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-tooz_1.48.0.bb b/meta-openstack/recipes-devtools/python/python-tooz_1.48.0.bb
+index 6260663..5e2b3d7 100644
+--- a/meta-openstack/recipes-devtools/python/python-tooz_1.48.0.bb
++++ b/meta-openstack/recipes-devtools/python/python-tooz_1.48.0.bb
+@@ -13,7 +13,7 @@ inherit setuptools pypi
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # RDEPENDS_default:
+diff --git a/meta-openstack/recipes-devtools/python/python-trove_git.bb b/meta-openstack/recipes-devtools/python/python-trove_git.bb
+index e1f8ae0..531cfe5 100755
+--- a/meta-openstack/recipes-devtools/python/python-trove_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-trove_git.bb
+@@ -234,7 +234,7 @@ FILES_${SRCNAME}-setup = " \
+ 
+ 
+ DEPENDS += " \
+-    python-pbr \
++    python-pbr-native\
+     python-pip \
+     "
+ 
+diff --git a/meta-openstack/recipes-devtools/python/python-troveclient_git.bb b/meta-openstack/recipes-devtools/python/python-troveclient_git.bb
+index 95ec5ae..c715cb4 100644
+--- a/meta-openstack/recipes-devtools/python/python-troveclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-troveclient_git.bb
+@@ -51,7 +51,7 @@ FILES_${SRCNAME}-bin = " \
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-unicodecsv_git.bb b/meta-openstack/recipes-devtools/python/python-unicodecsv_git.bb
+index 76d638a..c5a1cbc 100644
+--- a/meta-openstack/recipes-devtools/python/python-unicodecsv_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-unicodecsv_git.bb
+@@ -16,7 +16,7 @@ S = "${WORKDIR}/git"
+ inherit setuptools
+ 
+ DEPENDS += " \
+-	python-pbr \
++	python-pbr-native\
+ 	"
+ 
+ RDEPENDS_${PN} += " \
+diff --git a/meta-openstack/recipes-devtools/python/python-wsme_0.9.2.bb b/meta-openstack/recipes-devtools/python/python-wsme_0.9.2.bb
+index 15f46d4..5a2628e 100644
+--- a/meta-openstack/recipes-devtools/python/python-wsme_0.9.2.bb
++++ b/meta-openstack/recipes-devtools/python/python-wsme_0.9.2.bb
+@@ -13,7 +13,7 @@ inherit setuptools pypi
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+diff --git a/meta-openstack/recipes-devtools/python/python-zaqarclient_git.bb b/meta-openstack/recipes-devtools/python/python-zaqarclient_git.bb
+index d3d24ea..d519c8c 100644
+--- a/meta-openstack/recipes-devtools/python/python-zaqarclient_git.bb
++++ b/meta-openstack/recipes-devtools/python/python-zaqarclient_git.bb
+@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=34400b68072d710fecd0a2940a0d1658"
+ 
+ DEPENDS += " \
+         python-pip \
+-        python-pbr \
++        python-pbr-native\
+         "
+ 
+ # Satisfy setup.py 'setup_requires'
+-- 
+2.23.0
+

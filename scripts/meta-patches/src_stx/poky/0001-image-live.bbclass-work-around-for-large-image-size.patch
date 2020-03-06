@@ -1,0 +1,30 @@
+From 5c7b171f77e4456b4b7ff0b1125e68594cf8a710 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Fri, 20 Sep 2019 14:25:45 +0800
+Subject: [PATCH] image-live.bbclass: work around for large image size
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ meta/classes/image-live.bbclass | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/meta/classes/image-live.bbclass b/meta/classes/image-live.bbclass
+index 54058b3..bd607aa 100644
+--- a/meta/classes/image-live.bbclass
++++ b/meta/classes/image-live.bbclass
+@@ -229,9 +229,10 @@ build_hddimg() {
+ 		# exceeds 4GB, it is the single file's max size of FAT fs.
+ 		if [ -f ${HDDDIR}/rootfs.img ]; then
+ 			rootfs_img_size=`stat -c '%s' ${HDDDIR}/rootfs.img`
+-			max_size=`expr 4 \* 1024 \* 1024 \* 1024`
++			max_size=`expr 8 \* 1024 \* 1024 \* 1024`
+ 			if [ $rootfs_img_size -ge $max_size ]; then
+-				bberror "${HDDDIR}/rootfs.img rootfs size is greather than or equal to 4GB,"
++				bberror "${HDDDIR}/rootfs.img rootfs size is $rootfs_img_size,"
++				bberror "which is greather than or equal to 4GB($max_size),"
+ 				bberror "and this doesn't work on a FAT filesystem. You can either:"
+ 				bberror "1) Reduce the size of rootfs.img, or,"
+ 				bbfatal "2) Use wic, vmdk or vdi instead of hddimg\n"
+-- 
+2.7.4
+
