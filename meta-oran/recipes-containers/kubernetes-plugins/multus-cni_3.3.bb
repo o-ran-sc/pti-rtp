@@ -32,5 +32,6 @@ do_install() {
     install -m 644 ${S}/README.md ${D}${K8S_PLUGINS}
     install -m 644 ${S}/images/entrypoint.sh ${D}${K8S_PLUGINS}
     install -m 644 ${S}/images/README.md ${D}${K8S_PLUGINS}/README-deployment.md
-    install -m 644 ${S}/images/multus-daemonset-pre-1.16.yml ${D}${K8S_PLUGINS}/multus-daemonset.yml
+    install -m 644 ${S}/images/multus-daemonset-pre-1.16.yml ${D}${K8S_PLUGINS}/multus-daemonset-pre-1.16.yml
+    install -m 644 ${S}/images/multus-daemonset.yml ${D}${K8S_PLUGINS}/multus-daemonset.yml
 }
