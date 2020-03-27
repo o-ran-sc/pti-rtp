@@ -649,78 +649,11 @@ Now test with dpdk
 
 
 
-3.12 Deploy CMK (CPU-Manager-for-Kubernetes)
-''''''''''''''''''''''''''''''''''''''''''''
-
-Build the CMK docker image
-
-::
-
-  root@oran-aio:~# cd /opt/kubernetes_plugins/cpu-manager-for-kubernetes/
-  root@oran-aio:/opt/kubernetes_plugins/cpu-manager-for-kubernetes# make
-
-Verify that the cmk docker images is built successfully
-
-::
-
-  root@oran-aio:/opt/kubernetes_plugins/cpu-manager-for-kubernetes# docker images|grep cmk
-  cmk          v1.3.1              3fec5f753b05        44 minutes ago      765MB
-
-Edit the template yaml file for your deployment:
-  - The template file is: /etc/kubernetes/plugins/cpu-manager-for-kubernetes/cmk-cluster-init-pod-template.yaml
-  - The options you may need to change:
-
-::
-
-  # You can change the value for the following env:
-  env:
-  - name: HOST_LIST
-    # Change this to modify the the host list to be initialized
-    value: "oran-aio"
-  - name: NUM_EXCLUSIVE_CORES
-    # Change this to modify the value passed to `--num-exclusive-cores` flag
-    value: "4"
-  - name: NUM_SHARED_CORES
-    # Change this to modify the value passed to `--num-shared-cores` flag
-    value: "1"
-  - name: CMK_IMG
-    # Change his ONLY if you built the docker images with a different tag name
-    value: "cmk:v1.3.1"
-
-Or you can also refer to `CMK operator manual`_
-
-.. _`CMK operator manual`: https://github.com/intel/CPU-Manager-for-Kubernetes/blob/master/docs/operator.md
-
-
-Depoly CMK from yaml files
-
-::
-
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/cpu-manager-for-kubernetes/cmk-rbac-rules.yaml
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/cpu-manager-for-kubernetes/cmk-serviceaccount.yaml
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/cpu-manager-for-kubernetes/cmk-cluster-init-pod-template.yaml
-
-Verify that the cmk cluster init completed and the pods for nodereport and webhook deployment are up and running
-
-::
-
-  root@oran-aio:/opt/kubernetes_plugins/cpu-manager-for-kubernetes# kubectl get pods --all-namespaces |grep cmk
-  default       cmk-cluster-init-pod                         0/1     Completed   0          11m
-  default       cmk-init-install-discover-pod-oran-aio       0/2     Completed   0          10m
-  default       cmk-reconcile-nodereport-ds-oran-aio-qbdqb   2/2     Running     0          10m
-  default       cmk-webhook-deployment-6f9dd7dfb6-2lj2p      1/1     Running     0          10m
-
-- For detail usage, please refer to `CMK user manual`_
-
-.. _`CMK user manual`: https://github.com/intel/CPU-Manager-for-Kubernetes/blob/master/docs/user.md
-
 References
 ----------
 
 - `Flannel`_
 - `Doc for dashboard`_
 - `Multus-CNI quick start`_
-- `CMK operator manual`_
-- `CMK user manual`_
 
 .. _`Flannel`: https://github.com/coreos/flannel/blob/master/README.md
