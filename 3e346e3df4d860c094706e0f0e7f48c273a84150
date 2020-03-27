@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "54e8686c_91978390",
+        "filename": "docs/installation-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 1000109
+      },
+      "writtenOn": "2020-03-27T08:33:56Z",
+      "side": 1,
+      "message": "Could you please mark this CMK is only valid for \"Amber\" releae?",
+      "range": {
+        "startLine": 623,
+        "startChar": 0,
+        "endLine": 623,
+        "endChar": 44
+      },
+      "revId": "3e346e3df4d860c094706e0f0e7f48c273a84150",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}
