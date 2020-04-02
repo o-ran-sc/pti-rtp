@@ -26,6 +26,7 @@ PROVIDES = "${PACKAGES}"
 PACKAGES += " \
     ${PN}-base \
     ${PN}-docker \
+    ${PN}-kernel \
     ${PN}-k8s \
     ${PN}-vm \
     ${PN}-trace-tools \
@@ -36,6 +37,7 @@ PACKAGES += " \
 RDEPENDS_${PN} = "\
     ${PN}-base \
     ${PN}-docker \
+    ${PN}-kernel \
     ${PN}-k8s \
     ${PN}-vm \
     ${PN}-trace-tools \
@@ -56,6 +58,13 @@ RDEPENDS_${PN}-docker = "\
     docker-registry \
 "
 
+RDEPENDS_${PN}-kernel = "\
+    kernel-base \
+    kernel-dev \
+    kernel-devsrc \
+    kernel-modules \
+    kernel-vmlinux \
+"
 RDEPENDS_${PN}-k8s = "\
     cni \
     flannel \
