@@ -51,6 +51,11 @@ RDEPENDS_${PN}-base = "\
     tunctl \
     udev \
     udev-extraconf \
+    turbostat \
+    cpupower \
+    cpufrequtils \
+    msr-tools \
+    htop \
 "
 
 RDEPENDS_${PN}-docker = "\
@@ -73,7 +78,6 @@ RDEPENDS_${PN}-k8s = "\
     kubernetes-dashboard \
     node-feature-discovery \
     multus-cni \
-    cmk \
 "
 
 RDEPENDS_${PN}-vm = "\
