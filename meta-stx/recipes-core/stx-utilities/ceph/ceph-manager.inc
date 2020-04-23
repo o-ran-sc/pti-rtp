@@ -41,7 +41,7 @@ do_install_append() {
 	install -d -m0755 ${D}/${sysconfdir}/logrotate.d
 	install -d -m0755 ${D}/${systemd_system_unitdir}
 
-	install -p -m0700 ${S}/ceph/ceph-manager/scripts/bin/ceph-manager ${D}/${sysconfdir}/init.d
+	install -p -m0700 ${S}/ceph/ceph-manager/scripts/init.d/ceph-manager ${D}/${sysconfdir}/init.d
 	install -p -m0700 ${S}/ceph/ceph-manager/scripts/bin/ceph-manager ${D}/${bindir}
 	install -p -m0700 ${S}/ceph/ceph-manager/files/ceph-manager.logrotate ${D}/${sysconfdir}/logrotate.d
 	install -p -m0700 ${S}/ceph/ceph-manager/files/ceph-manager.service ${D}/${systemd_system_unitdir}
