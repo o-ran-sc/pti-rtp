@@ -1,0 +1,25 @@
+From e8e74bddb6fb4030b574a76e43e7d0618c0432c9 Mon Sep 17 00:00:00 2001
+From: Tomas Sykora <tosykora@redhat.com>
+Date: Fri, 19 Aug 2016 13:49:25 +0200
+Subject: [PATCH] We do not strip
+
+rebased from:
+Patch1: sudo-1.6.7p5-strip.patch
+
+---
+ install-sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/install-sh b/install-sh
+index 6944fba..49d383a 100755
+--- a/install-sh
++++ b/install-sh
+@@ -147,7 +147,7 @@ while ${MORETODO} ; do
+ 	fi
+ 	;;
+     X-s)
+-	STRIPIT=true
++	#STRIPIT=true
+ 	;;
+     X--)
+ 	shift

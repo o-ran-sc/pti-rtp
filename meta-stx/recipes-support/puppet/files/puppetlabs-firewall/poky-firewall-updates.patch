@@ -1,0 +1,13 @@
+diff --git a/packstack/puppet/modules/firewall/manifests/linux.pp b/packstack/puppet/modules/firewall/manifests/linux.pp
+index 0fd758a..d9280f5 100644
+--- a/packstack/puppet/modules/firewall/manifests/linux.pp
++++ b/packstack/puppet/modules/firewall/manifests/linux.pp
+@@ -40,7 +40,7 @@ class firewall::linux (
+         require         => Package['iptables'],
+       }
+     }
+-    'Debian', 'Ubuntu': {
++    'Debian', 'Ubuntu', 'poky': {
+       class { "${title}::debian":
+         ensure       => $ensure,
+         enable       => $enable,

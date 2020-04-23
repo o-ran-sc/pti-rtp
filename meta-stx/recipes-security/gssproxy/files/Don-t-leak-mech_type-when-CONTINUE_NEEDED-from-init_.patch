@@ -1,0 +1,27 @@
+From dd1699810efe933858badce463bece239d19e886 Mon Sep 17 00:00:00 2001
+From: Alexander Scheel <ascheel@redhat.com>
+Date: Tue, 8 Aug 2017 11:36:56 -0400
+Subject: [PATCH] Don't leak mech_type when CONTINUE_NEEDED from
+ init_sec_context
+
+Signed-off-by: Alexander Scheel <ascheel@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+Merges: #207
+(cherry picked from commit ca26c0f58ac961a16b06c3fb93b985d574116b2c)
+---
+ proxy/src/gp_export.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/proxy/src/gp_export.c b/proxy/src/gp_export.c
+index 0c39045..c9f5fd4 100644
+--- a/proxy/src/gp_export.c
++++ b/proxy/src/gp_export.c
+@@ -687,6 +687,7 @@ export:
+     case EXP_CTX_PARTIAL:
+         /* this happens only when a init_sec_context call returns a partially
+          * initialized context so we return only what we have, not much */
++        xdr_free((xdrproc_t)xdr_gssx_OID, (char *)&out->mech);
+         ret = gp_conv_oid_to_gssx(mech, &out->mech);
+         if (ret) {
+             ret_maj = GSS_S_FAILURE;

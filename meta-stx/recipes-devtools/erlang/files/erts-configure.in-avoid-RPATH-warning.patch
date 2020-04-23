@@ -1,0 +1,40 @@
+From fe07e40ed72021225fce05dc1557fd83200d4506 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 23 Mar 2020 13:00:10 +0800
+Subject: [PATCH] erts/configure.in: avoid RPATH warning
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ erts/configure    | 2 +-
+ erts/configure.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/erts/configure b/erts/configure
+index 6940143..a70d5a3 100755
+--- a/erts/configure
++++ b/erts/configure
+@@ -37534,7 +37534,7 @@ fi
+ 
+ 
+ 
+-std_ssl_locations="/usr/local /usr/sfw /usr /opt/local /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
++std_ssl_locations="/usr/local /usr/sfw /opt/local /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
+ 
+ 
+ # Check whether --with-ssl-zlib or --without-ssl-zlib was given.
+diff --git a/erts/configure.in b/erts/configure.in
+index da4bf65..82e7d54 100644
+--- a/erts/configure.in
++++ b/erts/configure.in
+@@ -3843,7 +3843,7 @@ AC_SUBST(STATIC_KERBEROS_LIBS)
+ AC_SUBST(SSL_LINK_WITH_ZLIB)
+ AC_SUBST(STATIC_ZLIB_LIBS)
+ 
+-std_ssl_locations="/usr/local /usr/sfw /usr /opt/local /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
++std_ssl_locations="/usr/local /usr/sfw /opt/local /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
+ 
+ AC_ARG_WITH(ssl-zlib,
+ AS_HELP_STRING([--with-ssl-zlib=PATH],
+-- 
+2.7.4
+

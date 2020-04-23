@@ -1,0 +1,12 @@
+diff --git a/lib/puppet/provider/service/systemd.rb b/lib/puppet/provider/service/systemd.rb
+index a673550..faf7b7b 100644
+--- a/lib/puppet/provider/service/systemd.rb
++++ b/lib/puppet/provider/service/systemd.rb
+@@ -23,6 +23,7 @@ Puppet::Type.type(:service).provide :systemd, :parent => :base do
+   defaultfor :osfamily => :redhat, :operatingsystem => :fedora
+   defaultfor :osfamily => :suse
+   defaultfor :operatingsystem => :debian, :operatingsystemmajrelease => "8"
++  defaultfor :operatingsystem => :"poky-stx",   :operatingsystemmajrelease => ["2"]
+   defaultfor :operatingsystem => :ubuntu, :operatingsystemmajrelease => ["15.04","15.10","16.04","16.10"]
+   defaultfor :operatingsystem => :cumuluslinux, :operatingsystemmajrelease => ["3"]
+ 

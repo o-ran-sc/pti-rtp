@@ -1,0 +1,30 @@
+diff --git a/manifests/extras.pp b/manifests/extras.pp
+index 14f88a7..3d20115 100644
+--- a/manifests/extras.pp
++++ b/manifests/extras.pp
+@@ -107,6 +107,7 @@ class puppi::extras {
+   $packages_run = $::operatingsystem ? {
+     /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => [ 'yum repolist' , 'rpm -qa' ] ,
+     /(?i:Debian|Ubuntu|Mint)/                    => [ 'apt-config dump' , 'apt-cache stats' , 'apt-key list' , 'dpkg -l' ],
++    /(?i:poky-stx)/                              => [ 'rpm -qa' ] ,
+     /(Solaris)/                                  => [ 'pkginfo' ],
+     /(Archlinux)/                                => [ 'pacman -Qet' ],
+     default                                      => [ 'echo' ],
+diff --git a/manifests/params.pp b/manifests/params.pp
+index e236fb4..9fc34a1 100644
+--- a/manifests/params.pp
++++ b/manifests/params.pp
+@@ -74,11 +74,13 @@ class puppi::params  {
+   $info_package_query = $::operatingsystem ? {
+     /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => 'rpm -qi',
+     /(?i:Ubuntu|Debian|Mint)/          => 'dpkg -s',
++    /(?i:poky-stx)/                              => 'rpm -qi' ,
+     default                    => 'echo',
+   }
+   $info_package_list = $::operatingsystem ? {
+     /(?i:RedHat|CentOS|Scientific|Amazon|Linux)/ => 'rpm -ql',
+     /(?i:Ubuntu|Debian|Mint)/                    => 'dpkg -L',
++    /(?i:poky-stx)/                              => 'rpm -ql',
+     default                                      => 'echo',
+   }
+   $info_service_check = $::operatingsystem ? {

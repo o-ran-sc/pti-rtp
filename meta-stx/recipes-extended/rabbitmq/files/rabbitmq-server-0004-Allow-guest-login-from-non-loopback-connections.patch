@@ -1,0 +1,18 @@
+From: John Eckersberg <jeckersb@redhat.com>
+Date: Thu, 30 Oct 2014 14:01:08 -0400
+Subject: [PATCH] Allow guest login from non-loopback connections
+
+
+diff --git a/src/rabbit.app.src b/src/rabbit.app.src
+index 572c1f6..4676e03 100644
+--- a/src/rabbit.app.src
++++ b/src/rabbit.app.src
+@@ -39,7 +39,7 @@
+          {default_user_tags, [administrator]},
+          {default_vhost, <<"/">>},
+          {default_permissions, [<<".*">>, <<".*">>, <<".*">>]},
+-         {loopback_users, [<<"guest">>]},
++         {loopback_users, []},
+          {password_hashing_module, rabbit_password_hashing_sha256},
+          {cluster_nodes, {[], disc}},
+          {server_properties, []},

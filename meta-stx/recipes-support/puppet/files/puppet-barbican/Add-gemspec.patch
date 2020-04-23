@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-23 20:19:32.602763995 -0700
++++ b/puppet-barbican.gemspec	2019-10-28 13:33:43.108639914 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-barbican'
++  s.version     = '11.3.0'
++  s.date        = '2017-08-21'
++  s.summary     = "Puppet module for OpenStack Barbican"
++  s.description = s.summary
++  s.authors     = ["Puppet Labs"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://launchpad.net/puppet-barbican'
++  s.license     = 'Apache 2.0'
++ end

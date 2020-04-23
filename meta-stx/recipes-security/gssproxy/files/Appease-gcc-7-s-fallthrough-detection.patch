@@ -1,0 +1,27 @@
+From f62ece3a9655c6507f40e03a36e28ecbba16f744 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Fri, 19 May 2017 12:18:03 -0400
+Subject: [PATCH] Appease gcc-7's fallthrough detection
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #188
+(cherry picked from commit fdb56f8a0b6a5fd6a2072a525e228596c264883e)
+---
+ proxy/src/gp_export.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/proxy/src/gp_export.c b/proxy/src/gp_export.c
+index 3a927c9..f44da50 100644
+--- a/proxy/src/gp_export.c
++++ b/proxy/src/gp_export.c
+@@ -888,7 +888,8 @@ static uint32_t gp_export_creds_linux(uint32_t *min, gss_name_t name,
+         if (res != NULL) {
+             break;
+         }
+-        /* fall through as ret == NULL is equivalent to ENOENT */
++        /* ret == NULL is equivalent to ENOENT */
++        /* fall through */
+     case ENOENT:
+     case ESRCH:
+         free(pwbuf);

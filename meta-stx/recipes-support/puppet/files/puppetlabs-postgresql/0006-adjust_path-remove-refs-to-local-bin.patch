@@ -1,0 +1,26 @@
+diff --git a/manifests/params.pp b/manifests/params.pp
+index 20f91ef..a894736 100644
+--- a/manifests/params.pp
++++ b/manifests/params.pp
+@@ -298,7 +298,7 @@ class postgresql::params inherits postgresql::globals {
+     }
+   }
+ 
+-  $validcon_script_path = pick($validcon_script_path, '/usr/local/bin/validate_postgresql_connection.sh')
++  $validcon_script_path = pick($validcon_script_path, '/usr/bin/validate_postgresql_connection.sh')
+   $initdb_path          = pick($initdb_path, "${bindir}/initdb")
+   $pg_hba_conf_path     = pick($pg_hba_conf_path, "${confdir}/pg_hba.conf")
+   $pg_hba_conf_defaults = pick($pg_hba_conf_defaults, true)
+diff --git a/spec/unit/defines/validate_db_connection_spec.rb b/spec/unit/defines/validate_db_connection_spec.rb
+index c7406dc..02adc04 100644
+--- a/spec/unit/defines/validate_db_connection_spec.rb
++++ b/spec/unit/defines/validate_db_connection_spec.rb
+@@ -34,7 +34,7 @@ describe 'postgresql::validate_db_connection', :type => :define do
+ 
+     it 'should have proper path for validate command' do
+       is_expected.to contain_exec('validate postgres connection for test@test:5432/test').with({
+-        :unless => %r'^/usr/local/bin/validate_postgresql_connection.sh\s+\d+'
++        :unless => %r'^/usr/bin/validate_postgresql_connection.sh\s+\d+'
+       })
+     end
+   end

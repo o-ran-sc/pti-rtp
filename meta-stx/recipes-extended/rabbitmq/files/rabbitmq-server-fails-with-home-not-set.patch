@@ -1,0 +1,26 @@
+From 8141695bdab69d5abd4ae0611c35436840da3c07 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sat, 21 Mar 2020 23:39:01 +0800
+Subject: [PATCH] rabbitmqctl: set HOME variable for stx bootstrap
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ scripts/rabbitmqctl | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/scripts/rabbitmqctl b/scripts/rabbitmqctl
+index 2336c3d..430f4a3 100755
+--- a/scripts/rabbitmqctl
++++ b/scripts/rabbitmqctl
+@@ -24,6 +24,8 @@ if [ -z "$ERL_CRASH_DUMP_SECONDS" ]; then
+     export ERL_CRASH_DUMP_SECONDS=0
+ fi
+ 
++export HOME
++
+ # We specify Mnesia dir and sasl error logger since some actions
+ # (e.g. forget_cluster_node --offline) require us to impersonate the
+ # real node.
+-- 
+2.7.4
+

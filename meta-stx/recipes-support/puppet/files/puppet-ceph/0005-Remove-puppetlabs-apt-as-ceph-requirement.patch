@@ -1,0 +1,29 @@
+From 8875f0dfb30856ba9d2d629dc3c55d304537ad72 Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Mon, 28 Oct 2019 14:38:12 -0700
+Subject: [PATCH] Remove puppetlabs-apt as ceph requirement
+
+STX patch ported from 8ab55c717d5088d8c75b465f5b9196036e0968ce
+We will never install apt or puppet-apt, so this requirement cannot be fulfilled
+---
+ metadata.json | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/metadata.json b/metadata.json
+index a760f1c..5997e16 100644
+--- a/metadata.json
++++ b/metadata.json
+@@ -47,10 +47,6 @@
+     ],
+     "description": "Installs and configures Ceph.",
+     "dependencies": [
+-        {
+-            "name": "puppetlabs/apt",
+-            "version_requirement": ">=2.0.0 <3.0.0"
+-        },
+         {
+             "name": "puppetlabs/apache",
+             "version_requirement": ">=1.4.1 <2.0.0"
+-- 
+2.17.1
+

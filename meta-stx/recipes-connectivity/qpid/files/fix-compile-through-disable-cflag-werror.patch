@@ -1,0 +1,12 @@
+diff -urN qpidc-0.20.orig/configure.ac qpidc-0.20/configure.ac
+--- qpidc-0.20.orig/configure.ac	2019-08-19 13:36:13.592214698 +0800
++++ qpidc-0.20/configure.ac	2019-08-19 13:36:29.160214501 +0800
+@@ -75,7 +75,7 @@
+ 	# Can't test for -Werror as whether it fails or not depends on what's in
+ 	# CFLAGS/CXXFLAGS. In any case it's been in gcc for a long time (since 2.95 at least)
+ 	if test "${enableval}" = yes; then
+-        COMPILER_FLAGS="-Werror"
++        COMPILER_FLAGS=""
+ 	    gl_COMPILER_FLAGS(-pedantic)
+ 	    gl_COMPILER_FLAGS(-Wall)
+ 	    gl_COMPILER_FLAGS(-Wextra)

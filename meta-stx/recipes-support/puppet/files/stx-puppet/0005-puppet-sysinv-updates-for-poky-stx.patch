@@ -1,0 +1,44 @@
+diff --git a/modules/puppet-sysinv/src/sysinv/manifests/params.pp b/modules/puppet-sysinv/src/sysinv/manifests/params.pp
+index 438aa37..9fc72e9 100644
+--- a/modules/puppet-sysinv/src/sysinv/manifests/params.pp
++++ b/modules/puppet-sysinv/src/sysinv/manifests/params.pp
+@@ -21,15 +21,30 @@ class sysinv::params {
+   $sysinv_paste_api_ini = '/etc/sysinv/api-paste.ini'
+ 
+   if $::osfamily == 'Debian' {
+-    $package_name       = 'sysinv'
+-    $client_package     = 'cgtsclient'
+-    $api_package        = 'sysinv'
+-    $api_service        = 'sysinv-api'
+-    $conductor_package  = 'sysinv'
+-    $conductor_service  = 'sysinv-conductor'
+-    $agent_package      = 'sysinv'
+-    $agent_service      = 'sysinv-agent'
+-    $db_sync_command    = 'sysinv-dbsync'
++    if $::operatingsystem == 'poky-stx' {
++
++      $package_name       = 'sysinv'
++      $client_package     = 'cgts-client'
++      $api_package        = false
++      $api_service        = 'sysinv-api'
++      $conductor_package  = false
++      $conductor_service  = 'sysinv-conductor'
++      $agent_package      = 'sysinv-agent'
++      $agent_service      = 'sysinv-agent'
++      $db_sync_command    = 'sysinv-dbsync'
++
++    } else {
++
++      $package_name       = 'sysinv'
++      $client_package     = 'cgtsclient'
++      $api_package        = 'sysinv'
++      $api_service        = 'sysinv-api'
++      $conductor_package  = 'sysinv'
++      $conductor_service  = 'sysinv-conductor'
++      $agent_package      = 'sysinv'
++      $agent_service      = 'sysinv-agent'
++      $db_sync_command    = 'sysinv-dbsync'
++    }
+ 
+   } elsif($::osfamily == 'RedHat') {
+ 

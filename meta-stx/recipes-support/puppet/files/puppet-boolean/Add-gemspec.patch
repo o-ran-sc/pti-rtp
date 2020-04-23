@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppet-boolean.gemspec	2019-10-30 08:37:38.629069755 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-boolean'
++  s.version     = '1.0.1'
++  s.date        = '2013-08-14'
++  s.summary     = "Boolean normalizing property for Puppet types."
++  s.description = s.summary
++  s.authors     = ["Vox Pupuli"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.markdown Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/voxpupuli/puppet-boolean'
++  s.license     = 'Apache 2.0'
++ end

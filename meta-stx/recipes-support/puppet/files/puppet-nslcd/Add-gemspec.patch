@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppet-nslcd.gemspec	2019-10-30 21:26:00.013491029 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-nslcd'
++  s.version     = '0.0.1'
++  s.date        = '2015-01-26'
++  s.summary     = "Manages the nslcd daemon"
++  s.description = s.summary
++  s.authors     = ["Johan Lyheden"]
++  s.email       = ''
++  s.files       = %w(Modulefile README.markdown ) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/adrienthebo/puppet-filemapper'
++  s.license     = 'Apache 2.0'
++ end

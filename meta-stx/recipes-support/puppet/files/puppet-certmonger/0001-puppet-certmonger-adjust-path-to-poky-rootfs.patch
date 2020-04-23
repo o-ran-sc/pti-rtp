@@ -1,0 +1,25 @@
+From c513b8d9591740bac5cdbb240853700971eb7c62 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Sat, 7 Mar 2020 00:38:52 -0800
+Subject: [PATCH] puppet-certmonger: adjust path to poky rootfs
+
+---
+ manifests/scripts.pp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/manifests/scripts.pp b/manifests/scripts.pp
+index d53eacb..54945b6 100644
+--- a/manifests/scripts.pp
++++ b/manifests/scripts.pp
+@@ -15,7 +15,7 @@ class certmonger::scripts (
+     mode   => '0755',
+     source => 'puppet:///modules/certmonger/verify_certmonger_request.sh',
+   }
+-  file { '/usr/local/bin/change-perms-restart':
++  file { '/usr/bin/change-perms-restart':
+     ensure => 'present',
+     owner  => 'root',
+     group  => 'root',
+-- 
+2.23.0
+

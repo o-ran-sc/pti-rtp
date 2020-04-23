@@ -1,0 +1,35 @@
+From 223013ada4792ab0d8f9b02c89aa139969f99a97 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Sun, 29 Dec 2019 21:41:38 -0800
+Subject: [PATCH] barbican: fix path to find configuration files
+
+From 3364915002aa2deaf63841e338375648e5dc8f24 Mon Sep 17 00:00:00 2001
+From: Keith Holman <Keith.Holman@windriver.com>
+Date: Fri, 13 Jun 2014 13:46:04 -0400
+
+Barbican attempts to find configuration files for tests based on where
+the files are located within the source tree.  On deployment,
+configuration files are installed to a directory specified by a build
+recipe.  This fix updates the location for the configuration files
+with an identifier that is replaced during deployment.
+---
+ barbican/tests/api/test_resources_policy.py | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/barbican/tests/api/test_resources_policy.py b/barbican/tests/api/test_resources_policy.py
+index 37a1630f..d9bd9d72 100644
+--- a/barbican/tests/api/test_resources_policy.py
++++ b/barbican/tests/api/test_resources_policy.py
+@@ -37,8 +37,7 @@ from barbican.tests import utils
+ 
+ 
+ # Point to the policy.json file located in source control.
+-TEST_VAR_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
+-                                            '../../../etc', 'barbican'))
++TEST_VAR_DIR = "%BARBICAN_CONF_DIR%"
+ 
+ CONF = config.new_config()
+ 
+-- 
+2.23.0
+

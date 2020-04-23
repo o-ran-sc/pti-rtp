@@ -1,0 +1,32 @@
+From b619d111a63d83b4d4bfa3f2c6c28cbd94ba874b Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sat, 11 Apr 2020 21:55:08 +0800
+Subject: [PATCH] fix for LIBPYTHON_LDFLAGS
+
+There is bug in oe-core's python-native that sysconfig module cat not
+get the correct Py_ENABLE_SHARED, which causes the "python-config --ldflags"
+add the prefix/lib/pythonX.Y/config dir which is the static lib dir,
+here is a workarond to remove the dir, we may need to fix the issue
+in oe-core later.
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index b5f8e87..8a2d04f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -4641,7 +4641,7 @@ if test "$PYTHON_CONFIG" != ""; then
+   if test $? -ne 0; then
+     with_libpython="no"
+   fi
+-  LIBPYTHON_LDFLAGS="`${PYTHON_CONFIG} --ldflags`"
++  LIBPYTHON_LDFLAGS="`${PYTHON_CONFIG} --ldflags|sed 's/-L.*config //'`"
+   if test $? -ne 0; then
+     with_libpython="no"
+   fi
+-- 
+2.7.4
+

@@ -1,0 +1,16 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/metadata.json	2019-10-31 14:52:09.693312689 -0700
+@@ -0,0 +1,13 @@
++{
++  "name": "jlyheden-nslcd",
++  "version": "0.0.1",
++  "author": "John Lyheden",
++  "summary": "Manages the nslcd daemon.",
++  "license": "Apache-2.0",
++  "source": "git://github.com/jlyheden/puppet-nslcd",
++  "project_page": "https://github.com/jlyheden/puppet-nslcd",
++  "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
++  "dependencies": [
++  	{"name":"puppetlabs/stdlib","version_requirement":">= 2.6.0 < 5.0.0"}
++  ]
++}

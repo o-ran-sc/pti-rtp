@@ -1,0 +1,23 @@
+From e00a8a4ad31c696d2f5dc866f178af0a9f987c12 Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Tue, 9 Jul 2019 13:35:35 -0700
+Subject: [PATCH] mtce-control dont install empty directory unless needed
+
+---
+ mtce-control/src/Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/mtce-control/src/Makefile b/mtce-control/src/Makefile
+index aaa3de7..cb225ce 100755
+--- a/mtce-control/src/Makefile
++++ b/mtce-control/src/Makefile
+@@ -27,6 +27,3 @@ install:
+ 	# Controller-Only Heartbeat Service file
+ 	install -m 644 -p -D scripts/$(SOURCE5) $(buildroot)/$(_unitdir)/hbsAgent.service
+ 
+-	# Controller-Only Go Enabled Test
+-	install -m 755 -d $(buildroot)/$(local_etc_goenabledd)
+-
+-- 
+2.17.1
+

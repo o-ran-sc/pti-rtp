@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppet-network.gemspec	2019-10-30 21:12:14.606035966 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-network'
++  s.version     = '0.5.0'
++  s.date        = '2015-06-03'
++  s.summary     = "Manage non-volatile network configuration"
++  s.description = s.summary
++  s.authors     = ["Adrien Thebo <adrien@somethingsinistral.net>"]
++  s.email       = ''
++  s.files       = %w(Modulefile README.markdown Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/adrienthebo/puppet-network'
++  s.license     = 'Apache 2.0'
++ end

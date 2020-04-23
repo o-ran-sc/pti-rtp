@@ -1,0 +1,59 @@
+From 32578afb817f20446d888326814b52a8f3d6c0fe Mon Sep 17 00:00:00 2001
+From: Simo Sorce <simo@redhat.com>
+Date: Thu, 26 Oct 2017 16:59:18 -0400
+Subject: [PATCH] Do not call gpm_grab_sock() twice
+
+In the gpm_get_ctx() call, we unnecessarily call gpm_grab_sock() which
+would cause the lock to be held by one thread and never released.  We
+already call gpm_grab_sock() as the first thing after gpm_get_ctx() in
+gpm_make_call(), plus gpm_make_call() properly releases the socket
+once done.
+
+This corrects the deadlock fix in
+461a5fa9f91a2753ebeef6323a64239c35e2f250, which incorrectly released
+the lock we wanted to grab.  This caused the socket to not be locked
+to our thread.  Another thread could come along and change the global
+ctx while we were still using the socket from another thread, causing
+concurrency issues as only one request can be in flight on any given
+socket at the same time.
+
+In special cases where the "thread" uid/gid changes (like in
+rpc.gssd), we end up closing the socket while we are still waiting for
+an answer from the server, causing additional issues and confusion.
+
+[rharwood@redhat.com: squashed 2 commits; minor edits accordingly]
+Signed-off-by: Simo Sorce <simo@redhat.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+Merges: #218
+(cherry picked from commit 8590c5dbc6fa07d0c366df23b982a4b6b9ffc259)
+---
+ proxy/src/client/gpm_common.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/proxy/src/client/gpm_common.c b/proxy/src/client/gpm_common.c
+index 69f4741..2133618 100644
+--- a/proxy/src/client/gpm_common.c
++++ b/proxy/src/client/gpm_common.c
+@@ -152,7 +152,9 @@ static int gpm_grab_sock(struct gpm_ctx *gpmctx)
+         ret = gpm_open_socket(gpmctx);
+     }
+ 
+-    pthread_mutex_unlock(&gpmctx->lock);
++    if (ret) {
++        pthread_mutex_unlock(&gpmctx->lock);
++    }
+     return ret;
+ }
+ 
+@@ -304,11 +306,6 @@ static struct gpm_ctx *gpm_get_ctx(void)
+ 
+     pthread_once(&gpm_init_once_control, gpm_init_once);
+ 
+-    ret = gpm_grab_sock(&gpm_global_ctx);
+-    if (ret) {
+-        return NULL;
+-    }
+-
+     return &gpm_global_ctx;
+ }
+ 

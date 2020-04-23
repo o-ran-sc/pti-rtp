@@ -1,0 +1,36 @@
+From bff4cd71cc41bf3104b35da24e73742571845ebd Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Wed, 11 Dec 2019 19:43:19 -0800
+
+---
+ plugins/sudoers/ldap.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/plugins/sudoers/ldap.c b/plugins/sudoers/ldap.c
+index bc2baec..ad8a890 100644
+--- a/plugins/sudoers/ldap.c
++++ b/plugins/sudoers/ldap.c
+@@ -920,8 +920,8 @@ sudo_ldap_build_pass1(LDAP *ld, struct passwd *pw)
+     if (ldap_conf.search_filter)
+ 	sz += strlen(ldap_conf.search_filter);
+ 
+-    /* Then add (|(sudoUser=USERNAME)(sudoUser=ALL)) + NUL */
+-    sz += 29 + sudo_ldap_value_len(pw->pw_name);
++    /* Then add (|(sudoUser=USERNAME)(sudoUser=#uid)(sudoUser=ALL)) + NUL */
++    sz += 29 + (12 + MAX_UID_T_LEN) + sudo_ldap_value_len(pw->pw_name);
+ 
+     /* Add space for primary and supplementary groups and gids */
+     if ((grp = sudo_getgrgid(pw->pw_gid)) != NULL) {
+@@ -982,6 +982,12 @@ sudo_ldap_build_pass1(LDAP *ld, struct passwd *pw)
+     CHECK_LDAP_VCAT(buf, pw->pw_name, sz);
+     CHECK_STRLCAT(buf, ")", sz);
+ 
++    /* Append user uid */
++    (void) snprintf(gidbuf, sizeof(gidbuf), "%u", (unsigned int)pw->pw_uid);
++    (void) strlcat(buf, "(sudoUser=#", sz);
++    (void) strlcat(buf, gidbuf, sz);
++    (void) strlcat(buf, ")", sz);
++
+     /* Append primary group and gid */
+     if (grp != NULL) {
+ 	CHECK_STRLCAT(buf, "(sudoUser=%", sz);

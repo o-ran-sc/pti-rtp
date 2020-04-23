@@ -1,0 +1,148 @@
+From 20ddb6f200f61332ff43aca7ad9421303d0a3138 Mon Sep 17 00:00:00 2001
+From: Simo Sorce <simo@redhat.com>
+Date: Thu, 25 May 2017 15:22:37 -0400
+Subject: [PATCH] Add Client ID to debug messages
+
+This allows to sort out which debug message belongs to which client when
+multiple clients are preforming operations at the same time.
+
+Signed-off-by: Simo Sorce <simo@redhat.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+
+Resolves: #189
+Merges: #191
+(cherry picked from commit 2f158fe4d39c11589d214d3d602c6d10411052dc)
+---
+ proxy/src/gp_debug.c   | 28 +++++++++++++++++++++++++++-
+ proxy/src/gp_debug.h   |  1 +
+ proxy/src/gp_proxy.h   |  1 +
+ proxy/src/gp_socket.c  |  5 +++++
+ proxy/src/gp_workers.c |  6 ++++++
+ proxy/src/gssproxy.c   |  4 ++++
+ 6 files changed, 44 insertions(+), 1 deletion(-)
+
+diff --git a/proxy/src/gp_debug.c b/proxy/src/gp_debug.c
+index 3029574..4a141fc 100644
+--- a/proxy/src/gp_debug.c
++++ b/proxy/src/gp_debug.c
+@@ -64,6 +64,32 @@ const char *gp_debug_timestamp(void)
+     return buffer;
+ }
+ 
++/* thread local connection/client id */
++static __thread int cid;
++
++void gp_debug_set_conn_id(int id)
++{
++    cid = id;
++}
++
++static const char*gp_debug_conn_id(void)
++{
++    static __thread char buffer[18];
++    static __thread int last_cid = 0;
++
++    if (cid == 0) {
++        buffer[0] = '\0';
++        return buffer;
++    }
++
++    if (last_cid == cid) return buffer;
++
++    (void)snprintf(buffer, 17, "[CID %d]", cid);
++    buffer[17] = '\0';
++    last_cid = cid;
++    return buffer;
++}
++
+ void gp_debug_printf(const char *format, ...)
+ {
+     va_list varargs;
+@@ -76,7 +102,7 @@ void gp_debug_time_printf(const char *format, ...)
+ {
+     va_list varargs;
+ 
+-    fprintf(stderr, "%s", gp_debug_timestamp());
++    fprintf(stderr, "%s%s", gp_debug_conn_id(), gp_debug_timestamp());
+ 
+     va_start(varargs, format);
+     vfprintf(stderr, format, varargs);
+diff --git a/proxy/src/gp_debug.h b/proxy/src/gp_debug.h
+index d3420b0..1c2f8a3 100644
+--- a/proxy/src/gp_debug.h
++++ b/proxy/src/gp_debug.h
+@@ -14,6 +14,7 @@ int gp_debug_args(int level);
+ void gp_debug_toggle(int);
+ void gp_debug_printf(const char *format, ...);
+ void gp_debug_time_printf(const char *format, ...);
++void gp_debug_set_conn_id(int id);
+ 
+ #define GPDEBUG(...) do { \
+     if (gp_debug) { \
+diff --git a/proxy/src/gp_proxy.h b/proxy/src/gp_proxy.h
+index 971a7b6..55ab83c 100644
+--- a/proxy/src/gp_proxy.h
++++ b/proxy/src/gp_proxy.h
+@@ -113,6 +113,7 @@ void gp_socket_send_data(verto_ctx *vctx, struct gp_conn *conn,
+ struct gp_creds *gp_conn_get_creds(struct gp_conn *conn);
+ uid_t gp_conn_get_uid(struct gp_conn *conn);
+ const char *gp_conn_get_socket(struct gp_conn *conn);
++int gp_conn_get_cid(struct gp_conn *conn);
+ bool gp_selinux_ctx_equal(SELINUX_CTX ctx1, SELINUX_CTX ctx2);
+ bool gp_conn_check_selinux(struct gp_conn *conn, SELINUX_CTX ctx);
+ 
+diff --git a/proxy/src/gp_socket.c b/proxy/src/gp_socket.c
+index 29b6a44..5064e51 100644
+--- a/proxy/src/gp_socket.c
++++ b/proxy/src/gp_socket.c
+@@ -103,6 +103,11 @@ const char *gp_conn_get_socket(struct gp_conn *conn)
+     return conn->sock_ctx->socket;
+ }
+ 
++int gp_conn_get_cid(struct gp_conn *conn)
++{
++    return conn->us.sd;
++}
++
+ void gp_conn_free(struct gp_conn *conn)
+ {
+     if (!conn) return;
+diff --git a/proxy/src/gp_workers.c b/proxy/src/gp_workers.c
+index c089b54..d37e57c 100644
+--- a/proxy/src/gp_workers.c
++++ b/proxy/src/gp_workers.c
+@@ -357,6 +357,9 @@ static void *gp_worker_main(void *pvt)
+ 
+     while (!t->pool->shutdown) {
+ 
++        /* initialize debug client id to 0 until work is scheduled */
++        gp_debug_set_conn_id(0);
++
+         /* ======> COND_MUTEX */
+         pthread_mutex_lock(&t->cond_mutex);
+         while (t->query == NULL) {
+@@ -374,6 +377,9 @@ static void *gp_worker_main(void *pvt)
+         /* <====== COND_MUTEX */
+         pthread_mutex_unlock(&t->cond_mutex);
+ 
++        /* set client id before hndling requests */
++        gp_debug_set_conn_id(gp_conn_get_cid(q->conn));
++
+         /* handle the client request */
+         gp_handle_query(t->pool, q);
+ 
+diff --git a/proxy/src/gssproxy.c b/proxy/src/gssproxy.c
+index 5c5937d..94a6a61 100644
+--- a/proxy/src/gssproxy.c
++++ b/proxy/src/gssproxy.c
+@@ -159,6 +159,10 @@ int main(int argc, const char *argv[])
+     int wait_fd;
+     int ret = -1;
+ 
++    /* initialize debug client id to 0 in the main thread */
++    /* we do this early, before any code starts using debug statements */
++    gp_debug_set_conn_id(0);
++
+     struct poptOption long_options[] = {
+         POPT_AUTOHELP
+         {"daemon", 'D', POPT_ARG_NONE, &opt_daemon, 0, \

@@ -1,0 +1,12 @@
+diff -ru a/manifests/config.pp b/manifests/config.pp
+--- a/manifests/config.pp	2020-03-05 15:10:18.442100317 +0800
++++ b/manifests/config.pp	2020-03-05 15:10:31.086100661 +0800
+@@ -170,7 +170,7 @@
+ 
+   case $::osfamily {
+     'Debian': {
+-      if versioncmp($::operatingsystemmajrelease, '16.04') >= 0 {
++      if versioncmp($::operatingsystemmajrelease, '16.04') >= 0 or $::operatingsystem == 'poky-stx' {
+         file { '/etc/systemd/system/rabbitmq-server.service.d':
+           ensure                  => directory,
+           owner                   => '0',

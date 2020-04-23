@@ -1,0 +1,19 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/metadata.json	2019-10-31 13:07:35.519435748 -0700
+@@ -0,0 +1,16 @@
++{
++  "name": "adrien-network",
++  "version": "0.5.0",
++  "author": "Adrien Tehbo <adrien@somethingsinistral.net>",
++  "summary": "Manage non-volatile network configuration",
++  "license": "Apache-2.0",
++  "source": "https://github.com/adrienthebo/puppet-network",
++  "project_page": "https://github.com/adrienthebo/puppet-network",
++  "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
++  "dependencies": [
++  	{"name":"puppetlabs/stdlib","version_requirement":">= 2.3.0 < 5.0.0"},
++	{"name":"adrien/filemapper","version_requirement":">= 1.1.0 < 5.0.0"},
++	{"name":"adrien/boolean","version_requirement":">= 1.0.0"},
++	{"name":"camptocamp/kmod","version_requirement":">= 0.0.x"}
++  ]
++}

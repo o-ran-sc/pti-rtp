@@ -1,0 +1,26 @@
+From dfce3cde414089af920d60b0aa3e922137474cfe Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sat, 14 Mar 2020 10:50:02 +0800
+Subject: [PATCH] init.pp: do not check the apt resource
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ manifests/init.pp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/manifests/init.pp b/manifests/init.pp
+index 7808464..9f3f55e 100644
+--- a/manifests/init.pp
++++ b/manifests/init.pp
+@@ -127,7 +127,7 @@ class rabbitmq(
+     warning('$manage_repos is now deprecated. Please use $repos_ensure instead')
+   }
+ 
+-  if $manage_repos != false {
++  if $repos_ensure != false {
+     case $::osfamily {
+       'RedHat', 'SUSE': {
+           include '::rabbitmq::repo::rhel'
+-- 
+2.7.4
+

@@ -1,0 +1,46 @@
+diff -ru a/manifests/globals.pp b/manifests/globals.pp
+--- a/manifests/globals.pp	2020-03-04 10:59:33.651335723 +0800
++++ b/manifests/globals.pp	2020-03-04 11:00:13.407336807 +0800
+@@ -94,6 +94,10 @@
+         /^(16.04)$/ => '9.5',
+         default => undef,
+       },
++      'poky-stx' => $::operatingsystemrelease ? {
++        /^2\./ => '11.5',
++        default => undef,
++      },
+       default => undef,
+     },
+     'Archlinux' => $::operatingsystem ? {
+@@ -136,6 +140,7 @@
+     '9.4'   => '2.1',
+     '9.5'   => '2.2',
+     '9.6'   => '2.3',
++    '11.5'   => '2.5',
+     default => undef,
+   }
+   $globals_postgis_version = $postgis_version ? {
+diff -ru a/manifests/params.pp b/manifests/params.pp
+--- a/manifests/params.pp	2020-03-04 10:59:33.651335723 +0800
++++ b/manifests/params.pp	2020-03-04 10:59:42.423335963 +0800
+@@ -166,6 +166,8 @@
+       } elsif $::operatingsystem == 'Ubuntu' and versioncmp($::operatingsystemrelease, '15.04') >= 0 {
+         # Ubuntu releases since vivid use systemd
+         $service_status = pick($service_status, "/usr/sbin/service ${service_name} status")
++      } elsif $::operatingsystem == 'poky-stx' {
++        $service_status = "systemctl is-active ${service_name}"
+       } else {
+         $service_status = pick($service_status, "/etc/init.d/${service_name} status | /bin/egrep -q 'Running clusters: .+|online'")
+       }
+diff -ru a/templates/systemd-override.erb b/templates/systemd-override.erb
+--- a/templates/systemd-override.erb	2020-03-04 10:59:33.735335726 +0800
++++ b/templates/systemd-override.erb	2020-03-04 10:59:42.423335963 +0800
+@@ -2,6 +2,8 @@
+ .include /usr/lib64/systemd/system/<%= @service_name %>.service
+ <%- elsif scope.lookupvar('::operatingsystem') == 'Fedora' -%>
+ .include /lib/systemd/system/<%= @service_name %>.service
++<%- elsif scope.lookupvar('::operatingsystem') == 'poky-stx' -%>
++.include /lib/systemd/system/<%= @service_name %>.service
+ <% else -%>
+ .include /usr/lib/systemd/system/<%= @service_name %>.service
+ <% end -%>

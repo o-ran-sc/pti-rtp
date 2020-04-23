@@ -1,0 +1,31 @@
+From e6a66a83233eead74daab6bfe0390c70989ea110 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Tue, 24 Mar 2020 14:47:02 -0700
+Subject: [PATCH] openembedded socket extconf: hardcode wide getaddr info
+
+From 9341293e71c03fe606edc9157bf1e13e3dd5b507
+Without this the socket extension doesn't build correctly
+---
+ ext/socket/extconf.rb | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/ext/socket/extconf.rb b/ext/socket/extconf.rb
+index 13937ac773..775d63335d 100644
+--- a/ext/socket/extconf.rb
++++ b/ext/socket/extconf.rb
+@@ -362,6 +362,12 @@ main(void)
+   return EXIT_FAILURE;
+ }
+ EOF
++
++
++# Ignore the actual result of the above test and assume that
++# everything is OK.
++getaddr_info_ok = true
++
+ if ipv6 and not getaddr_info_ok
+   abort <<EOS
+ 
+-- 
+2.23.0
+

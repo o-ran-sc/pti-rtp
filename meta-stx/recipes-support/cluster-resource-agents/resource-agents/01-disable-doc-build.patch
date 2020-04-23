@@ -1,0 +1,23 @@
+disable doc build
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 1769c6e..d66b2ae 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -37,7 +37,7 @@ RGMANAGER = with
+ endif
+ 
+ if BUILD_LINUX_HA
+-SUBDIRS	+= include heartbeat tools ldirectord doc
++SUBDIRS	+= include heartbeat tools ldirectord
+ LINUX_HA = without
+ else
+ LINUX_HA = with
+-- 
+1.8.3.1
+

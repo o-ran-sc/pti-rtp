@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppetlabs-stdlib.gemspec	2019-10-29 15:09:32.804637910 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppetlabs-stdlib'
++  s.version     = '4.18.0'
++  s.date        = '2017-08-10'
++  s.summary     = "Puppet Labs Standard Library module"
++  s.description = s.summary
++  s.authors     = ["Puppet Labs"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/puppetlabs/puppetlabs-stdlib'
++  s.license     = 'Apache 2.0'
++end

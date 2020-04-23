@@ -1,0 +1,16 @@
+###
+### StarlingX
+###     Release @STX_RELEASE@
+###
+
+OS="@OS@"
+SW_VERSION="@STX_RELEASE@"
+BUILD_TARGET="Host Installer"
+BUILD_TYPE="Formal"
+BUILD_ID="r/stx.@STX_ID@"
+
+JOB="STX_BUILD_@STX_ID@"
+BUILD_BY="starlingx.build@cengn.ca"
+BUILD_NUMBER="40"
+BUILD_HOST="starlingx_mirror"
+BUILD_DATE="@BUILD_DATE@ +0000"

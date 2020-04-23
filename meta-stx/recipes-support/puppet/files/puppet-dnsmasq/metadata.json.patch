@@ -1,0 +1,17 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/metadata.json	2019-10-31 12:11:57.326213149 -0700
+@@ -0,0 +1,14 @@
++{
++  "name": "puppet-dnsmasq",
++  "version": "1.1.0",
++  "author": "Javier Bertoli",
++  "summary": "Puppet module for dnsmasq.",
++  "license": "Apache-2.0",
++  "source": "https://github.com/netmanagers/puppet-dnsmasq",
++  "project_page": "http://www.netmanagers.com.ar",
++  "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
++  "dependencies": [
++  	{"name":"puppetlabs/stdlib","version_requirement":">= 4.1.0 < 5.0.0"},
++	{"name":"puppetlabs/concat","version_requirement":">= 1.1.0 < 5.0.0"}
++  ]
++}

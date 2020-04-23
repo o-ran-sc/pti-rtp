@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-23 20:19:32.602763995 -0700
++++ b/puppet-memcached.gemspec	2019-10-27 06:27:38.193407895 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-memcached'
++  s.version     = '3.0.2'
++  s.date        = '2017-05-10'
++  s.summary     = "Puppet memcached module"
++  s.description = s.summary
++  s.authors     = ["Puppet saz "]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/saz/puppet-memcached'
++  s.license     = 'Apache 2.0'
++ end

@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-23 20:19:32.602763995 -0700
++++ b/puppetlabs-firewall.gemspec	2019-10-28 13:27:42.249066706 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppetlabs-firewall'
++  s.version     = '1.8.2'
++  s.date        = '2017-01-09'
++  s.summary     = "Manages Firewalls such as iptables"
++  s.description = s.summary
++  s.authors     = ["Puppet Labs"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.markdown Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/puppetlabs/puppetlabs-firewall'
++  s.license     = 'Apache 2.0'
++ end

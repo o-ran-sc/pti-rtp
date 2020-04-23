@@ -1,0 +1,43 @@
+From 3e976dc2357aa7a6f9a0352ff2a82e7203f28fba Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Wed, 8 Jan 2020 15:54:44 -0800
+Subject: [PATCH] puppet-keystone: specify full path to openrc
+
+issue 48: keystone endpoints cannot be populated properly
+---
+ manifests/deps.pp | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/manifests/deps.pp b/manifests/deps.pp
+index 30c29528..d98154dd 100644
+--- a/manifests/deps.pp
++++ b/manifests/deps.pp
+@@ -63,18 +63,25 @@ class keystone::deps {
+   # The following resources need to be provisioned after the service is up.
+   Anchor['keystone::service::end']
+   -> Keystone_domain<||>
++  -> File['/etc/platform/openrc']
+   Anchor['keystone::service::end']
+   -> Keystone_endpoint<||>
++  -> File['/etc/platform/openrc']
+   Anchor['keystone::service::end']
+   -> Keystone_role<||>
++  -> File['/etc/platform/openrc']
+   Anchor['keystone::service::end']
+   -> Keystone_service<||>
++  -> File['/etc/platform/openrc']
+   Anchor['keystone::service::end']
+   -> Keystone_tenant<||>
++  -> File['/etc/platform/openrc']
+   Anchor['keystone::service::end']
+   -> Keystone_user<||>
++  -> File['/etc/platform/openrc']
+   Anchor['keystone::service::end']
+   -> Keystone_user_role<||>
++  -> File['/etc/platform/openrc']
+ 
+   # Installation or config changes will always restart services.
+   Anchor['keystone::install::end'] ~> Anchor['keystone::service::begin']
+-- 
+2.23.0
+

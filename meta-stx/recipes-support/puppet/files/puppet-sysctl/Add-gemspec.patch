@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/duritong-sysctl.gemspec	2019-10-31 10:26:28.088576478 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'duritong-sysctl'
++  s.version     = '0.0.11'
++  s.date        = '2015-06-05'
++  s.summary     = "This modules allows you to configure sysctl."
++  s.description = s.summary
++  s.authors     = ["duritong"]
++  s.email       = ''
++  s.files       = %w(README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/duritong/puppet-sysctl'
++  s.license     = 'GPL-2.0'
++ end

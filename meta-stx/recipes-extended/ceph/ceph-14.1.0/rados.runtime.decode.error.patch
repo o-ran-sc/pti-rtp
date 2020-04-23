@@ -1,0 +1,27 @@
+diff -Nurpd a/src/pybind/rados/rados.pyx b/src/pybind/rados/rados.pyx
+--- a/src/pybind/rados/rados.pyx	2020-04-11 17:15:00.793220981 -0700
++++ b/src/pybind/rados/rados.pyx	2020-04-11 17:18:32.536405851 -0700
+@@ -326,7 +326,10 @@ LIBRADOS_OPERATION_IGNORE_CACHE = _LIBRA
+ LIBRADOS_OPERATION_SKIPRWLOCKS = _LIBRADOS_OPERATION_SKIPRWLOCKS
+ LIBRADOS_OPERATION_IGNORE_OVERLAY = _LIBRADOS_OPERATION_IGNORE_OVERLAY
+ 
+-LIBRADOS_ALL_NSPACES = _LIBRADOS_ALL_NSPACES.decode('utf-8')
++if isinstance(_LIBRADOS_ALL_NSPACES, str):
++    LIBRADOS_ALL_NSPACES = _LIBRADOS_ALL_NSPACES
++else:
++    LIBRADOS_ALL_NSPACES = _LIBRADOS_ALL_NSPACES.decode('utf-8')
+ 
+ LIBRADOS_CREATE_EXCLUSIVE = _LIBRADOS_CREATE_EXCLUSIVE
+ LIBRADOS_CREATE_IDEMPOTENT = _LIBRADOS_CREATE_IDEMPOTENT
+diff --git a/src/pybind/rados/rados.pyx b/src/pybind/rados/rados.pyx
+index fe17620..beca5ae 100644
+--- a/src/pybind/rados/rados.pyx
++++ b/src/pybind/rados/rados.pyx
+@@ -555,6 +555,8 @@ def decode_cstr(val, encoding="utf-8"):
+     """
+     if val is None:
+         return None
++    if isinstance(val, str):
++        return val
+
+     return val.decode(encoding)

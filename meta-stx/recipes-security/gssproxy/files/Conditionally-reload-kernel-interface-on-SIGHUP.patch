@@ -1,0 +1,59 @@
+From 8a5ba5feb98ecc3c57ee865604799fc4e4a90c61 Mon Sep 17 00:00:00 2001
+From: Alexander Scheel <ascheel@redhat.com>
+Date: Mon, 26 Jun 2017 17:04:16 -0400
+Subject: [PATCH] Conditionally reload kernel interface on SIGHUP
+
+Signed-off-by: Alexander Scheel <ascheel@redhat.com>
+[rharwood@redhat.com: Simplified logic, rewrote commit message]
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+Resolves: #193
+Merges: #201
+(cherry picked from commit 938af94b8f33c227dcdd6a53ed42de418578d29d)
+---
+ proxy/src/gp_init.c  | 4 +++-
+ proxy/src/gssproxy.c | 3 +++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/proxy/src/gp_init.c b/proxy/src/gp_init.c
+index e69934d..6a2b047 100644
+--- a/proxy/src/gp_init.c
++++ b/proxy/src/gp_init.c
+@@ -145,6 +145,7 @@ void init_proc_nfsd(struct gp_config *cfg)
+     char buf[] = "1";
+     bool enabled = false;
+     int fd, ret;
++    static int poked = 0;
+ 
+     /* check first if any service enabled kernel support */
+     for (int i = 0; i < cfg->num_svcs; i++) {
+@@ -154,7 +155,7 @@ void init_proc_nfsd(struct gp_config *cfg)
+         }
+     }
+ 
+-    if (!enabled) {
++    if (!enabled || poked) {
+         return;
+     }
+ 
+@@ -173,6 +174,7 @@ void init_proc_nfsd(struct gp_config *cfg)
+                 LINUX_PROC_USE_GSS_PROXY_FILE, ret, gp_strerror(ret));
+     }
+ 
++    poked = 1;
+     close(fd);
+     if (ret != 0) {
+         goto fail;
+diff --git a/proxy/src/gssproxy.c b/proxy/src/gssproxy.c
+index 94a6a61..5fc4f8d 100644
+--- a/proxy/src/gssproxy.c
++++ b/proxy/src/gssproxy.c
+@@ -140,6 +140,9 @@ static void hup_handler(verto_ctx *vctx, verto_ev *ev UNUSED)
+         exit(ret);
+     }
+ 
++    /* conditionally reload kernel interface */
++    init_proc_nfsd(gpctx->config);
++
+     free_config(&old_config);
+ 
+     GPDEBUG("New config loaded successfully.\n");

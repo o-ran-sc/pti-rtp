@@ -1,0 +1,54 @@
+From e83427fbd1cca8f03adb9769c8c2ac260c5f6996 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 15 Apr 2020 09:49:34 +0800
+Subject: [PATCH] bringup_flock_services: use systmd for fminit and add retry
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../tasks/bringup_flock_services.yml               | 30 ++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/playbookconfig/src/playbooks/roles/bootstrap/bringup-essential-services/tasks/bringup_flock_services.yml b/playbookconfig/src/playbooks/roles/bootstrap/bringup-essential-services/tasks/bringup_flock_services.yml
+index 462e1c2..cc239ef 100644
+--- a/playbookconfig/src/playbooks/roles/bootstrap/bringup-essential-services/tasks/bringup_flock_services.yml
++++ b/playbookconfig/src/playbooks/roles/bootstrap/bringup-essential-services/tasks/bringup_flock_services.yml
+@@ -36,11 +36,31 @@
+       regexp: "bind_host=.*$"
+       replace: "bind_host={{ controller_floating_address }}"
+ 
+-  - name: Restart FM API and bring up FM Manager
+-    command: "{{ item }}"
+-    with_items:
+-      - /etc/init.d/fm-api restart
+-      - /etc/init.d/fminit start
++  - name: Restart FM API
++    systemd:
++      name: fm-api
++      state: restarted
++
++  - name: Wait 10s after Restart FM API
++    wait_for: timeout=10
++
++  - block:
++    - name: Bring up FM Manager
++      systemd:
++        name: fminit
++        state: started
++
++    rescue:
++      - name: FM Manager failed to start, wait 10s then retry
++        wait_for: timeout=10
++      - name: Retry to restart FM Manager
++        systemd:
++          name: fminit
++          state: restarted
++        register: result
++        until: result is not failed
++        retries: 5
++        delay: 10
+ 
+   - name: Bring up Maintenance Agent
+     command: /usr/lib/ocf/resource.d/platform/mtcAgent start
+-- 
+2.7.4
+

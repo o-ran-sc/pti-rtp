@@ -1,0 +1,25 @@
+From 5d23f7c297943f8ce89ace74f34c6c4ee0e87ee3 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Fri, 24 Jan 2020 14:33:20 -0800
+Subject: [PATCH] Cast size_t to int to silence gcc 8.3
+
+---
+ service-mgmt/sm/src/sm_cluster_hbs_info_msg.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/service-mgmt/sm/src/sm_cluster_hbs_info_msg.cpp b/service-mgmt/sm/src/sm_cluster_hbs_info_msg.cpp
+index ca91c18..cfb9034 100644
+--- a/service-mgmt/sm/src/sm_cluster_hbs_info_msg.cpp
++++ b/service-mgmt/sm/src/sm_cluster_hbs_info_msg.cpp
+@@ -182,7 +182,7 @@ void SmClusterHbsInfoMsg::_cluster_hbs_info_msg_received( int selobj, int64_t us
+             }
+             return;
+         }
+-        DPRINTFD("msg received %d bytes. buffer size %d", bytes_read, sizeof(msg));
++        DPRINTFD("msg received %d bytes. buffer size %d", bytes_read, (int)sizeof(msg));
+         if(size_of_msg_header > (unsigned int)bytes_read)
+         {
+             DPRINTFE("size not right, msg size %d, expected not less than %d",
+-- 
+2.23.0
+

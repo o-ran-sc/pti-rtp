@@ -1,0 +1,32 @@
+From f5a7c8b73de90a50c66d60824dea8b85d1acf15c Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Mon, 28 Oct 2019 14:47:58 -0700
+Subject: [PATCH] Update memcached dependency
+
+---
+ metadata.json | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/metadata.json b/metadata.json
+index 27843d7..d48c0c2 100644
+--- a/metadata.json
++++ b/metadata.json
+@@ -11,7 +11,7 @@
+         },
+         {
+             "name": "saz/memcached",
+-            "version_requirement": ">=2.0.2 <3.0.0"
++            "version_requirement": ">=2.0.2 <=3.0.2"
+         }
+     ],
+     "description": "Installs and configures OpenStack Horizon (Dashboard).",
+@@ -58,4 +58,4 @@
+     "source": "git://github.com/openstack/puppet-horizon.git",
+     "summary": "Puppet module for OpenStack Horizon",
+     "version": "11.5.0"
+-}
+\ No newline at end of file
++}
+-- 
+2.17.1
+

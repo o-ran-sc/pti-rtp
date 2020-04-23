@@ -1,0 +1,13 @@
+diff --git a/manifests/params.pp b/manifests/params.pp
+index d050723..0f167e4 100644
+--- a/manifests/params.pp
++++ b/manifests/params.pp
+@@ -29,7 +29,7 @@ class nslcd::params {
+   # To add support for other distributions simply add
+   # it here
+   case $::operatingsystem {
+-    'Ubuntu','Debian': {
++    'Ubuntu','Debian', 'poky-stx': {
+       $user = 'nslcd'
+       $group = 'nslcd'
+       $package = 'nslcd'

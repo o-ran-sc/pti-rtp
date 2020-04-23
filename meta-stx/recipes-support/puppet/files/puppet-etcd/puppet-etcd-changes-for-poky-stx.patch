@@ -1,0 +1,27 @@
+diff -ru a/manifests/config.pp b/manifests/config.pp
+--- a/manifests/config.pp	2020-03-05 15:24:05.754122863 +0800
++++ b/manifests/config.pp	2020-03-05 16:45:19.090255672 +0800
+@@ -14,6 +14,7 @@
+     content => template("${module_name}/etc/etcd/etcd.yml.erb"),
+   }
+ 
++  # only available for Redhat??
+   if $::etcd::manage_package and $::etcd::journald_forward_enable and $::operatingsystemmajrelease == '7' {
+     file { '/etc/systemd/system/etcd.service.d':
+       ensure => 'directory',
+diff -ru a/manifests/params.pp b/manifests/params.pp
+--- a/manifests/params.pp	2020-03-05 15:24:05.754122863 +0800
++++ b/manifests/params.pp	2020-03-05 16:15:42.434207254 +0800
+@@ -17,7 +17,11 @@
+       }
+     }
+     'Debian' : {
+-      $config_file_path = '/etc/default/etcd.conf'
++      if ($::operatingsystem == 'poky-stx') {
++        $config_file_path = '/etc/etcd/etcd.conf'
++      } else {
++        $config_file_path = '/etc/default/etcd.conf'
++      }
+     }
+     default  : {
+       fail('Unsupported OS.')

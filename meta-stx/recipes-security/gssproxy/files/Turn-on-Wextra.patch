@@ -1,0 +1,26 @@
+From a50ea0aa3dfd39ab4a3c39dde35c12fc51fe40d5 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 15 Mar 2017 13:28:26 -0400
+Subject: [PATCH] Turn on -Wextra
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #173
+(cherry picked from commit 85bc3d794efa52aba4c32f6109e7e7741521ec5f)
+---
+ proxy/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/proxy/Makefile.am b/proxy/Makefile.am
+index e1fbac1..5cd2255 100644
+--- a/proxy/Makefile.am
++++ b/proxy/Makefile.am
+@@ -44,7 +44,7 @@ AM_CFLAGS += -Wall -Wshadow -Wstrict-prototypes -Wpointer-arith \
+     -Wcast-qual -Wcast-align -Wwrite-strings \
+     -fstrict-aliasing -Wstrict-aliasing -Werror=strict-aliasing \
+     -Werror-implicit-function-declaration \
+-    -Werror=format-security
++    -Werror=format-security -Wextra
+ if BUILD_HARDENING
+     AM_CPPFLAGS += -D_FORTIFY_SOURCE=2 -Wdate-time
+     AM_CFLAGS += -fPIE -fstack-protector-strong

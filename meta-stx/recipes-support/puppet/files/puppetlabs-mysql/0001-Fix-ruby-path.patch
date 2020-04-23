@@ -1,0 +1,33 @@
+From c92a9d11002184a67f8bedf542d84f527eea3107 Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Tue, 29 Oct 2019 15:12:18 -0700
+Subject: [PATCH] Fix ruby path
+
+---
+ tasks/export.rb | 2 +-
+ tasks/sql.rb    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tasks/export.rb b/tasks/export.rb
+index efd9d81..18106ec 100755
+--- a/tasks/export.rb
++++ b/tasks/export.rb
+@@ -1,4 +1,4 @@
+-#!/opt/puppetlabs/puppet/bin/ruby
++#!/usr/bin/ruby
+ require 'json'
+ require 'open3'
+ require 'puppet'
+diff --git a/tasks/sql.rb b/tasks/sql.rb
+index 29b2c6b..7256f2d 100755
+--- a/tasks/sql.rb
++++ b/tasks/sql.rb
+@@ -1,4 +1,4 @@
+-#!/opt/puppetlabs/puppet/bin/ruby
++#!/usr/bin/ruby
+ require 'json'
+ require 'open3'
+ require 'puppet'
+-- 
+2.17.1
+

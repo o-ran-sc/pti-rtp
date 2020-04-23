@@ -1,0 +1,503 @@
+From a3c9d87924455448cf3bcb20d34f1bd4e6b915d8 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 15 Mar 2017 13:52:36 -0400
+Subject: [PATCH] Fix unused variables
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #173
+(cherry picked from commit e72d1fa53df8af55b47639ed01f9f0bafa7a2ca8)
+---
+ proxy/src/client/gpm_common.c            |  1 +
+ proxy/src/client/gpm_display_status.c    |  2 +-
+ proxy/src/client/gpm_release_handle.c    |  2 +-
+ proxy/src/gp_common.h                    |  1 +
+ proxy/src/gp_config.c                    |  8 ++------
+ proxy/src/gp_conv.c                      |  4 ++--
+ proxy/src/gp_conv.h                      |  3 +--
+ proxy/src/gp_creds.c                     |  7 +++----
+ proxy/src/gp_init.c                      |  2 +-
+ proxy/src/gp_rpc_accept_sec_context.c    |  3 +--
+ proxy/src/gp_rpc_acquire_cred.c          |  3 +--
+ proxy/src/gp_rpc_get_mic.c               |  4 ++--
+ proxy/src/gp_rpc_import_and_canon_name.c |  5 ++---
+ proxy/src/gp_rpc_indicate_mechs.c        |  5 ++---
+ proxy/src/gp_rpc_init_sec_context.c      |  3 +--
+ proxy/src/gp_rpc_process.c               | 21 ++++-----------------
+ proxy/src/gp_rpc_process.h               |  6 ++++++
+ proxy/src/gp_rpc_release_handle.c        |  5 ++---
+ proxy/src/gp_rpc_unwrap.c                |  5 ++---
+ proxy/src/gp_rpc_verify_mic.c            |  5 ++---
+ proxy/src/gp_rpc_wrap.c                  |  4 ++--
+ proxy/src/gp_rpc_wrap_size_limit.c       |  5 ++---
+ proxy/src/gp_socket.c                    |  2 +-
+ proxy/src/gssproxy.c                     |  2 +-
+ 24 files changed, 44 insertions(+), 64 deletions(-)
+
+diff --git a/proxy/src/client/gpm_common.c b/proxy/src/client/gpm_common.c
+index 0a54dbc..030765a 100644
+--- a/proxy/src/client/gpm_common.c
++++ b/proxy/src/client/gpm_common.c
+@@ -320,6 +320,7 @@ static void gpm_release_ctx(struct gpm_ctx *gpmctx)
+ OM_uint32 gpm_release_buffer(OM_uint32 *minor_status,
+                              gss_buffer_t buffer)
+ {
++    *minor_status = 0;
+     if (buffer != GSS_C_NO_BUFFER) {
+         if (buffer->value) {
+             free(buffer->value);
+diff --git a/proxy/src/client/gpm_display_status.c b/proxy/src/client/gpm_display_status.c
+index 1f8d755..bbb546f 100644
+--- a/proxy/src/client/gpm_display_status.c
++++ b/proxy/src/client/gpm_display_status.c
+@@ -43,7 +43,7 @@ void gpm_save_internal_status(uint32_t err, char *err_str)
+ OM_uint32 gpm_display_status(OM_uint32 *minor_status,
+                              OM_uint32 status_value,
+                              int status_type,
+-                             const gss_OID mech_type,
++                             const gss_OID mech_type UNUSED,
+                              OM_uint32 *message_context,
+                              gss_buffer_t status_string)
+ {
+diff --git a/proxy/src/client/gpm_release_handle.c b/proxy/src/client/gpm_release_handle.c
+index 7a6aaed..8f49ee9 100644
+--- a/proxy/src/client/gpm_release_handle.c
++++ b/proxy/src/client/gpm_release_handle.c
+@@ -58,7 +58,7 @@ done:
+ 
+ OM_uint32 gpm_delete_sec_context(OM_uint32 *minor_status,
+                                  gssx_ctx **context_handle,
+-                                 gss_buffer_t output_token)
++                                 gss_buffer_t output_token UNUSED)
+ {
+     union gp_rpc_arg uarg;
+     union gp_rpc_res ures;
+diff --git a/proxy/src/gp_common.h b/proxy/src/gp_common.h
+index 36fd843..edc23b4 100644
+--- a/proxy/src/gp_common.h
++++ b/proxy/src/gp_common.h
+@@ -8,6 +8,7 @@
+ #include "gp_log.h"
+ 
+ #define no_const(ptr) ((void *)((uintptr_t)(ptr)))
++#define UNUSED  __attribute__((unused))
+ 
+ /* add element to list head */
+ #define LIST_ADD(list, elem) do { \
+diff --git a/proxy/src/gp_config.c b/proxy/src/gp_config.c
+index 1b833fd..5c1ca02 100644
+--- a/proxy/src/gp_config.c
++++ b/proxy/src/gp_config.c
+@@ -720,7 +720,6 @@ void free_config(struct gp_config **cfg)
+ }
+ 
+ static int gp_config_from_file(const char *config_file,
+-                               struct gp_ini_context *ctx,
+                                struct ini_cfgobj *ini_config,
+                                const uint32_t collision_flags)
+ {
+@@ -764,7 +763,6 @@ static int gp_config_from_file(const char *config_file,
+ }
+ 
+ static int gp_config_from_dir(const char *config_dir,
+-                              struct gp_ini_context *ctx,
+                               struct ini_cfgobj **ini_config,
+                               const uint32_t collision_flags)
+ {
+@@ -847,8 +845,7 @@ int gp_config_init(const char *config_file, const char *config_dir,
+     }
+ 
+     if (config_file) {
+-        ret = gp_config_from_file(config_file, ctx, ini_config,
+-                                  collision_flags);
++        ret = gp_config_from_file(config_file, ini_config, collision_flags);
+         if (ret == ENOENT) {
+             GPDEBUG("Expected config file %s but did not find it.\n",
+                     config_file);
+@@ -857,8 +854,7 @@ int gp_config_init(const char *config_file, const char *config_dir,
+         }
+     }
+     if (config_dir) {
+-        ret = gp_config_from_dir(config_dir, ctx, &ini_config,
+-                                 collision_flags);
++        ret = gp_config_from_dir(config_dir, &ini_config, collision_flags);
+         if (ret) {
+             return ret;
+         }
+diff --git a/proxy/src/gp_conv.c b/proxy/src/gp_conv.c
+index 6aa66a8..71d6d9d 100644
+--- a/proxy/src/gp_conv.c
++++ b/proxy/src/gp_conv.c
+@@ -6,6 +6,7 @@
+ #include <stdbool.h>
+ #include <errno.h>
+ #include "gp_conv.h"
++#include "src/gp_common.h"
+ 
+ void *gp_memdup(void *in, size_t len)
+ {
+@@ -488,8 +489,7 @@ done:
+     return ret_maj;
+ }
+ 
+-int gp_conv_status_to_gssx(struct gssx_call_ctx *call_ctx,
+-                           uint32_t ret_maj, uint32_t ret_min,
++int gp_conv_status_to_gssx(uint32_t ret_maj, uint32_t ret_min,
+                            gss_OID mech, struct gssx_status *status)
+ {
+     int ret;
+diff --git a/proxy/src/gp_conv.h b/proxy/src/gp_conv.h
+index e247dbd..699b301 100644
+--- a/proxy/src/gp_conv.h
++++ b/proxy/src/gp_conv.h
+@@ -39,8 +39,7 @@ uint32_t gp_conv_name_to_gssx_alloc(uint32_t *min,
+                                     gss_name_t in, gssx_name **out);
+ uint32_t gp_conv_gssx_to_name(uint32_t *min, gssx_name *in, gss_name_t *out);
+ 
+-int gp_conv_status_to_gssx(struct gssx_call_ctx *call_ctx,
+-                           uint32_t ret_maj, uint32_t ret_min,
++int gp_conv_status_to_gssx(uint32_t ret_maj, uint32_t ret_min,
+                            gss_OID mech, struct gssx_status *status);
+ 
+ int gp_copy_utf8string(utf8string *in, utf8string *out);
+diff --git a/proxy/src/gp_creds.c b/proxy/src/gp_creds.c
+index 7d89b06..6570b06 100644
+--- a/proxy/src/gp_creds.c
++++ b/proxy/src/gp_creds.c
+@@ -252,7 +252,6 @@ done:
+ 
+ static int ensure_segregated_ccache(struct gp_call_ctx *gpcall,
+                                     int cc_num,
+-                                    struct gp_service *svc,
+                                     gss_key_value_set_desc *cs)
+ {
+     int ret;
+@@ -482,7 +481,7 @@ static int gp_get_cred_environment(struct gp_call_ctx *gpcall,
+         }
+     }
+ 
+-    ret = ensure_segregated_ccache(gpcall, cc_num, svc, cs);
++    ret = ensure_segregated_ccache(gpcall, cc_num, cs);
+     if (ret != 0) {
+         goto done;
+     }
+@@ -587,8 +586,8 @@ uint32_t gp_add_krb5_creds(uint32_t *min,
+                            gss_cred_id_t in_cred,
+                            gssx_name *desired_name,
+                            gss_cred_usage_t cred_usage,
+-                           uint32_t initiator_time_req,
+-                           uint32_t acceptor_time_req,
++                           uint32_t initiator_time_req UNUSED,
++                           uint32_t acceptor_time_req UNUSED,
+                            gss_cred_id_t *output_cred_handle,
+                            gss_OID_set *actual_mechs,
+                            uint32_t *initiator_time_rec,
+diff --git a/proxy/src/gp_init.c b/proxy/src/gp_init.c
+index d367f92..e69934d 100644
+--- a/proxy/src/gp_init.c
++++ b/proxy/src/gp_init.c
+@@ -96,7 +96,7 @@ void fini_server(void)
+     closelog();
+ }
+ 
+-static void break_loop(verto_ctx *vctx, verto_ev *ev)
++static void break_loop(verto_ctx *vctx, verto_ev *ev UNUSED)
+ {
+     GPDEBUG("Exiting after receiving a signal\n");
+     verto_break(vctx);
+diff --git a/proxy/src/gp_rpc_accept_sec_context.c b/proxy/src/gp_rpc_accept_sec_context.c
+index 22a4cf7..ae4de55 100644
+--- a/proxy/src/gp_rpc_accept_sec_context.c
++++ b/proxy/src/gp_rpc_accept_sec_context.c
+@@ -152,8 +152,7 @@ done:
+         ret_maj = acpt_maj;
+         ret_min = acpt_min;
+     }
+-    ret = gp_conv_status_to_gssx(&asca->call_ctx,
+-                                 ret_maj, ret_min, oid,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min, oid,
+                                  &ascr->status);
+     GPRPCDEBUG(gssx_res_accept_sec_context, ascr);
+ 
+diff --git a/proxy/src/gp_rpc_acquire_cred.c b/proxy/src/gp_rpc_acquire_cred.c
+index 9a55937..e9c7d56 100644
+--- a/proxy/src/gp_rpc_acquire_cred.c
++++ b/proxy/src/gp_rpc_acquire_cred.c
+@@ -150,8 +150,7 @@ int gp_acquire_cred(struct gp_call_ctx *gpcall,
+     }
+ 
+ done:
+-    ret = gp_conv_status_to_gssx(&aca->call_ctx,
+-                                 ret_maj, ret_min, desired_mech,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min, desired_mech,
+                                  &acr->status);
+ 
+     GPRPCDEBUG(gssx_res_acquire_cred, acr);
+diff --git a/proxy/src/gp_rpc_get_mic.c b/proxy/src/gp_rpc_get_mic.c
+index 1d9a1fe..dfba77e 100644
+--- a/proxy/src/gp_rpc_get_mic.c
++++ b/proxy/src/gp_rpc_get_mic.c
+@@ -3,7 +3,7 @@
+ #include "gp_rpc_process.h"
+ #include <gssapi/gssapi.h>
+ 
+-int gp_get_mic(struct gp_call_ctx *gpcall,
++int gp_get_mic(struct gp_call_ctx *gpcall UNUSED,
+                union gp_rpc_arg *arg,
+                union gp_rpc_res *res)
+ {
+@@ -79,7 +79,7 @@ int gp_get_mic(struct gp_call_ctx *gpcall,
+     ret_min = 0;
+ 
+ done:
+-    ret = gp_conv_status_to_gssx(&gma->call_ctx, ret_maj, ret_min,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min,
+                                  GSS_C_NO_OID, &gmr->status);
+     GPRPCDEBUG(gssx_res_get_mic, gmr);
+     gss_release_buffer(&ret_min, &message_token);
+diff --git a/proxy/src/gp_rpc_import_and_canon_name.c b/proxy/src/gp_rpc_import_and_canon_name.c
+index 3d67f40..e7b8e63 100644
+--- a/proxy/src/gp_rpc_import_and_canon_name.c
++++ b/proxy/src/gp_rpc_import_and_canon_name.c
+@@ -8,7 +8,7 @@
+  * I am not kidding, if you hav not read it, go back and do it now, or do not
+  * touch this function */
+ 
+-int gp_import_and_canon_name(struct gp_call_ctx *gpcall,
++int gp_import_and_canon_name(struct gp_call_ctx *gpcall UNUSED,
+                              union gp_rpc_arg *arg,
+                              union gp_rpc_res *res)
+ {
+@@ -64,8 +64,7 @@ int gp_import_and_canon_name(struct gp_call_ctx *gpcall,
+     /* TODO: icna->name_attributes */
+ 
+ done:
+-    ret = gp_conv_status_to_gssx(&icna->call_ctx,
+-                                 ret_maj, ret_min, mech,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min, mech,
+                                  &icnr->status);
+     GPRPCDEBUG(gssx_res_import_and_canon_name, icnr);
+ 
+diff --git a/proxy/src/gp_rpc_indicate_mechs.c b/proxy/src/gp_rpc_indicate_mechs.c
+index c24b926..8abbc7f 100644
+--- a/proxy/src/gp_rpc_indicate_mechs.c
++++ b/proxy/src/gp_rpc_indicate_mechs.c
+@@ -3,7 +3,7 @@
+ #include "gp_rpc_process.h"
+ #include "gp_debug.h"
+ 
+-int gp_indicate_mechs(struct gp_call_ctx *gpcall,
++int gp_indicate_mechs(struct gp_call_ctx *gpcall UNUSED,
+                       union gp_rpc_arg *arg,
+                       union gp_rpc_res *res)
+ {
+@@ -251,8 +251,7 @@ int gp_indicate_mechs(struct gp_call_ctx *gpcall,
+     }
+ 
+ done:
+-    ret = gp_conv_status_to_gssx(&ima->call_ctx,
+-                                 ret_maj, ret_min, GSS_C_NO_OID,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min, GSS_C_NO_OID,
+                                  &imr->status);
+     GPRPCDEBUG(gssx_res_indicate_mechs, imr);
+ 
+diff --git a/proxy/src/gp_rpc_init_sec_context.c b/proxy/src/gp_rpc_init_sec_context.c
+index 413e2ec..e4af495 100644
+--- a/proxy/src/gp_rpc_init_sec_context.c
++++ b/proxy/src/gp_rpc_init_sec_context.c
+@@ -187,8 +187,7 @@ done:
+         ret_maj = init_maj;
+         ret_min = init_min;
+     }
+-    ret = gp_conv_status_to_gssx(&isca->call_ctx,
+-                                 ret_maj, ret_min, mech_type,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min, mech_type,
+                                  &iscr->status);
+ 
+     GPRPCDEBUG(gssx_res_init_sec_context, iscr);
+diff --git a/proxy/src/gp_rpc_process.c b/proxy/src/gp_rpc_process.c
+index d1a0232..0ea17f0 100644
+--- a/proxy/src/gp_rpc_process.c
++++ b/proxy/src/gp_rpc_process.c
+@@ -396,20 +396,7 @@ int gp_rpc_process_call(struct gp_call_ctx *gpcall,
+     return ret;
+ }
+ 
+-int gp_get_call_context(gp_exec_std_args)
+-{
+-    return 0;
+-}
+-int gp_export_cred(gp_exec_std_args)
+-{
+-    return 0;
+-}
+-int gp_import_cred(gp_exec_std_args)
+-{
+-    return 0;
+-}
+-
+-int gp_store_cred(gp_exec_std_args)
+-{
+-    return 0;
+-}
++GP_EXEC_UNUSED_FUNC(gp_get_call_context);
++GP_EXEC_UNUSED_FUNC(gp_export_cred);
++GP_EXEC_UNUSED_FUNC(gp_import_cred);
++GP_EXEC_UNUSED_FUNC(gp_store_cred);
+diff --git a/proxy/src/gp_rpc_process.h b/proxy/src/gp_rpc_process.h
+index eb02c95..da27795 100644
+--- a/proxy/src/gp_rpc_process.h
++++ b/proxy/src/gp_rpc_process.h
+@@ -24,6 +24,12 @@ struct gp_service;
+                          union gp_rpc_arg *arg, \
+                          union gp_rpc_res *res
+ 
++#define GP_EXEC_UNUSED_FUNC(name)               \
++    int name(struct gp_call_ctx *gpcall UNUSED, \
++             union gp_rpc_arg *arg UNUSED,      \
++             union gp_rpc_res *res UNUSED)      \
++    { return 0; }
++
+ int gp_indicate_mechs(gp_exec_std_args);
+ int gp_get_call_context(gp_exec_std_args);
+ int gp_import_and_canon_name(gp_exec_std_args);
+diff --git a/proxy/src/gp_rpc_release_handle.c b/proxy/src/gp_rpc_release_handle.c
+index 4ffdfb9..c8ba8f2 100644
+--- a/proxy/src/gp_rpc_release_handle.c
++++ b/proxy/src/gp_rpc_release_handle.c
+@@ -2,7 +2,7 @@
+ 
+ #include "gp_rpc_process.h"
+ 
+-int gp_release_handle(struct gp_call_ctx *gpcall,
++int gp_release_handle(struct gp_call_ctx *gpcall UNUSED,
+                       union gp_rpc_arg *arg,
+                       union gp_rpc_res *res)
+ {
+@@ -35,8 +35,7 @@ int gp_release_handle(struct gp_call_ctx *gpcall,
+         break;
+     }
+ 
+-    ret = gp_conv_status_to_gssx(&rha->call_ctx,
+-                                 ret_maj, ret_min, GSS_C_NO_OID,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min, GSS_C_NO_OID,
+                                  &rhr->status);
+     GPRPCDEBUG(gssx_res_release_handle, rhr);
+ 
+diff --git a/proxy/src/gp_rpc_unwrap.c b/proxy/src/gp_rpc_unwrap.c
+index bc052cb..fad8cfe 100644
+--- a/proxy/src/gp_rpc_unwrap.c
++++ b/proxy/src/gp_rpc_unwrap.c
+@@ -3,7 +3,7 @@
+ #include "gp_rpc_process.h"
+ #include <gssapi/gssapi.h>
+ 
+-int gp_unwrap(struct gp_call_ctx *gpcall,
++int gp_unwrap(struct gp_call_ctx *gpcall UNUSED,
+               union gp_rpc_arg *arg,
+               union gp_rpc_res *res)
+ {
+@@ -106,8 +106,7 @@ int gp_unwrap(struct gp_call_ctx *gpcall,
+     ret_min = 0;
+ 
+ done:
+-    ret = gp_conv_status_to_gssx(&uwa->call_ctx,
+-                                 ret_maj, ret_min,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min,
+                                  GSS_C_NO_OID,
+                                  &uwr->status);
+     GPRPCDEBUG(gssx_res_unwrap, uwr);
+diff --git a/proxy/src/gp_rpc_verify_mic.c b/proxy/src/gp_rpc_verify_mic.c
+index d2920d2..6da6dac 100644
+--- a/proxy/src/gp_rpc_verify_mic.c
++++ b/proxy/src/gp_rpc_verify_mic.c
+@@ -3,7 +3,7 @@
+ #include "gp_rpc_process.h"
+ #include <gssapi/gssapi.h>
+ 
+-int gp_verify_mic(struct gp_call_ctx *gpcall,
++int gp_verify_mic(struct gp_call_ctx *gpcall UNUSED,
+                   union gp_rpc_arg *arg,
+                   union gp_rpc_res *res)
+ {
+@@ -74,8 +74,7 @@ int gp_verify_mic(struct gp_call_ctx *gpcall,
+     ret_min = 0;
+ 
+ done:
+-    ret = gp_conv_status_to_gssx(&vma->call_ctx,
+-                                 ret_maj, ret_min,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min,
+                                  GSS_C_NO_OID,
+                                  &vmr->status);
+     GPRPCDEBUG(gssx_res_verify_mic, vmr);
+diff --git a/proxy/src/gp_rpc_wrap.c b/proxy/src/gp_rpc_wrap.c
+index d5c950e..ae20bdb 100644
+--- a/proxy/src/gp_rpc_wrap.c
++++ b/proxy/src/gp_rpc_wrap.c
+@@ -3,7 +3,7 @@
+ #include "gp_rpc_process.h"
+ #include <gssapi/gssapi.h>
+ 
+-int gp_wrap(struct gp_call_ctx *gpcall,
++int gp_wrap(struct gp_call_ctx *gpcall UNUSED,
+             union gp_rpc_arg *arg,
+             union gp_rpc_res *res)
+ {
+@@ -105,7 +105,7 @@ int gp_wrap(struct gp_call_ctx *gpcall,
+     ret_min = 0;
+ 
+ done:
+-    ret = gp_conv_status_to_gssx(&wa->call_ctx, ret_maj, ret_min,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min,
+                                  GSS_C_NO_OID, &wr->status);
+     GPRPCDEBUG(gssx_res_wrap, wr);
+     gss_release_buffer(&ret_min, &output_message_buffer);
+diff --git a/proxy/src/gp_rpc_wrap_size_limit.c b/proxy/src/gp_rpc_wrap_size_limit.c
+index 355113c..cab6826 100644
+--- a/proxy/src/gp_rpc_wrap_size_limit.c
++++ b/proxy/src/gp_rpc_wrap_size_limit.c
+@@ -3,7 +3,7 @@
+ #include "gp_rpc_process.h"
+ #include <gssapi/gssapi.h>
+ 
+-int gp_wrap_size_limit(struct gp_call_ctx *gpcall,
++int gp_wrap_size_limit(struct gp_call_ctx *gpcall UNUSED,
+                        union gp_rpc_arg *arg,
+                        union gp_rpc_res *res)
+ {
+@@ -51,8 +51,7 @@ int gp_wrap_size_limit(struct gp_call_ctx *gpcall,
+     ret_min = 0;
+ 
+ done:
+-    ret = gp_conv_status_to_gssx(&wsla->call_ctx,
+-                                 ret_maj, ret_min,
++    ret = gp_conv_status_to_gssx(ret_maj, ret_min,
+                                  GSS_C_NO_OID,
+                                  &wslr->status);
+     GPRPCDEBUG(gssx_res_wrap_size_limit, wslr);
+diff --git a/proxy/src/gp_socket.c b/proxy/src/gp_socket.c
+index 62d7dbc..829ff21 100644
+--- a/proxy/src/gp_socket.c
++++ b/proxy/src/gp_socket.c
+@@ -146,7 +146,7 @@ static int set_fd_flags(int fd, int flags)
+     return 0;
+ }
+ 
+-void free_unix_socket(verto_ctx *ctx, verto_ev *ev)
++void free_unix_socket(verto_ctx *ctx UNUSED, verto_ev *ev)
+ {
+     struct gp_sock_ctx *sock_ctx = NULL;
+     sock_ctx = verto_get_private(ev);
+diff --git a/proxy/src/gssproxy.c b/proxy/src/gssproxy.c
+index 561188e..a020218 100644
+--- a/proxy/src/gssproxy.c
++++ b/proxy/src/gssproxy.c
+@@ -119,7 +119,7 @@ static int init_sockets(verto_ctx *vctx, struct gp_config *old_config)
+     return 0;
+ }
+ 
+-static void hup_handler(verto_ctx *vctx, verto_ev *ev)
++static void hup_handler(verto_ctx *vctx, verto_ev *ev UNUSED)
+ {
+     int ret;
+     struct gp_config *new_config, *old_config;

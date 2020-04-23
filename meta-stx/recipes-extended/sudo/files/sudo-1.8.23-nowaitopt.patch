@@ -1,0 +1,75 @@
+From acbbefdbcf2951a2ce31fe4fc789cf8397a406cc Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Wed, 11 Dec 2019 19:43:19 -0800
+
+---
+ plugins/sudoers/def_data.c  |  4 ++++
+ plugins/sudoers/def_data.h  |  2 ++
+ plugins/sudoers/def_data.in |  3 +++
+ plugins/sudoers/sudoers.c   | 14 ++++++++++++++
+ 4 files changed, 23 insertions(+)
+
+diff --git a/plugins/sudoers/def_data.c b/plugins/sudoers/def_data.c
+index 5fa45bb..9d7a842 100644
+--- a/plugins/sudoers/def_data.c
++++ b/plugins/sudoers/def_data.c
+@@ -498,6 +498,10 @@ struct sudo_defs_types sudo_defs_table[] = {
+ 	N_("Don't pre-resolve all group names"),
+ 	NULL,
+     }, {
++	"cmnd_no_wait", T_FLAG,
++	N_("Don't fork and wait for the command to finish, just exec it"),
++	NULL,
++    }, {
+ 	NULL, 0, NULL
+     }
+ };
+diff --git a/plugins/sudoers/def_data.h b/plugins/sudoers/def_data.h
+index 940fa8f..68ceed0 100644
+--- a/plugins/sudoers/def_data.h
++++ b/plugins/sudoers/def_data.h
+@@ -228,6 +228,8 @@
+ #define def_case_insensitive_group (sudo_defs_table[I_CASE_INSENSITIVE_GROUP].sd_un.flag)
+ #define I_LEGACY_GROUP_PROCESSING 114
+ #define def_legacy_group_processing (sudo_defs_table[I_LEGACY_GROUP_PROCESSING].sd_un.flag)
++#define I_CMND_NO_WAIT          115
++#define def_cmnd_no_wait        (sudo_defs_table[I_CMND_NO_WAIT].sd_un.flag)
+ 
+ enum def_tuple {
+ 	never,
+diff --git a/plugins/sudoers/def_data.in b/plugins/sudoers/def_data.in
+index 571bc96..4250917 100644
+--- a/plugins/sudoers/def_data.in
++++ b/plugins/sudoers/def_data.in
+@@ -360,3 +360,6 @@ case_insensitive_group
+ legacy_group_processing
+ 	T_FLAG
+ 	"Don't pre-resolve all group names"
++cmnd_no_wait
++	T_FLAG
++	"Don't fork and wait for the command to finish, just exec it"
+diff --git a/plugins/sudoers/sudoers.c b/plugins/sudoers/sudoers.c
+index d8f4dd0..00669b4 100644
+--- a/plugins/sudoers/sudoers.c
++++ b/plugins/sudoers/sudoers.c
+@@ -221,6 +221,20 @@ sudoers_policy_init(void *info, char * const envp[])
+         def_match_group_by_gid = false;
+ 	def_legacy_group_processing = false;
+     }
++
++    /*
++     * Emulate cmnd_no_wait option by disabling PAM session, PTY allocation
++     * and I/O logging. This will cause sudo to execute the given command
++     * directly instead of forking a separate process for it.
++     */
++    if (def_cmnd_no_wait) {
++        def_pam_setcred = false;
++        def_pam_session = false;
++        def_use_pty = false;
++        def_log_input = false;
++        def_log_output = false;
++    }
++
+ cleanup:
+     if (!restore_perms())
+ 	ret = -1;

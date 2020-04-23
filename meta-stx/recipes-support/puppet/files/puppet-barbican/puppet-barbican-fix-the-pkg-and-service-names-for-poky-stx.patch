@@ -1,0 +1,37 @@
+From 647dd40c145c6b52746a21656a3809bf4d016ab3 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sat, 14 Mar 2020 19:53:03 +0800
+Subject: [PATCH] puppet-barbican: fix the pkg and service names for poky-stx
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ manifests/params.pp | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/manifests/params.pp b/manifests/params.pp
+index 7dc418e..3a678c2 100644
+--- a/manifests/params.pp
++++ b/manifests/params.pp
+@@ -19,9 +19,16 @@ class barbican::params {
+       $httpd_config_file            = '/etc/httpd/conf.d/barbican-api.conf'
+     }
+     'Debian': {
+-      $api_package_name             = 'barbican-api'
+-      $worker_package_name          = 'barbican-worker'
+-      $worker_service_name          = 'barbican-worker'
++      if ($::operatingsystem == 'poky-stx') {
++        $api_package_name             = 'barbican'
++        $api_service_name             = 'openstack-barbican-api'
++        $worker_package_name          = 'barbican'
++        $worker_service_name          = 'openstack-barbican-worker'
++      } else {
++        $api_package_name             = 'barbican-api'
++        $worker_package_name          = 'barbican-worker'
++        $worker_service_name          = 'barbican-worker'
++      }
+       $barbican_wsgi_script_path    = '/usr/lib/cgi-bin/barbican'
+       $barbican_wsgi_script_source  = '/usr/lib/python2.7/dist-packages/barbican/api/app.wsgi'
+       $httpd_config_file            = '/etc/apache2/conf-available/barbican-api.conf'
+-- 
+2.7.4
+

@@ -1,0 +1,34 @@
+diff --git a/manifests/server/mysqltuner.pp b/manifests/server/mysqltuner.pp
+index ae91e63..4857c0c 100644
+--- a/manifests/server/mysqltuner.pp
++++ b/manifests/server/mysqltuner.pp
+@@ -40,14 +40,14 @@ class mysql::server::mysqltuner(
+       source      => $_source,
+       environment => $environment,
+     }
+-    file { '/usr/local/bin/mysqltuner':
++    file { '/usr/bin/mysqltuner':
+       ensure  => $ensure,
+       mode    => '0550',
+       source  => "${::staging::path}/mysql/mysqltuner-${_version}",
+       require => Staging::File["mysqltuner-${_version}"],
+     }
+   } else {
+-    file { '/usr/local/bin/mysqltuner':
++    file { '/usr/bin/mysqltuner':
+       ensure => $ensure,
+     }
+   }
+diff --git a/spec/classes/mysql_server_mysqltuner_spec.rb b/spec/classes/mysql_server_mysqltuner_spec.rb
+index 4fef3d5..c9cf5f0 100644
+--- a/spec/classes/mysql_server_mysqltuner_spec.rb
++++ b/spec/classes/mysql_server_mysqltuner_spec.rb
+@@ -21,7 +21,7 @@ describe 'mysql::server::mysqltuner' do
+       context 'ensure => absent' do
+         let(:params) {{ :ensure => 'absent' }}
+         it { is_expected.to compile }
+-        it { is_expected.to contain_file('/usr/local/bin/mysqltuner').with(:ensure => 'absent') }
++        it { is_expected.to contain_file('/usr/bin/mysqltuner').with(:ensure => 'absent') }
+       end
+ 
+       context 'custom version' do

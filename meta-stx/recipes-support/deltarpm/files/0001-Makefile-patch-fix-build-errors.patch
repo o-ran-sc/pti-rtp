@@ -1,0 +1,97 @@
+From 0904c124156935c17f29a74e9ba7b49c9dddb56b Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Mon, 26 Aug 2019 13:05:32 -0700
+Subject: [PATCH] Makefile patch fix build errors
+
+---
+ Makefile                        | 35 ++++++++++-----------------------
+ zlib-1.2.2.f-rsyncable/Makefile |  6 +++---
+ 2 files changed, 13 insertions(+), 28 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index e6d4609..bce1b0d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -8,10 +8,10 @@ zlibbundled=$(zlibdir)/libz.a
+ zlibldflags=$(zlibbundled)
+ zlibcppflags=-I$(zlibdir)
+ pylibprefix=/
+-CFLAGS = -fPIC -O2 -Wall -g -DWITH_ZSTD=1
+-CPPFLAGS = -fPIC -DDELTARPM_64BIT -DBSDIFF_NO_SUF -DRPMDUMPHEADER=\"$(rpmdumpheader)\" $(zlibcppflags)
++CFLAGS += -fPIC -O2 -Wall -g -DWITH_ZSTD=1
++CPPFLAGS += -fPIC -DDELTARPM_64BIT -DBSDIFF_NO_SUF -DRPMDUMPHEADER=\"$(rpmdumpheader)\" $(zlibcppflags)
+ LDLIBS = -lbz2 $(zlibldflags) -llzma -lzstd
+-LDFLAGS =
++LDFLAGS ?=
+ PYTHONS = python python3
+ 
+ all: makedeltarpm applydeltarpm rpmdumpheader makedeltaiso applydeltaiso combinedeltarpm fragiso
+@@ -38,17 +38,10 @@ applydeltaiso: applydeltaiso.o util.o md5.o cfile.o $(zlibbundled)
+ fragiso: fragiso.o util.o md5.o rpmhead.o cfile.o $(zlibbundled)
+ 
+ _deltarpmmodule.so: readdeltarpm.o rpmhead.o util.o md5.o cfile.o $(zlibbundled)
+-	for PY in $(PYTHONS) ; do \
+-		if [ -x /usr/bin/$$PY-config ] && [ -x /usr/bin/$$PY ]; then \
+-			PYVER=`$$PY -c 'from distutils import sysconfig ; print(sysconfig.get_python_version())'`; \
+-			PYCFLAGS=`$$PY-config --cflags`; \
+-			if [ ! -f "python$$PYVER/$@" ]; then \
+-				mkdir -p python$$PYVER ;\
+-				$(CC) $(CFLAGS) $$PYCFLAGS $(zlibcppflags) -fPIC -c -o python$$PYVER/deltarpmmodule.o deltarpmmodule.c ;\
+-				$(CC) $(LDFLAGS) -o python$$PYVER/$@ python$$PYVER/deltarpmmodule.o $^ -shared -Wl,-soname,_deltarpmmodule.so $(LDLIBS); \
+-			fi; \
+-		fi; \
+-	done
++	mkdir -p python2.7
++	$(CC) $(CFLAGS) -I=/usr/include/python2.7 $(zlibcppflags) -fPIC -c -o python2.7/_deltarpmmodule.o deltarpmmodule.c
++	$(CC) $(LDFLAGS) -o python2.7/_deltarpmmodule.so python2.7/_deltarpmmodule.o $^ \
++		-shared -Wl,-soname,_deltarpmmodule.so $(LDLIBS)
+ 
+ $(zlibbundled):
+ 	cd $(zlibdir) ; make CFLAGS="-fPIC $(CFLAGS)" libz.a
+@@ -76,17 +69,9 @@ install:
+ 	install -m 644 applydeltaiso.8 $(DESTDIR)$(mandir)/man8
+ 	install -m 644 fragiso.8 $(DESTDIR)$(mandir)/man8
+ 	install -m 644 drpmsync.8 $(DESTDIR)$(mandir)/man8
+-	for PY in $(PYTHONS) ; do \
+-		if [ -x /usr/bin/$$PY ]; then \
+-                        PYLIB=`$$PY -c 'from distutils import sysconfig ; print(sysconfig.get_python_lib(1))'` ; \
+-			PYVER=`$$PY -c 'from distutils import sysconfig ; print(sysconfig.get_python_version())'` ; \
+-			if [ -e python$$PYVER/_deltarpmmodule.so ]; then \
+-				mkdir -p $(DESTDIR)$(pylibprefix)$$PYLIB ; \
+-				install -m 755 python$$PYVER/_deltarpmmodule.so $(DESTDIR)$(pylibprefix)$$PYLIB ; \
+-				install -m 644 deltarpm.py $(DESTDIR)$(pylibprefix)$$PYLIB ; \
+-			fi; \
+-		fi; \
+-	done
++	mkdir -p $(DESTDIR)/$(libdir)/python2.7/site-packages/
++	install -m 755 python2.7/_deltarpmmodule.so $(DESTDIR)/$(libdir)/python2.7/site-packages/
++	install -m 644 deltarpm.py $(DESTDIR)/$(libdir)/python2.7/site-packages/
+ 
+ .PHONY: clean install perl
+ 
+diff --git a/zlib-1.2.2.f-rsyncable/Makefile b/zlib-1.2.2.f-rsyncable/Makefile
+index 29f53de..23b5daf 100644
+--- a/zlib-1.2.2.f-rsyncable/Makefile
++++ b/zlib-1.2.2.f-rsyncable/Makefile
+@@ -16,15 +16,15 @@
+ # To install in $HOME instead of /usr/local, use:
+ #    make install prefix=$HOME
+ 
+-CC=cc
++CC?=cc
+ 
+-CFLAGS=-O
++CFLAGS?=-O
+ #CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
+ #CFLAGS=-g -DDEBUG
+ #CFLAGS=-O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
+ #           -Wstrict-prototypes -Wmissing-prototypes
+ 
+-LDFLAGS=libz.a
++LDFLAGS+=libz.a
+ LDSHARED=$(CC)
+ CPP=$(CC) -E
+ 
+-- 
+2.17.1
+

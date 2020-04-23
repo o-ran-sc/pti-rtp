@@ -1,0 +1,25 @@
+From f6d38d1003cdab21626f93c83bd94305881fb4c6 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Fri, 6 Mar 2020 22:52:19 -0800
+Subject: [PATCH] stx.3.0 rebase: adjust path
+
+---
+ puppet-manifests/src/bin/puppet-manifest-apply.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/puppet-manifests/src/bin/puppet-manifest-apply.sh b/puppet-manifests/src/bin/puppet-manifest-apply.sh
+index 95e9958..4d36059 100755
+--- a/puppet-manifests/src/bin/puppet-manifest-apply.sh
++++ b/puppet-manifests/src/bin/puppet-manifest-apply.sh
+@@ -98,7 +98,7 @@ export STDLIB_LOG_DEPRECATIONS=false
+ 
+ echo "Applying puppet ${MANIFEST} manifest..."
+ flock /var/run/puppet.lock \
+-    puppet apply --debug --trace --modulepath ${PUPPET_MODULES_PATH} ${PUPPET_MANIFEST} \
++    puppet apply  --hiera_config=/etc/puppet/hiera.yaml --debug --trace --modulepath ${PUPPET_MODULES_PATH} ${PUPPET_MANIFEST} \
+         < /dev/null 2>&1 | awk ' { system("date -u +%FT%T.%3N | tr \"\n\" \" \""); print $0; fflush(); } ' > ${LOGFILE}
+ if [ $? -ne 0 ]; then
+     echo "[FAILED]"
+-- 
+2.23.0
+

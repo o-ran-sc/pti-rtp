@@ -1,0 +1,11 @@
+--- src/util/verto/Makefile.in	2018-05-03 10:34:47.000000000 -0400
++++ src/util/verto/Makefile.in.new	2019-08-14 06:05:03.779775294 -0400
+@@ -3,7 +3,7 @@
+ RELDIR=../util/verto
+ 
+ LIBBASE=verto
+-LIBMAJOR=0
++LIBMAJOR=1
+ LIBMINOR=0
+ 
+ LOCALINCLUDES=-I$(srcdir) -I.

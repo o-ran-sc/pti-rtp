@@ -1,0 +1,31 @@
+From: Peter Lemenkov <lemenkov@redhat.com>
+Date: Fri, 15 Jul 2016 16:01:08 +0200
+Subject: [PATCH] Use proto_dist from command line
+
+Use protocol distribution value from command line when provided instead
+of always using default value (inet_tcp) when trying to check epmd.
+
+If provided more than one protocol distribution types, then use the
+first one.
+
+Signed-off-by: Peter Lemenkov <lemenkov@redhat.com>
+
+diff --git a/src/rabbit_nodes.erl b/src/rabbit_nodes.erl
+index 70a5355..18f7714 100644
+--- a/src/rabbit_nodes.erl
++++ b/src/rabbit_nodes.erl
+@@ -221,9 +221,14 @@ set_cluster_name(Name) ->
+ ensure_epmd() ->
+     {ok, Prog} = init:get_argument(progname),
+     ID = rabbit_misc:random(1000000000),
++    ProtoDist = case init:get_argument(proto_dist) of
++            {ok, [Proto | _Protos]} -> Proto;
++            error -> "inet_tcp"
++    end,
+     Port = open_port(
+              {spawn_executable, os:find_executable(Prog)},
+              [{args, ["-sname", rabbit_misc:format("epmd-starter-~b", [ID]),
++                      "-proto_dist", rabbit_misc:format("~p", [ProtoDist]),
+                       "-noshell", "-eval", "halt()."]},
+               exit_status, stderr_to_stdout, use_stdio]),
+     port_shutdown_loop(Port).

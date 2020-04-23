@@ -1,0 +1,35 @@
+From 90d7a614b3eb451f0067dfacf0f0b6f41eb00180 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 26 Apr 2017 21:02:47 -0400
+Subject: [PATCH] Update systemd file
+
+Add `reload` capability, and remove dependency on nfs-utils.
+
+Closes: #127
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+(cherry picked from commit c7e8b4066575508a91a38bb6a44694c8a171f0c5)
+---
+ proxy/systemd/gssproxy.service.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/proxy/systemd/gssproxy.service.in b/proxy/systemd/gssproxy.service.in
+index dae39ee..f50f526 100644
+--- a/proxy/systemd/gssproxy.service.in
++++ b/proxy/systemd/gssproxy.service.in
+@@ -3,7 +3,6 @@ Description=GSSAPI Proxy Daemon
+ # GSSPROXY will not be started until syslog is
+ After=syslog.target
+ Before=nfs-secure.service nfs-secure-server.service
+-Requires=proc-fs-nfsd.mount
+ 
+ [Service]
+ Environment=KRB5RCACHEDIR=/var/lib/gssproxy/rcache
+@@ -12,6 +11,7 @@ ExecStart=@sbindir@/gssproxy -D
+ # consult systemd.service(5) for more details
+ Type=forking
+ PIDFile=@localstatedir@/run/gssproxy.pid
++ExecReload=/bin/kill -HUP $MAINPID
+ 
+ [Install]
+ WantedBy=multi-user.target

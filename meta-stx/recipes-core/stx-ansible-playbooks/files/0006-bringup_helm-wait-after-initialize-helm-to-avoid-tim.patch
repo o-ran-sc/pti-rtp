@@ -1,0 +1,27 @@
+From 7841401dd8064e4fc9c6ba3e0b2e19ba51fc29b2 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 15 Apr 2020 11:05:30 +0800
+Subject: [PATCH] bringup_helm: wait after initialize helm to avoid timeout
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../roles/bootstrap/bringup-essential-services/tasks/bringup_helm.yml  | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/playbookconfig/src/playbooks/roles/bootstrap/bringup-essential-services/tasks/bringup_helm.yml b/playbookconfig/src/playbooks/roles/bootstrap/bringup-essential-services/tasks/bringup_helm.yml
+index 32df992..de09070 100644
+--- a/playbookconfig/src/playbooks/roles/bootstrap/bringup-essential-services/tasks/bringup_helm.yml
++++ b/playbookconfig/src/playbooks/roles/bootstrap/bringup-essential-services/tasks/bringup_helm.yml
+@@ -193,6 +193,9 @@
+       recurse: yes
+   when: inventory_hostname != 'localhost'
+ 
++- name: Wait 10s after Initialize Helm
++  wait_for: timeout=10
++
+ - name: Generate Helm repo indicies
+   command: helm repo index "{{ source_helm_bind_dir }}/{{ item }}"
+   become_user: www
+-- 
+2.7.4
+

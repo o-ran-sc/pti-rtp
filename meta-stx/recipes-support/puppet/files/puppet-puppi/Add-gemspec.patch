@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppet-puppi.gemspec	2019-10-30 21:37:32.685810531 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-puppi'
++  s.version     = '2.2.3'
++  s.date        = '2017-03-10'
++  s.summary     = "Installs and configures Puppi"
++  s.description = s.summary
++  s.authors     = ["Alessandro Franceschi"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/example42/puppi'
++  s.license     = 'Apache 2.0'
++ end

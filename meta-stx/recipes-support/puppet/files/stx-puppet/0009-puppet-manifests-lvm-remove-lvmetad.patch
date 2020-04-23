@@ -1,0 +1,42 @@
+From af1da8e54d08caa065243077f601801bbc8eb8e0 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Fri, 3 Apr 2020 17:03:53 +0800
+Subject: [PATCH] lvm.pp: remove lvmetad
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ puppet-manifests/src/modules/platform/manifests/lvm.pp | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
+
+diff --git a/puppet-manifests/src/modules/platform/manifests/lvm.pp b/puppet-manifests/src/modules/platform/manifests/lvm.pp
+index cf16e54..64533b9 100644
+--- a/puppet-manifests/src/modules/platform/manifests/lvm.pp
++++ b/puppet-manifests/src/modules/platform/manifests/lvm.pp
+@@ -7,23 +7,7 @@ class platform::lvm::params (
+ class platform::lvm
+   inherits platform::lvm::params {
+ 
+-  # Mask socket unit as well to make sure
+-  # systemd socket activation does not happen
+-  service { 'lvm2-lvmetad.socket':
+-    ensure => 'stopped',
+-    enable => mask,
+-  }
+-  # Masking service unit ensures that it is not started again
+-  -> service { 'lvm2-lvmetad':
+-    ensure => 'stopped',
+-    enable => mask,
+-  }
+-  # Since masking is changing unit symlinks to point to /dev/null,
+-  # we need to reload systemd configuration
+-  -> exec { 'lvmetad-systemd-daemon-reload':
+-    command => 'systemctl daemon-reload',
+-  }
+-  -> file_line { 'use_lvmetad':
++  file_line { 'use_lvmetad':
+     path  => '/etc/lvm/lvm.conf',
+     match => '^[^#]*use_lvmetad = 1',
+     line  => '        use_lvmetad = 0',
+-- 
+2.7.4
+

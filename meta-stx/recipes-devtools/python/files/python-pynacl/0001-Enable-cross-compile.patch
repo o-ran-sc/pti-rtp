@@ -1,0 +1,35 @@
+From 97c9b5fdbffda65a7cacb2d0d7beac59c34f902c Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Thu, 10 Oct 2019 11:30:18 -0700
+Subject: [PATCH] Enable cross compile
+
+---
+ setup.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+index 747dc62..1eeb7bf 100644
+--- a/setup.py
++++ b/setup.py
+@@ -167,6 +167,9 @@ class build_clib(_build_clib):
+                 configure, "--disable-shared", "--enable-static",
+                 "--disable-debug", "--disable-dependency-tracking",
+                 "--with-pic", "--prefix", os.path.abspath(self.build_clib),
++		os.environ.get('PYNACL_CROSS_TARGET'),
++		os.environ.get('PYNACL_CROSS_HOST'),
++		os.environ.get('PYNACL_CROSS_BUILD'),
+             ],
+             cwd=build_temp,
+         )
+@@ -176,7 +179,7 @@ class build_clib(_build_clib):
+         subprocess.check_call(["make"] + make_args, cwd=build_temp)
+ 
+         # Check the build library
+-        subprocess.check_call(["make", "check"] + make_args, cwd=build_temp)
++        # subprocess.check_call(["make", "check"] + make_args, cwd=build_temp)
+ 
+         # Install the built library
+         subprocess.check_call(["make", "install"] + make_args, cwd=build_temp)
+-- 
+2.17.1
+

@@ -1,0 +1,26 @@
+From f1f89ef85b65b95f568d46fea85c7e7834e3a101 Mon Sep 17 00:00:00 2001
+From: Simo Sorce <simo@redhat.com>
+Date: Thu, 26 Oct 2017 11:47:54 -0400
+Subject: [PATCH] Emit debug on queue errors
+
+Signed-off-by: Simo Sorce <simo@redhat.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+Merges: #218
+(cherry picked from commit af666affbd4735ba437e3d89d9e22984a556ed16)
+---
+ proxy/src/gp_workers.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/proxy/src/gp_workers.c b/proxy/src/gp_workers.c
+index 2a33c21..18f38f6 100644
+--- a/proxy/src/gp_workers.c
++++ b/proxy/src/gp_workers.c
+@@ -314,6 +314,8 @@ static void gp_handle_reply(verto_ctx *vctx, verto_ev *ev)
+         case GP_QUERY_IN:
+             /* ?! fallback and kill client conn */
+         case GP_QUERY_ERR:
++            GPDEBUGN(3, "[status] Handling query error, terminating CID %d.\n",
++                     gp_conn_get_cid(q->conn));
+             gp_conn_free(q->conn);
+             gp_query_free(q, true);
+             break;

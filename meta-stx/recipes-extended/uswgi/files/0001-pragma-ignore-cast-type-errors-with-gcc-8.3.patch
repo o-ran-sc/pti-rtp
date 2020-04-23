@@ -1,0 +1,58 @@
+From 377b11c0255d717912f585e7c16c6c053e6cc913 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Thu, 23 Jan 2020 07:02:11 +0000
+Subject: [PATCH] pragma ignore cast type errors with gcc 8.3
+
+---
+ core/emperor.c                  | 2 ++
+ plugins/python/uwsgi_pymodule.c | 4 +++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/core/emperor.c b/core/emperor.c
+index 97596556..d64110cb 100644
+--- a/core/emperor.c
++++ b/core/emperor.c
+@@ -988,7 +988,9 @@ int uwsgi_emperor_vassal_start(struct uwsgi_instance *n_ui) {
+ #if defined(__linux__) && !defined(OBSOLETE_LINUX_KERNEL) && !defined(__ia64__)
+ 	if (uwsgi.emperor_clone) {
+ 		char stack[PTHREAD_STACK_MIN];
++#pragma GCC diagnostic ignored "-Wcast-function-type"
+ 		pid = clone((int (*)(void *)) uwsgi_emperor_spawn_vassal, stack + PTHREAD_STACK_MIN, SIGCHLD | uwsgi.emperor_clone, (void *) n_ui);
++#pragma GCC diagnostic error "-Wcast-function-type"
+ 	}
+ 	else {
+ #endif
+diff --git a/plugins/python/uwsgi_pymodule.c b/plugins/python/uwsgi_pymodule.c
+index d3075897..ac3ccb89 100644
+--- a/plugins/python/uwsgi_pymodule.c
++++ b/plugins/python/uwsgi_pymodule.c
+@@ -1,4 +1,5 @@
+ #include "uwsgi_python.h"
++#pragma GCC diagnostic ignored "-Wcast-function-type"
+ 
+ extern struct uwsgi_server uwsgi;
+ extern struct uwsgi_python up;
+@@ -2553,6 +2554,7 @@ PyObject *py_uwsgi_parse_file(PyObject * self, PyObject * args) {
+ }
+ 
+ static PyMethodDef uwsgi_spooler_methods[] = {
++
+ #ifdef PYTHREE
+ 	{"send_to_spooler", (PyCFunction) py_uwsgi_send_spool, METH_VARARGS | METH_KEYWORDS, ""},
+ 	{"spool", (PyCFunction) py_uwsgi_send_spool, METH_VARARGS | METH_KEYWORDS, ""},
+@@ -2569,7 +2571,6 @@ static PyMethodDef uwsgi_spooler_methods[] = {
+ 	{NULL, NULL},
+ };
+ 
+-
+ PyObject *py_uwsgi_suspend(PyObject * self, PyObject * args) {
+ 
+ 	struct wsgi_request *wsgi_req = py_current_wsgi_req();
+@@ -3918,3 +3919,4 @@ void init_uwsgi_module_snmp(PyObject * current_uwsgi_module) {
+ 
+         uwsgi_log( "SNMP python functions initialized.\n");
+ }
++#pragma GCC diagnostic error "-Wcast-function-type"
+-- 
+2.23.0
+

@@ -1,0 +1,62 @@
+From 78029f7aa8f8231fc657a094f41fb4ae1baba95e Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sat, 28 Mar 2020 22:53:47 +0800
+Subject: [PATCH] syslog-ng.conf: replace match with message
+
+Fix the warning:
+ WARNING: the match() filter without the use of the value() option is
+ deprecated and hinders performance, please use a more specific filter
+ like message() and/or program() instead;
+ location='/etc/syslog-ng/syslog-ng.conf:255:80'
+ [2020-03-26T09:55:01.825267] WARNING: With use-dns(no), dns-cache()
+ will be forced to 'no' too!;
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ syslog-ng-config/files/syslog-ng.conf | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/syslog-ng-config/files/syslog-ng.conf b/syslog-ng-config/files/syslog-ng.conf
+index 1e06c02..7373031 100644
+--- a/syslog-ng-config/files/syslog-ng.conf
++++ b/syslog-ng-config/files/syslog-ng.conf
+@@ -252,7 +252,7 @@ filter f_newsnotice { facility(news) and filter(f_notice); };
+ #filter f_syslog3 { not facility(auth, authpriv, mail) and not filter(f_debug); };
+ filter f_syslog   { facility(syslog); };
+ filter f_user     { facility(user) and not filter(f_vim) and not filter(f_vim_api)
+-                    and not filter(f_vim_webserver) and not match("fmClientCli");
++                    and not filter(f_vim_webserver) and not message("fmClientCli");
+                     and not program("^(-)?(ba)?(su|sh)$"); };
+ filter f_uucp     { facility(uucp); };
+ 
+@@ -303,12 +303,12 @@ filter f_fm_event { facility(local5) and program(fmManager); };
+ filter f_fm_manager { facility(local1) and program(fmManager); };
+ 
+ # IMA Filters
+-filter f_ima         { facility(auth) and program(audispd) and match("type=INTEGRITY_") ; };
+-filter f_ima_appraise  { filter(f_ima) and match("appraise_data") ; };
++filter f_ima         { facility(auth) and program(audispd) and message("type=INTEGRITY_") ; };
++filter f_ima_appraise  { filter(f_ima) and message("appraise_data") ; };
+ 
+ # Sysinv Log Filter
+-filter f_sysinv    { facility(local6) and program(sysinv) and not match("sysinv.api.hooks.auditor"); };
+-filter f_sysinvapi { facility(local6) and program(sysinv) and     match("sysinv.api.hooks.auditor"); };
++filter f_sysinv    { facility(local6) and program(sysinv) and not message("sysinv.api.hooks.auditor"); };
++filter f_sysinvapi { facility(local6) and program(sysinv) and     message("sysinv.api.hooks.auditor"); };
+ 
+ # Distributed Cloud Log Filters
+ filter f_dcmanagermanager    { facility(local2) and program(dcmanager-manager); };
+@@ -324,8 +324,8 @@ filter f_dcdbsyncopenstackapi    { facility(local3) and program(dcdbsync-api); }
+ # Openstack Log Filters
+ filter f_horizon       { facility(local7) };
+ filter f_libvirtd      { program(libvirtd) };
+-filter f_keystoneall   { facility(local2) and message("keystone.*") and not match("keystone.common.wsgi"); };
+-filter f_keystoneapi   { facility(local2) and  match("keystone.common.wsgi"); };
++filter f_keystoneall   { facility(local2) and message("keystone.*") and not message("keystone.common.wsgi"); };
++filter f_keystoneapi   { facility(local2) and  message("keystone.common.wsgi"); };
+ filter f_barbicanapi              { facility(local2) and program(barbican-api); };
+ filter f_barbicandbsync           { facility(local2) and program(barbican-dbsync); };
+ filter f_barbicankeystonelistener { facility(local2) and program(barbican-keystone-listener); };
+-- 
+2.7.4
+

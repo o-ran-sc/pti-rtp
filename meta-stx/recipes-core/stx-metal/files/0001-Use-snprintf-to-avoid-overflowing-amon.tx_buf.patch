@@ -1,0 +1,26 @@
+From 3060369f60b2dc9e6d138cabd18d7f206c7bb0f5 Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Thu, 27 Jun 2019 21:40:34 -0700
+Subject: [PATCH] Use snprintf to avoid overflowing amon.tx_buf
+
+---
+ mtce/src/public/amon.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/mtce/src/public/amon.c b/mtce/src/public/amon.c
+index b9146a2..941f905 100644
+--- a/mtce/src/public/amon.c
++++ b/mtce/src/public/amon.c
+@@ -257,7 +257,8 @@ int  active_monitor_dispatch ( void )
+             }
+ 
+             memset ( amon.tx_buf, 0 , AMON_MAX_LEN );
+-            sprintf( amon.tx_buf, "%s %8x %d%c", str, magic, seq, '\0' );
++            if (snprintf( amon.tx_buf, AMON_MAX_LEN,  "%s %8x %d%c", str, magic, seq, '\0' ) < 0)
++		fprintf(stderr,"%s:%d amon.txbuf overflow detected!\n", __func__, __LINE__);
+             
+             if ( strcmp ( str, amon.name ) )
+             {
+-- 
+2.17.1
+

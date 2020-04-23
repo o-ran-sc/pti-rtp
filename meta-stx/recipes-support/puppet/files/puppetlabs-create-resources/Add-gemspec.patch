@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppetlabs-create-resources.gemspec	2019-10-30 09:22:32.165637534 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppetlabs-create-resources'
++  s.version     = '0.0.1'
++  s.date        = '2013-09-30'
++  s.summary     = "Function to dynamically create resources from hashes."
++  s.description = s.summary
++  s.authors     = ["puppetlabs"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/puppetlabs/puppetlabs-create_resources'
++  s.license     = 'Apache 2.0'
++ end

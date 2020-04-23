@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-23 20:19:32.602763995 -0700
++++ b/puppetlabs-inifile.gemspec	2019-10-28 09:20:41.514908926 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppetlabs-inifile'
++  s.version     = '1.6.0'
++  s.date        = '2016-08-30'
++  s.summary     = "Resource types for managing settings in INI files"
++  s.description = s.summary
++  s.authors     = ["Puppet Labs"]
++  s.email       = ''
++  s.files       = %w(LICENSE Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/puppetlabs/puppetlabs-inifile'
++  s.license     = 'Apache 2.0'
++ end

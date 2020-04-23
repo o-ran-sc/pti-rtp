@@ -1,0 +1,220 @@
+From caec174b203206185b6075c0e822c6f45070dd87 Mon Sep 17 00:00:00 2001
+From: Alexander Scheel <ascheel@redhat.com>
+Date: Wed, 9 Aug 2017 15:00:26 -0400
+Subject: [PATCH] Fix silent crash with duplicate config sections
+
+Signed-off-by: Alexander Scheel <ascheel@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Resolves: #194
+Merges: #202
+(cherry picked from commit c0d85387fc38f9554d601ec2ddb111031a694387)
+---
+ proxy/configure.ac    | 125 ++++++++++++++++++++++++++++++++++++++++++
+ proxy/src/gp_config.c |  27 ++++-----
+ 2 files changed, 137 insertions(+), 15 deletions(-)
+
+diff --git a/proxy/configure.ac b/proxy/configure.ac
+index c52dbb6..9e01f7d 100644
+--- a/proxy/configure.ac
++++ b/proxy/configure.ac
+@@ -107,6 +107,131 @@ fi
+ AC_SUBST(INI_LIBS)
+ AC_SUBST(INI_CFLAGS)
+ 
++AC_CHECK_LIB(ref_array, ref_array_destroy, [],
++             [AC_MSG_WARN([ref_array library must support ref_array_destroy])],
++             [$INI_CONFIG_LIBS])
++
++AC_RUN_IFELSE([AC_LANG_SOURCE([[
++/* See: https://pagure.io/SSSD/ding-libs/pull-request/3172 */
++#include <linux/limits.h>
++#include <string.h>
++#include <errno.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <ini_configobj.h>
++#include <ini_config.h>
++
++static int write_to_file(char *path, char *text)
++{
++    FILE *f = fopen(path, "w");
++    int bytes = 0;
++    if (f == NULL)
++        return 1;
++
++    bytes = fprintf(f, "%s", text);
++    if (bytes != strlen(text))
++        return 1;
++
++    return fclose(f);
++}
++
++int main(void)
++{
++    char base_path[PATH_MAX];
++    char augment_path[PATH_MAX];
++
++    char config_base[] =
++        "[section]\n"
++        "key1 = first\n"
++        "key2 = exists\n";
++
++    char config_augment[] =
++        "[section]\n"
++        "key1 = augment\n"
++        "key3 = exists\n";
++
++    char *builddir;
++
++    struct ini_cfgobj *in_cfg, *result_cfg;
++    struct ini_cfgfile *file_ctx;
++
++    uint32_t merge_flags = INI_MS_DETECT | INI_MS_PRESERVE;
++
++    int ret;
++
++    builddir = getenv("builddir");
++    if (builddir == NULL) {
++        builddir = strdup(".");
++    }
++
++    snprintf(base_path, PATH_MAX, "%s/tmp_augment_base.conf", builddir);
++    snprintf(augment_path, PATH_MAX, "%s/tmp_augment_augment.conf", builddir);
++
++    ret = write_to_file(base_path, config_base);
++    if (ret != 0) {
++        ret = 1;
++        goto cleanup;
++    }
++
++    ret = write_to_file(augment_path, config_augment);
++    if (ret != 0) {
++        goto cleanup;
++    }
++
++    /* Match only augment.conf */
++    const char *m_patterns[] = { "^tmp_augment_augment.conf$", NULL };
++
++     /* Match all sections */
++    const char *m_sections[] = { ".*", NULL };
++
++    /* Create config collection */
++    ret = ini_config_create(&in_cfg);
++    if (ret != EOK)
++        goto cleanup;
++
++    /* Open base.conf */
++    ret = ini_config_file_open(base_path, 0, &file_ctx);
++    if (ret != EOK)
++        goto cleanup;
++
++    /* Seed in_cfg with base.conf */
++    ret = ini_config_parse(file_ctx, 1, 0, 0, in_cfg);
++    if (ret != EOK)
++        goto cleanup;
++
++    /* Update base.conf with augment.conf */
++    ret = ini_config_augment(in_cfg,
++                             builddir,
++                             m_patterns,
++                             m_sections,
++                             NULL,
++                             INI_STOP_ON_NONE,
++                             0,
++                             INI_PARSE_NOSPACE|INI_PARSE_NOTAB,
++                             merge_flags,
++                             &result_cfg,
++                             NULL,
++                             NULL);
++    /* We always expect EEXIST due to DETECT being set. */
++    if (ret != EEXIST)
++        goto cleanup;
++
++    ret = 0;
++
++cleanup:
++    remove(base_path);
++    remove(augment_path);
++
++    /* Per autoconf guidelines */
++    if (ret != 0)
++        ret = 1;
++
++    return ret;
++}
++]])]
++,, [AC_MSG_ERROR(["ini_config library must support extended INI_MS_DETECT. See: https://pagure.io/SSSD/ding-libs/pull-request/3172"])])
++
+ AX_PTHREAD(,[AC_MSG_ERROR([Could not find Pthreads support])])
+ 
+ LIBS="$PTHREAD_LIBS $LIBS"
+diff --git a/proxy/src/gp_config.c b/proxy/src/gp_config.c
+index 07f7c8d..cd057a0 100644
+--- a/proxy/src/gp_config.c
++++ b/proxy/src/gp_config.c
+@@ -728,7 +728,7 @@ static int gp_config_from_file(const char *config_file,
+                                0, /* metadata_flags, FIXME */
+                                &file_ctx);
+     if (ret) {
+-        GPDEBUG("Failed to open config file: %d (%s)\n",
++        GPERROR("Failed to open config file: %d (%s)\n",
+                 ret, gp_strerror(ret));
+         ini_config_destroy(ini_config);
+         return ret;
+@@ -742,7 +742,7 @@ static int gp_config_from_file(const char *config_file,
+     if (ret) {
+         char **errors = NULL;
+         /* we had a parsing failure */
+-        GPDEBUG("Failed to parse config file: %d (%s)\n",
++        GPERROR("Failed to parse config file: %d (%s)\n",
+                 ret, gp_strerror(ret));
+         if (ini_config_error_count(ini_config)) {
+             ini_config_get_errors(ini_config, &errors);
+@@ -791,26 +791,25 @@ static int gp_config_from_dir(const char *config_dir,
+                              INI_STOP_ON_ANY, /* error_level */
+                              collision_flags,
+                              INI_PARSE_NOWRAP,
+-                             /* do not allow colliding sections with the same
+-                              * name in different files */
+-                             INI_MS_ERROR,
++                             /* allow sections with the same name in
++                              * different files, but log warnings */
++                             INI_MS_DETECT | INI_MS_PRESERVE,
+                              &result_cfg,
+                              &error_list,
+                              NULL);
+-    if (ret) {
++    if (error_list) {
+         uint32_t len;
+-
+-        if (!error_list) {
+-            GPAUDIT("Error when reading config directory number: %d\n", ret);
+-            return ret;
+-        }
+-
+         len = ref_array_len(error_list);
+         for (uint32_t i = 0; i < len; i++) {
+             /* libini has an unfixable bug where error strings are (char **) */
+             GPAUDIT("Error when reading config directory: %s\n",
+                     *(char **)ref_array_get(error_list, i, NULL));
+         }
++        ref_array_destroy(error_list);
++    }
++
++    if (ret && ret != EEXIST) {
++        GPERROR("Error when reading config directory number: %d\n", ret);
+ 
+         ref_array_destroy(error_list);
+         return ret;
+@@ -821,9 +820,7 @@ static int gp_config_from_dir(const char *config_dir,
+         ini_config_destroy(*ini_config);
+         *ini_config = result_cfg;
+     }
+-    if (error_list) {
+-        ref_array_destroy(error_list);
+-    }
++
+     return 0;
+ }
+ 

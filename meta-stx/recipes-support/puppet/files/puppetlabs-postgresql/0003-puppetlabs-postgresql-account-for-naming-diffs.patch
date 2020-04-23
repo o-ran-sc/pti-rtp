@@ -1,0 +1,67 @@
+From 01c2f67ba1a938c18f609a9ff3dabe30a547af6d Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Thu, 26 Dec 2019 11:32:12 -0800
+Subject: [PATCH] puppetlabs postgresql: account for naming diffs
+
+Centos and other distros package postgresql server into postgresql-server,
+whereas OE provides postgresql package. This causes problems during bootstrap
+and consequent failure.
+
+Here we are adding this patch as a bbappend to be removed once puppet support
+is fully functional.
+---
+ manifests/params.pp              | 8 ++++----
+ manifests/server/install.pp      | 2 +-
+ spec/unit/classes/server_spec.rb | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/manifests/params.pp b/manifests/params.pp
+index 45be360..3254d63 100644
+--- a/manifests/params.pp
++++ b/manifests/params.pp
+@@ -34,12 +34,12 @@ class postgresql::params inherits postgresql::globals {
+       $package_version    = "${version_parts[0]}${version_parts[1]}"
+ 
+       if $version == $postgresql::globals::default_version and $::operatingsystem != 'Amazon' {
+-        $client_package_name    = pick($client_package_name, 'postgresql')
+-        $server_package_name    = pick($server_package_name, 'postgresql-server')
++        $client_package_name    = pick($client_package_name, 'postgresql-client')
++        $server_package_name    = pick($server_package_name, 'postgresql')
+         $contrib_package_name   = pick($contrib_package_name,'postgresql-contrib')
+-        $devel_package_name     = pick($devel_package_name, 'postgresql-devel')
++        $devel_package_name     = pick($devel_package_name, 'postgresql-dev')
+         $java_package_name      = pick($java_package_name, 'postgresql-jdbc')
+-        $docs_package_name      = pick($docs_package_name, 'postgresql-docs')
++        $docs_package_name      = pick($docs_package_name, 'postgresql-doc')
+         $plperl_package_name    = pick($plperl_package_name, 'postgresql-plperl')
+         $plpython_package_name  = pick($plpython_package_name, 'postgresql-plpython')
+         $service_name           = pick($service_name, 'postgresql')
+diff --git a/manifests/server/install.pp b/manifests/server/install.pp
+index 8724f9f..ebee6af 100644
+--- a/manifests/server/install.pp
++++ b/manifests/server/install.pp
+@@ -11,7 +11,7 @@ class postgresql::server::install {
+     default => $package_ensure,
+   }
+ 
+-  package { 'postgresql-server':
++  package { 'postgresql':
+     ensure => $_package_ensure,
+     name   => $package_name,
+ 
+diff --git a/spec/unit/classes/server_spec.rb b/spec/unit/classes/server_spec.rb
+index 852b7e4..24e64f5 100644
+--- a/spec/unit/classes/server_spec.rb
++++ b/spec/unit/classes/server_spec.rb
+@@ -119,7 +119,7 @@ describe 'postgresql::server', :type => :class do
+     end
+ 
+     it 'should remove the package' do
+-      is_expected.to contain_package('postgresql-server').with({
++      is_expected.to contain_package('postgresql').with({
+         :ensure => 'purged',
+       })
+     end
+-- 
+2.23.0
+

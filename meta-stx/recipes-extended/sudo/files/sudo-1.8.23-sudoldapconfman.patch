@@ -1,0 +1,41 @@
+From fcd6c299111dd5dee6e387047c8f60dfef24e32a Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Wed, 11 Dec 2019 19:43:19 -0800
+
+---
+ doc/Makefile.in | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/doc/Makefile.in b/doc/Makefile.in
+index e8d2605..b2e16f4 100644
+--- a/doc/Makefile.in
++++ b/doc/Makefile.in
+@@ -349,10 +349,16 @@ install-doc: install-dirs
+ 	    rm -f $(DESTDIR)$(mandirsu)/sudoedit.$(mansectsu)$(MANCOMPRESSEXT); \
+ 	    echo ln -s sudo.$(mansectsu)$(MANCOMPRESSEXT) $(DESTDIR)$(mandirsu)/sudoedit.$(mansectsu)$(MANCOMPRESSEXT); \
+ 	    ln -s sudo.$(mansectsu)$(MANCOMPRESSEXT) $(DESTDIR)$(mandirsu)/sudoedit.$(mansectsu)$(MANCOMPRESSEXT); \
++	    rm -f $(DESTDIR)$(mandirform)/sudo-ldap.conf.$(mansectform)$(MANCOMPRESSEXT); \
++           echo ln -s sudoers.ldap.$(mansectform)$(MANCOMPRESSEXT) $(DESTDIR)$(mandirform)/sudo-ldap.conf.$(mansectform)$(MANCOMPRESSEXT); \
++           ln -s sudoers.ldap.$(mansectform)$(MANCOMPRESSEXT) $(DESTDIR)$(mandirform)/sudo-ldap.conf.$(mansectform)$(MANCOMPRESSEXT); \
+ 	else \
+ 	    rm -f $(DESTDIR)$(mandirsu)/sudoedit.$(mansectsu); \
+ 	    echo ln -s sudo.$(mansectsu) $(DESTDIR)$(mandirsu)/sudoedit.$(mansectsu); \
+ 	    ln -s sudo.$(mansectsu) $(DESTDIR)$(mandirsu)/sudoedit.$(mansectsu); \
++	    rm -f $(DESTDIR)$(mandirform)/sudo-ldap.conf.$(mansectform); \
++           echo ln -s sudoers.ldap.$(mansectform) $(DESTDIR)$(mandirform)/sudo-ldap.conf.$(mansectform); \
++           ln -s sudoers.ldap.$(mansectform) $(DESTDIR)$(mandirform)/sudo-ldap.conf.$(mansectform); \
+ 	fi
+ 
+ install-plugin:
+@@ -367,8 +373,9 @@ uninstall:
+ 		$(DESTDIR)$(mandirsu)/visudo.$(mansectsu) \
+ 		$(DESTDIR)$(mandirform)/sudo.conf.$(mansectform) \
+ 		$(DESTDIR)$(mandirform)/sudoers.$(mansectform) \
+-		$(DESTDIR)$(mandirform)/sudoers_timestamp.$(mansectform)
+-		$(DESTDIR)$(mandirform)/sudoers.ldap.$(mansectform)
++		$(DESTDIR)$(mandirform)/sudoers_timestamp.$(mansectform) \
++		$(DESTDIR)$(mandirform)/sudoers.ldap.$(mansectform) \
++		$(DESTDIR)$(mandirform)/sudo-ldap.conf.$(mansectform)
+ 
+ splint:
+ 

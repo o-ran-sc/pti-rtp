@@ -1,0 +1,26 @@
+diff --git a/manifests/init.pp b/manifests/init.pp
+index cebceec..cec4139 100644
+--- a/manifests/init.pp
++++ b/manifests/init.pp
+@@ -47,7 +47,7 @@ class puppi (
+   # Manage Version
+   $puppi_ensure = $puppi::version ? {
+     '1' => '/usr/sbin/puppi.one',
+-    '2' => '/usr/local/bin/puppi',
++    '2' => '/usr/bin/puppi',
+   }
+ 
+   file { 'puppi.link':
+diff --git a/manifests/mcollective/client.pp b/manifests/mcollective/client.pp
+index 24f2f63..5260139 100644
+--- a/manifests/mcollective/client.pp
++++ b/manifests/mcollective/client.pp
+@@ -23,7 +23,7 @@ class puppi::mcollective::client {
+   require puppi::mcollective::server
+ 
+ # OLD STYLE mc-puppi command
+-  file { '/usr/local/bin/mc-puppi':
++  file { '/usr/bin/mc-puppi':
+     ensure  => 'present',
+     mode    => '0755',
+     owner   => 'root',

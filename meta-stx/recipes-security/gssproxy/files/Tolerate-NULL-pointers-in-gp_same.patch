@@ -1,0 +1,31 @@
+From 05a2677920f0240ea302e67d699546665687dd14 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Tue, 13 Jun 2017 14:22:44 -0400
+Subject: [PATCH] Tolerate NULL pointers in gp_same
+
+Fixes potential NULL derefs of program names
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #195
+(cherry picked from commit afe4c2fe6f7f939df914959dda11131bd80ccec6)
+---
+ proxy/src/gp_util.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/proxy/src/gp_util.c b/proxy/src/gp_util.c
+index f158b84..5442992 100644
+--- a/proxy/src/gp_util.c
++++ b/proxy/src/gp_util.c
+@@ -12,10 +12,9 @@
+ 
+ bool gp_same(const char *a, const char *b)
+ {
+-    if ((a == b) || strcmp(a, b) == 0) {
++    if (a == b || (a && b && strcmp(a, b) == 0)) {
+         return true;
+     }
+-
+     return false;
+ }
+ 

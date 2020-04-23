@@ -1,0 +1,44 @@
+diff --git a/lib/facter/architecture.rb b/lib/facter/architecture.rb
+index 72c5755..14ec620 100644
+--- a/lib/facter/architecture.rb
++++ b/lib/facter/architecture.rb
+@@ -31,7 +31,7 @@ Facter.add(:architecture) do
+       end
+     when "x86_64"
+       case Facter.value(:operatingsystem)
+-      when "Debian", "Gentoo", "GNU/kFreeBSD", "Ubuntu"
++      when "Debian", "Gentoo", "GNU/kFreeBSD", "Ubuntu", "poky-stx"
+         "amd64"
+       else
+         model
+diff --git a/lib/facter/operatingsystem/linux.rb b/lib/facter/operatingsystem/linux.rb
+index de7913d..797698a 100644
+--- a/lib/facter/operatingsystem/linux.rb
++++ b/lib/facter/operatingsystem/linux.rb
+@@ -13,6 +13,8 @@ module Facter
+             @operatingsystem ||= "Ubuntu"
+           elsif lsbdistid == "LinuxMint"
+             @operatingsystem ||= "LinuxMint"
++          elsif lsbdistid == "poky-stx"
++            @operatingsystem ||= "poky-stx"
+           else
+             @operatingsystem ||= get_operatingsystem_with_release_files
+           end
+@@ -27,7 +29,7 @@ module Facter
+              "CloudLinux", "PSBM", "OracleLinux", "OVS", "OEL", "Amazon",
+              "XenServer", "VirtuozzoLinux"
+           "RedHat"
+-        when "LinuxMint", "Ubuntu", "Debian"
++        when "LinuxMint", "Ubuntu", "Debian", "poky-stx"
+           "Debian"
+         when "SLES", "SLED", "OpenSuSE", "SuSE"
+           "Suse"
+@@ -74,6 +76,8 @@ module Facter
+           get_ubuntu_release_with_release_file
+         when "VMwareESX"
+           get_vmwareESX_release_with_release_file
++        when "poky-stx"
++          get_lsbdistrelease
+         else
+           Facter.value(:kernelrelease)
+         end

@@ -1,0 +1,16 @@
+diff -ru a/manifests/params.pp b/manifests/params.pp
+--- a/manifests/params.pp	2020-03-05 13:55:59.165978792 +0800
++++ b/manifests/params.pp	2020-03-05 14:03:14.677990660 +0800
+@@ -2,7 +2,11 @@
+ class ldap::params {
+   case $::osfamily {
+     'Debian' : {
+-      $package = ['ldap-utils']
++      if $::operatingsystem == 'poky-stx' {
++          $package = ['libldap-2.4-slapd', 'libldap-2.4-bin']
++      } else {
++          $package = ['ldap-utils']
++      }
+ 
+       $prefix = '/etc/ldap'
+       $owner = 'root'

@@ -1,0 +1,26 @@
+From 0d6914c558620f8e82b2c84ce7bb4d35fdb882fd Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Thu, 31 Oct 2019 13:15:05 -0700
+Subject: [PATCH] Stx uses puppet-boolean instead of adrien-boolean
+
+Use puppet-boolean instead of adrien-boolean
+---
+ metadata.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/metadata.json b/metadata.json
+index 66dc6d7..2ca38b9 100644
+--- a/metadata.json
++++ b/metadata.json
+@@ -10,7 +10,7 @@
+   "dependencies": [
+   	{"name":"puppetlabs/stdlib","version_requirement":">= 2.3.0 < 5.0.0"},
+ 	{"name":"adrien/filemapper","version_requirement":">= 1.1.0 < 5.0.0"},
+-	{"name":"adrien/boolean","version_requirement":">= 1.0.0"},
++	{"name":"puppet/boolean","version_requirement":">= 1.0.0"},
+ 	{"name":"camptocamp/kmod","version_requirement":">= 0.0.x"}
+   ]
+ }
+-- 
+2.17.1
+

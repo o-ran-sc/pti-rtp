@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/nanliu-staging.gemspec	2019-10-31 09:06:27.338571776 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'nanliu-staging'
++  s.version     = '1.0.4'
++  s.date        = '2015-01-29'
++  s.summary     = "Compressed file staging and deployment"
++  s.description = s.summary
++  s.authors     = ["Nan Liu"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/nanliu/puppet-staging'
++  s.license     = 'Apache-2.0'
++ end

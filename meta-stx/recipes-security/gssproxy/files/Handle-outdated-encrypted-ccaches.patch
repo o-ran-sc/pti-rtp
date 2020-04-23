@@ -1,0 +1,121 @@
+From 24d776205605f3c113fdc2cb356d4c28b8033676 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Fri, 15 Sep 2017 18:07:28 -0400
+Subject: [PATCH] Handle outdated encrypted ccaches
+
+When the encrypting keytab changes, all credentials that it was used
+to encrypt must be re-created.  Otherwise, we log obtuse messages and
+fail to do what the user wants.
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #214
+(cherry picked from commit 657d3c8339309dd8e2bfa4ee10f005e0f0c055e8)
+---
+ proxy/src/gp_export.c                 | 11 ++++++-----
+ proxy/src/gp_rpc_accept_sec_context.c | 28 +++++++++++++++++++++++++++
+ proxy/src/gp_rpc_init_sec_context.c   |  2 +-
+ 3 files changed, 35 insertions(+), 6 deletions(-)
+
+diff --git a/proxy/src/gp_export.c b/proxy/src/gp_export.c
+index ab08bb7..0c39045 100644
+--- a/proxy/src/gp_export.c
++++ b/proxy/src/gp_export.c
+@@ -268,7 +268,7 @@ static int gp_decrypt_buffer(krb5_context context, krb5_keyblock *key,
+                          &enc_handle,
+                          &data_out);
+     if (ret) {
+-        return EINVAL;
++        return ret;
+     }
+ 
+     *len = data_out.length;
+@@ -446,8 +446,8 @@ uint32_t gp_import_gssx_cred(uint32_t *min, struct gp_call_ctx *gpcall,
+ {
+     gss_buffer_desc token = GSS_C_EMPTY_BUFFER;
+     struct gp_creds_handle *handle = NULL;
+-    uint32_t ret_maj;
+-    uint32_t ret_min;
++    uint32_t ret_maj = GSS_S_COMPLETE;
++    uint32_t ret_min = 0;
+     int ret;
+ 
+     handle = gp_service_get_creds_handle(gpcall->service);
+@@ -469,8 +469,9 @@ uint32_t gp_import_gssx_cred(uint32_t *min, struct gp_call_ctx *gpcall,
+                             &cred->cred_handle_reference,
+                             &token.length, token.value);
+     if (ret) {
+-        ret_maj = GSS_S_FAILURE;
+-        ret_min = ENOENT;
++        /* Allow for re-issuance of the keytab. */
++        GPDEBUG("Stored ccache failed to decrypt; treating as empty\n");
++        *out = GSS_C_NO_CREDENTIAL;
+         goto done;
+     }
+ 
+diff --git a/proxy/src/gp_rpc_accept_sec_context.c b/proxy/src/gp_rpc_accept_sec_context.c
+index ae4de55..2cdc94b 100644
+--- a/proxy/src/gp_rpc_accept_sec_context.c
++++ b/proxy/src/gp_rpc_accept_sec_context.c
+@@ -25,6 +25,13 @@ int gp_accept_sec_context(struct gp_call_ctx *gpcall,
+     int exp_creds_type;
+     uint32_t acpt_maj;
+     uint32_t acpt_min;
++    struct gp_cred_check_handle gcch = {
++        .ctx = gpcall,
++        .options.options_len = arg->accept_sec_context.options.options_len,
++        .options.options_val = arg->accept_sec_context.options.options_val,
++    };
++    uint32_t gccn_before = 0;
++    uint32_t gccn_after = 0;
+     int ret;
+ 
+     asca = &arg->accept_sec_context;
+@@ -52,6 +59,8 @@ int gp_accept_sec_context(struct gp_call_ctx *gpcall,
+         if (ret_maj) {
+             goto done;
+         }
++
++        gccn_before = gp_check_sync_creds(&gcch, ach);
+     }
+ 
+     if (ach == GSS_C_NO_CREDENTIAL) {
+@@ -146,6 +155,25 @@ int gp_accept_sec_context(struct gp_call_ctx *gpcall,
+                                               src_name, oid,
+                                               &ascr->options.options_len,
+                                               &ascr->options.options_val);
++    if (ret_maj) {
++        goto done;
++    }
++
++    gccn_after = gp_check_sync_creds(&gcch, ach);
++
++    if (gccn_before != gccn_after) {
++        /* export creds back to client for sync up */
++        ret_maj = gp_export_sync_creds(&ret_min, gpcall, &ach,
++                                       &ascr->options.options_val,
++                                       &ascr->options.options_len);
++        if (ret_maj) {
++            /* not fatal, log and continue */
++            GPDEBUG("Failed to export sync creds (%d: %d)",
++                    (int)ret_maj, (int)ret_min);
++        }
++    }
++
++    ret_maj = GSS_S_COMPLETE;
+ 
+ done:
+     if (ret_maj == GSS_S_COMPLETE) {
+diff --git a/proxy/src/gp_rpc_init_sec_context.c b/proxy/src/gp_rpc_init_sec_context.c
+index e4af495..f362dbc 100644
+--- a/proxy/src/gp_rpc_init_sec_context.c
++++ b/proxy/src/gp_rpc_init_sec_context.c
+@@ -91,7 +91,7 @@ int gp_init_sec_context(struct gp_call_ctx *gpcall,
+         gp_conv_gssx_to_buffer(isca->input_token, &ibuf);
+     }
+ 
+-    if (!isca->cred_handle) {
++    if (!ich) {
+         if (gss_oid_equal(mech_type, gss_mech_krb5)) {
+             ret_maj = gp_add_krb5_creds(&ret_min, gpcall,
+                                         ACQ_NORMAL, NULL, NULL,

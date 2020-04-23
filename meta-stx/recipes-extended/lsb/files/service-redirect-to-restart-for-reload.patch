@@ -1,0 +1,28 @@
+From cf72e404927c807e4352d867f73f2a2c409fc524 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 13 Apr 2020 23:38:43 +0800
+Subject: [PATCH] service: redirect to restart for reload
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ service | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/service b/service
+index 357c2a6..1f3976c 100755
+--- a/service
++++ b/service
+@@ -70,6 +70,10 @@ while [ $# -gt 0 ]; do
+    esac
+ done
+ 
++if [ "${ACTION}" = "reload" ]; then
++   ACTION="restart"
++fi
++
+ if [ -f "${SERVICEDIR}/${SERVICE}" ]; then
+    # LSB daemons that dies abnormally in systemd looks alive in systemd's eyes due to RemainAfterExit=yes
+    # lets reap them before next start
+-- 
+2.7.4
+

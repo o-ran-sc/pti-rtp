@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-23 20:19:32.602763995 -0700
++++ b/puppet-nssdb.gemspec	2019-10-28 13:06:00.202131209 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-nssdb'
++  s.version     = '1.0.1'
++  s.date        = '2017-05-17'
++  s.summary     = "NSS database Puppet Module"
++  s.description = s.summary
++  s.authors     = ["rcritten"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/rcritten/puppet-nssdb'
++  s.license     = 'Apache 2.0'
++ end

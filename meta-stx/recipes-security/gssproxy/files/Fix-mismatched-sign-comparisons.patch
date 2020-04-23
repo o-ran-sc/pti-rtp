@@ -1,0 +1,741 @@
+From a68b8b418bfc42c628fee605cc52dca92ab410c9 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 15 Mar 2017 14:52:08 -0400
+Subject: [PATCH] Fix mismatched sign comparisons
+
+We are c99, so also migrate to `for`-loop initializers where possible for
+clarity.
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #173
+(cherry picked from commit 377e92c7ead312c530b233a1e023493ecde033d6)
+---
+ proxy/src/client/gpm_acquire_cred.c          | 11 ++-----
+ proxy/src/client/gpm_common.c                |  4 +--
+ proxy/src/client/gpm_import_and_canon_name.c |  7 ++---
+ proxy/src/client/gpm_indicate_mechs.c        | 33 +++++++++-----------
+ proxy/src/gp_common.h                        |  3 +-
+ proxy/src/gp_config.c                        |  9 ++----
+ proxy/src/gp_conv.c                          |  6 ++--
+ proxy/src/gp_creds.c                         |  3 +-
+ proxy/src/gp_export.c                        |  9 ++----
+ proxy/src/gp_rpc_acquire_cred.c              |  5 ++-
+ proxy/src/gp_rpc_debug.c                     | 26 +++++++--------
+ proxy/src/gp_rpc_indicate_mechs.c            | 15 +++------
+ proxy/src/gp_socket.c                        |  4 +--
+ proxy/src/gp_util.c                          |  4 +--
+ proxy/tests/t_utils.c                        |  4 +--
+ 15 files changed, 58 insertions(+), 85 deletions(-)
+
+diff --git a/proxy/src/client/gpm_acquire_cred.c b/proxy/src/client/gpm_acquire_cred.c
+index 632973d..8e30e1d 100644
+--- a/proxy/src/client/gpm_acquire_cred.c
++++ b/proxy/src/client/gpm_acquire_cred.c
+@@ -6,8 +6,6 @@ static int gpmint_cred_to_actual_mechs(gssx_cred *c, gss_OID_set *a)
+ {
+     gssx_cred_element *e;
+     gss_OID_set m = GSS_C_NO_OID_SET;
+-    int i;
+-
+ 
+     if (c->elements.elements_len) {
+ 
+@@ -22,7 +20,7 @@ static int gpmint_cred_to_actual_mechs(gssx_cred *c, gss_OID_set *a)
+             return ENOMEM;
+         }
+ 
+-        for (i = 0; i < c->elements.elements_len; i++) {
++        for (unsigned i = 0; i < c->elements.elements_len; i++) {
+             e = &c->elements.elements_val[i];
+ 
+             m->elements[i].elements = gp_memdup(e->mech.octet_string_val,
+@@ -280,7 +278,6 @@ OM_uint32 gpm_inquire_cred(OM_uint32 *minor_status,
+     uint32_t ret_maj = GSS_S_COMPLETE;
+     uint32_t life;
+     int cu;
+-    int i;
+ 
+     if (!cred) {
+         *minor_status = 0;
+@@ -308,8 +305,7 @@ OM_uint32 gpm_inquire_cred(OM_uint32 *minor_status,
+     life = GSS_C_INDEFINITE;
+     cu = -1;
+ 
+-    for (i = 0; i < cred->elements.elements_len; i++) {
+-
++    for (unsigned i = 0; i < cred->elements.elements_len; i++) {
+         e = &cred->elements.elements_val[i];
+ 
+         switch (e->cred_usage) {
+@@ -402,7 +398,7 @@ OM_uint32 gpm_inquire_cred_by_mech(OM_uint32 *minor_status,
+     gss_OID_desc tmp_oid;
+     uint32_t ret_min = 0;
+     uint32_t ret_maj = GSS_S_COMPLETE;
+-    int i;
++    unsigned i;
+ 
+     if (!cred) {
+         *minor_status = 0;
+@@ -414,7 +410,6 @@ OM_uint32 gpm_inquire_cred_by_mech(OM_uint32 *minor_status,
+     }
+ 
+     for (i = 0; i < cred->elements.elements_len; i++) {
+-
+         e = &cred->elements.elements_val[i];
+         gp_conv_gssx_to_oid(&e->mech, &tmp_oid);
+         if (!gss_oid_equal(&tmp_oid, mech_type)) {
+diff --git a/proxy/src/client/gpm_common.c b/proxy/src/client/gpm_common.c
+index 030765a..8c96986 100644
+--- a/proxy/src/client/gpm_common.c
++++ b/proxy/src/client/gpm_common.c
+@@ -166,7 +166,7 @@ static int gpm_send_buffer(struct gpm_ctx *gpmctx,
+                            char *buffer, uint32_t length)
+ {
+     uint32_t size;
+-    size_t wn;
++    ssize_t wn;
+     size_t pos;
+     bool retry;
+     int ret;
+@@ -232,7 +232,7 @@ static int gpm_recv_buffer(struct gpm_ctx *gpmctx,
+                            char *buffer, uint32_t *length)
+ {
+     uint32_t size;
+-    size_t rn;
++    ssize_t rn;
+     size_t pos;
+     int ret;
+ 
+diff --git a/proxy/src/client/gpm_import_and_canon_name.c b/proxy/src/client/gpm_import_and_canon_name.c
+index 83d0736..70149a3 100644
+--- a/proxy/src/client/gpm_import_and_canon_name.c
++++ b/proxy/src/client/gpm_import_and_canon_name.c
+@@ -275,7 +275,6 @@ OM_uint32 gpm_inquire_name(OM_uint32 *minor_status,
+ {
+     gss_buffer_set_t xattrs = GSS_C_NO_BUFFER_SET;
+     int ret;
+-    int i;
+ 
+     *minor_status = 0;
+ 
+@@ -306,13 +305,13 @@ OM_uint32 gpm_inquire_name(OM_uint32 *minor_status,
+             *minor_status = ENOMEM;
+             return GSS_S_FAILURE;
+         }
+-        for (i = 0; i < xattrs->count; i++) {
++        for (unsigned i = 0; i < xattrs->count; i++) {
+             ret = gp_copy_gssx_to_buffer(
+                         &name->name_attributes.name_attributes_val[i].attr,
+                         &xattrs->elements[i]);
+             if (ret) {
+-                for (--i; i >= 0; i--) {
+-                    free(xattrs->elements[i].value);
++                for (; i > 0; i--) {
++                    free(xattrs->elements[i-1].value);
+                 }
+                 free(xattrs->elements);
+                 free(xattrs);
+diff --git a/proxy/src/client/gpm_indicate_mechs.c b/proxy/src/client/gpm_indicate_mechs.c
+index d4df923..b019a96 100644
+--- a/proxy/src/client/gpm_indicate_mechs.c
++++ b/proxy/src/client/gpm_indicate_mechs.c
+@@ -51,7 +51,6 @@ static uint32_t gpm_copy_gss_OID_set(uint32_t *minor_status,
+     gss_OID_set n;
+     uint32_t ret_maj;
+     uint32_t ret_min;
+-    int i;
+ 
+     ret_maj = gss_create_empty_oid_set(&ret_min, &n);
+     if (ret_maj) {
+@@ -59,7 +58,7 @@ static uint32_t gpm_copy_gss_OID_set(uint32_t *minor_status,
+         return ret_maj;
+     }
+ 
+-    for (i = 0; i < oldset->count; i++) {
++    for (size_t i = 0; i < oldset->count; i++) {
+         ret_maj = gss_add_oid_set_member(&ret_min, &oldset->elements[i], &n);
+         if (ret_maj) {
+             *minor_status = ret_min;
+@@ -124,7 +123,6 @@ static void gpmint_indicate_mechs(void)
+     uint32_t ret_min;
+     uint32_t ret_maj = 0;
+     int ret = 0;
+-    int i;
+ 
+     memset(arg, 0, sizeof(gssx_arg_indicate_mechs));
+     memset(res, 0, sizeof(gssx_res_indicate_mechs));
+@@ -158,7 +156,7 @@ static void gpmint_indicate_mechs(void)
+         goto done;
+     }
+ 
+-    for (i = 0; i < res->mechs.mechs_len; i++) {
++    for (unsigned i = 0; i < res->mechs.mechs_len; i++) {
+         mi = &res->mechs.mechs_val[i];
+         gi = &global_mechs.info[i];
+ 
+@@ -222,7 +220,7 @@ static void gpmint_indicate_mechs(void)
+         goto done;
+     }
+ 
+-    for (i = 0; i < res->mech_attr_descs.mech_attr_descs_len; i++) {
++    for (unsigned i = 0; i < res->mech_attr_descs.mech_attr_descs_len; i++) {
+         ma = &res->mech_attr_descs.mech_attr_descs_val[i];
+         ga = &global_mechs.desc[i];
+ 
+@@ -249,7 +247,7 @@ static void gpmint_indicate_mechs(void)
+ 
+ done:
+     if (ret || ret_maj) {
+-        for (i = 0; i < global_mechs.desc_len; i++) {
++        for (unsigned i = 0; i < global_mechs.desc_len; i++) {
+             ga = &global_mechs.desc[i];
+             gss_release_oid(&discard, &ga->attr);
+             gss_release_buffer(&discard, ga->name);
+@@ -258,7 +256,7 @@ done:
+         }
+         free(global_mechs.desc);
+         global_mechs.desc = NULL;
+-        for (i = 0; i < global_mechs.info_len; i++) {
++        for (unsigned i = 0; i < global_mechs.info_len; i++) {
+             gi = &global_mechs.info[i];
+             gss_release_oid(&discard, &gi->mech);
+             gss_release_oid_set(&discard, &gi->name_types);
+@@ -335,7 +333,6 @@ OM_uint32 gpm_inquire_names_for_mech(OM_uint32 *minor_status,
+ {
+     uint32_t ret_min;
+     uint32_t ret_maj;
+-    int i;
+ 
+     if (!minor_status) {
+         return GSS_S_CALL_INACCESSIBLE_WRITE;
+@@ -351,7 +348,7 @@ OM_uint32 gpm_inquire_names_for_mech(OM_uint32 *minor_status,
+         return GSS_S_FAILURE;
+     }
+ 
+-    for (i = 0; i < global_mechs.info_len; i++) {
++    for (unsigned i = 0; i < global_mechs.info_len; i++) {
+         if (!gpm_equal_oids(global_mechs.info[i].mech, mech_type)) {
+             continue;
+         }
+@@ -375,7 +372,6 @@ OM_uint32 gpm_inquire_mechs_for_name(OM_uint32 *minor_status,
+     uint32_t discard;
+     gss_OID name_type = GSS_C_NO_OID;
+     int present;
+-    int i;
+ 
+     if (!minor_status) {
+         return GSS_S_CALL_INACCESSIBLE_WRITE;
+@@ -402,7 +398,7 @@ OM_uint32 gpm_inquire_mechs_for_name(OM_uint32 *minor_status,
+         goto done;
+     }
+ 
+-    for (i = 0; i < global_mechs.info_len; i++) {
++    for (unsigned i = 0; i < global_mechs.info_len; i++) {
+         ret_maj = gss_test_oid_set_member(&ret_min, name_type,
+                                           global_mechs.info[i].name_types,
+                                           &present);
+@@ -439,7 +435,6 @@ OM_uint32 gpm_inquire_attrs_for_mech(OM_uint32 *minor_status,
+     uint32_t ret_min;
+     uint32_t ret_maj;
+     uint32_t discard;
+-    int i;
+ 
+     if (!minor_status) {
+         return GSS_S_CALL_INACCESSIBLE_WRITE;
+@@ -451,7 +446,7 @@ OM_uint32 gpm_inquire_attrs_for_mech(OM_uint32 *minor_status,
+         return GSS_S_FAILURE;
+     }
+ 
+-    for (i = 0; i < global_mechs.info_len; i++) {
++    for (unsigned i = 0; i < global_mechs.info_len; i++) {
+         if (!gpm_equal_oids(global_mechs.info[i].mech, mech)) {
+             continue;
+         }
+@@ -495,7 +490,6 @@ OM_uint32 gpm_inquire_saslname_for_mech(OM_uint32 *minor_status,
+     uint32_t ret_min;
+     uint32_t ret_maj;
+     uint32_t discard;
+-    int i;
+ 
+     if (!minor_status) {
+         return GSS_S_CALL_INACCESSIBLE_WRITE;
+@@ -511,7 +505,7 @@ OM_uint32 gpm_inquire_saslname_for_mech(OM_uint32 *minor_status,
+         return GSS_S_FAILURE;
+     }
+ 
+-    for (i = 0; i < global_mechs.info_len; i++) {
++    for (unsigned i = 0; i < global_mechs.info_len; i++) {
+         if (!gpm_equal_oids(global_mechs.info[i].mech, desired_mech)) {
+             continue;
+         }
+@@ -554,7 +548,6 @@ OM_uint32 gpm_display_mech_attr(OM_uint32 *minor_status,
+     uint32_t ret_min;
+     uint32_t ret_maj;
+     uint32_t discard;
+-    int i;
+ 
+     if (!minor_status) {
+         return GSS_S_CALL_INACCESSIBLE_WRITE;
+@@ -570,7 +563,7 @@ OM_uint32 gpm_display_mech_attr(OM_uint32 *minor_status,
+         return GSS_S_FAILURE;
+     }
+ 
+-    for (i = 0; i < global_mechs.desc_len; i++) {
++    for (unsigned i = 0; i < global_mechs.desc_len; i++) {
+         if (!gpm_equal_oids(global_mechs.desc[i].attr, mech_attr)) {
+             continue;
+         }
+@@ -614,7 +607,6 @@ OM_uint32 gpm_indicate_mechs_by_attrs(OM_uint32 *minor_status,
+     uint32_t ret_maj;
+     uint32_t discard;
+     int present;
+-    int i, j;
+ 
+     if (!minor_status) {
+         return GSS_S_CALL_INACCESSIBLE_WRITE;
+@@ -636,8 +628,9 @@ OM_uint32 gpm_indicate_mechs_by_attrs(OM_uint32 *minor_status,
+         return ret_maj;
+     }
+ 
+-    for (i = 0; i < global_mechs.info_len; i++) {
++    for (unsigned i = 0; i < global_mechs.info_len; i++) {
+         if (desired_mech_attrs != GSS_C_NO_OID_SET) {
++            unsigned j;
+             for (j = 0; j < desired_mech_attrs->count; j++) {
+                 ret_maj = gss_test_oid_set_member(&ret_min,
+                                             &desired_mech_attrs->elements[j],
+@@ -657,6 +650,7 @@ OM_uint32 gpm_indicate_mechs_by_attrs(OM_uint32 *minor_status,
+             }
+         }
+         if (except_mech_attrs != GSS_C_NO_OID_SET) {
++            unsigned j;
+             for (j = 0; j < except_mech_attrs->count; j++) {
+                 ret_maj = gss_test_oid_set_member(&ret_min,
+                                             &except_mech_attrs->elements[j],
+@@ -676,6 +670,7 @@ OM_uint32 gpm_indicate_mechs_by_attrs(OM_uint32 *minor_status,
+             }
+         }
+         if (critical_mech_attrs != GSS_C_NO_OID_SET) {
++            unsigned j;
+             for (j = 0; j < critical_mech_attrs->count; j++) {
+                 ret_maj = gss_test_oid_set_member(&ret_min,
+                                     &critical_mech_attrs->elements[j],
+diff --git a/proxy/src/gp_common.h b/proxy/src/gp_common.h
+index edc23b4..4f76e58 100644
+--- a/proxy/src/gp_common.h
++++ b/proxy/src/gp_common.h
+@@ -104,9 +104,8 @@ union gp_rpc_res {
+ #define gp_options_find(res, opts, name, len) \
+ do { \
+     struct gssx_option *_v; \
+-    int _o; \
+     res = NULL; \
+-    for (_o = 0; _o < opts.options_len; _o++) { \
++    for (unsigned _o = 0; _o < opts.options_len; _o++) { \
+         _v = &opts.options_val[_o]; \
+         if (gp_option_name_match(_v, name, len)) { \
+             res = _v; \
+diff --git a/proxy/src/gp_config.c b/proxy/src/gp_config.c
+index 5c1ca02..a671333 100644
+--- a/proxy/src/gp_config.c
++++ b/proxy/src/gp_config.c
+@@ -57,11 +57,9 @@ static void free_str_array(const char ***a, int *count)
+ 
+ void free_cred_store_elements(gss_key_value_set_desc *cs)
+ {
+-    int i;
+-
+     if (!cs->elements) return;
+ 
+-    for (i = 0; i < cs->count; i++) {
++    for (unsigned i = 0; i < cs->count; i++) {
+         safefree(cs->elements[i].key);
+         safefree(cs->elements[i].value);
+     }
+@@ -146,7 +144,7 @@ static int get_krb5_mech_cfg(struct gp_service *svc,
+                                      &count, &strings);
+     if (ret == 0) {
+         const char *p;
+-        size_t len;
++        ssize_t len;
+         char *key;
+ 
+         svc->krb5.store.elements =
+@@ -698,7 +696,6 @@ struct gp_creds_handle *gp_service_get_creds_handle(struct gp_service *svc)
+ void free_config(struct gp_config **cfg)
+ {
+     struct gp_config *config = *cfg;
+-    uint32_t i;
+ 
+     if (!config) {
+         return;
+@@ -709,7 +706,7 @@ void free_config(struct gp_config **cfg)
+     free(config->socket_name);
+     free(config->proxy_user);
+ 
+-    for (i=0; i < config->num_svcs; i++) {
++    for (int i = 0; i < config->num_svcs; i++) {
+         gp_service_free(config->svcs[i]);
+         safefree(config->svcs[i]);
+     }
+diff --git a/proxy/src/gp_conv.c b/proxy/src/gp_conv.c
+index 71d6d9d..b874b06 100644
+--- a/proxy/src/gp_conv.c
++++ b/proxy/src/gp_conv.c
+@@ -599,7 +599,6 @@ done:
+ int gp_conv_gssx_to_oid_set(gssx_OID_set *in, gss_OID_set *out)
+ {
+     gss_OID_set o;
+-    int i;
+ 
+     if (in->gssx_OID_set_len == 0) {
+         *out = GSS_C_NO_OID_SET;
+@@ -618,7 +617,7 @@ int gp_conv_gssx_to_oid_set(gssx_OID_set *in, gss_OID_set *out)
+         return ENOMEM;
+     }
+ 
+-    for (i = 0; i < o->count; i++) {
++    for (size_t i = 0; i < o->count; i++) {
+         o->elements[i].elements =
+                         gp_memdup(in->gssx_OID_set_val[i].octet_string_val,
+                                   in->gssx_OID_set_val[i].octet_string_len);
+@@ -641,7 +640,6 @@ int gp_conv_gssx_to_oid_set(gssx_OID_set *in, gss_OID_set *out)
+ int gp_conv_oid_set_to_gssx(gss_OID_set in, gssx_OID_set *out)
+ {
+     int ret;
+-    int i;
+ 
+     if (in->count == 0) {
+         return 0;
+@@ -653,7 +651,7 @@ int gp_conv_oid_set_to_gssx(gss_OID_set in, gssx_OID_set *out)
+         return ENOMEM;
+     }
+ 
+-    for (i = 0; i < in->count; i++) {
++    for (size_t i = 0; i < in->count; i++) {
+         ret = gp_conv_octet_string(in->elements[i].length,
+                                    in->elements[i].elements,
+                                    &out->gssx_OID_set_val[i]);
+diff --git a/proxy/src/gp_creds.c b/proxy/src/gp_creds.c
+index 6570b06..e05ad01 100644
+--- a/proxy/src/gp_creds.c
++++ b/proxy/src/gp_creds.c
+@@ -312,7 +312,6 @@ static int gp_get_cred_environment(struct gp_call_ctx *gpcall,
+     int k_num = -1;
+     int ck_num = -1;
+     int cc_num = -1;
+-    int d;
+ 
+     memset(cs, 0, sizeof(gss_key_value_set_desc));
+ 
+@@ -419,7 +418,7 @@ static int gp_get_cred_environment(struct gp_call_ctx *gpcall,
+         ret = ENOMEM;
+         goto done;
+     }
+-    for (d = 0; d < svc->krb5.store.count; d++) {
++    for (unsigned d = 0; d < svc->krb5.store.count; d++) {
+         if (strcmp(svc->krb5.store.elements[d].key, "client_keytab") == 0) {
+             ck_num = cs->count;
+         } else if (strcmp(svc->krb5.store.elements[d].key, "keytab") == 0) {
+diff --git a/proxy/src/gp_export.c b/proxy/src/gp_export.c
+index 12b8d5f..3a927c9 100644
+--- a/proxy/src/gp_export.c
++++ b/proxy/src/gp_export.c
+@@ -288,7 +288,6 @@ uint32_t gp_export_gssx_cred(uint32_t *min, struct gp_call_ctx *gpcall,
+     uint32_t acceptor_lifetime = 0;
+     struct gssx_cred_element *el;
+     int ret;
+-    int i, j;
+     struct gp_creds_handle *handle = NULL;
+     gss_buffer_desc token = GSS_C_EMPTY_BUFFER;
+ 
+@@ -314,8 +313,7 @@ uint32_t gp_export_gssx_cred(uint32_t *min, struct gp_call_ctx *gpcall,
+     }
+     out->elements.elements_len = mechanisms->count;
+ 
+-    for (i = 0, j = 0; i < mechanisms->count; i++, j++) {
+-
++    for (unsigned i = 0, j = 0; i < mechanisms->count; i++, j++) {
+         el = &out->elements.elements_val[j];
+ 
+         ret_maj = gss_inquire_cred_by_mech(&ret_min, *in,
+@@ -399,11 +397,10 @@ static void gp_set_cred_options(gssx_cred *cred, gss_cred_id_t gss_cred)
+     krb5_enctype *ktypes;
+     bool no_ci_flags = false;
+     uint32_t maj, min;
+-    int i, j;
+ 
+-    for (i = 0; i < cred->elements.elements_len; i++) {
++    for (unsigned i = 0; i < cred->elements.elements_len; i++) {
+         ce = &cred->elements.elements_val[i];
+-        for (j = 0; j < ce->options.options_len; j++) {
++        for (unsigned j = 0; j < ce->options.options_len; j++) {
+             op = &ce->options.options_val[j];
+             if ((op->option.octet_string_len ==
+                     sizeof(KRB5_SET_ALLOWED_ENCTYPE)) &&
+diff --git a/proxy/src/gp_rpc_acquire_cred.c b/proxy/src/gp_rpc_acquire_cred.c
+index e9c7d56..fcb4fbe 100644
+--- a/proxy/src/gp_rpc_acquire_cred.c
++++ b/proxy/src/gp_rpc_acquire_cred.c
+@@ -20,7 +20,6 @@ int gp_acquire_cred(struct gp_call_ctx *gpcall,
+     gss_cred_id_t *add_out_cred = NULL;
+     int acquire_type = ACQ_NORMAL;
+     int ret;
+-    int i;
+ 
+     aca = &arg->acquire_cred;
+     acr = &res->acquire_cred;
+@@ -63,7 +62,7 @@ int gp_acquire_cred(struct gp_call_ctx *gpcall,
+             goto done;
+         }
+ 
+-        for (i = 0; i < desired_mechs->count; i++) {
++        for (unsigned i = 0; i < desired_mechs->count; i++) {
+             desired_mech = &desired_mechs->elements[i];
+ 
+             if (!gp_creds_allowed_mech(gpcall, desired_mech)) {
+@@ -93,7 +92,7 @@ int gp_acquire_cred(struct gp_call_ctx *gpcall,
+ 
+     cred_usage = gp_conv_gssx_to_cred_usage(aca->cred_usage);
+ 
+-    for (i = 0; i < use_mechs->count; i++) {
++    for (unsigned i = 0; i < use_mechs->count; i++) {
+         desired_mech = &use_mechs->elements[i];
+         /* this should really be folded into an extended
+          * gss_add_cred in gssapi that can accept a set of URIs
+diff --git a/proxy/src/gp_rpc_debug.c b/proxy/src/gp_rpc_debug.c
+index 2e2c050..a814448 100644
+--- a/proxy/src/gp_rpc_debug.c
++++ b/proxy/src/gp_rpc_debug.c
+@@ -19,7 +19,7 @@ void gpdbg_octet_string(octet_string *x)
+         }
+         fprintf(stderr, "... ] ");
+     } else {
+-        for (int i = 0; i < x->octet_string_len; i++) {
++        for (unsigned i = 0; i < x->octet_string_len; i++) {
+             fprintf(stderr, "%x", x->octet_string_val[i]);
+         }
+         fprintf(stderr, " ] ");
+@@ -55,7 +55,7 @@ void gpdbg_gssx_OID(gssx_OID *x)
+ void gpdbg_gssx_OID_set(gssx_OID_set *x)
+ {
+     gp_debug_printf("{ ");
+-    for (int i = 0; i < x->gssx_OID_set_len; i++) {
++    for (unsigned i = 0; i < x->gssx_OID_set_len; i++) {
+         gpdbg_gssx_OID(&x->gssx_OID_set_val[i]);
+     }
+     gp_debug_printf("} ");
+@@ -90,7 +90,7 @@ void gpdbg_gssx_option(gssx_option *x)
+ #define gpdbg_extensions(x) do { \
+     if ((x)->extensions.extensions_len > 0) { \
+         gp_debug_printf("[ "); \
+-        for (int i = 0; i < (x)->extensions.extensions_len; i++) { \
++        for (unsigned i = 0; i < (x)->extensions.extensions_len; i++) { \
+             gpdbg_gssx_option(&(x)->extensions.extensions_val[i]); \
+         } \
+         gp_debug_printf("] "); \
+@@ -100,7 +100,7 @@ void gpdbg_gssx_option(gssx_option *x)
+ #define gpdbg_options(x) do { \
+     if ((x)->options.options_len > 0) { \
+         gp_debug_printf("[ "); \
+-        for (int i = 0; i < (x)->options.options_len; i++) { \
++        for (unsigned i = 0; i < (x)->options.options_len; i++) { \
+             gpdbg_gssx_option(&(x)->options.options_val[i]); \
+         } \
+         gp_debug_printf("] "); \
+@@ -168,7 +168,7 @@ void gpdbg_gssx_call_ctx(gssx_call_ctx *x)
+ #define gpdbg_name_attributes(X) do { \
+     gp_debug_printf("[ "); \
+     if (x->name_attributes.name_attributes_len > 0) { \
+-        for (int i = 0; i < x->name_attributes.name_attributes_len; i++) { \
++        for (unsigned i = 0; i < x->name_attributes.name_attributes_len; i++) { \
+             gpdbg_gssx_name_attr( \
+                 &x->name_attributes.name_attributes_val[i]); \
+         } \
+@@ -209,7 +209,7 @@ void gpdbg_gssx_cred(gssx_cred *x)
+     gp_debug_printf("{ ");
+     gpdbg_gssx_name(&x->desired_name);
+     gp_debug_printf("[ ");
+-    for (int i = 0; i < x->elements.elements_len; i++) {
++    for (unsigned i = 0; i < x->elements.elements_len; i++) {
+         gpdbg_gssx_cred_element(&x->elements.elements_val[i]);
+     }
+     gp_debug_printf("] ");
+@@ -289,17 +289,17 @@ void gpdbg_gssx_res_indicate_mechs(gssx_res_indicate_mechs *x)
+     gp_debug_printf("    GSSX_RES_INDICATE_MECHS( status: ");
+     gpdbg_gssx_status(&x->status);
+     gp_debug_printf("mechs: [ ");
+-    for (int i = 0; i < x->mechs.mechs_len; i++) {
++    for (unsigned i = 0; i < x->mechs.mechs_len; i++) {
+         gpdbg_gssx_mech_info(&x->mechs.mechs_val[i]);
+     }
+     gp_debug_printf("] ");
+     gp_debug_printf("mech_attr_descs: [ ");
+-    for (int i = 0; i < x->mech_attr_descs.mech_attr_descs_len; i++) {
++    for (unsigned i = 0; i < x->mech_attr_descs.mech_attr_descs_len; i++) {
+         gpdbg_gssx_mech_attr(&x->mech_attr_descs.mech_attr_descs_val[i]);
+     }
+     gp_debug_printf("] ");
+     gp_debug_printf("supported_extensions: [ ");
+-    for (int i = 0;
++    for (unsigned i = 0;
+          i < x->supported_extensions.supported_extensions_len; i++) {
+         gpdbg_gssx_buffer(
+             &x->supported_extensions.supported_extensions_val[i]);
+@@ -602,7 +602,7 @@ void gpdbg_gssx_arg_wrap(gssx_arg_wrap *x)
+     gp_debug_printf("conf_req: ");
+     gp_debug_printf("%d ", (int)x->conf_req);
+     gp_debug_printf("message_buffer: [ ");
+-    for (int i = 0; i < x->message_buffer.message_buffer_len; i++) {
++    for (unsigned i = 0; i < x->message_buffer.message_buffer_len; i++) {
+         gpdbg_octet_string(&x->message_buffer.message_buffer_val[i]);
+     }
+     gp_debug_printf("] ");
+@@ -618,7 +618,7 @@ void gpdbg_gssx_res_wrap(gssx_res_wrap *x)
+     gp_debug_printf("context_handle: ");
+     GPRPCDEBUG(gssx_ctx, x->context_handle);
+     gp_debug_printf("token_buffer: [ ");
+-    for (int i = 0; i < x->token_buffer.token_buffer_len; i++) {
++    for (unsigned i = 0; i < x->token_buffer.token_buffer_len; i++) {
+         gpdbg_octet_string(&x->token_buffer.token_buffer_val[i]);
+     }
+     gp_debug_printf("] ");
+@@ -640,7 +640,7 @@ void gpdbg_gssx_arg_unwrap(gssx_arg_unwrap *x)
+     gp_debug_printf("context_handle: ");
+     gpdbg_gssx_ctx(&x->context_handle);
+     gp_debug_printf("token_buffer: [ ");
+-    for (int i = 0; i < x->token_buffer.token_buffer_len; i++) {
++    for (unsigned i = 0; i < x->token_buffer.token_buffer_len; i++) {
+         gpdbg_octet_string(&x->token_buffer.token_buffer_val[i]);
+     }
+     gp_debug_printf("] ");
+@@ -656,7 +656,7 @@ void gpdbg_gssx_res_unwrap(gssx_res_unwrap *x)
+     gp_debug_printf("context_handle: ");
+     GPRPCDEBUG(gssx_ctx, x->context_handle);
+     gp_debug_printf("message_buffer: [ ");
+-    for (int i = 0; i < x->message_buffer.message_buffer_len; i++) {
++    for (unsigned i = 0; i < x->message_buffer.message_buffer_len; i++) {
+         gpdbg_octet_string(&x->message_buffer.message_buffer_val[i]);
+     }
+     gp_debug_printf("] ");
+diff --git a/proxy/src/gp_rpc_indicate_mechs.c b/proxy/src/gp_rpc_indicate_mechs.c
+index 8abbc7f..6ae6756 100644
+--- a/proxy/src/gp_rpc_indicate_mechs.c
++++ b/proxy/src/gp_rpc_indicate_mechs.c
+@@ -25,8 +25,7 @@ int gp_indicate_mechs(struct gp_call_ctx *gpcall UNUSED,
+     uint32_t ret_maj;
+     uint32_t ret_min;
+     int present;
+-    int h, i, j;
+-    int ret;
++     int ret;
+ 
+     ima = &arg->indicate_mechs;
+     imr = &res->indicate_mechs;
+@@ -53,8 +52,7 @@ int gp_indicate_mechs(struct gp_call_ctx *gpcall UNUSED,
+     }
+     imr->mechs.mechs_len = mech_set->count;
+ 
+-    for (i = 0, h = 0; i < mech_set->count; i++, h++) {
+-
++    for (unsigned i = 0, h = 0; i < mech_set->count; i++, h++) {
+         mi = &imr->mechs.mechs_val[h];
+ 
+         ret = gp_conv_oid_to_gssx(&mech_set->elements[i], &mi->mech);
+@@ -104,8 +102,7 @@ int gp_indicate_mechs(struct gp_call_ctx *gpcall UNUSED,
+             ret_min = ret;
+             goto done;
+         }
+-        for (j = 0; j < mech_attrs->count; j++) {
+-
++        for (unsigned j = 0; j < mech_attrs->count; j++) {
+             ret_maj = gss_test_oid_set_member(&ret_min,
+                                               &mech_attrs->elements[j],
+                                               attr_set,
+@@ -136,8 +133,7 @@ int gp_indicate_mechs(struct gp_call_ctx *gpcall UNUSED,
+             goto done;
+         }
+ 
+-        for (j = 0; j < known_mech_attrs->count; j++) {
+-
++        for (unsigned j = 0; j < known_mech_attrs->count; j++) {
+             ret_maj = gss_test_oid_set_member(&ret_min,
+                                               &known_mech_attrs->elements[j],
+                                               attr_set,
+@@ -205,8 +201,7 @@ int gp_indicate_mechs(struct gp_call_ctx *gpcall UNUSED,
+     }
+     imr->mech_attr_descs.mech_attr_descs_len = attr_set->count;
+ 
+-    for (i = 0; i < attr_set->count; i++) {
+-
++    for (unsigned i = 0; i < attr_set->count; i++) {
+         ma = &imr->mech_attr_descs.mech_attr_descs_val[i];
+ 
+         ret = gp_conv_oid_to_gssx(&attr_set->elements[i], &ma->attr);
+diff --git a/proxy/src/gp_socket.c b/proxy/src/gp_socket.c
+index 829ff21..17ecf7c 100644
+--- a/proxy/src/gp_socket.c
++++ b/proxy/src/gp_socket.c
+@@ -303,7 +303,7 @@ static void gp_socket_read(verto_ctx *vctx, verto_ev *ev)
+     struct gp_buffer *rbuf;
+     uint32_t size;
+     bool header = false;
+-    size_t rn;
++    ssize_t rn;
+     int ret;
+     int fd;
+ 
+@@ -487,7 +487,7 @@ static void gp_socket_write(verto_ctx *vctx, verto_ev *ev)
+         return;
+     }
+     if (vecs == 2) {
+-        if (wn < sizeof(size)) {
++        if (wn < (ssize_t) sizeof(size)) {
+             /* don't bother trying to handle sockets that can't
+              * buffer even 4 bytes */
+             gp_conn_free(wbuf->conn);
+diff --git a/proxy/src/gp_util.c b/proxy/src/gp_util.c
+index ca83eb3..f158b84 100644
+--- a/proxy/src/gp_util.c
++++ b/proxy/src/gp_util.c
+@@ -109,7 +109,7 @@ char *gp_strerror(int errnum)
+ ssize_t gp_safe_read(int fd, void *buf, size_t count)
+ {
+     char *b = (char *)buf;
+-    ssize_t len = 0;
++    size_t len = 0;
+     ssize_t ret;
+ 
+     do {
+@@ -128,7 +128,7 @@ ssize_t gp_safe_read(int fd, void *buf, size_t count)
+ ssize_t gp_safe_write(int fd, const void *buf, size_t count)
+ {
+     const char *b = (const char *)buf;
+-    ssize_t len = 0;
++    size_t len = 0;
+     ssize_t ret;
+ 
+     do {
+diff --git a/proxy/tests/t_utils.c b/proxy/tests/t_utils.c
+index 6af9a16..36f7bd1 100644
+--- a/proxy/tests/t_utils.c
++++ b/proxy/tests/t_utils.c
+@@ -8,7 +8,7 @@
+ int t_send_buffer(int fd, char *buf, uint32_t len)
+ {
+     uint32_t size;
+-    size_t wn;
++    ssize_t wn;
+     size_t pos;
+ 
+     size = htonl(len);
+@@ -36,7 +36,7 @@ int t_send_buffer(int fd, char *buf, uint32_t len)
+ int t_recv_buffer(int fd, char *buf, uint32_t *len)
+ {
+     uint32_t size;
+-    size_t rn;
++    ssize_t rn;
+     size_t pos;
+ 
+     rn = read(fd, &size, sizeof(uint32_t));

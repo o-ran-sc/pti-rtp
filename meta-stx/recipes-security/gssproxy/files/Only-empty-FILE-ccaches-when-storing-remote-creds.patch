@@ -1,0 +1,55 @@
+From 1fa33903be640f8d22757d21da294e70f0812698 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Tue, 10 Oct 2017 18:00:45 -0400
+Subject: [PATCH] Only empty FILE ccaches when storing remote creds
+
+This mitigates issues when services share a ccache between two
+processes.  We cannot fix this for FILE ccaches without introducing
+other issues.
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #216
+(cherry picked from commit d09e87f47a21dd250bfd7a9c59a5932b5c995057)
+---
+ proxy/src/mechglue/gpp_creds.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/proxy/src/mechglue/gpp_creds.c b/proxy/src/mechglue/gpp_creds.c
+index 9fe9bd1..6bdff45 100644
+--- a/proxy/src/mechglue/gpp_creds.c
++++ b/proxy/src/mechglue/gpp_creds.c
+@@ -147,6 +147,7 @@ uint32_t gpp_store_remote_creds(uint32_t *min, bool default_creds,
+     char cred_name[creds->desired_name.display_name.octet_string_len + 1];
+     XDR xdrctx;
+     bool xdrok;
++    const char *cc_type;
+ 
+     *min = 0;
+ 
+@@ -193,13 +194,20 @@ uint32_t gpp_store_remote_creds(uint32_t *min, bool default_creds,
+     }
+     cred.ticket.length = xdr_getpos(&xdrctx);
+ 
+-    /* Always initialize and destroy any existing contents to avoid pileup of
+-     * entries */
+-    ret = krb5_cc_initialize(ctx, ccache, cred.client);
+-    if (ret == 0) {
+-        ret = krb5_cc_store_cred(ctx, ccache, &cred);
++    cc_type = krb5_cc_get_type(ctx, ccache);
++    if (strcmp(cc_type, "FILE") == 0) {
++        /* FILE ccaches don't handle updates properly: if they have the same
++         * principal name, they are blackholed.  We either have to change the
++         * name (at which point the file grows forever) or flash the cache on
++         * every update. */
++        ret = krb5_cc_initialize(ctx, ccache, cred.client);
++        if (ret != 0) {
++            goto done;
++        }
+     }
+ 
++    ret = krb5_cc_store_cred(ctx, ccache, &cred);
++
+ done:
+     if (ctx) {
+         krb5_free_cred_contents(ctx, &cred);

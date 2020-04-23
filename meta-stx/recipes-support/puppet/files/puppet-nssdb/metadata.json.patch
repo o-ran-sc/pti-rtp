@@ -1,0 +1,16 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/metadata.json	2019-10-31 15:37:09.270028865 -0700
+@@ -0,0 +1,13 @@
++{
++  "name": "rcritten/nssdb",
++  "version": "1.0.1",
++  "author": "Rob Crittenden",
++  "summary": "NSS database Puppet Module.",
++  "license": "Apache-2.0",
++  "source": "https://github.com/netmanagers/puppet-dnsmasq",
++  "project_page": "https://github.com/rcritten/puppet-nssdb",
++  "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
++  "dependencies": [
++  	{"name":"puppetlabs/stdlib","version_requirement":">= 0.0.1"}
++  ]
++}

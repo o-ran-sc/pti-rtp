@@ -1,0 +1,17 @@
+diff --git a/Makefile b/Makefile
+index 7436c1c..91a4fd1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -56,9 +56,9 @@ install: all
+ 		install -m 755 grubby $(DESTDIR)$(PREFIX)/sbin ; \
+ 		install -m 644 grubby.8 $(DESTDIR)/$(mandir)/man8 ; \
+ 	fi
+-	mkdir -p $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby
+-	install -m 644 grub_cfg_update.py $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby/grub_cfg_update.py
+-	install -m 644 __init__.py $(DESTDIR)/usr/lib64/python2.7/site-packages/grubby/__init__.py
++	mkdir -p $(DESTDIR)/$(libdir)/python2.7/site-packages/grubby
++	install -m 644 grub_cfg_update.py $(DESTDIR)/$(libdir)/python2.7/site-packages/grubby/grub_cfg_update.py
++	install -m 644 __init__.py $(DESTDIR)/$(libdir)/python2.7/site-packages/grubby/__init__.py
+ 	install -m 500 grub-cfg-update $(DESTDIR)$(PREFIX)/sbin/grub-cfg-update
+ 
+ 

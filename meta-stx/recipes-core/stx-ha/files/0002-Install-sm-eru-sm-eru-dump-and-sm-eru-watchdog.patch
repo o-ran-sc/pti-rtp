@@ -1,0 +1,30 @@
+From bfde9f6164bd729764ad3f85b0c1aacce01ba4d0 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Fri, 24 Jan 2020 13:11:25 -0800
+Subject: [PATCH 2/2] Install sm-eru, sm-eru-dump, and sm-eru-watchdog
+
+---
+ service-mgmt/sm-common/src/Makefile | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/service-mgmt/sm-common/src/Makefile b/service-mgmt/sm-common/src/Makefile
+index 99f736d..7d138f9 100644
+--- a/service-mgmt/sm-common/src/Makefile
++++ b/service-mgmt/sm-common/src/Makefile
+@@ -69,8 +69,11 @@ install:
+ 	# install of these 3 are in the .spec file so that they can be
+ 	# renamed with '-' like they are in the bitbake file.
+ 	#
+-	# install -d $(DEST_DIR)$(BIN_DIR)
+-	# install sm_watchdog sm_eru sm_eru_dump $(DEST_DIR)$(BIN_DIR)
++
++	install -d -m 755 $(DEST_DIR)$(BIN_DIR)
++	install -p -m 755 sm_eru $(DEST_DIR)$(BIN_DIR)/sm-eru 
++	install -p -m 755 sm_eru_dump $(DEST_DIR)$(BIN_DIR)/sm-eru-dump
++	install -p -m 755 sm_watchdog $(DEST_DIR)$(BIN_DIR)/sm-watchdog
+ 	install -d $(DEST_DIR)$(LIB_DIR)
+ 	install libsm_common.so.${VER} $(DEST_DIR)$(LIB_DIR)
+ 	cp -P libsm_common.so libsm_common.so.$(VER_MJR) $(DEST_DIR)$(LIB_DIR)
+-- 
+2.23.0
+

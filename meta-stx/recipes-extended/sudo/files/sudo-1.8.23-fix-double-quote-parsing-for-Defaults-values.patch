@@ -1,0 +1,86 @@
+From 1a9754ec64f703542a5faf9ae9c5058b50047b26 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Wed, 11 Dec 2019 19:43:19 -0800
+ sudo-1.8.23-fix-double-quote-parsing-for-Defaults-values.patch
+
+---
+ plugins/sudoers/regress/sudoers/test2.json.ok | 6 +++---
+ plugins/sudoers/regress/sudoers/test2.toke.ok | 6 +++---
+ plugins/sudoers/toke.c                        | 2 +-
+ plugins/sudoers/toke.l                        | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/plugins/sudoers/regress/sudoers/test2.json.ok b/plugins/sudoers/regress/sudoers/test2.json.ok
+index 8e6656e..769c3fd 100644
+--- a/plugins/sudoers/regress/sudoers/test2.json.ok
++++ b/plugins/sudoers/regress/sudoers/test2.json.ok
+@@ -34,7 +34,7 @@
+         },
+         {
+             "Binding": [
+-                { "username": "%them" }
++                { "usergroup": "them" }
+             ],
+             "Options": [
+                 { "set_home": true }
+@@ -42,7 +42,7 @@
+         },
+         {
+             "Binding": [
+-                { "username": "%: non UNIX 0 c" }
++                { "nonunixgroup": " non UNIX 0 c" }
+             ],
+             "Options": [
+                 { "set_home": true }
+@@ -50,7 +50,7 @@
+         },
+         {
+             "Binding": [
+-                { "username": "+net" }
++                { "netgroup": "net" }
+             ],
+             "Options": [
+                 { "set_home": true }
+diff --git a/plugins/sudoers/regress/sudoers/test2.toke.ok b/plugins/sudoers/regress/sudoers/test2.toke.ok
+index fcd7b73..63e1648 100644
+--- a/plugins/sudoers/regress/sudoers/test2.toke.ok
++++ b/plugins/sudoers/regress/sudoers/test2.toke.ok
+@@ -29,9 +29,9 @@ DEFAULTS_HOST BEGINSTR STRBODY ENDSTR WORD(4) DEFVAR
+ #
+ DEFAULTS_USER BEGINSTR STRBODY ENDSTR WORD(4) DEFVAR 
+ DEFAULTS_USER BEGINSTR STRBODY ENDSTR WORD(4) DEFVAR 
+-DEFAULTS_USER BEGINSTR STRBODY ENDSTR WORD(4) DEFVAR 
+-DEFAULTS_USER BEGINSTR STRBODY ENDSTR WORD(4) DEFVAR 
+-DEFAULTS_USER BEGINSTR STRBODY ENDSTR WORD(4) DEFVAR 
++DEFAULTS_USER BEGINSTR STRBODY ENDSTR USERGROUP DEFVAR 
++DEFAULTS_USER BEGINSTR STRBODY ENDSTR USERGROUP DEFVAR 
++DEFAULTS_USER BEGINSTR STRBODY ENDSTR NETGROUP DEFVAR 
+ 
+ #
+ DEFAULTS_RUNAS BEGINSTR STRBODY ENDSTR WORD(4) DEFVAR 
+diff --git a/plugins/sudoers/toke.c b/plugins/sudoers/toke.c
+index d0dd5e3..784218b 100644
+--- a/plugins/sudoers/toke.c
++++ b/plugins/sudoers/toke.c
+@@ -2512,7 +2512,7 @@ YY_RULE_SETUP
+ 				LEXTRACE("ERROR "); /* empty string */
+ 				LEXRETURN(ERROR);
+ 			    }
+-			    if (prev_state == INITIAL) {
++			    if (prev_state == INITIAL || prev_state == GOTDEFS) {
+ 				switch (sudoerslval.string[0]) {
+ 				case '%':
+ 				    if (sudoerslval.string[1] == '\0' ||
+diff --git a/plugins/sudoers/toke.l b/plugins/sudoers/toke.l
+index d275a26..638d9ea 100644
+--- a/plugins/sudoers/toke.l
++++ b/plugins/sudoers/toke.l
+@@ -178,7 +178,7 @@ DEFVAR			[a-z_]+
+ 				LEXTRACE("ERROR "); /* empty string */
+ 				LEXRETURN(ERROR);
+ 			    }
+-			    if (prev_state == INITIAL) {
++			    if (prev_state == INITIAL || prev_state == GOTDEFS) {
+ 				switch (sudoerslval.string[0]) {
+ 				case '%':
+ 				    if (sudoerslval.string[1] == '\0' ||

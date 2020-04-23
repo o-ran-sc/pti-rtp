@@ -1,0 +1,36 @@
+From b990cc6c5fad7fb0599dbdbb0ea693dca885d1ed Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Fri, 24 Jan 2020 14:16:16 -0800
+Subject: [PATCH] pragma ignore -Wunused-result errors with gcc 8.3
+
+---
+ service-mgmt/sm/src/sm_node_api.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/service-mgmt/sm/src/sm_node_api.cpp b/service-mgmt/sm/src/sm_node_api.cpp
+index 179ec77..2866dbe 100644
+--- a/service-mgmt/sm/src/sm_node_api.cpp
++++ b/service-mgmt/sm/src/sm_node_api.cpp
+@@ -829,7 +829,9 @@ static bool sm_node_api_reboot_timeout( SmTimerIdT timer_id, int64_t user_data )
+         return( true );
+     }
+ 
++#pragma GCC diagnostic ignored "-Wunused-result"
+     write( sysrq_handler_fd, "1", 1 );
++#pragma GCC diagnostic error "-Wunused-result"
+     close( sysrq_handler_fd );
+ 
+     // Trigger sysrq command.
+@@ -856,7 +858,9 @@ static bool sm_node_api_reboot_timeout( SmTimerIdT timer_id, int64_t user_data )
+               "************************************" );
+ 
+     sleep(5); // wait 5 seconds before a forced reboot.
++#pragma GCC diagnostic ignored "-Wunused-result"
+     write( sysrq_tigger_fd, "b", 1 ); 
++#pragma GCC diagnostic error "-Wunused-result"
+     close( sysrq_tigger_fd );
+ 
+     return( true );
+-- 
+2.23.0
+

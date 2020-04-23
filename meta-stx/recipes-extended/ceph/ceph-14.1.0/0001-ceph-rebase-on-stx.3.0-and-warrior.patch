@@ -1,0 +1,62 @@
+From 3763a20314ec2b80ec9d8525a1d3867b3c731266 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Sat, 22 Feb 2020 04:48:04 -0800
+Subject: [PATCH] ceph rebase on stx.3.0 and warrior
+
+From 03340eaf0004e3cc8e3f8991ea96a46757d92830 Mon Sep 17 00:00:00 2001
+From: Don Penney <don.penney@windriver.com>
+Date: Sat, 26 Jan 2019 13:34:55 -0500
+Subject: [PATCH] Add hooks for orderly shutdown on controller
+
+Hook the ceph init script to add systemd overrides to define
+an orderly shutdown for StarlingX controllers.
+---
+ src/init-ceph.in | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/src/init-ceph.in b/src/init-ceph.in
+index 1843710..a31b900 100755
+--- a/src/init-ceph.in
++++ b/src/init-ceph.in
+@@ -434,6 +434,38 @@ for name in $what; do
+ 		continue
+ 	    fi
+ 
++            . /etc/platform/platform.conf
++            if [ "${nodetype}" = "controller" ]; then
++                # StarlingX: Hook the transient services launched by systemd-run
++                # to allow for proper cleanup and orderly shutdown
++
++                # Set nullglob so wildcards will return empty string if no match
++                shopt -s nullglob
++
++                OSD_SERVICES=$(for svc in /run/systemd/system/ceph-osd*.service; do basename $svc; done | xargs echo)
++                for d in /run/systemd/system/ceph-osd*.d; do
++                    cat <<EOF > $d/starlingx-overrides.conf
++[Unit]
++Before=docker.service
++After=sm-shutdown.service
++
++EOF
++                done
++
++                for d in /run/systemd/system/ceph-mon*.d; do
++                    cat <<EOF > $d/starlingx-overrides.conf
++[Unit]
++Before=docker.service
++After=sm-shutdown.service ${OSD_SERVICES}
++
++EOF
++                done
++
++                shopt -u nullglob
++
++                systemctl daemon-reload
++            fi
++
+ 	    [ -n "$post_start" ] && do_cmd "$post_start"
+ 	    [ -n "$lockfile" ] && [ "$?" -eq 0 ] && touch $lockfile
+ 	    ;;
+-- 
+2.23.0
+

@@ -1,0 +1,12 @@
+diff --git a/lib/puppet/provider/package/dnf.rb b/lib/puppet/provider/package/dnf.rb
+index e144a1a..8497bec 100644
+--- a/lib/puppet/provider/package/dnf.rb
++++ b/lib/puppet/provider/package/dnf.rb
+@@ -29,6 +29,7 @@ Puppet::Type.type(:package).provide :dnf, :parent => :yum do
+   end
+ 
+   defaultfor :operatingsystem => :fedora, :operatingsystemmajrelease => ['22', '23', '24']
++  defaultfor :operatingsystem => :"poky-stx"
+ 
+   def self.update_command
+     # In DNF, update is deprecated for upgrade

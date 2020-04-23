@@ -1,0 +1,28 @@
+From 8a7fc8e280e31fd8c277adc4f74cc26c341a71b4 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Tue, 12 Sep 2017 12:40:27 -0400
+Subject: [PATCH] Prevent uninitialized read in error path of XDR contexts
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #211
+(cherry picked from commit 8ba0f42f06bc7d0ed68cb2eb3ef2794fc860ac2d)
+---
+ proxy/src/client/gpm_common.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/proxy/src/client/gpm_common.c b/proxy/src/client/gpm_common.c
+index c65c69d..d0f99d6 100644
+--- a/proxy/src/client/gpm_common.c
++++ b/proxy/src/client/gpm_common.c
+@@ -656,8 +656,8 @@ int gpm_make_call(int proc, union gp_rpc_arg *arg, union gp_rpc_res *res)
+ {
+     struct gpm_ctx *gpmctx;
+     gp_rpc_msg msg;
+-    XDR xdr_call_ctx;
+-    XDR xdr_reply_ctx;
++    XDR xdr_call_ctx = {0};
++    XDR xdr_reply_ctx = {0};
+     char *send_buffer = NULL;
+     char *recv_buffer = NULL;
+     uint32_t send_length;

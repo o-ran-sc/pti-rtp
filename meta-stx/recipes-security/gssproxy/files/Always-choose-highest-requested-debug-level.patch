@@ -1,0 +1,107 @@
+From 08fab6898a9937fbc39de6222cd33167707cd763 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 11 Apr 2018 16:15:00 -0400
+Subject: [PATCH] Always choose highest requested debug level
+
+Allowing the CLI to lower the debug level specified in a config file
+is dubious, and previously broken since we don't distinguish "default
+value" from "explicitly requested value of 0" in popt.  This resulted
+in "Debug Enabled (level: 0)" even when the log level was not actually
+0, which is confusing for users.
+
+Remove the gp_debug_args() function since it is no longer used.
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #229
+(cherry picked from commit 5a714768aec776dc875237dd729c85389932a688)
+---
+ proxy/src/gp_debug.c | 34 ++++++++--------------------------
+ proxy/src/gp_debug.h |  3 +--
+ proxy/src/gssproxy.c |  2 +-
+ 3 files changed, 10 insertions(+), 29 deletions(-)
+
+diff --git a/proxy/src/gp_debug.c b/proxy/src/gp_debug.c
+index 4a141fc..a0f51f0 100644
+--- a/proxy/src/gp_debug.c
++++ b/proxy/src/gp_debug.c
+@@ -1,4 +1,4 @@
+-/* Copyright (C) 2011 the GSS-PROXY contributors, see COPYING for license */
++/* Copyright (C) 2011,2018 the GSS-PROXY contributors, see COPYING for license */
+ 
+ #include "config.h"
+ #include <stdbool.h>
+@@ -7,35 +7,17 @@
+ #include "gp_log.h"
+ 
+ /* global debug switch */
+-int gp_debug;
+-
+-int gp_debug_args(int level) {
+-    static int args_level = 0;
+-
+-    if (level != 0) {
+-        args_level = level;
+-    }
+-    return args_level;
+-}
++int gp_debug = 0;
+ 
+ void gp_debug_toggle(int level)
+ {
+-    static bool krb5_trace_set = false;
++    if (level <= gp_debug)
++        return;
+ 
+-    /* Command line and environment options override config file */
+-    gp_debug = gp_debug_args(0);
+-    if (gp_debug == 0) {
+-        gp_debug = level;
+-    }
+-    if (level >= 3) {
+-        if (!getenv("KRB5_TRACE")) {
+-            setenv("KRB5_TRACE", "/dev/stderr", 1);
+-            krb5_trace_set = true;
+-        }
+-    } else if (krb5_trace_set) {
+-        unsetenv("KRB5_TRACE");
+-        krb5_trace_set = false;
+-    }
++    if (level >= 3 && !getenv("KRB5_TRACE"))
++        setenv("KRB5_TRACE", "/dev/stderr", 1);
++
++    gp_debug = level;
+     GPDEBUG("Debug Enabled (level: %d)\n", level);
+ }
+ 
+diff --git a/proxy/src/gp_debug.h b/proxy/src/gp_debug.h
+index 1c2f8a3..4932bfd 100644
+--- a/proxy/src/gp_debug.h
++++ b/proxy/src/gp_debug.h
+@@ -1,4 +1,4 @@
+-/* Copyright (C) 2011 the GSS-PROXY contributors, see COPYING for license */
++/* Copyright (C) 2011,2018 the GSS-PROXY contributors, see COPYING for license */
+ 
+ #ifndef _GP_DEBUG_H_
+ #define _GP_DEBUG_H_
+@@ -10,7 +10,6 @@
+ 
+ extern int gp_debug;
+ 
+-int gp_debug_args(int level);
+ void gp_debug_toggle(int);
+ void gp_debug_printf(const char *format, ...);
+ void gp_debug_time_printf(const char *format, ...);
+diff --git a/proxy/src/gssproxy.c b/proxy/src/gssproxy.c
+index 5fc4f8d..3b6a16e 100644
+--- a/proxy/src/gssproxy.c
++++ b/proxy/src/gssproxy.c
+@@ -209,7 +209,7 @@ int main(int argc, const char *argv[])
+ 
+     if (opt_debug || opt_debug_level > 0) {
+         if (opt_debug_level == 0) opt_debug_level = 1;
+-        gp_debug_args(opt_debug_level);
++        gp_debug_toggle(opt_debug_level);
+     }
+ 
+     if (opt_daemon && opt_interactive) {

@@ -1,0 +1,11 @@
+diff -ru a/lib/puppet/provider/package/yum.rb b/lib/puppet/provider/package/yum.rb
+--- a/lib/puppet/provider/package/yum.rb	2020-03-05 20:30:49.582624408 +0800
++++ b/lib/puppet/provider/package/yum.rb	2020-03-05 21:13:39.870694454 +0800
+@@ -24,6 +24,7 @@
+   end
+ 
+   defaultfor :osfamily => :redhat
++  defaultfor :operatingsystem => :"poky-stx"
+ 
+   def self.prefetch(packages)
+     raise Puppet::Error, _("The yum provider can only be used as root") if Process.euid != 0

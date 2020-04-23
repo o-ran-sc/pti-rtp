@@ -1,0 +1,24 @@
+From 90d95ca75997a935587ff3c774d0f5375c3f505a Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Tue, 9 Jul 2019 12:42:53 -0700
+Subject: [PATCH] mtce-compute dont install empty directory unless needed
+
+---
+ mtce-compute/src/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/mtce-compute/src/Makefile b/mtce-compute/src/Makefile
+index 9aea4b0..ed9a8a9 100755
+--- a/mtce-compute/src/Makefile
++++ b/mtce-compute/src/Makefile
+@@ -16,7 +16,6 @@ install:
+ 	# # Compute-Only Init Scripts (source group x)
+ 	install -m 755 -p -D scripts/$(SOURCE1) $(buildroot)/$(_sysconfdir)/init.d/goenabledWorker
+ 	# # Compute-Only Process Monitor Config files (source group 1x)
+-	install -m 755 -d $(buildroot)/$(local_etc_pmond)
+ 	# # Compute-Only Go Enabled Test (source group 2x)
+ 	install -m 755 -d $(buildroot)/$(local_etc_goenabledd)
+ 	install -m 755 -p -D scripts/$(SOURCE22) $(buildroot)/$(local_etc_goenabledd)/virt-support-goenabled.sh
+-- 
+2.17.1
+

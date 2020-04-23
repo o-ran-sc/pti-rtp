@@ -1,0 +1,36 @@
+From 6722f2ec0b7044cbdeb2e67cfd317375fa54c46d Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 15 Apr 2020 10:52:15 +0800
+Subject: [PATCH] persist-config: add retry for etcd
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../roles/bootstrap/persist-config/tasks/shutdown_services.yml   | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/shutdown_services.yml b/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/shutdown_services.yml
+index 4edd295..0e5fb3b 100644
+--- a/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/shutdown_services.yml
++++ b/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/shutdown_services.yml
+@@ -60,11 +60,16 @@
+         state: restarted
+ 
+     rescue:
+-      - name: Etcd failed to restart, try one more time
++      - name: Etcd failed to restart, wait 10s then retry
++        wait_for: timeout=10
++      - name: Retry to restart etcd
+         systemd:
+           name: etcd
+           state: restarted
+-
++        register: result
++        until: result is not failed
++        retries: 5
++        delay: 10
+ 
+ - block:  # Revert configuration to loopback interface
+   - name: Set facts derived from previous network configurations
+-- 
+2.7.4
+

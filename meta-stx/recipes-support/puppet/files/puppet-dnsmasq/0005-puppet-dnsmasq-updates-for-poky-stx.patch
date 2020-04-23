@@ -1,0 +1,22 @@
+diff --git a/packstack/puppet/modules/dnsmasq/manifests/params.pp b/packstack/puppet/modules/dnsmasq/manifests/params.pp
+index 4d8e70a..b978224 100644
+--- a/packstack/puppet/modules/dnsmasq/manifests/params.pp
++++ b/packstack/puppet/modules/dnsmasq/manifests/params.pp
+@@ -38,7 +38,7 @@ class dnsmasq::params {
+ 
+   $process_user = $::operatingsystem ? {
+     /(?i:Debian|Ubuntu|Mint)/ => 'dnsmasq',
+-    /(?i:wrlinux)/            => 'root',
++    /(?i:wrlinux|poky-stx)/       => 'root',
+     default                   => 'nobody',
+   }
+ 
+@@ -63,7 +63,7 @@ class dnsmasq::params {
+   }
+ 
+   $config_file_init = $::operatingsystem ? {
+-    /(?i:Debian|Ubuntu|Mint|wrlinux)/ => '/etc/default/dnsmasq',
++    /(?i:Debian|Ubuntu|Mint|wrlinux|poky-stx)/ => '/etc/default/dnsmasq',
+     default                   => '/etc/sysconfig/dnsmasq',
+   }
+ 

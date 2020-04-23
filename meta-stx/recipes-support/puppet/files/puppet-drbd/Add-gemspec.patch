@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppet-drbd.gemspec	2019-10-30 21:51:28.271880621 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-drbd'
++  s.version     = '0.3.1'
++  s.date        = '2016-12-30'
++  s.summary     = "DRBD Module"
++  s.description = s.summary
++  s.authors     = ["Vox Pupuli"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/voxpupuli/puppet-drbd'
++  s.license     = 'Apache 2.0'
++ end

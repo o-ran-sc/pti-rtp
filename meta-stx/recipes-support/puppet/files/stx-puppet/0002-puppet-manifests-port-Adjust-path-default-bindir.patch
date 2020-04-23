@@ -1,0 +1,132 @@
+From e321b75d4810c4bd66fe4ec10b974ad77184d74f Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Sat, 7 Mar 2020 00:18:43 -0800
+Subject: [PATCH] puppet-manifests port: Adjust path default bindir
+
+---
+ .../src/modules/platform/files/ldap.cgcs-shell.ldif  |  2 +-
+ .../src/modules/platform/manifests/collectd.pp       |  2 +-
+ .../src/modules/platform/manifests/drbd.pp           |  4 ++--
+ .../src/modules/platform/manifests/ldap.pp           |  4 ++--
+ .../src/modules/platform/manifests/network.pp        |  2 +-
+ .../src/modules/platform/manifests/remotelogging.pp  |  2 +-
+ .../modules/platform/templates/ldapscripts.conf.erb  | 12 ++++++------
+ 7 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/puppet-manifests/src/modules/platform/files/ldap.cgcs-shell.ldif b/puppet-manifests/src/modules/platform/files/ldap.cgcs-shell.ldif
+index 95005fd..6ae4838 100644
+--- a/puppet-manifests/src/modules/platform/files/ldap.cgcs-shell.ldif
++++ b/puppet-manifests/src/modules/platform/files/ldap.cgcs-shell.ldif
+@@ -1,4 +1,4 @@
+ dn: uid=operator,ou=People,dc=cgcs,dc=local
+ changetype: modify
+ replace: loginShell
+-loginShell: /usr/local/bin/cgcs_cli
++loginShell: /usr/bin/cgcs_cli
+diff --git a/puppet-manifests/src/modules/platform/manifests/collectd.pp b/puppet-manifests/src/modules/platform/manifests/collectd.pp
+index 99e1d2d..a35bc6f 100644
+--- a/puppet-manifests/src/modules/platform/manifests/collectd.pp
++++ b/puppet-manifests/src/modules/platform/manifests/collectd.pp
+@@ -58,6 +58,6 @@ class platform::collectd::runtime {
+ class platform::collectd::restart {
+   include ::platform::collectd
+   exec { 'collectd-restart':
+-      command => '/usr/local/sbin/pmon-restart collectd'
++      command => '/usr/sbin/pmon-restart collectd'
+   }
+ }
+diff --git a/puppet-manifests/src/modules/platform/manifests/drbd.pp b/puppet-manifests/src/modules/platform/manifests/drbd.pp
+index f7dc3bc..bb20b82 100644
+--- a/puppet-manifests/src/modules/platform/manifests/drbd.pp
++++ b/puppet-manifests/src/modules/platform/manifests/drbd.pp
+@@ -79,9 +79,9 @@ define platform::drbd::filesystem (
+     mountpoint    => $mountpoint,
+     handlers      => {
+       before-resync-target =>
+-        "/usr/local/sbin/sm-notify -s ${sm_service} -e sync-start",
++        "/usr/sbin/sm-notify -s ${sm_service} -e sync-start",
+       after-resync-target  =>
+-        "/usr/local/sbin/sm-notify -s ${sm_service} -e sync-end",
++        "/usr/sbin/sm-notify -s ${sm_service} -e sync-end",
+     },
+     host1         => $::platform::drbd::params::host1,
+     host2         => $::platform::drbd::params::host2,
+diff --git a/puppet-manifests/src/modules/platform/manifests/ldap.pp b/puppet-manifests/src/modules/platform/manifests/ldap.pp
+index b3d6ee7..8770bff 100644
+--- a/puppet-manifests/src/modules/platform/manifests/ldap.pp
++++ b/puppet-manifests/src/modules/platform/manifests/ldap.pp
+@@ -60,7 +60,7 @@ class platform::ldap::server::local
+ 
+   # don't populate the adminpw if binding anonymously
+   if ! $bind_anonymous {
+-    file { '/usr/local/etc/ldapscripts/ldapscripts.passwd':
++    file { '/etc/ldapscripts/ldapscripts.passwd':
+       content => $admin_pw,
+     }
+   }
+@@ -104,7 +104,7 @@ class platform::ldap::client
+   }
+ 
+   if $::personality == 'controller' {
+-    file { '/usr/local/etc/ldapscripts/ldapscripts.conf':
++    file { '/etc/ldapscripts/ldapscripts.conf':
+       ensure  => 'present',
+       replace => true,
+       content => template('platform/ldapscripts.conf.erb'),
+diff --git a/puppet-manifests/src/modules/platform/manifests/network.pp b/puppet-manifests/src/modules/platform/manifests/network.pp
+index 5b94521..dbeb6d2 100644
+--- a/puppet-manifests/src/modules/platform/manifests/network.pp
++++ b/puppet-manifests/src/modules/platform/manifests/network.pp
+@@ -225,7 +225,7 @@ class platform::network (
+ 
+   $management_interface = $::platform::network::mgmt::params::interface_name
+ 
+-  $testcmd = '/usr/local/bin/connectivity_test'
++  $testcmd = '/usr/bin/connectivity_test'
+ 
+   if $::personality != 'controller' {
+     if $management_interface {
+diff --git a/puppet-manifests/src/modules/platform/manifests/remotelogging.pp b/puppet-manifests/src/modules/platform/manifests/remotelogging.pp
+index acf1dfd..b30163e 100644
+--- a/puppet-manifests/src/modules/platform/manifests/remotelogging.pp
++++ b/puppet-manifests/src/modules/platform/manifests/remotelogging.pp
+@@ -42,7 +42,7 @@ class platform::remotelogging
+       content => template('platform/remotelogging.conf.erb'),
+     }
+     -> exec { 'remotelogging-update-tc':
+-      command => "/usr/local/bin/remotelogging_tc_setup.sh ${port}"
++      command => "/usr/bin/remotelogging_tc_setup.sh ${port}"
+     }
+     -> Exec['syslog-ng-reload']
+ 
+diff --git a/puppet-manifests/src/modules/platform/templates/ldapscripts.conf.erb b/puppet-manifests/src/modules/platform/templates/ldapscripts.conf.erb
+index e3bc6e0..89d6d6c 100644
+--- a/puppet-manifests/src/modules/platform/templates/ldapscripts.conf.erb
++++ b/puppet-manifests/src/modules/platform/templates/ldapscripts.conf.erb
+@@ -46,7 +46,7 @@ SASLAUTH=""
+ 
+ <%- if @bind_anonymous != true -%>
+ BINDDN="cn=ldapadmin,dc=cgcs,dc=local"
+-BINDPWDFILE="/usr/local/etc/ldapscripts/ldapscripts.passwd"
++BINDPWDFILE="/etc/ldapscripts/ldapscripts.passwd"
+ <%- end -%>
+ 
+ # For older versions of OpenLDAP, it is still possible to use
+@@ -155,9 +155,9 @@ GETENTGRCMD="getent group"
+ #GTEMPLATE="/path/to/ldapaddgroup.template"
+ #UTEMPLATE="/path/to/ldapadduser.template"
+ #MTEMPLATE="/path/to/ldapaddmachine.template"
+-GTEMPLATE="/usr/local/etc/ldapscripts/ldapaddgroup.template.cgcs"
+-UTEMPLATE="/usr/local/etc/ldapscripts/ldapadduser.template.cgcs"
+-UMTEMPLATE="/usr/local/etc/ldapscripts/ldapmoduser.template.cgcs"
+-STEMPLATE="/usr/local/etc/ldapscripts/ldapaddsudo.template.cgcs"
+-SMTEMPLATE="/usr/local/etc/ldapscripts/ldapmodsudo.template.cgcs"
++GTEMPLATE="/etc/ldapscripts/ldapaddgroup.template.cgcs"
++UTEMPLATE="/etc/ldapscripts/ldapadduser.template.cgcs"
++UMTEMPLATE="/etc/ldapscripts/ldapmoduser.template.cgcs"
++STEMPLATE="/etc/ldapscripts/ldapaddsudo.template.cgcs"
++SMTEMPLATE="/etc/ldapscripts/ldapmodsudo.template.cgcs"
+ MTEMPLATE=""
+-- 
+2.23.0
+

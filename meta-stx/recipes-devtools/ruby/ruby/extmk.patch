@@ -1,0 +1,12 @@
+diff --git a/ext/extmk.rb b/ext/extmk.rb
+index 597fc78..8fad2cc 100755
+--- a/ext/extmk.rb
++++ b/ext/extmk.rb
+@@ -409,7 +409,6 @@ else
+ end
+ $ruby << " -I'$(topdir)'"
+ unless CROSS_COMPILING
+-  $ruby << " -I'$(top_srcdir)/lib'"
+   $ruby << " -I'$(extout)/$(arch)' -I'$(extout)/common'" if $extout
+   ENV["RUBYLIB"] = "-"
+ end

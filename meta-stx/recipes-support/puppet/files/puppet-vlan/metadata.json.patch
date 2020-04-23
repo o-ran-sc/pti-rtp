@@ -1,0 +1,14 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/metadata.json	2019-10-31 17:19:57.284059054 -0700
+@@ -0,0 +1,11 @@
++{
++  "name": "puppet-vlan",
++  "version": "0.1.0",
++  "author": "derekhiggins",
++  "summary": "very simple puppet module to install a vlan",
++  "license": "Apache-2.0",
++  "source": "https://github.com/derekhiggins/puppet-vlan.git",
++  "project_page": "https://github.com/derekhiggins/puppet-vlan.git",
++  "issues_url": "https://github.com/derekhiggins/puppet-vlan.git",
++  "dependencies": [ ]
++}

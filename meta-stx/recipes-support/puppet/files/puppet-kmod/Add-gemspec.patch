@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/camptocamp-kmod.gemspec	2019-10-31 13:36:53.819223247 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'camptocamp-kmod'
++  s.version     = '2.1.0'
++  s.date        = '2016-06-24'
++  s.summary     = "Manage Linux kernel modules with Puppet"
++  s.description = s.summary
++  s.authors     = ["camptocamp"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/camptocamp/puppet-kmod'
++  s.license     = 'Apache 2.0'
++ end

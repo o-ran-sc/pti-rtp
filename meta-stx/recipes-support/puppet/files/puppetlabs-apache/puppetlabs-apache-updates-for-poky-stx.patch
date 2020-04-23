@@ -1,0 +1,26 @@
+diff --git a/lib/puppet/provider/a2mod/a2mod.rb b/lib/puppet/provider/a2mod/a2mod.rb
+index e257a579..96d6151d 100644
+--- a/lib/puppet/provider/a2mod/a2mod.rb
++++ b/lib/puppet/provider/a2mod/a2mod.rb
+@@ -8,7 +8,7 @@ Puppet::Type.type(:a2mod).provide(:a2mod, :parent => Puppet::Provider::A2mod) do
+     commands :apache2ctl => "apache2ctl"
+ 
+     confine :osfamily => :debian
+-    defaultfor :operatingsystem => [:debian, :ubuntu]
++    defaultfor :operatingsystem => [:debian, :ubuntu, :'poky-stx']
+ 
+     def self.instances
+       modules = apache2ctl("-M").lines.collect { |line|
+diff --git a/manifests/params.pp b/manifests/params.pp
+index 55682f3b..2f849752 100644
+--- a/manifests/params.pp
++++ b/manifests/params.pp
+@@ -220,7 +220,7 @@ class apache::params inherits ::apache::version {
+     $suphp_addhandler    = 'x-httpd-php'
+     $suphp_engine        = 'off'
+     $suphp_configpath    = '/etc/php5/apache2'
+-    if ($::operatingsystem == 'Ubuntu' and versioncmp($::operatingsystemrelease, '16.04') < 0) or ($::operatingsystem == 'Debian' and versioncmp($::operatingsystemrelease, '9') < 0) {
++    if ($::operatingsystem == 'Ubuntu' and versioncmp($::operatingsystemrelease, '16.04') < 0) or ($::operatingsystem == 'Debian' and versioncmp($::operatingsystemrelease, '9') < 0) or ($::operatingsystem == 'poky-stx') {
+       # Only the major version is used here
+       $php_version = '5'
+     } else {

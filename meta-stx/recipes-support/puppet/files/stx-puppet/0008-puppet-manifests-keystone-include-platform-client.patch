@@ -1,0 +1,25 @@
+From 27eefdede1dc6e45704a14480c79585e66b7939e Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 26 Mar 2020 10:17:20 +0800
+Subject: [PATCH] keystone: include ::platform::client
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ puppet-manifests/src/modules/openstack/manifests/keystone.pp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/puppet-manifests/src/modules/openstack/manifests/keystone.pp b/puppet-manifests/src/modules/openstack/manifests/keystone.pp
+index 1cb65bc..837e551 100644
+--- a/puppet-manifests/src/modules/openstack/manifests/keystone.pp
++++ b/puppet-manifests/src/modules/openstack/manifests/keystone.pp
+@@ -333,6 +333,7 @@ class openstack::keystone::server::runtime {
+ class openstack::keystone::endpoint::runtime {
+ 
+   if str2bool($::is_controller_active) {
++    include ::platform::client
+     include ::keystone::endpoint
+ 
+     include ::sysinv::keystone::auth
+-- 
+2.7.4
+

@@ -1,0 +1,26 @@
+From 3b1cb5e63416223336d2bd6a43f66007b9d388e3 Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Thu, 31 Oct 2019 13:54:47 -0700
+Subject: [PATCH] Stx uses nanliu-staging module
+
+Use nanliu-staging instead of puppet-staging
+---
+ metadata.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/metadata.json b/metadata.json
+index 94e9d69..682c1e1 100644
+--- a/metadata.json
++++ b/metadata.json
+@@ -9,7 +9,7 @@
+   "issues_url": "https://tickets.puppetlabs.com/browse/MODULES",
+   "dependencies": [
+     {"name":"puppetlabs/stdlib","version_requirement":">= 3.2.0 < 5.0.0"},
+-    {"name":"puppet/staging","version_requirement":">= 1.0.1 < 3.0.0"}
++    {"name":"nanliu/staging","version_requirement":">= 1.0.1 < 3.0.0"}
+   ],
+   "operatingsystem_support": [
+     {
+-- 
+2.17.1
+

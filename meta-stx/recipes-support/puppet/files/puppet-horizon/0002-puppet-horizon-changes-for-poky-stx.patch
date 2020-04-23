@@ -1,0 +1,34 @@
+diff -ru a/manifests/params.pp b/manifests/params.pp
+--- a/manifests/params.pp	2020-04-13 18:34:56.702263928 +0800
++++ b/manifests/params.pp	2020-04-13 18:36:23.158266284 +0800
+@@ -32,17 +32,27 @@
+       $static_path                 = '/var/lib'
+       $apache_user                 = 'www-data'
+       $apache_group                = 'www-data'
+-      $wsgi_user                   = 'horizon'
+-      $wsgi_group                  = 'horizon'
+-      $memcache_package            = 'python-memcache'
+       case $::os_package_type {
+         'debian': {
+             $package_name          = 'openstack-dashboard-apache'
+             $httpd_config_file     = '/etc/apache2/sites-available/openstack-dashboard-alias-only.conf'
++            $memcache_package      = 'python-memcache'
++            $wsgi_user             = 'horizon'
++            $wsgi_group            = 'horizon'
++        }
++        'poky': {
++            $package_name          = 'python-django-horizon'
++            $httpd_config_file     = '/etc/httpd/conf.d/openstack-dashboard.conf'
++            $memcache_package      = 'python-memcached'
++            $wsgi_user             = 'apache'
++            $wsgi_group            = 'apache'
+         }
+         default: {
+             $package_name          = 'openstack-dashboard'
+             $httpd_config_file     = '/etc/apache2/conf-available/openstack-dashboard.conf'
++            $memcache_package      = 'python-memcache'
++            $wsgi_user             = 'horizon'
++            $wsgi_group            = 'horizon'
+         }
+       }
+     }

@@ -1,0 +1,124 @@
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Wed, 25 May 2016 22:24:44 +0300
+Subject: [PATCH] Revert "Distinct exit-codes for CLI utilities"
+
+This reverts commit 7984540175d0b8852025165b6b6a0ac05d692c98.
+
+diff --git a/include/rabbit_cli.hrl b/include/rabbit_cli.hrl
+index a0d1ecf..efd328a 100644
+--- a/include/rabbit_cli.hrl
++++ b/include/rabbit_cli.hrl
+@@ -46,14 +46,3 @@
+ -define(RAM_DEF, {?RAM_OPT, flag}).
+ -define(OFFLINE_DEF, {?OFFLINE_OPT, flag}).
+ -define(ONLINE_DEF, {?ONLINE_OPT, flag}).
+-
+-%% Subset of standartized exit codes from sysexits.h, see
+-%% https://github.com/rabbitmq/rabbitmq-server/issues/396 for discussion.
+--define(EX_OK         ,  0).
+--define(EX_USAGE      , 64).  % Bad command-line arguments.
+--define(EX_DATAERR    , 65).  % Wrong data in command-line arguments.
+--define(EX_NOUSER     , 67).  % The user specified does not exist.
+--define(EX_UNAVAILABLE, 69).  % Could not connect to the target node.
+--define(EX_SOFTWARE   , 70).  % Failed to execute command.
+--define(EX_TEMPFAIL   , 75).  % Temporary error (e.g. something has timed out).
+--define(EX_CONFIG     , 78).  % Misconfiguration detected
+diff --git a/src/rabbit_cli.erl b/src/rabbit_cli.erl
+index 6b35482..dc490ad 100644
+--- a/src/rabbit_cli.erl
++++ b/src/rabbit_cli.erl
+@@ -58,7 +58,7 @@ ensure_cli_distribution() ->
+         {error, Error} ->
+             print_error("Failed to initialize erlang distribution: ~p.",
+                         [Error]),
+-            rabbit_misc:quit(?EX_TEMPFAIL)
++            rabbit_misc:quit(2)
+     end.
+ 
+ %%----------------------------------------------------------------------------
+@@ -84,10 +84,10 @@ main(ParseFun, DoFun, UsageMod) ->
+     %% thrown errors into normal return values
+     case catch DoFun(Command, Node, Args, Opts) of
+         ok ->
+-            rabbit_misc:quit(?EX_OK);
++            rabbit_misc:quit(0);
+         {ok, Result} ->
+             rabbit_control_misc:print_cmd_result(Command, Result),
+-            rabbit_misc:quit(?EX_OK);
++            rabbit_misc:quit(0);
+         {'EXIT', {function_clause, [{?MODULE, action, _}    | _]}} -> %% < R15
+             PrintInvalidCommandError(),
+             usage(UsageMod);
+@@ -97,51 +97,51 @@ main(ParseFun, DoFun, UsageMod) ->
+         {error, {missing_dependencies, Missing, Blame}} ->
+             print_error("dependent plugins ~p not found; used by ~p.",
+                         [Missing, Blame]),
+-            rabbit_misc:quit(?EX_CONFIG);
++            rabbit_misc:quit(2);
+         {'EXIT', {badarg, _}} ->
+             print_error("invalid parameter: ~p", [Args]),
+-            usage(UsageMod, ?EX_DATAERR);
++            usage(UsageMod, 2);
+         {error, {Problem, Reason}} when is_atom(Problem), is_binary(Reason) ->
+             %% We handle this common case specially to avoid ~p since
+             %% that has i18n issues
+             print_error("~s: ~s", [Problem, Reason]),
+-            rabbit_misc:quit(?EX_SOFTWARE);
++            rabbit_misc:quit(2);
+         {error, Reason} ->
+             print_error("~p", [Reason]),
+-            rabbit_misc:quit(?EX_SOFTWARE);
++            rabbit_misc:quit(2);
+         {error_string, Reason} ->
+             print_error("~s", [Reason]),
+-            rabbit_misc:quit(?EX_SOFTWARE);
++            rabbit_misc:quit(2);
+         {badrpc, {'EXIT', Reason}} ->
+             print_error("~p", [Reason]),
+-            rabbit_misc:quit(?EX_SOFTWARE);
++            rabbit_misc:quit(2);
+         {badrpc, Reason} ->
+             case Reason of
+                 timeout ->
+                     print_error("operation ~w on node ~w timed out", [Command, Node]),
+-                    rabbit_misc:quit(?EX_TEMPFAIL);
++                    rabbit_misc:quit(2);
+                 _ ->
+                     print_error("unable to connect to node ~w: ~w", [Node, Reason]),
+                     print_badrpc_diagnostics([Node]),
+                     case Command of
+-                        stop -> rabbit_misc:quit(?EX_OK);
+-                        _    -> rabbit_misc:quit(?EX_UNAVAILABLE)
++                        stop -> rabbit_misc:quit(0);
++                        _    -> rabbit_misc:quit(2)
+                     end
+             end;
+         {badrpc_multi, Reason, Nodes} ->
+             print_error("unable to connect to nodes ~p: ~w", [Nodes, Reason]),
+             print_badrpc_diagnostics(Nodes),
+-            rabbit_misc:quit(?EX_UNAVAILABLE);
++            rabbit_misc:quit(2);
+         function_clause ->
+             print_error("operation ~w used with invalid parameter: ~p",
+                         [Command, Args]),
+             usage(UsageMod);
+         {refused, Username, _, _} ->
+             print_error("failed to authenticate user \"~s\"", [Username]),
+-            rabbit_misc:quit(?EX_NOUSER);
++            rabbit_misc:quit(2);
+         Other ->
+             print_error("~p", [Other]),
+-            rabbit_misc:quit(?EX_SOFTWARE)
++            rabbit_misc:quit(2)
+     end.
+ 
+ start_distribution_anon(0, LastError) ->
+@@ -172,7 +172,7 @@ name_type() ->
+     end.
+ 
+ usage(Mod) ->
+-    usage(Mod, ?EX_USAGE).
++    usage(Mod, 1).
+ 
+ usage(Mod, ExitCode) ->
+     io:format("~s", [Mod:usage()]),

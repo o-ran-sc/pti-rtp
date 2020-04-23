@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppetlabs-haproxy.gemspec	2019-10-28 21:37:14.320204197 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppetlabs-haproxy'
++  s.version     = '1.5.0'
++  s.date        = '2017-01-09'
++  s.summary     = "Configures HAProxy servers and manages the configuration of backend member servers."
++  s.description = s.summary
++  s.authors     = ["Puppet Labs"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/puppetlabs/puppetlabs-haproxy'
++  s.license     = 'Apache 2.0'
++ end

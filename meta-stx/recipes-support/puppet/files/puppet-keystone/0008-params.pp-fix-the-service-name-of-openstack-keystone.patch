@@ -1,0 +1,26 @@
+From dc2512633a9552272acfcc180ddc86c621b51313 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 11 Mar 2020 11:12:34 +0800
+Subject: [PATCH] params.pp: fix the service name of openstack-keystone
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ manifests/params.pp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/manifests/params.pp b/manifests/params.pp
+index 0d61acf..590e02b 100644
+--- a/manifests/params.pp
++++ b/manifests/params.pp
+@@ -11,7 +11,7 @@ class keystone::params {
+   case $::osfamily {
+     'Debian': {
+       $package_name                 = 'keystone'
+-      $service_name                 = 'keystone'
++      $service_name                 = 'openstack-keystone'
+       $keystone_wsgi_script_path    = '/usr/lib/cgi-bin/keystone'
+       $python_memcache_package_name = 'python-memcache'
+       $mellon_package_name          = 'libapache2-mod-auth-mellon'
+-- 
+2.7.4
+

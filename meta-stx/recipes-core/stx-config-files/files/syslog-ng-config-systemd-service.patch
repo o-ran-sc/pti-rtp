@@ -1,0 +1,13 @@
+diff --git a/syslog-ng-config/files/syslog-ng.service b/syslog-ng-config/files/syslog-ng.service
+index 606a967..b8d90d2 100644
+--- a/syslog-ng-config/files/syslog-ng.service
++++ b/syslog-ng-config/files/syslog-ng.service
+@@ -5,7 +5,7 @@ Documentation=man:syslog-ng(8)
+ [Service]
+ Type=notify
+ Sockets=syslog.socket
+-ExecStartPre=-/usr/bin/mkdir -p /var/run/syslog-ng/
++ExecStartPre=-/bin/mkdir -p /var/run/syslog-ng/
+ ExecStart=/usr/sbin/syslog-ng -F -p /var/run/syslog-ng/syslog-ng.pid
+ ExecReload=/bin/kill -HUP $MAINPID
+ StandardOutput=null

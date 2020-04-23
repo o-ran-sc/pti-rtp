@@ -1,0 +1,123 @@
+From f413cc257c6c1e60090c72163152ae7fd2180c41 Mon Sep 17 00:00:00 2001
+From: Alexander Scheel <ascheel@redhat.com>
+Date: Fri, 4 Aug 2017 16:09:20 -0400
+Subject: [PATCH] [server] Add detailed request logging
+
+Add request logging to track requests through gssproxy.  Requests are
+logged as they are read, processed, handled, and replies sent.  These
+are identified by buffer memory address and size.
+
+Signed-off-by: Alexander Scheel <ascheel@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+[rharwood@redhat.com: commit message cleanups, rebase]
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+Merges: #205
+(cherry picked from commit 4097dafad3f276c3cf7b1255fe0540e16d59ae03)
+---
+ proxy/src/gp_rpc_process.c |  6 ++++++
+ proxy/src/gp_socket.c      | 12 ++++++++++++
+ proxy/src/gp_workers.c     |  5 +++++
+ 3 files changed, 23 insertions(+)
+
+diff --git a/proxy/src/gp_rpc_process.c b/proxy/src/gp_rpc_process.c
+index 0ea17f0..eaffc55 100644
+--- a/proxy/src/gp_rpc_process.c
++++ b/proxy/src/gp_rpc_process.c
+@@ -372,9 +372,12 @@ int gp_rpc_process_call(struct gp_call_ctx *gpcall,
+     xdrmem_create(&xdr_reply_ctx, reply_buffer, MAX_RPC_SIZE, XDR_ENCODE);
+ 
+     /* decode request */
++    GPDEBUGN(3, "[status] Processing request [%p (%zu)]\n", inbuf, inlen);
+     ret = gp_rpc_decode_call(&xdr_call_ctx, &xid, &proc, &arg, &acc, &rej);
+     if (!ret) {
+         /* execute request */
++        GPDEBUGN(3, "[status] Executing request %d (%s) from [%p (%zu)]\n",
++                 proc, gp_rpc_procname(proc), inbuf, inlen);
+         ret = gp_rpc_execute(gpcall, proc, &arg, &res);
+         if (ret) {
+             acc = GP_RPC_SYSTEM_ERR;
+@@ -388,6 +391,9 @@ int gp_rpc_process_call(struct gp_call_ctx *gpcall,
+         /* return encoded buffer */
+         ret = gp_rpc_return_buffer(&xdr_reply_ctx,
+                                    reply_buffer, outbuf, outlen);
++        GPDEBUGN(3, "[status] Returned buffer %d (%s) from [%p (%zu)]: "
++                 "[%p (%zu)]\n", proc, gp_rpc_procname(proc), inbuf, inlen,
++                 *outbuf, *outlen);
+     }
+     /* free resources */
+     gp_rpc_free_xdrs(proc, &arg, &res);
+diff --git a/proxy/src/gp_socket.c b/proxy/src/gp_socket.c
+index 5064e51..8675a0e 100644
+--- a/proxy/src/gp_socket.c
++++ b/proxy/src/gp_socket.c
+@@ -441,6 +441,8 @@ void gp_socket_send_data(verto_ctx *vctx, struct gp_conn *conn,
+ 
+     wbuf = calloc(1, sizeof(struct gp_buffer));
+     if (!wbuf) {
++        GPDEBUGN(3, "[status] OOM in gp_socket_send_data: %p (%zu)\n",
++                 buffer, buflen);
+         /* too bad, must kill the client connection now */
+         gp_conn_free(conn);
+         return;
+@@ -467,6 +469,8 @@ static void gp_socket_write(verto_ctx *vctx, verto_ev *ev)
+ 
+     vecs = 0;
+ 
++    GPDEBUGN(3, "[status] Sending data: %p (%zu)\n", wbuf->data, wbuf->size);
++
+     if (wbuf->pos == 0) {
+         /* first write, send the buffer size as packet header */
+         size = wbuf->size | FRAGMENT_BIT;
+@@ -489,6 +493,9 @@ static void gp_socket_write(verto_ctx *vctx, verto_ev *ev)
+             gp_socket_schedule_write(vctx, wbuf);
+         } else {
+             /* error on socket, close and release it */
++            GPDEBUGN(3, "[status] Error %d in gp_socket_write on writing for "
++                     "[%p (%zu:%zu)]\n", errno, wbuf->data, wbuf->pos,
++                     wbuf->size);
+             gp_conn_free(wbuf->conn);
+             gp_buffer_free(wbuf);
+         }
+@@ -498,6 +505,8 @@ static void gp_socket_write(verto_ctx *vctx, verto_ev *ev)
+         if (wn < (ssize_t) sizeof(size)) {
+             /* don't bother trying to handle sockets that can't
+              * buffer even 4 bytes */
++            GPDEBUGN(3, "[status] Sending data [%p (%zu)]: failed with short "
++                     "write of %d\n", wbuf->data, wbuf->size, wn);
+             gp_conn_free(wbuf->conn);
+             gp_buffer_free(wbuf);
+             return;
+@@ -505,6 +514,9 @@ static void gp_socket_write(verto_ctx *vctx, verto_ev *ev)
+         wn -= sizeof(size);
+     }
+ 
++    GPDEBUGN(3, "[status] Sending data [%p (%zu)]: successful write of %d\n",
++             wbuf->data, wbuf->size, wn);
++
+     wbuf->pos += wn;
+     if (wbuf->size > wbuf->pos) {
+         /* short write, reschedule */
+diff --git a/proxy/src/gp_workers.c b/proxy/src/gp_workers.c
+index d37e57c..2a33c21 100644
+--- a/proxy/src/gp_workers.c
++++ b/proxy/src/gp_workers.c
+@@ -319,6 +319,7 @@ static void gp_handle_reply(verto_ctx *vctx, verto_ev *ev)
+             break;
+ 
+         case GP_QUERY_OUT:
++            GPDEBUGN(3, "[status] Handling query reply: %p (%zu)\n", q->buffer, q->buflen);
+             gp_socket_send_data(vctx, q->conn, q->buffer, q->buflen);
+             gp_query_free(q, false);
+             break;
+@@ -381,7 +382,11 @@ static void *gp_worker_main(void *pvt)
+         gp_debug_set_conn_id(gp_conn_get_cid(q->conn));
+ 
+         /* handle the client request */
++        GPDEBUGN(3, "[status] Handling query input: %p (%zu)\n", q->buffer,
++                 q->buflen);
+         gp_handle_query(t->pool, q);
++        GPDEBUGN(3 ,"[status] Handling query output: %p (%zu)\n", q->buffer,
++                 q->buflen);
+ 
+         /* now get lock on main queue, to play with the reply list */
+         /* ======> POOL LOCK */

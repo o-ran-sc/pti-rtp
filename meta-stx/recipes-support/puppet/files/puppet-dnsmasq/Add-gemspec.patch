@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppet-dnsmasq.gemspec	2019-10-31 12:10:38.277914711 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-dnsmasq'
++  s.version     = '1.1.0'
++  s.date        = '2014-03-15'
++  s.summary     = "Puppet module for dnsmasq"
++  s.description = s.summary
++  s.authors     = ["Javier Bertoli"]
++  s.email       = ''
++  s.files       = %w(Modulefile README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'http://www.netmanagers.com.ar'
++  s.license     = 'Apache 2.0'
++ end

@@ -1,0 +1,29 @@
+From fd7e40080bc5681376d91aff3956004c6ad2bfc7 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sat, 14 Mar 2020 20:12:45 +0800
+Subject: [PATCH] puppet-barbican: do not fail for poky-stx
+
+poky-stx is set as Debian osfamily, but we still use barbican-api
+as $service_name, so do not fail for it.
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ manifests/api.pp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/manifests/api.pp b/manifests/api.pp
+index a31088b..6716588 100644
+--- a/manifests/api.pp
++++ b/manifests/api.pp
+@@ -486,7 +486,7 @@ the future release. Please use barbican::api::package_ensure instead.")
+   }
+ 
+   if $service_name == 'barbican-api' {
+-    if $::osfamily == 'Debian' {
++    if $::osfamily == 'Debian' and $::operatingsystem != 'poky-stx' {
+       fail('On Debian family the service_name must be set to httpd as there is no eventlet init script.')
+     }
+     service { 'barbican-api':
+-- 
+2.7.4
+

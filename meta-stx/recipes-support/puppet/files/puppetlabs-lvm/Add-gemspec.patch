@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppetlabs-lvm.gemspec	2019-10-30 21:16:54.774974158 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppetlabs-lvm'
++  s.version     = '0.5.0'
++  s.date        = '2014-09-13'
++  s.summary     = "Provides Puppet types and providers to manage Logical Resource Management (LVM) features."
++  s.description = s.summary
++  s.authors     = ["Puppet Labs"]
++  s.email       = ''
++  s.files       = %w(metadata.json README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/puppetlabs/puppetlabs-lvm'
++  s.license     = 'GPL-2.0'
++ end

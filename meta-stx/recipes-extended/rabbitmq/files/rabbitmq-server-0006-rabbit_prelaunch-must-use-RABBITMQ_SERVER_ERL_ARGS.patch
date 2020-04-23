@@ -1,0 +1,18 @@
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Sun, 17 Jul 2016 18:42:06 +0300
+Subject: [PATCH] rabbit_prelaunch must use RABBITMQ_SERVER_ERL_ARGS
+
+Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+
+diff --git a/scripts/rabbitmq-server b/scripts/rabbitmq-server
+index 7433731..25fff3a 100755
+--- a/scripts/rabbitmq-server
++++ b/scripts/rabbitmq-server
+@@ -71,6 +71,7 @@ RABBITMQ_DIST_PORT=$RABBITMQ_DIST_PORT \
+     -boot "${CLEAN_BOOT_FILE}" \
+     -noinput \
+     -hidden \
++    ${RABBITMQ_SERVER_ERL_ARGS} \
+     -s rabbit_prelaunch \
+     ${RABBITMQ_NAME_TYPE} rabbitmqprelaunch$$ \
+     -extra "${RABBITMQ_NODENAME}"

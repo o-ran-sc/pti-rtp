@@ -1,0 +1,28 @@
+From f21071fb3662824698b61d384b1144657a508043 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 15 Mar 2017 14:57:57 -0400
+Subject: [PATCH] Fix error checking on get_impersonator_fallback()
+
+Separate commit to ease backporting.
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #173
+(cherry picked from commit 25e31ebccde7f0d98480b6a99962fef61dd251b4)
+---
+ proxy/src/gp_creds.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/proxy/src/gp_creds.c b/proxy/src/gp_creds.c
+index e05ad01..fdc6bdf 100644
+--- a/proxy/src/gp_creds.c
++++ b/proxy/src/gp_creds.c
+@@ -885,7 +885,7 @@ static uint32_t get_impersonator_name(uint32_t *min, gss_cred_id_t cred,
+          * release that supports this call */
+         ret_maj = get_impersonator_fallback(&ret_min, cred, impersonator);
+         if (ret_maj == GSS_S_FAILURE) {
+-            if (ret_min == KRB5_CC_NOTFOUND) {
++            if (ret_min == (uint32_t)KRB5_CC_NOTFOUND) {
+                 ret_min = ENOENT;
+                 ret_maj = GSS_S_COMPLETE;
+             }

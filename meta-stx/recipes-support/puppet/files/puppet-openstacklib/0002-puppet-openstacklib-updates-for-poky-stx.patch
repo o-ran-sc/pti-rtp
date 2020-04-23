@@ -1,0 +1,13 @@
+diff --git a/lib/facter/os_package_type.rb b/lib/facter/os_package_type.rb
+index 134509e..adc39d9 100644
+--- a/lib/facter/os_package_type.rb
++++ b/lib/facter/os_package_type.rb
+@@ -24,6 +24,8 @@ Facter.add('os_package_type') do
+     when 'Debian'
+       if Facter.value(:operatingsystem) == 'Debian' then
+         'debian'
++      elsif Facter.value(:operatingsystem) == 'poky-stx' then
++        'poky'
+       else
+         'ubuntu'
+       end

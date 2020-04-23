@@ -1,0 +1,13 @@
+diff -Nurpd a/ext/socket/extconf.rb b/ext/socket/extconf.rb
+--- a/ext/socket/extconf.rb	2020-04-03 10:58:47.646427762 -0700
++++ b/ext/socket/extconf.rb	2020-04-03 11:00:06.998097135 -0700
+@@ -362,6 +362,9 @@ main(void)
+   return EXIT_FAILURE;
+ }
+ EOF
++# Ignore the actual result of the above test and assume that
++# everything is OK.
++getaddr_info_ok = true
+ if ipv6 and not getaddr_info_ok
+   abort <<EOS
+ 

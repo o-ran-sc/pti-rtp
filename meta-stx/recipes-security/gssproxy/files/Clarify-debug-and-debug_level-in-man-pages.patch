@@ -1,0 +1,74 @@
+From 384a1cff4855ad612ca71d3831a0c2c19a355c49 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 11 Apr 2018 16:01:21 -0400
+Subject: [PATCH] Clarify debug and debug_level in man pages
+
+In particular, add debug_level to gssproxy(5) since it was previously
+accepted but not documented.
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #229
+(cherry picked from commit e0e96e46be03102903533a9816b4deefe1adfaf8)
+---
+ proxy/man/gssproxy.8.xml      | 24 +++++++++++++++++++++++-
+ proxy/man/gssproxy.conf.5.xml |  5 ++++-
+ 2 files changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/proxy/man/gssproxy.8.xml b/proxy/man/gssproxy.8.xml
+index 1df4b0d..21f7e6a 100644
+--- a/proxy/man/gssproxy.8.xml
++++ b/proxy/man/gssproxy.8.xml
+@@ -118,13 +118,35 @@
+                     </para>
+                 </listitem>
+             </varlistentry>
++
+             <varlistentry>
+                 <term>
+                     <option>-d</option>,<option>--debug</option>
+                 </term>
+                 <listitem>
+                     <para>
+-                        Turn on debugging.
++                        Turn on debugging.  This option is identical to
++                        --debug-level=1.
++                    </para>
++                </listitem>
++            </varlistentry>
++
++            <varlistentry>
++                <term>
++                    <option>--debug-level=</option>
++                </term>
++                <listitem>
++                    <para>
++                        Turn on debugging at the specified level.  0
++                        corresponds to no logging, while 1 turns on basic
++                        debug logging.  Level 2 increases verbosity, including
++                        more detailed credential verification.
++                    </para>
++                    <para>
++                        At level 3 and above, KRB5_TRACE output is logged.  If
++                        KRB5_TRACE was already set in the execution
++                        environment, trace output is sent to its value
++                        instead.
+                     </para>
+                 </listitem>
+             </varlistentry>
+diff --git a/proxy/man/gssproxy.conf.5.xml b/proxy/man/gssproxy.conf.5.xml
+index ad9d96f..abb6745 100644
+--- a/proxy/man/gssproxy.conf.5.xml
++++ b/proxy/man/gssproxy.conf.5.xml
+@@ -191,7 +191,10 @@
+                 <varlistentry>
+                     <term>debug (boolean)</term>
+                     <listitem>
+-                        <para>Enable debugging to syslog.</para>
++                        <para>
++                            Enable debugging to syslog.  Setting to true is
++                            identical to setting debug_level to 1.
++                        </para>
+                         <para>Default: debug = false</para>
+                     </listitem>
+                 </varlistentry>

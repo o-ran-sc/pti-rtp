@@ -1,0 +1,21 @@
+From: John Eckersberg <jeckersb@redhat.com>
+Date: Wed, 18 Feb 2015 16:11:12 -0500
+Subject: [PATCH] Add systemd notification support
+
+
+diff --git a/src/rabbit.erl b/src/rabbit.erl
+index 32ff240..f9e8231 100644
+--- a/src/rabbit.erl
++++ b/src/rabbit.erl
+@@ -280,6 +280,11 @@ broker_start() ->
+     Plugins = rabbit_plugins:setup(),
+     ToBeLoaded = Plugins ++ ?APPS,
+     start_apps(ToBeLoaded),
++    case code:load_file(sd_notify) of
++        {module, sd_notify} -> SDNotify = sd_notify,
++			       SDNotify:sd_notify(0, "READY=1\nSTATUS=Initialized\nMAINPID=" ++ os:getpid() ++ "\n");
++        {error, _} -> ok
++    end,
+     ok = log_broker_started(rabbit_plugins:active()).
+ 
+ start_it(StartFun) ->

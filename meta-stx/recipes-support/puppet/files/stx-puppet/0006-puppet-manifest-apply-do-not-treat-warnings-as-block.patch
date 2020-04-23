@@ -1,0 +1,31 @@
+From f027236dd57ca3ba20b6f827026a639c6fb373d8 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Fri, 20 Mar 2020 13:16:35 +0800
+Subject: [PATCH] puppet-manifest-apply: do not treat warnings as blocker issue
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ puppet-manifests/src/bin/puppet-manifest-apply.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/puppet-manifests/src/bin/puppet-manifest-apply.sh b/puppet-manifests/src/bin/puppet-manifest-apply.sh
+index 4d36059..18eec2c 100755
+--- a/puppet-manifests/src/bin/puppet-manifest-apply.sh
++++ b/puppet-manifests/src/bin/puppet-manifest-apply.sh
+@@ -105,10 +105,10 @@ if [ $? -ne 0 ]; then
+     echo "See ${LOGFILE} for details"
+     exit 1
+ else
+-    grep -qE '^(.......)?Warning|^....-..-..T..:..:..([.]...)?(.......)?.Warning|^(.......)?Error|^....-..-..T..:..:..([.]...)?(.......)?.Error' ${LOGFILE}
++    grep -qE '^(.......)?Error|^....-..-..T..:..:..([.]...)?(.......)?.Error' ${LOGFILE}
+     if [ $? -eq 0 ]; then
+-        echo "[WARNING]"
+-        echo "Warnings found. See ${LOGFILE} for details"
++        echo "[ERROR]"
++        echo "Errors found. See ${LOGFILE} for details"
+         exit 1
+     fi
+     echo "[DONE]"
+-- 
+2.7.4
+

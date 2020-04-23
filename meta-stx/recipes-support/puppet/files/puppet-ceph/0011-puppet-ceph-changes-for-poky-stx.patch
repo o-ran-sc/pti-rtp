@@ -1,0 +1,23 @@
+diff --git a/manifests/params.pp b/manifests/params.pp
+index 2d4d722..4cfb1b4 100644
+--- a/manifests/params.pp
++++ b/manifests/params.pp
+@@ -51,11 +51,16 @@ class ceph::params (
+ 
+   case $::osfamily {
+     'Debian': {
+-      $pkg_radosgw         = 'radosgw'
++      if ($::operatingsystem == 'poky-stx') {
++        $pkg_radosgw         = 'ceph'
++        $service_provider    = 'systemd'
++      } else {
++        $pkg_radosgw         = 'radosgw'
++        $service_provider    = 'debian'
++      }
+       $user_radosgw        = 'www-data'
+       $pkg_fastcgi         = 'libapache2-mod-fastcgi'
+       $pkg_nsstools        = ['libnss3-tools', 'wget']
+-      $service_provider    = 'debian'
+       $pkg_policycoreutils = 'policycoreutils'
+     }
+ 

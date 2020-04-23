@@ -1,0 +1,35 @@
+diff -ru a/lib/puppet/util/firewall.rb b/lib/puppet/util/firewall.rb
+--- a/lib/puppet/util/firewall.rb	2020-03-05 19:13:11.474497464 +0800
++++ b/lib/puppet/util/firewall.rb	2020-03-05 19:18:52.030506745 +0800
+@@ -154,6 +154,8 @@
+       'RedHat'
+     when 'Debian', 'Ubuntu'
+       'Debian'
++    when 'poky'
++      'Debian_poky'
+     else
+       Facter.value(:operatingsystem)
+     end
+@@ -208,7 +210,7 @@
+       when :IPv4
+         ["/bin/sh", "-c", "/sbin/iptables-save > /etc/iptables/rules"]
+       end
+-    when :Archlinux
++    when :Archlinux, :Debian_poky
+       case proto.to_sym
+       when :IPv4
+         ["/bin/sh", "-c", "/usr/sbin/iptables-save > /etc/iptables/iptables.rules"]
+diff -ru a/manifests/params.pp b/manifests/params.pp
+--- a/manifests/params.pp	2020-03-05 19:13:11.478497464 +0800
++++ b/manifests/params.pp	2020-03-05 19:13:20.794497718 +0800
+@@ -47,6 +47,10 @@
+           }
+ 
+         }
++        'poky': {
++            $service_name = 'firewalld'
++            $package_name = 'firewalld'
++        }
+         default: {
+           $service_name = 'iptables-persistent'
+           $package_name = 'iptables-persistent'

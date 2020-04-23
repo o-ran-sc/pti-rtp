@@ -1,0 +1,39 @@
+From 76954aa028a897021a9bdcb0a1b5249e2652f7b6 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Tue, 16 May 2017 14:16:23 -0400
+Subject: [PATCH] Fix segfault when no config files are present
+
+Resolves: rhbz#1451255
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #185
+(cherry picked from commit df434333de34a13440857b511a4c60fbc6a71a5c)
+---
+ proxy/src/gp_config.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/proxy/src/gp_config.c b/proxy/src/gp_config.c
+index b4ab90c..8fd60a3 100644
+--- a/proxy/src/gp_config.c
++++ b/proxy/src/gp_config.c
+@@ -844,16 +844,17 @@ int gp_config_init(const char *config_file, const char *config_dir,
+ 
+     if (config_file) {
+         ret = gp_config_from_file(config_file, ini_config, collision_flags);
+-        if (ret == ENOENT) {
+-            GPDEBUG("Expected config file %s but did not find it.\n",
++        if (ret) {
++            GPDEBUG("Error when trying to read config file %s.\n",
+                     config_file);
+-        } else if (ret) {
+             return ret;
+         }
+     }
+     if (config_dir) {
+         ret = gp_config_from_dir(config_dir, &ini_config, collision_flags);
+         if (ret) {
++            GPDEBUG("Error when trying to read config directory %s.\n",
++                    config_dir);
+             return ret;
+         }
+     }

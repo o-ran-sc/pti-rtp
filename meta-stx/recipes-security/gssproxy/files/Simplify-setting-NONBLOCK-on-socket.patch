@@ -1,0 +1,53 @@
+From 6d12deeb19cc2e231463427db27f8755649450d1 Mon Sep 17 00:00:00 2001
+From: Alexander Scheel <alexander.m.scheel@gmail.com>
+Date: Thu, 14 Sep 2017 10:57:12 -0500
+Subject: [PATCH] Simplify setting NONBLOCK on socket
+
+Signed-off-by: Alexander Scheel <alexander.m.scheel@gmail.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+Merges: #213
+[rharwood@redhat.com: fixup commit message]
+(cherry picked from commit ec808ee6a5e6746ed35acc865f253425701be352)
+---
+ proxy/src/client/gpm_common.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
+
+diff --git a/proxy/src/client/gpm_common.c b/proxy/src/client/gpm_common.c
+index d0f99d6..7d1158e 100644
+--- a/proxy/src/client/gpm_common.c
++++ b/proxy/src/client/gpm_common.c
+@@ -80,7 +80,6 @@ static int gpm_open_socket(struct gpm_ctx *gpmctx)
+     struct sockaddr_un addr = {0};
+     char name[PATH_MAX];
+     int ret;
+-    unsigned flags;
+     int fd = -1;
+ 
+     ret = get_pipe_name(name);
+@@ -92,24 +91,12 @@ static int gpm_open_socket(struct gpm_ctx *gpmctx)
+     strncpy(addr.sun_path, name, sizeof(addr.sun_path)-1);
+     addr.sun_path[sizeof(addr.sun_path)-1] = '\0';
+ 
+-    fd = socket(AF_UNIX, SOCK_STREAM, 0);
++    fd = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0);
+     if (fd == -1) {
+         ret = errno;
+         goto done;
+     }
+ 
+-    ret = fcntl(fd, F_GETFD, &flags);
+-    if (ret != 0) {
+-        ret = errno;
+-        goto done;
+-    }
+-
+-    ret = fcntl(fd, F_SETFD, flags | O_NONBLOCK);
+-    if (ret != 0) {
+-        ret = errno;
+-        goto done;
+-    }
+-
+     ret = connect(fd, (struct sockaddr *)&addr, sizeof(addr));
+     if (ret == -1) {
+         ret = errno;

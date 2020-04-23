@@ -1,0 +1,38 @@
+From 2d91093925c8546d68f9314546353226b4f41569 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Tue, 5 Dec 2017 13:14:29 -0500
+Subject: [PATCH] Properly initialize ccaches before storing into them
+
+krb5_cc_new_unique() doesn't initialize ccaches, which results in the
+krb5 libraries being aware of their presence within the collection but
+being unable to manipulate them.
+
+This is transparent to most gssproxy consumers because we just
+re-fetch the ccache on error.
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #223
+(cherry picked from commit be7df45b6a56631033de387d28a2c06b7658c36a)
+---
+ proxy/src/mechglue/gpp_creds.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/proxy/src/mechglue/gpp_creds.c b/proxy/src/mechglue/gpp_creds.c
+index 187ada7..f8ab320 100644
+--- a/proxy/src/mechglue/gpp_creds.c
++++ b/proxy/src/mechglue/gpp_creds.c
+@@ -247,6 +247,13 @@ uint32_t gpp_store_remote_creds(uint32_t *min, bool store_as_default_cred,
+ 
+         ret = krb5_cc_new_unique(ctx, cc_type, NULL, &ccache);
+         free(cc_type);
++        if (ret)
++            goto done;
++
++        /* krb5_cc_new_unique() doesn't initialize, and we need to initialize
++         * before storing into the ccache.  Note that this will only clobber
++         * the ccache handle, not the whole collection. */
++        ret = krb5_cc_initialize(ctx, ccache, cred.client);
+     }
+     if (ret)
+         goto done;

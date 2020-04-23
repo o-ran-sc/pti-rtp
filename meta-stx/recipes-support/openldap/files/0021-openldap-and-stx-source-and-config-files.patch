@@ -1,0 +1,997 @@
+From 2adc9fa71e3a47542793e61c7794629fa9255a57 Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Tue, 5 Nov 2019 14:49:06 -0800
+Subject: [PATCH] openldap and stx source and config files
+
+From stx 1901 openldap-2.4.44-21.el7_6.src.rpm
+---
+ stx-sources/ldap.conf                        |  18 +++
+ stx-sources/libexec-check-config.sh          |  91 ++++++++++++
+ stx-sources/libexec-convert-config.sh        |  79 ++++++++++
+ stx-sources/libexec-create-certdb.sh         |  70 +++++++++
+ stx-sources/libexec-functions                | 136 +++++++++++++++++
+ stx-sources/libexec-generate-server-cert.sh  | 118 +++++++++++++++
+ stx-sources/libexec-update-ppolicy-schema.sh | 142 ++++++++++++++++++
+ stx-sources/libexec-upgrade-db.sh            |  40 +++++
+ stx-sources/openldap.tmpfiles                |   3 +
+ stx-sources/slapd.ldif                       | 148 +++++++++++++++++++
+ stx-sources/slapd.service                    |  19 +++
+ stx-sources/slapd.sysconfig                  |  15 ++
+ stx-sources/slapd.tmpfiles                   |   2 +
+ 13 files changed, 881 insertions(+)
+ create mode 100644 stx-sources/ldap.conf
+ create mode 100755 stx-sources/libexec-check-config.sh
+ create mode 100755 stx-sources/libexec-convert-config.sh
+ create mode 100755 stx-sources/libexec-create-certdb.sh
+ create mode 100644 stx-sources/libexec-functions
+ create mode 100755 stx-sources/libexec-generate-server-cert.sh
+ create mode 100755 stx-sources/libexec-update-ppolicy-schema.sh
+ create mode 100755 stx-sources/libexec-upgrade-db.sh
+ create mode 100644 stx-sources/openldap.tmpfiles
+ create mode 100644 stx-sources/slapd.ldif
+ create mode 100644 stx-sources/slapd.service
+ create mode 100644 stx-sources/slapd.sysconfig
+ create mode 100644 stx-sources/slapd.tmpfiles
+
+diff --git a/stx-sources/ldap.conf b/stx-sources/ldap.conf
+new file mode 100644
+index 0000000..aa6f8fd
+--- /dev/null
++++ b/stx-sources/ldap.conf
+@@ -0,0 +1,18 @@
++#
++# LDAP Defaults
++#
++
++# See ldap.conf(5) for details
++# This file should be world readable but not world writable.
++
++#BASE	dc=example,dc=com
++#URI	ldap://ldap.example.com ldap://ldap-master.example.com:666
++
++#SIZELIMIT	12
++#TIMELIMIT	15
++#DEREF		never
++
++TLS_CACERTDIR	/etc/openldap/certs
++
++# Turning this off breaks GSSAPI used with krb5 when rdns = false
++SASL_NOCANON	on
+diff --git a/stx-sources/libexec-check-config.sh b/stx-sources/libexec-check-config.sh
+new file mode 100755
+index 0000000..87e377f
+--- /dev/null
++++ b/stx-sources/libexec-check-config.sh
+@@ -0,0 +1,91 @@
++#!/bin/sh
++# Author: Jan Vcelak <jvcelak@redhat.com>
++
++. /usr/libexec/openldap/functions
++
++function check_config_syntax()
++{
++	retcode=0
++	tmp_slaptest=`mktemp --tmpdir=/var/run/openldap`
++	run_as_ldap "/usr/sbin/slaptest $SLAPD_GLOBAL_OPTIONS -u" &>$tmp_slaptest
++	if [ $? -ne 0 ]; then
++		error "Checking configuration file failed:"
++		cat $tmp_slaptest >&2
++		retcode=1
++	fi
++	rm $tmp_slaptest
++	return $retcode
++}
++
++function check_certs_perms()
++{
++	retcode=0
++	for cert in `certificates`; do
++		run_as_ldap "/usr/bin/test -e \"$cert\""
++		if [ $? -ne 0 ]; then
++			error "TLS certificate/key/DB '%s' was not found." "$cert"
++			retcoder=1
++			continue
++		fi
++		run_as_ldap "/usr/bin/test -r \"$cert\""
++		if [ $? -ne 0 ]; then
++			error "TLS certificate/key/DB '%s' is not readable." "$cert"
++			retcode=1
++		fi
++	done
++	return $retcode
++}
++
++function check_db_perms()
++{
++	retcode=0
++	for dbdir in `databases`; do
++		[ -d "$dbdir" ] || continue
++		for dbfile in `find ${dbdir} -maxdepth 1 -name "*.dbb" -or -name "*.gdbm" -or -name "*.bdb" -or -name "__db.*" -or -name "log.*" -or -name "alock"`; do
++			run_as_ldap "/usr/bin/test -r \"$dbfile\" -a -w \"$dbfile\""
++			if [ $? -ne 0 ]; then
++				error "Read/write permissions for DB file '%s' are required." "$dbfile"
++				retcode=1
++			fi
++		done
++	done
++	return $retcode
++}
++
++function check_everything()
++{
++	retcode=0
++	check_config_syntax || retcode=1
++	# TODO: need support for Mozilla NSS, disabling temporarily
++	#check_certs_perms || retcode=1
++	check_db_perms || retcode=1
++	return $retcode
++}
++
++if [ `id -u` -ne 0 ]; then
++	error "You have to be root to run this script."
++	exit 4
++fi
++
++load_sysconfig
++
++if [ -n "$SLAPD_CONFIG_DIR" ]; then
++	if [ ! -d "$SLAPD_CONFIG_DIR" ]; then
++		error "Configuration directory '%s' does not exist." "$SLAPD_CONFIG_DIR"
++	else
++		check_everything
++		exit $?
++	fi
++fi
++
++if [ -n "$SLAPD_CONFIG_FILE" ]; then
++	if [ ! -f "$SLAPD_CONFIG_FILE" ]; then
++		error "Configuration file '%s' does not exist." "$SLAPD_CONFIG_FILE"
++	else
++		error "Warning: Usage of a configuration file is obsolete!"
++		check_everything
++		exit $?
++	fi
++fi
++
++exit 1
+diff --git a/stx-sources/libexec-convert-config.sh b/stx-sources/libexec-convert-config.sh
+new file mode 100755
+index 0000000..824c3b1
+--- /dev/null
++++ b/stx-sources/libexec-convert-config.sh
+@@ -0,0 +1,79 @@
++#!/bin/sh
++# Author: Jan Vcelak <jvcelak@redhat.com>
++
++. /usr/libexec/openldap/functions
++
++function help()
++{
++	error "usage: %s [-f config-file] [-F config-dir]\n" "`basename $0`"
++	exit 2
++}
++
++load_sysconfig
++
++while getopts :f:F: opt; do
++	case "$opt" in
++	f)
++		SLAPD_CONFIG_FILE="$OPTARG"
++		;;
++	F)
++		SLAPD_CONFIG_DIR="$OPTARG"
++		;;
++	*)
++		help
++		;;
++	esac
++done
++shift $((OPTIND-1))
++[ -n "$1" ] && help
++
++# check source, target
++
++if [ ! -f "$SLAPD_CONFIG_FILE" ]; then
++	error "Source configuration file '%s' not found." "$SLAPD_CONFIG_FILE"
++	exit 1
++fi
++
++if grep -iq '^dn: cn=config$' "$SLAPD_CONFIG_FILE"; then
++	SLAPD_CONFIG_FILE_FORMAT=ldif
++else
++	SLAPD_CONFIG_FILE_FORMAT=conf
++fi
++
++if [ -d "$SLAPD_CONFIG_DIR" ]; then
++	if [ `find "$SLAPD_CONFIG_DIR" -maxdepth 0 -empty | wc -l` -eq 0 ]; then
++		error "Target configuration directory '%s' is not empty." "$SLAPD_CONFIG_DIR"
++		exit 1
++	fi
++fi
++
++# perform the conversion
++
++tmp_convert=`mktemp --tmpdir=/var/run/openldap`
++
++if [ `id -u` -eq 0 ]; then
++	install -d --owner $SLAPD_USER --group `id -g $SLAPD_USER` --mode 0750 "$SLAPD_CONFIG_DIR" &>>$tmp_convert
++	if [ $SLAPD_CONFIG_FILE_FORMAT = ldif ]; then
++		run_as_ldap "/usr/sbin/slapadd -F \"$SLAPD_CONFIG_DIR\" -n 0 -l \"$SLAPD_CONFIG_FILE\"" &>>$tmp_convert
++	else
++		run_as_ldap "/usr/sbin/slaptest -f \"$SLAPD_CONFIG_FILE\" -F \"$SLAPD_CONFIG_DIR\"" &>>$tmp_convert
++	fi
++	retcode=$?
++else
++	error "You are not root! Permission will not be set."
++	install -d --mode 0750 "$SLAPD_CONFIG_DIR" &>>$tmp_convert
++	if [ $SLAPD_CONFIG_FILE_FORMAT = ldif ]; then
++		/usr/sbin/slapadd -F "$SLAPD_CONFIG_DIR" -n 0 -l "$SLAPD_CONFIG_FILE" &>>$tmp_convert
++	else
++		/usr/sbin/slaptest -f "$SLAPD_CONFIG_FILE" -F "$SLAPD_CONFIG_DIR" &>>$tmp_convert
++	fi
++	retcode=$?
++fi
++
++if [ $retcode -ne 0 ]; then
++	error "Configuration conversion failed:"
++	cat $tmp_convert >&2
++fi
++
++rm $tmp_convert
++exit $retcode
+diff --git a/stx-sources/libexec-create-certdb.sh b/stx-sources/libexec-create-certdb.sh
+new file mode 100755
+index 0000000..2377fdd
+--- /dev/null
++++ b/stx-sources/libexec-create-certdb.sh
+@@ -0,0 +1,70 @@
++#!/bin/bash
++# Author: Jan Vcelak <jvcelak@redhat.com>
++
++set -e
++
++# default options
++
++CERTDB_DIR=/etc/openldap/certs
++
++# internals
++
++MODULE_CKBI="$(rpm --eval %{_libdir})/libnssckbi.so"
++RANDOM_SOURCE=/dev/urandom
++PASSWORD_BYTES=32
++
++# parse arguments
++
++usage() {
++	printf "usage: create-certdb.sh [-d certdb]\n" >&2
++	exit 1
++}
++
++while getopts "d:" opt; do
++	case "$opt" in
++	d)
++		CERTDB_DIR="$OPTARG"
++		;;
++	\?)
++		usage
++		;;
++	esac
++done
++
++[ "$OPTIND" -le "$#" ] && usage
++
++# verify target location
++
++if [ ! -d "$CERTDB_DIR" ]; then
++	printf "Directory '%s' does not exist.\n" "$CERTDB_DIR" >&2
++	exit 1
++fi
++
++if [ ! "$(find "$CERTDB_DIR"  -maxdepth 0 -empty | wc -l)" -eq 1 ]; then
++	printf "Directory '%s' is not empty.\n" "$CERTDB_DIR" >&2
++	exit 1
++fi
++
++# create the database
++
++printf "Creating certificate database in '%s'.\n" "$CERTDB_DIR" >&2
++
++PASSWORD_FILE="$CERTDB_DIR/password"
++OLD_UMASK="$(umask)"
++umask 0377
++dd if=$RANDOM_SOURCE bs=$PASSWORD_BYTES count=1 2>/dev/null | base64 > "$PASSWORD_FILE"
++umask "$OLD_UMASK"
++
++certutil -d "$CERTDB_DIR" -N -f "$PASSWORD_FILE" &>/dev/null
++
++# load module with builtin CA certificates
++
++echo | modutil -dbdir "$CERTDB_DIR" -add "Root Certs" -libfile "$MODULE_CKBI" &>/dev/null
++
++# tune permissions
++
++for dbfile in "$CERTDB_DIR"/*.db; do
++	chmod 0644 "$dbfile"
++done
++
++exit 0
+diff --git a/stx-sources/libexec-functions b/stx-sources/libexec-functions
+new file mode 100644
+index 0000000..98c8631
+--- /dev/null
++++ b/stx-sources/libexec-functions
+@@ -0,0 +1,136 @@
++# Author: Jan Vcelak <jvcelak@redhat.com>
++
++SLAPD_USER=
++SLAPD_CONFIG_FILE=
++SLAPD_CONFIG_DIR=
++SLAPD_CONFIG_CUSTOM=
++SLAPD_GLOBAL_OPTIONS=
++SLAPD_SYSCONFIG_FILE=
++
++function default_config()
++{
++	SLAPD_USER=ldap
++	SLAPD_CONFIG_FILE=/etc/openldap/slapd.conf
++	SLAPD_CONFIG_DIR=/etc/openldap/slapd.d
++	SLAPD_CONFIG_CUSTOM=
++	SLAPD_GLOBAL_OPTIONS=
++	SLAPD_SYSCONFIG_FILE=/etc/sysconfig/slapd
++}
++
++function parse_config_options()
++{
++	user=
++	config_file=
++	config_dir=
++	while getopts :u:f:F: opt; do
++		case "$opt" in
++		u)
++			user="$OPTARG"
++			;;
++		f)
++			config_file="$OPTARG"
++			;;
++		F)
++			config_dir="$OPTARG"
++			;;
++		esac
++	done
++
++	unset OPTIND
++
++	if [ -n "$user" ]; then
++		SLAPD_USER="$user"
++	fi
++
++	if [ -n "$config_dir" ]; then
++		SLAPD_CONFIG_DIR="$config_dir"
++		SLAPD_CONFIG_FILE=
++		SLAPD_CONFIG_CUSTOM=1
++		SLAPD_GLOBAL_OPTIONS="-F '$config_dir'"
++	elif [ -n "$config_file" ]; then
++		SLAPD_CONFIG_DIR=
++		SLAPD_CONFIG_FILE="$config_file"
++		SLAPD_CONFIG_CUSTOM=1
++		SLAPD_GLOBAL_OPTIONS="-f '$config_file'"
++	fi
++}
++
++function uses_new_config()
++{
++	[ -n "$SLAPD_CONFIG_DIR" ]
++	return $?
++}
++
++function run_as_ldap()
++{
++	/sbin/runuser --shell /bin/sh --session-command "$1" "$SLAPD_USER"
++	return $?
++}
++
++function ldif_unbreak()
++{
++	sed ':a;N;s/\n //;ta;P;D'
++}
++
++function ldif_value()
++{
++	sed 's/^[^:]*: //'
++}
++
++function databases_new()
++{
++	slapcat $SLAPD_GLOBAL_OPTIONS -c \
++	-H 'ldap:///cn=config???(|(objectClass=olcBdbConfig)(objectClass=olcHdbConfig))' 2>/dev/null | \
++		ldif_unbreak | \
++		grep '^olcDbDirectory: ' | \
++		ldif_value
++}
++
++function databases_old()
++{
++	awk	'begin { database="" }
++		$1 == "database" { database=$2 }
++		$1 == "directory" { if (database == "bdb" || database == "hdb") print $2}' \
++		"$SLAPD_CONFIG_FILE"
++}
++
++function certificates_new()
++{
++	slapcat $SLAPD_GLOBAL_OPTIONS -c -H 'ldap:///cn=config???(cn=config)' 2>/dev/null | \
++		ldif_unbreak | \
++		grep '^olcTLS\(CACertificateFile\|CACertificatePath\|CertificateFile\|CertificateKeyFile\): ' | \
++		ldif_value
++}
++
++function certificates_old()
++{
++	awk '$1 ~ "^TLS(CACertificate(File|Path)|CertificateFile|CertificateKeyFile)$" { print $2 } ' \
++		"$SLAPD_CONFIG_FILE"
++}
++
++function certificates()
++{
++	uses_new_config && certificates_new || certificates_old
++}
++
++function databases()
++{
++	uses_new_config && databases_new || databases_old
++}
++
++
++function error()
++{
++	format="$1\n"; shift
++	printf "$format" $@ >&2
++}
++
++function load_sysconfig()
++{
++	[ -r "$SLAPD_SYSCONFIG_FILE" ] || return
++
++	. "$SLAPD_SYSCONFIG_FILE"
++	[ -n "$SLAPD_OPTIONS" ] && parse_config_options $SLAPD_OPTIONS
++}
++
++default_config
+diff --git a/stx-sources/libexec-generate-server-cert.sh b/stx-sources/libexec-generate-server-cert.sh
+new file mode 100755
+index 0000000..e2f4974
+--- /dev/null
++++ b/stx-sources/libexec-generate-server-cert.sh
+@@ -0,0 +1,118 @@
++#!/bin/bash
++# Author: Jan Vcelak <jvcelak@redhat.com>
++
++set -e
++
++# default options
++
++CERTDB_DIR=/etc/openldap/certs
++CERT_NAME="OpenLDAP Server"
++PASSWORD_FILE=
++HOSTNAME_FQDN="$(hostname --fqdn)"
++ALT_NAMES=
++ONCE=0
++
++# internals
++
++RANDOM_SOURCE=/dev/urandom
++CERT_RANDOM_BYTES=256
++CERT_KEY_TYPE=rsa
++CERT_KEY_SIZE=1024
++CERT_VALID_MONTHS=12
++
++# parse arguments
++
++usage() {
++	printf "usage: generate-server-cert.sh [-d certdb-dir] [-n cert-name]\n" >&2
++	printf "                               [-p password-file] [-h hostnames]\n" >&2
++	printf "                               [-a dns-alt-names] [-o]\n" >&2
++	exit 1
++}
++
++while getopts "d:n:p:h:a:o" opt; do
++	case "$opt" in
++	d)
++		CERTDB_DIR="$OPTARG"
++		;;
++	n)
++		CERT_NAME="$OPTARG"
++		;;
++	p)
++		PASSWORD_FILE="$OPTARG"
++		;;
++	h)
++		HOSTNAME_FQDN="$OPTARG"
++		;;
++	a)
++		ALT_NAMES="$OPTARG"
++		;;
++	o)
++		ONCE=1
++		;;
++	\?)
++		usage
++		;;
++	esac
++done
++
++[ "$OPTIND" -le "$#" ] && usage
++
++# generated options
++
++ONCE_FILE="$CERTDB_DIR/.slapd-leave"
++PASSWORD_FILE="${PASSWORD_FILE:-${CERTDB_DIR}/password}"
++ALT_NAMES="${ALT_NAMES:-${HOSTNAME_FQDN},localhost,localhost.localdomain}"
++
++# verify target location
++
++if [ "$ONCE" -eq 1 -a -f "$ONCE_FILE" ]; then
++	printf "Skipping certificate generating, '%s' exists.\n" "$ONCE_FILE" >&2
++	exit 0
++fi
++
++if ! certutil -d "$CERTDB_DIR" -U &>/dev/null; then
++	printf "Directory '%s' is not a valid certificate database.\n" "$CERTDB_DIR" >&2
++	exit 1
++fi
++
++printf "Creating new server certificate in '%s'.\n" "$CERTDB_DIR" >&2
++
++if [ ! -r "$PASSWORD_FILE" ]; then
++	printf "Password file '%s' is not readable.\n" "$PASSWORD_FILE" >&2
++	exit 1
++fi
++
++if certutil -d "$CERTDB_DIR" -L -a -n "$CERT_NAME" &>/dev/null; then
++	printf "Certificate '%s' already exists in the certificate database.\n" "$CERT_NAME" >&2
++	exit 1
++fi
++
++# generate server certificate (self signed)
++
++
++CERT_RANDOM=$(mktemp --tmpdir=/var/run/openldap)
++dd if=$RANDOM_SOURCE bs=$CERT_RANDOM_BYTES count=1 of=$CERT_RANDOM &>/dev/null
++
++certutil -d "$CERTDB_DIR" -f "$PASSWORD_FILE" -z "$CERT_RANDOM" \
++	-S -x -n "$CERT_NAME" \
++	-s "CN=$HOSTNAME_FQDN" \
++	-t TC,, \
++	-k $CERT_KEY_TYPE -g $CERT_KEY_SIZE \
++	-v $CERT_VALID_MONTHS \
++	-8 "$ALT_NAMES" \
++	&>/dev/null
++
++rm -f $CERT_RANDOM
++
++# tune permissions
++
++if [ "$(id -u)" -eq 0 ]; then
++	chgrp ldap "$PASSWORD_FILE"
++	chmod g+r "$PASSWORD_FILE"
++else
++	printf "WARNING: The server requires read permissions on the password file in order to\n" >&2
++	printf "         load it's private key from the certificate database.\n" >&2
++fi
++
++touch "$ONCE_FILE"
++exit 0
+diff --git a/stx-sources/libexec-update-ppolicy-schema.sh b/stx-sources/libexec-update-ppolicy-schema.sh
+new file mode 100755
+index 0000000..a853b27
+--- /dev/null
++++ b/stx-sources/libexec-update-ppolicy-schema.sh
+@@ -0,0 +1,142 @@
++#!/bin/bash
++# This script serves one purpose, to add a possibly missing attribute
++# to a ppolicy schema in a dynamic configuration of OpenLDAP. This
++# attribute was introduced in openldap-2.4.43 and slapd will not 
++# start without it later on.
++#
++# The script tries to update in a directory given as first parameter,
++# or in /etc/openldap/slapd.d implicitly.
++#
++# Author: Matus Honek <mhonek@redhat.com>
++# Bugzilla: #1487857
++
++function log {
++    echo "Update dynamic configuration: " $@
++    true
++}
++
++function iferr {
++    if [ $? -ne 0 ]; then
++	log "ERROR: " $@
++	true
++    else
++	false
++    fi
++}
++
++function update {
++    set -u
++    shopt -s extglob
++
++    ORIGINAL="${1:-/etc/openldap/slapd.d}"
++    ORIGINAL="${ORIGINAL%*(/)}"
++
++    ### check if necessary
++    grep -r "pwdMaxRecordedFail" "${ORIGINAL}/cn=config/cn=schema" >/dev/null
++    [ $? -eq 0 ] && log "Schemas look up to date. Ok. Quitting." && return 0
++
++    ### prep
++    log "Prepare environment."
++    
++    TEMPDIR=$(mktemp -d)
++    iferr "Could not create a temporary directory. Quitting." && return 1
++    DBDIR="${TEMPDIR}/db"
++    SUBDBDIR="${DBDIR}/cn=temporary"
++
++    mkdir "${DBDIR}"
++    iferr "Could not create temporary configuration directory. Quitting." && return 1
++    cp -r --no-target-directory "${ORIGINAL}" "${SUBDBDIR}"
++    iferr "Could not copy configuration. Quitting." && return 1
++    
++    pushd "$TEMPDIR" >/dev/null
++
++    cat > temp.conf <<EOF
++database ldif
++suffix cn=temporary
++directory db
++access to * by * manage
++EOF
++    
++    SOCKET="$(pwd)/socket"
++    LISTENER="ldapi://${SOCKET//\//%2F}"
++    CONN_PARAMS=("-Y" "EXTERNAL" "-H" "${LISTENER}")
++    
++    slapd -f temp.conf -h "$LISTENER" -d 0 >/dev/null 2>&1 &
++    SLAPDPID="$!"
++    sleep 2
++
++    ldapadd ${CONN_PARAMS[@]} -d 0 >/dev/null 2>&1 <<EOF
++dn: cn=temporary
++objectClass: olcGlobal
++cn: temporary
++EOF
++    iferr "Could not populate the temporary database. Quitting." && return 1
++    
++    ### update
++    log "Update with new pwdMaxRecordedFailure attribute."
++    FILTER="(&"
++    FILTER+="(olcObjectClasses=*'pwdPolicy'*)"
++    FILTER+="(!(olcObjectClasses=*'pwdPolicy'*'pwdMaxRecordedFailure'*))"
++    FILTER+="(!(olcAttributeTypes=*'pwdMaxRecordedFailure'*))"
++    FILTER+=")"
++    RES=$(ldapsearch ${CONN_PARAMS[@]} \
++		     -b cn=schema,cn=config,cn=temporary \
++		     -LLL \
++		     -o ldif-wrap=no \
++		     "$FILTER" \
++		     dn olcObjectClasses \
++		     2>/dev/null \
++	      | sed '/^$/d')
++    DN=$(printf "$RES" | grep '^dn:')
++    OC=$(printf "$RES" | grep "^olcObjectClasses:.*'pwdPolicy'")
++    NEWOC="${OC//$ pwdSafeModify /$ pwdSafeModify $ pwdMaxRecordedFailure }"
++
++    test $(echo "$DN" | wc -l) = 1
++    iferr "Received more than one DN. Cannot continue. Quitting." && return 1
++    test "$NEWOC" != "$OC"
++    iferr "Updating pwdPolicy objectClass definition failed. Quitting." && return 1
++
++    ldapmodify ${CONN_PARAMS[@]} -d 0 >/dev/null 2>&1 <<EOF
++$DN
++changetype: modify
++add: olcAttributeTypes
++olcAttributeTypes: ( 1.3.6.1.4.1.42.2.27.8.1.30 NAME 'pwdMaxRecordedFailur
++ e' EQUALITY integerMatch ORDERING integerOrderingMatch  SYNTAX 1.3.6.1.4.1.
++ 1466.115.121.1.27 SINGLE-VALUE )
++-
++delete: olcObjectClasses
++$OC
++-
++add: olcObjectClasses
++$NEWOC
++EOF
++    iferr "Updating with new attribute failed. Quitting." && return 1
++
++    popd >/dev/null
++
++    ### apply
++    log "Apply changes."
++    cp -r --no-target-directory "$ORIGINAL" "$ORIGINAL~backup"
++    iferr "Backing up old configuration failed. Quitting." && return 1
++    cp -r --no-target-directory "$SUBDBDIR" "$ORIGINAL"
++    iferr "Applying new configuration failed. Quitting." && return 1
++    
++    ### clean up
++    log "Clean up."
++    kill "$SLAPDPID"
++    SLAPDPID=
++    rm -rf "$TEMPDIR"
++    TEMPDIR=
++}
++
++SLAPDPID=
++TEMPDIR=
++update "$1"
++if [ $? -ne 0 ]; then
++    log "Clean up."
++    echo "$SLAPDPID"
++    echo "$TEMPDIR"
++    kill "$SLAPDPID"
++    rm -rf "$TEMPDIR"
++fi
++log "Finished."
+diff --git a/stx-sources/libexec-upgrade-db.sh b/stx-sources/libexec-upgrade-db.sh
+new file mode 100755
+index 0000000..1543c80
+--- /dev/null
++++ b/stx-sources/libexec-upgrade-db.sh
+@@ -0,0 +1,40 @@
++#!/bin/sh
++# Author: Jan Vcelak <jvcelak@redhat.com>
++
++. /usr/libexec/openldap/functions
++
++if [ `id -u` -ne 0 ]; then
++	error "You have to be root to run this command."
++	exit 4
++fi
++
++load_sysconfig
++retcode=0
++
++for dbdir in `databases`; do
++	upgrade_log="$dbdir/db_upgrade.`date +%Y%m%d%H%M%S`.log"
++	bdb_files=`find "$dbdir" -maxdepth 1 -name "*.bdb" -printf '"%f" '`
++
++	# skip uninitialized database
++	[ -z "$bdb_files"]  || continue
++
++	printf "Updating '%s', logging into '%s'\n" "$dbdir" "$upgrade_log"
++
++	# perform the update
++	for command in \
++		"/usr/bin/db_recover -v -h \"$dbdir\"" \
++		"/usr/bin/db_upgrade -v -h \"$dbdir\" $bdb_files" \
++		"/usr/bin/db_checkpoint -v -h \"$dbdir\" -1" \
++	; do
++		printf "Executing: %s\n" "$command" &>>$upgrade_log
++		run_as_ldap "$command" &>>$upgrade_log
++		result=$?
++		printf "Exit code: %d\n" $result >>"$upgrade_log"
++		if [ $result -ne 0 ]; then
++			printf "Upgrade failed: %d\n" $result
++			retcode=1
++		fi
++	done
++done
++
++exit $retcode
+diff --git a/stx-sources/openldap.tmpfiles b/stx-sources/openldap.tmpfiles
+new file mode 100644
+index 0000000..aa0e805
+--- /dev/null
++++ b/stx-sources/openldap.tmpfiles
+@@ -0,0 +1,3 @@
++# OpenLDAP TLSMC runtime directories
++x /tmp/openldap-tlsmc-*
++X /tmp/openldap-tlsmc-*
+diff --git a/stx-sources/slapd.ldif b/stx-sources/slapd.ldif
+new file mode 100644
+index 0000000..7b7f328
+--- /dev/null
++++ b/stx-sources/slapd.ldif
+@@ -0,0 +1,148 @@
++#
++# See slapd-config(5) for details on configuration options.
++# This file should NOT be world readable.
++#
++
++dn: cn=config
++objectClass: olcGlobal
++cn: config
++olcArgsFile: /var/run/openldap/slapd.args
++olcPidFile: /var/run/openldap/slapd.pid
++#
++# TLS settings
++#
++olcTLSCACertificatePath: /etc/openldap/certs
++olcTLSCertificateFile: "OpenLDAP Server"
++olcTLSCertificateKeyFile: /etc/openldap/certs/password
++#
++# Do not enable referrals until AFTER you have a working directory
++# service AND an understanding of referrals.
++#
++#olcReferral: ldap://root.openldap.org
++#
++# Sample security restrictions
++#	Require integrity protection (prevent hijacking)
++#	Require 112-bit (3DES or better) encryption for updates
++#	Require 64-bit encryption for simple bind
++#
++#olcSecurity: ssf=1 update_ssf=112 simple_bind=64
++
++
++#
++# Load dynamic backend modules:
++# - modulepath is architecture dependent value (32/64-bit system)
++# - back_sql.la backend requires openldap-servers-sql package
++# - dyngroup.la and dynlist.la cannot be used at the same time
++#
++
++#dn: cn=module,cn=config
++#objectClass: olcModuleList
++#cn: module
++#olcModulepath:	/usr/lib/openldap
++#olcModulepath:	/usr/lib64/openldap
++#olcModuleload: accesslog.la
++#olcModuleload: auditlog.la
++#olcModuleload: back_dnssrv.la
++#olcModuleload: back_ldap.la
++#olcModuleload: back_mdb.la
++#olcModuleload: back_meta.la
++#olcModuleload: back_null.la
++#olcModuleload: back_passwd.la
++#olcModuleload: back_relay.la
++#olcModuleload: back_shell.la
++#olcModuleload: back_sock.la
++#olcModuleload: collect.la
++#olcModuleload: constraint.la
++#olcModuleload: dds.la
++#olcModuleload: deref.la
++#olcModuleload: dyngroup.la
++#olcModuleload: dynlist.la
++#olcModuleload: memberof.la
++#olcModuleload: pcache.la
++#olcModuleload: ppolicy.la
++#olcModuleload: refint.la
++#olcModuleload: retcode.la
++#olcModuleload: rwm.la
++#olcModuleload: seqmod.la
++#olcModuleload: smbk5pwd.la
++#olcModuleload: sssvlv.la
++#olcModuleload: syncprov.la
++#olcModuleload: translucent.la
++#olcModuleload: unique.la
++#olcModuleload: valsort.la
++
++
++#
++# Schema settings
++#
++
++dn: cn=schema,cn=config
++objectClass: olcSchemaConfig
++cn: schema
++
++include: file:///etc/openldap/schema/core.ldif
++
++#
++# Frontend settings
++#
++
++dn: olcDatabase=frontend,cn=config
++objectClass: olcDatabaseConfig
++objectClass: olcFrontendConfig
++olcDatabase: frontend
++#
++# Sample global access control policy:
++#	Root DSE: allow anyone to read it
++#	Subschema (sub)entry DSE: allow anyone to read it
++#	Other DSEs:
++#		Allow self write access
++#		Allow authenticated users read access
++#		Allow anonymous users to authenticate
++#
++#olcAccess: to dn.base="" by * read
++#olcAccess: to dn.base="cn=Subschema" by * read
++#olcAccess: to *
++#	by self write
++#	by users read
++#	by anonymous auth
++#
++# if no access controls are present, the default policy
++# allows anyone and everyone to read anything but restricts
++# updates to rootdn.  (e.g., "access to * by * read")
++#
++# rootdn can always read and write EVERYTHING!
++#
++
++#
++# Configuration database
++#
++
++dn: olcDatabase=config,cn=config
++objectClass: olcDatabaseConfig
++olcDatabase: config
++olcAccess: to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,c
++ n=auth" manage by * none
++
++#
++# Server status monitoring
++#
++
++dn: olcDatabase=monitor,cn=config
++objectClass: olcDatabaseConfig
++olcDatabase: monitor
++olcAccess: to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,c
++ n=auth" read by dn.base="cn=Manager,dc=my-domain,dc=com" read by * none
++
++#
++# Backend database definitions
++#
++
++dn: olcDatabase=hdb,cn=config
++objectClass: olcDatabaseConfig
++objectClass: olcHdbConfig
++olcDatabase: hdb
++olcSuffix: dc=my-domain,dc=com
++olcRootDN: cn=Manager,dc=my-domain,dc=com
++olcDbDirectory:	/var/lib/ldap
++olcDbIndex: objectClass eq,pres
++olcDbIndex: ou,cn,mail,surname,givenname eq,pres,sub
+diff --git a/stx-sources/slapd.service b/stx-sources/slapd.service
+new file mode 100644
+index 0000000..8a3a722
+--- /dev/null
++++ b/stx-sources/slapd.service
+@@ -0,0 +1,19 @@
++[Unit]
++Description=OpenLDAP Server Daemon
++After=syslog.target network-online.target
++Documentation=man:slapd
++Documentation=man:slapd-config
++Documentation=man:slapd-hdb
++Documentation=man:slapd-mdb
++Documentation=file:///usr/share/doc/openldap-servers/guide.html
++
++[Service]
++Type=forking
++PIDFile=/var/run/openldap/slapd.pid
++Environment="SLAPD_URLS=ldap:/// ldapi:///" "SLAPD_OPTIONS="
++EnvironmentFile=/etc/sysconfig/slapd
++ExecStartPre=/usr/libexec/openldap/check-config.sh
++ExecStart=/usr/sbin/slapd -u ldap -h ${SLAPD_URLS} $SLAPD_OPTIONS
++
++[Install]
++WantedBy=multi-user.target
+diff --git a/stx-sources/slapd.sysconfig b/stx-sources/slapd.sysconfig
+new file mode 100644
+index 0000000..68091a5
+--- /dev/null
++++ b/stx-sources/slapd.sysconfig
+@@ -0,0 +1,15 @@
++# OpenLDAP server configuration
++# see 'man slapd' for additional information
++
++# Where the server will run (-h option)
++# - ldapi:/// is required for on-the-fly configuration using client tools
++#   (use SASL with EXTERNAL mechanism for authentication)
++# - default: ldapi:/// ldap:///
++# - example: ldapi:/// ldap://127.0.0.1/ ldap://10.0.0.1:1389/ ldaps:///
++SLAPD_URLS="ldapi:/// ldap:///"
++
++# Any custom options
++#SLAPD_OPTIONS=""
++
++# Keytab location for GSSAPI Kerberos authentication
++#KRB5_KTNAME="FILE:/etc/openldap/ldap.keytab"
+diff --git a/stx-sources/slapd.tmpfiles b/stx-sources/slapd.tmpfiles
+new file mode 100644
+index 0000000..56aa32e
+--- /dev/null
++++ b/stx-sources/slapd.tmpfiles
+@@ -0,0 +1,2 @@
++# openldap runtime directory for slapd.arg and slapd.pid
++d /var/run/openldap 0755 ldap ldap -
+-- 
+2.17.1
+

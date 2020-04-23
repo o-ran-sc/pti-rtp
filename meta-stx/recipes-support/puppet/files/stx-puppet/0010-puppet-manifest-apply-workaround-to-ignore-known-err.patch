@@ -1,0 +1,35 @@
+From 1735d6504b319c2d05ffbd2ae8ff6a4515982aed Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sun, 19 Apr 2020 21:38:59 +0800
+Subject: [PATCH] puppet-manifest-apply: workaround to ignore known errors
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ puppet-manifests/src/bin/puppet-manifest-apply.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/puppet-manifests/src/bin/puppet-manifest-apply.sh b/puppet-manifests/src/bin/puppet-manifest-apply.sh
+index 18eec2c..3ac6cfc 100755
+--- a/puppet-manifests/src/bin/puppet-manifest-apply.sh
++++ b/puppet-manifests/src/bin/puppet-manifest-apply.sh
+@@ -89,6 +89,8 @@ function finish {
+ }
+ trap finish EXIT
+ 
++# Pattern for know errors, will be ignored when checking errors
++KNOWN_ERRORS="Error.*remount /scratch"
+ 
+ # Set Keystone endpoint type to internal to prevent SSL cert failures during config
+ export OS_ENDPOINT_TYPE=internalURL
+@@ -105,7 +107,7 @@ if [ $? -ne 0 ]; then
+     echo "See ${LOGFILE} for details"
+     exit 1
+ else
+-    grep -qE '^(.......)?Error|^....-..-..T..:..:..([.]...)?(.......)?.Error' ${LOGFILE}
++    grep -E -v "${KNOWN_ERRORS}" ${LOGFILE} | grep -qE '^(.......)?Error|^....-..-..T..:..:..([.]...)?(.......)?.Error'
+     if [ $? -eq 0 ]; then
+         echo "[ERROR]"
+         echo "Errors found. See ${LOGFILE} for details"
+-- 
+2.7.4
+

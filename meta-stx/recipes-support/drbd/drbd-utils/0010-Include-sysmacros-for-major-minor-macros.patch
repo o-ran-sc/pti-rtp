@@ -1,0 +1,37 @@
+From 424eef1074c56ce5137bf0b2718711ca706280e7 Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Sat, 26 Oct 2019 02:06:18 -0700
+Subject: [PATCH] Include sysmacros for major minor macros.
+
+---
+ user/drbdadm_adjust.c        | 1 +
+ user/legacy/drbdadm_adjust.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/user/drbdadm_adjust.c b/user/drbdadm_adjust.c
+index efa09a7f..09c38944 100644
+--- a/user/drbdadm_adjust.c
++++ b/user/drbdadm_adjust.c
+@@ -39,6 +39,7 @@
+ #include <stdlib.h>
+ #include <stdarg.h>
+ #include <stdbool.h>
++#include <sys/sysmacros.h>
+ 
+ #include "drbdadm.h"
+ #include "drbdtool_common.h"
+diff --git a/user/legacy/drbdadm_adjust.c b/user/legacy/drbdadm_adjust.c
+index 0de5b620..b4d783d4 100644
+--- a/user/legacy/drbdadm_adjust.c
++++ b/user/legacy/drbdadm_adjust.c
+@@ -36,6 +36,7 @@
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
++#include <sys/sysmacros.h>
+ 
+ #include "drbdadm.h"
+ #include "drbdtool_common.h"
+-- 
+2.17.1
+

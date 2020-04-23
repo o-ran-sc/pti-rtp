@@ -1,0 +1,28 @@
+From e087470af1a51b58fbac434ff2e30bc3f2a1f9ac Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Mon, 11 Sep 2017 10:52:03 -0400
+Subject: [PATCH] Fix potential free of non-heap address
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #211
+(cherry picked from commit 068f4174001c3ea4ae7913fb37210fec84abf1df)
+---
+ proxy/src/client/gpm_common.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/proxy/src/client/gpm_common.c b/proxy/src/client/gpm_common.c
+index dba23a6..c65c69d 100644
+--- a/proxy/src/client/gpm_common.c
++++ b/proxy/src/client/gpm_common.c
+@@ -553,8 +553,8 @@ static int gpm_send_recv_loop(struct gpm_ctx *gpmctx, char *send_buffer,
+             ret = gpm_retry_socket(gpmctx);
+ 
+             /* Free buffer and set it to NULL to prevent free(xdr_reply_ctx) */
+-            free(recv_buffer);
+-            recv_buffer = NULL;
++            free(*recv_buffer);
++            *recv_buffer = NULL;
+ 
+             if (ret != 0)
+                 return ret;

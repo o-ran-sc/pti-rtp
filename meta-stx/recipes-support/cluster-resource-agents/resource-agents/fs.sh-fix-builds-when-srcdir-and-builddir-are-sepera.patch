@@ -1,0 +1,39 @@
+From 5b7a84dbb9d06112c4b2804223163d91ba8ab786 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 1 Jun 2017 10:34:38 +0800
+Subject: [PATCH] fs.sh: fix builds when srcdir and builddir are seperated
+
+It fails to find fs.sh.in when srddir and builddir are not the same:
+
+make[5]: Entering directory '/path/to/builddir/rgmanager/src/resources'
+cat fs.sh.in | sed \
+    -e 's#@''LOGDIR@#/var/log/cluster#g' \
+    > fs.sh.out
+    cat: fs.sh.in: No such file or directorychmod +x fs.sh.out
+    mv fs.sh.out fs.sh
+
+Add abs_srcdir to fix this.
+
+Upstream-Status: Submitted [https://github.com/ClusterLabs/resource-agents/pull/986]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ rgmanager/src/resources/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/rgmanager/src/resources/Makefile.am b/rgmanager/src/resources/Makefile.am
+index de88c69..30b3be9 100644
+--- a/rgmanager/src/resources/Makefile.am
++++ b/rgmanager/src/resources/Makefile.am
+@@ -68,7 +68,7 @@ rngdir			= ${CLUSTERDATA}/relaxng
+ rng_DATA		= $(DTD) $(XSL) $(RESRNG)
+ 
+ $(TARGET):
+-	cat $@.in | sed \
++	cat $(abs_srcdir)/$@.in | sed \
+ 		-e 's#@''LOGDIR@#${LOGDIR}#g' \
+ 	> $@.out
+ 	chmod +x $@.out
+-- 
+2.11.0
+

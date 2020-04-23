@@ -1,0 +1,108 @@
+From ce16b664df514c4d8b0e6b8733ae1dce3561a2a4 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Wed, 11 Dec 2019 19:43:19 -0800
+
+---
+ plugins/sudoers/cvtsudoers.c | 9 +++++++++
+ plugins/sudoers/def_data.c   | 4 ++++
+ plugins/sudoers/def_data.h   | 2 ++
+ plugins/sudoers/def_data.in  | 3 +++
+ plugins/sudoers/defaults.c   | 3 +++
+ plugins/sudoers/sudoers.c    | 4 ++++
+ 6 files changed, 25 insertions(+)
+
+diff --git a/plugins/sudoers/cvtsudoers.c b/plugins/sudoers/cvtsudoers.c
+index 0221314..9d21d2f 100644
+--- a/plugins/sudoers/cvtsudoers.c
++++ b/plugins/sudoers/cvtsudoers.c
+@@ -346,6 +346,15 @@ main(int argc, char *argv[])
+ 	sudo_fatalx("error: unhandled input %d", input_format);
+     }
+ 
++    /*
++     * cvtsudoers group filtering doesn't work if def_match_group_by_gid
++     * is set to true by default (at compile-time). It cannot be set to false
++     * because cvtsudoers doesn't apply the parsed Defaults.
++     *
++     * Related: sudo-1.8.23-legacy-group-processing.patch
++     */
++    def_match_group_by_gid = def_legacy_group_processing = false;
++
+     /* Apply filters. */
+     filter_userspecs(&parsed_policy, conf);
+     filter_defaults(&parsed_policy, conf);
+diff --git a/plugins/sudoers/def_data.c b/plugins/sudoers/def_data.c
+index 07e3433..5fa45bb 100644
+--- a/plugins/sudoers/def_data.c
++++ b/plugins/sudoers/def_data.c
+@@ -494,6 +494,10 @@ struct sudo_defs_types sudo_defs_table[] = {
+ 	N_("Ignore case when matching group names"),
+ 	NULL,
+     }, {
++	"legacy_group_processing", T_FLAG,
++	N_("Don't pre-resolve all group names"),
++	NULL,
++    }, {
+ 	NULL, 0, NULL
+     }
+ };
+diff --git a/plugins/sudoers/def_data.h b/plugins/sudoers/def_data.h
+index 65f10c3..940fa8f 100644
+--- a/plugins/sudoers/def_data.h
++++ b/plugins/sudoers/def_data.h
+@@ -226,6 +226,8 @@
+ #define def_case_insensitive_user (sudo_defs_table[I_CASE_INSENSITIVE_USER].sd_un.flag)
+ #define I_CASE_INSENSITIVE_GROUP 113
+ #define def_case_insensitive_group (sudo_defs_table[I_CASE_INSENSITIVE_GROUP].sd_un.flag)
++#define I_LEGACY_GROUP_PROCESSING 114
++#define def_legacy_group_processing (sudo_defs_table[I_LEGACY_GROUP_PROCESSING].sd_un.flag)
+ 
+ enum def_tuple {
+ 	never,
+diff --git a/plugins/sudoers/def_data.in b/plugins/sudoers/def_data.in
+index 99d4360..571bc96 100644
+--- a/plugins/sudoers/def_data.in
++++ b/plugins/sudoers/def_data.in
+@@ -357,3 +357,6 @@ case_insensitive_user
+ case_insensitive_group
+ 	T_FLAG
+ 	"Ignore case when matching group names"
++legacy_group_processing
++	T_FLAG
++	"Don't pre-resolve all group names"
+diff --git a/plugins/sudoers/defaults.c b/plugins/sudoers/defaults.c
+index 4c8c262..970755e 100644
+--- a/plugins/sudoers/defaults.c
++++ b/plugins/sudoers/defaults.c
+@@ -91,6 +91,7 @@ static struct early_default early_defaults[] = {
+     { I_FQDN },
+ #endif
+     { I_MATCH_GROUP_BY_GID },
++    { I_LEGACY_GROUP_PROCESSING },
+     { I_GROUP_PLUGIN },
+     { I_RUNAS_DEFAULT },
+     { I_SUDOERS_LOCALE },
+@@ -492,6 +493,8 @@ init_defaults(void)
+     }
+ 
+     /* First initialize the flags. */
++    def_legacy_group_processing = true;
++    def_match_group_by_gid = true;
+ #ifdef LONG_OTP_PROMPT
+     def_long_otp_prompt = true;
+ #endif
+diff --git a/plugins/sudoers/sudoers.c b/plugins/sudoers/sudoers.c
+index 1267949..d8f4dd0 100644
+--- a/plugins/sudoers/sudoers.c
++++ b/plugins/sudoers/sudoers.c
+@@ -217,6 +217,10 @@ sudoers_policy_init(void *info, char * const envp[])
+     if (set_loginclass(runas_pw ? runas_pw : sudo_user.pw))
+ 	ret = true;
+ 
++    if (!def_match_group_by_gid || !def_legacy_group_processing) {
++        def_match_group_by_gid = false;
++	def_legacy_group_processing = false;
++    }
+ cleanup:
+     if (!restore_perms())
+ 	ret = -1;

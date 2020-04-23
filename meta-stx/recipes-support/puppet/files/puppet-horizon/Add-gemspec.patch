@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-23 20:19:32.602763995 -0700
++++ b/puppet-horizon.gemspec	2019-10-26 22:29:30.802030276 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-horizon'
++  s.version     = '11.5.0'
++  s.date        = '2019-09-24'
++  s.summary     = "Puppet horizon module"
++  s.description = s.summary
++  s.authors     = ["Puppet Labs"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/openstack/puppet-horizon'
++  s.license     = 'Apache 2.0'
++ end

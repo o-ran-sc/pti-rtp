@@ -1,0 +1,33 @@
+From 27ef15d12cc63432332212fbf8c5cc4d77a29de9 Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Sat, 26 Oct 2019 14:17:48 +0000
+Subject: [PATCH] disable documentation
+
+---
+ Makefile.in | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index fd6a7443..348389e5 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -56,7 +56,7 @@ KDIR ?= /lib/modules/$(KVER)/build
+ # and not in e.g. dash. I'm too lazy to fix it to be compatible.
+ SHELL=/bin/bash
+ 
+-SUBDIRS     = user scripts documentation drbd
++SUBDIRS     = user scripts drbd
+ 
+ REL_VERSION := $(shell $(SED) -ne '/^\#define REL_VERSION/{s/^[^"]*"\([^ "]*\).*/\1/;p;q;}' drbd/linux/drbd_config.h)
+ ifdef FORCE
+@@ -181,7 +181,6 @@ drbd/drbd_buildtag.c:
+ .filelist:
+ 	@$(GIT) ls-files | sed '$(if $(PRESERVE_DEBIAN),,/^debian/d);s#^#drbd-$(DIST_VERSION)/#' > .filelist
+ 	@[ -s .filelist ] # assert there is something in .filelist now
+-	@find documentation -name "[^.]*.[58]" -o -name "*.html" | \
+ 	sed "s/^/drbd-$(DIST_VERSION)\//"              >> .filelist ; \
+ 	echo drbd-$(DIST_VERSION)/drbd_config.h        >> .filelist ; \
+ 	echo drbd-$(DIST_VERSION)/drbd/drbd_buildtag.c >> .filelist ; \
+-- 
+2.17.1
+

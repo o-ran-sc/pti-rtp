@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-23 20:19:32.602763995 -0700
++++ b/puppet-ceph.gemspec	2019-10-28 14:39:41.525008548 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-ceph'
++  s.version     = '2.4.1'
++  s.date        = '2017-09-07'
++  s.summary     = "Community Developed Ceph Module"
++  s.description = s.summary
++  s.authors     = ["rcritten"]
++  s.email       = ''
++  s.files       = %w(LICENSE README.md Rakefile) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://launchpad.net/puppet-ceph'
++  s.license     = 'Apache 2.0'
++ end

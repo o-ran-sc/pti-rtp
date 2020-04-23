@@ -1,0 +1,49 @@
+From 26b5ff6b802b6a24b23ea774b0305f6f2031d4da Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 17 May 2017 12:21:37 -0400
+Subject: [PATCH] Include header for writev()
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+Reviewed-by: Simo Sorce <simo@redhat.com>
+Merges: #186
+(cherry picked from commit c8c5e8d2b2154d1006633634478a24bfa0b04b4d)
+---
+ proxy/src/gp_socket.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/proxy/src/gp_socket.c b/proxy/src/gp_socket.c
+index 17ecf7c..29b6a44 100644
+--- a/proxy/src/gp_socket.c
++++ b/proxy/src/gp_socket.c
+@@ -1,19 +1,22 @@
+ /* Copyright (C) 2011,2015 the GSS-PROXY contributors, see COPYING for license */
+ 
+ #include "config.h"
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <fcntl.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/socket.h>
+-#include <sys/un.h>
+-#include <errno.h>
+-#include <netinet/in.h>
++
+ #include "gp_proxy.h"
+ #include "gp_creds.h"
+ #include "gp_selinux.h"
+ 
++#include <errno.h>
++#include <fcntl.h>
++#include <netinet/in.h>
++#include <stdlib.h>
++#include <sys/socket.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/uio.h>
++#include <sys/un.h>
++#include <unistd.h>
++
+ #define FRAGMENT_BIT (1 << 31)
+ 
+ struct unix_sock_conn {

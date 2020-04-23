@@ -1,0 +1,25 @@
+From abcd9ae04b1c3f9f0ebb72bd48737b08d5d7fe65 Mon Sep 17 00:00:00 2001
+From: Simo Sorce <simo@redhat.com>
+Date: Thu, 25 May 2017 21:35:37 -0400
+Subject: [PATCH] Fix memory leak
+
+Signed-off-by: Simo Sorce <simo@redhat.com>
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+Related-to: #176
+(cherry picked from commit 69a73d85eb3e70fdc7501794d5fd11a73a1d20fa)
+---
+ proxy/src/gp_export.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/proxy/src/gp_export.c b/proxy/src/gp_export.c
+index f44da50..4e081df 100644
+--- a/proxy/src/gp_export.c
++++ b/proxy/src/gp_export.c
+@@ -381,6 +381,7 @@ uint32_t gp_export_gssx_cred(uint32_t *min, struct gp_call_ctx *gpcall,
+ 
+ done:
+     *min = ret_min;
++    gss_release_buffer(&ret_min, &token);
+     gss_release_name(&ret_min, &name);
+     gss_release_oid_set(&ret_min, &mechanisms);
+     return ret_maj;

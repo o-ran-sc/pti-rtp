@@ -1,0 +1,155 @@
+diff --git a/manifests/bond/poky-stx.pp b/manifests/bond/poky-stx.pp
+new file mode 100644
+index 0000000..c6af9c9
+--- /dev/null
++++ b/manifests/bond/poky-stx.pp
+@@ -0,0 +1,56 @@
++# = Define: network::bond::poky-stx
++#
++# Instantiate bonded interfaces on Debian based systems.
++#
++# == See also
++#
++# * Debian Network Bonding http://wiki.wrlinux.org/Bonding
++define network::bond::poky-stx(
++  $slaves,
++  $ensure    = present,
++  $ipaddress = undef,
++  $netmask   = undef,
++  $method    = undef,
++  $family    = undef,
++  $onboot    = undef,
++
++  $mode             = undef,
++  $miimon           = undef,
++  $downdelay        = undef,
++  $updelay          = undef,
++  $lacp_rate        = undef,
++  $primary          = undef,
++  $primary_reselect = undef,
++  $xmit_hash_policy = undef,
++) {
++
++  $raw = {
++    'bond-slaves'    => join($slaves, ' '),
++    'bond-mode'      => $mode,
++    'bond-miimon'    => $miimon,
++    'bond-downdelay' => $downdelay,
++    'bond-updelay'   => $updelay,
++    'bond-lacp-rate' => $lacp_rate,
++    'bond-primary'   => $primary,
++    'bond-primary-reselect' => $primary_reselect,
++    'bond-xmit-hash-policy' => $xmit_hash_policy,
++  }
++
++  $opts = compact_hash($raw)
++
++  network_config { $name:
++    ensure    => $ensure,
++    ipaddress => $ipaddress,
++    netmask   => $netmask,
++    family    => $family,
++    method    => $method,
++    onboot    => $onboot,
++    options   => $opts,
++  }
++
++  network_config { $slaves:
++    ensure      => absent,
++    reconfigure => true,
++    before      => Network_config[$name],
++  }
++}
+diff --git a/manifests/bond/setup.pp b/manifests/bond/setup.pp
+index 0a30767..780722c 100644
+--- a/manifests/bond/setup.pp
++++ b/manifests/bond/setup.pp
+@@ -6,8 +6,10 @@ class network::bond::setup {
+       # is available by default
+     }
+     Debian: {
+-      package { 'ifenslave-2.6':
+-        ensure => present,
++      if $::operatingsystem != 'poky-stx' {
++        package { 'ifenslave-2.6':
++          ensure => present,
++        }
+       }
+     }
+     WRLinux: {
+diff --git a/manifests/bond.pp b/manifests/bond.pp
+index 26ca104..5f8e254 100644
+--- a/manifests/bond.pp
++++ b/manifests/bond.pp
+@@ -164,28 +164,51 @@ define network::bond(
+ 
+   case $::osfamily {
+     Debian: {
+-      network::bond::debian { $name:
+-        ensure           => $ensure,
+-        slaves           => $slaves,
+-        ipaddress        => $ipaddress,
+-        netmask          => $netmask,
+-        method           => $method,
+-        family           => $family,
+-        onboot           => $onboot,
+-        hotplug          => $hotplug,
+-        options          => $options,
+-        slave_options    => $slave_options,
++      if $::operatingsystem == 'poky-stx' {
++        network::bond::poky-stx { $name:
++          slaves    => $slaves,
++          ensure    => $ensure,
++          ipaddress => $ipaddress,
++          netmask   => $netmask,
++          method    => $method,
++          family    => $family,
++          onboot    => $onboot,
+ 
+-        mode             => $mode,
+-        miimon           => $miimon,
+-        downdelay        => $downdelay,
+-        updelay          => $updelay,
+-        lacp_rate        => $lacp_rate,
+-        primary          => $primary,
+-        primary_reselect => $primary_reselect,
+-        xmit_hash_policy => $xmit_hash_policy,
++          mode             => $mode,
++          miimon           => $miimon,
++          downdelay        => $downdelay,
++          updelay          => $updelay,
++          lacp_rate        => $lacp_rate,
++          primary          => $primary,
++          primary_reselect => $primary_reselect,
++          xmit_hash_policy => $xmit_hash_policy,
+ 
+-        require          => Kmod::Alias[$name],
++          require   => Kmod::Alias[$name],
++        }
++      } else {
++        network::bond::debian { $name:
++          ensure           => $ensure,
++          slaves           => $slaves,
++          ipaddress        => $ipaddress,
++          netmask          => $netmask,
++          method           => $method,
++          family           => $family,
++          onboot           => $onboot,
++          hotplug          => $hotplug,
++          options          => $options,
++          slave_options    => $slave_options,
++
++          mode             => $mode,
++          miimon           => $miimon,
++          downdelay        => $downdelay,
++          updelay          => $updelay,
++          lacp_rate        => $lacp_rate,
++          primary          => $primary,
++          primary_reselect => $primary_reselect,
++          xmit_hash_policy => $xmit_hash_policy,
++
++          require          => Kmod::Alias[$name],
++        }
+       }
+     }
+     WRLinux: {

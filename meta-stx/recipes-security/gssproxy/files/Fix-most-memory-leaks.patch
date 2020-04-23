@@ -1,0 +1,250 @@
+From 9f9ab1e13c72b7c1fd06b6ba085ba2853bb9c3ca Mon Sep 17 00:00:00 2001
+From: Alexander Scheel <ascheel@redhat.com>
+Date: Thu, 29 Jun 2017 10:59:46 -0400
+Subject: [PATCH] Fix most memory leaks
+
+Signed-off-by: Alexander Scheel <ascheel@redhat.com>
+[rharwood@redhat.com: commit message, whitespace]
+Reviewed-by: Robbie Harwood <rharwood@redhat.com>
+Merges: #203
+Related: #176
+(cherry picked from commit 470cf4d745d57f0597124a35b2faf86ba1107bb5)
+[rharwood@redhat.com: backport around missing program support]
+---
+ proxy/src/gp_config.c            |  1 +
+ proxy/src/gp_creds.c             |  2 ++
+ proxy/src/gp_export.c            |  3 ++-
+ proxy/src/gp_rpc_acquire_cred.c  | 17 ++++++++-----
+ proxy/src/gssproxy.c             | 42 +++++++++++++++++++++++---------
+ proxy/src/mechglue/gpp_context.c |  2 ++
+ proxy/tests/t_acquire.c          |  3 +++
+ 7 files changed, 51 insertions(+), 19 deletions(-)
+
+diff --git a/proxy/src/gp_config.c b/proxy/src/gp_config.c
+index a671333..b4ab90c 100644
+--- a/proxy/src/gp_config.c
++++ b/proxy/src/gp_config.c
+@@ -75,6 +75,7 @@ static void gp_service_free(struct gp_service *svc)
+         free_cred_store_elements(&svc->krb5.store);
+         gp_free_creds_handle(&svc->krb5.creds_handle);
+     }
++    free(svc->socket);
+     SELINUX_context_free(svc->selinux_ctx);
+     memset(svc, 0, sizeof(struct gp_service));
+ }
+diff --git a/proxy/src/gp_creds.c b/proxy/src/gp_creds.c
+index fdc6bdf..2cb4ce7 100644
+--- a/proxy/src/gp_creds.c
++++ b/proxy/src/gp_creds.c
+@@ -1049,6 +1049,8 @@ uint32_t gp_count_tickets(uint32_t *min, gss_cred_id_t cred, uint32_t *ccsum)
+             goto done;
+         }
+ 
++        krb5_free_cred_contents(context, &creds);
++
+         /* TODO: Should we do a real checksum over all creds->ticket data and
+          * flags in future ? */
+         (*ccsum)++;
+diff --git a/proxy/src/gp_export.c b/proxy/src/gp_export.c
+index 4e081df..ab08bb7 100644
+--- a/proxy/src/gp_export.c
++++ b/proxy/src/gp_export.c
+@@ -47,7 +47,7 @@ uint32_t gp_init_creds_with_keytab(uint32_t *min, const char *svc_name,
+     krb5_keytab ktid = NULL;
+     krb5_kt_cursor cursor;
+     krb5_keytab_entry entry;
+-    krb5_enctype *permitted;
++    krb5_enctype *permitted = NULL;
+     uint32_t ret_maj = 0;
+     uint32_t ret_min = 0;
+     int ret;
+@@ -127,6 +127,7 @@ uint32_t gp_init_creds_with_keytab(uint32_t *min, const char *svc_name,
+     ret_maj = GSS_S_COMPLETE;
+ 
+ done:
++    krb5_free_enctypes(handle->context, permitted);
+     if (ktid) {
+         (void)krb5_kt_close(handle->context, ktid);
+     }
+diff --git a/proxy/src/gp_rpc_acquire_cred.c b/proxy/src/gp_rpc_acquire_cred.c
+index fcb4fbe..7ddb427 100644
+--- a/proxy/src/gp_rpc_acquire_cred.c
++++ b/proxy/src/gp_rpc_acquire_cred.c
+@@ -130,17 +130,18 @@ int gp_acquire_cred(struct gp_call_ctx *gpcall,
+         }
+     }
+ 
+-    acr->output_cred_handle = calloc(1, sizeof(gssx_cred));
+-    if (!acr->output_cred_handle) {
+-        ret_maj = GSS_S_FAILURE;
+-        ret_min = ENOMEM;
+-        goto done;
+-    }
+ 
+     if (out_cred == in_cred) {
+         acr->output_cred_handle = aca->input_cred_handle;
+         aca->input_cred_handle = NULL;
+     } else {
++        acr->output_cred_handle = calloc(1, sizeof(gssx_cred));
++        if (!acr->output_cred_handle) {
++            ret_maj = GSS_S_FAILURE;
++            ret_min = ENOMEM;
++            goto done;
++        }
++
+         ret_maj = gp_export_gssx_cred(&ret_min, gpcall,
+                                       &out_cred, acr->output_cred_handle);
+         if (ret_maj) {
+@@ -154,6 +155,10 @@ done:
+ 
+     GPRPCDEBUG(gssx_res_acquire_cred, acr);
+ 
++    if (add_out_cred != &in_cred && add_out_cred != &out_cred)
++        gss_release_cred(&ret_min, add_out_cred);
++    if (in_cred != out_cred)
++        gss_release_cred(&ret_min, &in_cred);
+     gss_release_cred(&ret_min, &out_cred);
+     gss_release_oid_set(&ret_min, &use_mechs);
+     gss_release_oid_set(&ret_min, &desired_mechs);
+diff --git a/proxy/src/gssproxy.c b/proxy/src/gssproxy.c
+index a020218..5c5937d 100644
+--- a/proxy/src/gssproxy.c
++++ b/proxy/src/gssproxy.c
+@@ -157,7 +157,7 @@ int main(int argc, const char *argv[])
+     verto_ctx *vctx;
+     verto_ev *ev;
+     int wait_fd;
+-    int ret;
++    int ret = -1;
+ 
+     struct poptOption long_options[] = {
+         POPT_AUTOHELP
+@@ -187,13 +187,17 @@ int main(int argc, const char *argv[])
+             fprintf(stderr, "\nInvalid option %s: %s\n\n",
+                     poptBadOption(pc, 0), poptStrerror(opt));
+             poptPrintUsage(pc, stderr, 0);
+-            return 1;
++
++            ret = 1;
++            goto cleanup;
+         }
+     }
+ 
+     if (opt_version) {
+         puts(VERSION""DISTRO_VERSION""PRERELEASE_VERSION);
+-        return 0;
++        poptFreeContext(pc);
++        ret = 0;
++        goto cleanup;
+     }
+ 
+     if (opt_debug || opt_debug_level > 0) {
+@@ -204,7 +208,8 @@ int main(int argc, const char *argv[])
+     if (opt_daemon && opt_interactive) {
+         fprintf(stderr, "Option -i|--interactive is not allowed together with -D|--daemon\n");
+         poptPrintUsage(pc, stderr, 0);
+-        return 1;
++        ret = 0;
++        goto cleanup;
+     }
+ 
+     if (opt_interactive) {
+@@ -218,7 +223,8 @@ int main(int argc, const char *argv[])
+                                 opt_config_socket,
+                                 opt_daemon);
+     if (!gpctx->config) {
+-        exit(EXIT_FAILURE);
++        ret = EXIT_FAILURE;
++        goto cleanup;
+     }
+ 
+     init_server(gpctx->config->daemonize, &wait_fd);
+@@ -229,7 +235,8 @@ int main(int argc, const char *argv[])
+     if (!vctx) {
+         fprintf(stderr, "Failed to initialize event loop. "
+                         "Is there at least one libverto backend installed?\n");
+-        return 1;
++        ret = 1;
++        goto cleanup;
+     }
+     gpctx->vctx = vctx;
+ 
+@@ -237,12 +244,13 @@ int main(int argc, const char *argv[])
+     ev = verto_add_signal(vctx, VERTO_EV_FLAG_PERSIST, hup_handler, SIGHUP);
+     if (!ev) {
+         fprintf(stderr, "Failed to register SIGHUP handler with verto!\n");
+-        return 1;
++        ret = 1;
++        goto cleanup;
+     }
+ 
+     ret = init_sockets(vctx, NULL);
+     if (ret != 0) {
+-        return ret;
++        goto cleanup;
+     }
+ 
+     /* We need to tell nfsd that GSS-Proxy is available before it starts,
+@@ -256,12 +264,14 @@ int main(int argc, const char *argv[])
+ 
+     ret = drop_privs(gpctx->config);
+     if (ret) {
+-        exit(EXIT_FAILURE);
++        ret = EXIT_FAILURE;
++        goto cleanup;
+     }
+ 
+     ret = gp_workers_init(gpctx);
+     if (ret) {
+-        exit(EXIT_FAILURE);
++        ret = EXIT_FAILURE;
++        goto cleanup;
+     }
+ 
+     verto_run(vctx);
+@@ -271,9 +281,17 @@ int main(int argc, const char *argv[])
+ 
+     fini_server();
+ 
+-    poptFreeContext(pc);
+ 
+     free_config(&gpctx->config);
++    free(gpctx);
+ 
+-    return 0;
++    ret = 0;
++
++cleanup:
++    poptFreeContext(pc);
++    free(opt_config_file);
++    free(opt_config_dir);
++    free(opt_config_socket);
++
++    return ret;
+ }
+diff --git a/proxy/src/mechglue/gpp_context.c b/proxy/src/mechglue/gpp_context.c
+index 2f41e4f..69e69e0 100644
+--- a/proxy/src/mechglue/gpp_context.c
++++ b/proxy/src/mechglue/gpp_context.c
+@@ -362,6 +362,8 @@ OM_uint32 gssi_delete_sec_context(OM_uint32 *minor_status,
+         }
+     }
+ 
++    free(ctx);
++
+     return rmaj;
+ }
+ 
+diff --git a/proxy/tests/t_acquire.c b/proxy/tests/t_acquire.c
+index 2bb7706..5334565 100644
+--- a/proxy/tests/t_acquire.c
++++ b/proxy/tests/t_acquire.c
+@@ -132,5 +132,8 @@ done:
+     gss_release_buffer(&ret_min, &in_token);
+     gss_release_buffer(&ret_min, &out_token);
+     gss_release_cred(&ret_min, &cred_handle);
++    gss_release_name(&ret_min, &target_name);
++    gss_delete_sec_context(&ret_min, &init_ctx, GSS_C_NO_BUFFER);
++    gss_delete_sec_context(&ret_min, &accept_ctx, GSS_C_NO_BUFFER);
+     return ret;
+ }

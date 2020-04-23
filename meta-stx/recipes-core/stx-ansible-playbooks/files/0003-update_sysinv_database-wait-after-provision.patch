@@ -1,0 +1,27 @@
+From a8310826a3939c1726f7e20ab51e3c8fb970cdc9 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 31 Mar 2020 17:15:29 +0800
+Subject: [PATCH] update_sysinv_database: wait after provision
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../roles/bootstrap/persist-config/tasks/update_sysinv_database.yml    | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/update_sysinv_database.yml b/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/update_sysinv_database.yml
+index f4d2185..105e6ef 100644
+--- a/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/update_sysinv_database.yml
++++ b/playbookconfig/src/playbooks/roles/bootstrap/persist-config/tasks/update_sysinv_database.yml
+@@ -77,6 +77,9 @@
+     - populate_result.rc != 0
+     - '"Ceph monitor already configured" not in populate_result.stderr'
+ 
++- name: Wait 30s after provision initial system configuration.
++  wait_for: timeout=30
++
+ # If this is initial play or replay with management and/or oam network
+ # config change, must wait for the keystone endpoint runtime manifest
+ # to complete
+-- 
+2.7.4
+

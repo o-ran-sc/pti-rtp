@@ -1,0 +1,28 @@
+diff -ru a/manifests/params.pp b/manifests/params.pp
+--- a/manifests/params.pp	2020-03-05 19:24:51.246516534 +0800
++++ b/manifests/params.pp	2020-03-05 19:50:08.630557886 +0800
+@@ -167,7 +167,7 @@
+     }
+ 
+     'Debian': {
+-      if $::operatingsystem == 'Debian' and versioncmp($::operatingsystemrelease, '9') >= 0 {
++      if ($::operatingsystem == 'Debian' and versioncmp($::operatingsystemrelease, '9') >= 0 or $::operatingsystem == 'poky-stx' {
+         $provider = 'mariadb'
+       } else {
+         $provider = 'mysql'
+@@ -188,8 +188,13 @@
+       }
+ 
+       $basedir                 = '/usr'
+-      $config_file             = '/etc/mysql/my.cnf'
+-      $includedir              = '/etc/mysql/conf.d'
++      if $::operatingsystem == 'poky-stx' {
++        $config_file             = '/etc/my.cnf.d/server.cnf'
++        $includedir              = '/etc/my.cnf.d'
++      } else {
++        $config_file             = '/etc/mysql/my.cnf'
++        $includedir              = '/etc/mysql/conf.d'
++      }
+       $datadir                 = '/var/lib/mysql'
+       $log_error               = '/var/log/mysql/error.log'
+       $pidfile                 = '/var/run/mysqld/mysqld.pid'

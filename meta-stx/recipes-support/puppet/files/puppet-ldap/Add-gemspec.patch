@@ -1,0 +1,15 @@
+--- /dev/null	2019-10-28 19:50:04.372284581 -0700
++++ b/puppet-ldap.gemspec	2019-10-30 21:04:14.309536996 -0700
+@@ -0,0 +1,12 @@
++Gem::Specification.new do |s|
++  s.name        = 'puppet-ldap'
++  s.version     = '0.2.4'
++  s.date        = '2014-09-13'
++  s.summary     = "OpenLDAP module for Puppet."
++  s.description = s.summary
++  s.authors     = ["Emiliano Castagnari ecastag@gmail.com (aka Torian)"]
++  s.email       = ''
++  s.files       = %w(Modulefile README.md) + Dir.glob('{lib,spec}/**/*')
++  s.homepage    = 'https://github.com/torian/puppet-ldap'
++  s.license     = 'GPL-2.0'
++ end

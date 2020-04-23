@@ -1,0 +1,31 @@
+From 5d180eb6a5b60d75b4b8ba5af265fc973b6776ca Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Tue, 9 Jul 2019 13:51:46 -0700
+Subject: [PATCH] mtce-storage dont install empty directory unless needed
+
+---
+ mtce-storage/src/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/mtce-storage/src/Makefile b/mtce-storage/src/Makefile
+index 842a76c..85c14e0 100755
+--- a/mtce-storage/src/Makefile
++++ b/mtce-storage/src/Makefile
+@@ -12,11 +12,11 @@ install:
+ 	# Storage-Only Init Scripts
+ 	install -m 755 -p -D scripts/$(SOURCE1) $(buildroot)/$(_sysconfdir)/init.d/goenabledStorage
+ 	# Storage-Only Process Monitor Config files
+-	install -m 755 -d $(buildroot)/$(local_etc_pmond)
++	# install -m 755 -d $(buildroot)/$(local_etc_pmond)
+ 	# Storage-Only Go Enabled Tests
+-	install -m 755 -d $(buildroot)/$(local_etc_goenabledd)
++	# install -m 755 -d $(buildroot)/$(local_etc_goenabledd)
+ 	# Storage-Only Services
+-	install -m 755 -d $(buildroot)/$(local_etc_servicesd)/storage
++	# install -m 755 -d $(buildroot)/$(local_etc_servicesd)/storage
+ 	# Install systemd dir
+ 	install -m 644 -p -D scripts/$(SOURCE2) $(buildroot)/$(_unitdir)/goenabled-storage.service
+ 	# for license
+-- 
+2.17.1
+
