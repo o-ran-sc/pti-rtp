@@ -44,9 +44,7 @@ do_install_append () {
 	install -m 755 -d ${D}/${sysconfdir}/init.d
 
 	install -m 700 scripts/bin/patch-alarm-manager ${D}/${bindir}/
-	install -m 700 scripts/bin/patch-alarm-manager ${D}/${sysconfdir}/init.d/
-	
-
+	install -m 700 scripts/init.d/patch-alarm-manager ${D}/${sysconfdir}/init.d/
 }
 
 FILES_patch-alarm = " \
