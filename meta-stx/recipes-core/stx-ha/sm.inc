@@ -24,10 +24,12 @@ RDEPENDS_sm += " \
 	chkconfig \
 	mtce-pmon \
 	"
-#	aaa_base
 
 do_configure_append () {
-	:
+	# fix the hardcoded path
+	sed -i -e "s|/usr/local/sbin|${sbindir}|" \
+		${S}/service-mgmt/sm-common/src/sm_types.h \
+		${S}/service-mgmt/sm-common/src/sm_watchdog_nfs.c
 }
 
 do_compile_append() {
