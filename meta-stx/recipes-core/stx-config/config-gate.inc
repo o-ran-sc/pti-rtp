@@ -34,3 +34,13 @@ FILES_config-gate = " \
 	${sbindir}/wait_for_config_init.sh \
 	${systemd_system_unitdir}/config.service \
 	"
+
+SYSTEMD_PACKAGES += "\
+	config-gate \
+	config-gate-worker \
+	"
+SYSTEMD_SERVICE_config-gate = "config.service"
+SYSTEMD_SERVICE_config-gate-worker = "worker-config-gate.service"
+
+SYSTEMD_AUTO_ENABLE_config-gate = "enable"
+SYSTEMD_AUTO_ENABLE_config-gate-worker = "enable"
