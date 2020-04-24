@@ -72,7 +72,7 @@ do_configure() {
 }
 
 do_compile() {
-	oe_runmake CC="${CC}" CFLAGS="${CFLAGS}" SBINDIR="${bindir}" \
+	oe_runmake CC="${CC}" CFLAGS="${CFLAGS}" SBINDIR="${sbindir}" \
 	           PREFIX="${prefix}" \
 	           ZLIB_INC=${STAGING_INCDIR} \
 	           ZLIB_LIB=${STAGING_LIBDIR} \
@@ -87,7 +87,7 @@ do_compile() {
 do_install() {
 	oe_runmake install-bin \
 	           PREFIX="${prefix}" \
-	           SBINDIR="${bindir}" \
+	           SBINDIR="${sbindir}" \
 	           DESTDIR=${D} \
 	           INCLUDEDIR=${includedir}
 
