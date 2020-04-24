@@ -47,7 +47,7 @@ SRC_URI = "git://opendev.org/starlingx/metal.git;protocol=${PROTOCOL};rev=${SRCR
 		file://stx-warrior-adjust-paths.patch \
 		"
 
-inherit setuptools
+inherit setuptools systemd
 
 
 DEPENDS = " \
@@ -90,3 +90,5 @@ FILES_${PN} = " "
 FILES_${PN}-dbg_append += " "
 FILES_${PN}-staticdev_append = " "
 FILES_${PN}-dev_append = " "
+
+DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"

@@ -45,3 +45,7 @@ FILES_mtce-storage = " \
 	${systemd_system_unitdir}/goenabled-storage.service \
 	${sysconfdir}/init.d/goenabledStorage \
 	"
+
+SYSTEMD_PACKAGES += "mtce-storage"
+SYSTEMD_SERVICE_mtce-storage = "goenabled-storage.service"
+SYSTEMD_AUTO_ENABLE_mtce-storage = "enable"

@@ -36,13 +36,13 @@ do_install_prepend () {
 		install
 }
 
-#pkg_postinst_ontarget_mtce-compute() { 
-#	/usr/bin/systemctl enable goenabled-worker.service
-#}
-
 FILES_mtce-compute = " \
 	${datadir}/licenses/mtce-compute-1.0/LICENSE \
 	${systemd_system_unitdir}/goenabled-worker.service \
 	${sysconfdir}/goenabled.d/virt-support-goenabled.sh \
 	${sysconfdir}/init.d/goenabledWorker \
 	"
+
+SYSTEMD_PACKAGES += "mtce-compute"
+SYSTEMD_SERVICE_mtce-compute = "goenabled-worker.service"
+SYSTEMD_AUTO_ENABLE_mtce-compute = "enable"

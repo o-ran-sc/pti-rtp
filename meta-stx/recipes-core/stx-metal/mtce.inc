@@ -190,19 +190,29 @@ do_install_prepend () {
 	#cd ${D}/%{_libdir} ; ln -s libamon.so.$MAJOR libamon.so
 }
 
-#pkg_postinst_ontarget-mtce () {
-#	/usr/bin/systemctl enable hbsClient.service
-#	/usr/bin/systemctl enable mtcalarm.service 
-#	/usr/bin/systemctl enable mtclog.service 
-#	/usr/bin/systemctl enable mtcClient.service 
-#	/usr/bin/systemctl enable goenabled.service 
-#	/usr/bin/systemctl enable lmon.service 
-#	/usr/bin/systemctl enable hostw.service 
-#	/usr/bin/systemctl enable fsmon.service 
-#	/usr/bin/systemctl enable pmon.service 
-#	# /usr/bin/systemctl enable hwclock.service 
-#	# /usr/bin/systemctl enable runservices.service 
-#}
+SYSTEMD_PACKAGES += " \
+	mtce \
+	mtce-hostw \
+	mtce-lmon \
+	mtce-pmon \
+	"
+
+SYSTEMD_SERVICE_mtce = " \
+	fsmon.service \
+	goenabled.service \
+	hbsClient.service \
+	mtcClient.service \
+	mtcalarm.service \
+	mtclog.service \
+	"
+SYSTEMD_SERVICE_mtce-hostw = "hostw.service"
+SYSTEMD_SERVICE_mtce-lmon = "lmon.service"
+SYSTEMD_SERVICE_mtce-pmon = "pmon.service"
+
+SYSTEMD_AUTO_ENABLE_mtce = "enable"
+SYSTEMD_AUTO_ENABLE_mtce-hostw = "enable"
+SYSTEMD_AUTO_ENABLE_mtce-lmon = "enable"
+SYSTEMD_AUTO_ENABLE_mtce-pmon = "enable"
 
 FILES_mtce-pmon = " \
 	${sbindir}/pmon-restart \
@@ -238,6 +248,7 @@ FILES_mtce-lmon= " \
 	${sysconfdir}/logrotate.d/lmon.logrotate \
 	${sysconfdir}/pmon.d/lmon.conf \
 	${sysconfdir}/init.d/lmon \
+	${systemd_system_unitdir}/lmon.service \
 	"
 
 FILES_mtce = " \
@@ -261,7 +272,6 @@ FILES_mtce = " \
 	${systemd_system_unitdir}/hbsClient.service \
 	${systemd_system_unitdir}/hwclock.service \
 	${systemd_system_unitdir}/runservices.service \
-	${systemd_system_unitdir}/lmon.service \
 	${sysconfdir}/pmon.d/nslcd.conf \
 	${sysconfdir}/pmon.d/mtclogd.conf \
 	${sysconfdir}/pmon.d/mtcalarm.conf \

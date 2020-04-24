@@ -51,3 +51,7 @@ FILES_mtce-control = " \
 	${sysconfdir}/init.d/hbsAgent \
 	${sysconfdir}/init.d/goenabledControl \
 	"
+
+SYSTEMD_PACKAGES += "mtce-control"
+SYSTEMD_SERVICE_mtce-control = "hbsAgent.service"
+SYSTEMD_AUTO_ENABLE_mtce-control = "enable"
