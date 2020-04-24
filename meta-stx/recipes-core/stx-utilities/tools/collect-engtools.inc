@@ -104,3 +104,7 @@ FILES_collect-engtools = "  \
 	${sysconfdir}/init.d/collect-engtools.sh \
 	${systemd_system_unitdir}/collect-engtools.service \
 	"
+
+SYSTEMD_PACKAGES += "collect-engtools"
+SYSTEMD_SERVICE_collect-engtools = "collect-engtools.service"
+SYSTEMD_AUTO_ENABLE_collect-engtools = "enable"

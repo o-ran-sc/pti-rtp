@@ -60,3 +60,7 @@ FILES_logmgmt = "  \
 	${PYTHON_SITEPACKAGES_DIR}/logmgmt/ \
 	${PYTHON_SITEPACKAGES_DIR}/logmgmt-${PV}-py${PYTHON_BASEVERSION}.egg-info/ \
 	"
+
+SYSTEMD_PACKAGES += "logmgmt"
+SYSTEMD_SERVICE_logmgmt = "logmgmt.service"
+SYSTEMD_AUTO_ENABLE_logmgmt = "enable"

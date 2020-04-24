@@ -54,7 +54,7 @@ SRC_URI = " \
 	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
 	"
 
-inherit setuptools distutils python-dir
+inherit setuptools distutils python-dir systemd
 DEPENDS = " \
 	python-pip \
 	python-pbr-native \
@@ -90,3 +90,5 @@ do_install() {
 }
 
 FILES_${PN} = " "
+
+DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"

@@ -40,3 +40,7 @@ FILES_nfscheck = "  \
 	${bindir}/nfscheck.sh \
 	${systemd_system_unitdir}/nfscheck.service \
 	"
+
+SYSTEMD_PACKAGES += "nfscheck"
+SYSTEMD_SERVICE_nfscheck = "nfscheck.service"
+SYSTEMD_AUTO_ENABLE_nfscheck = "enable"

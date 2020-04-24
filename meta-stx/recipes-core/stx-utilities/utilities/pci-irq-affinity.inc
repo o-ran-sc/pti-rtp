@@ -58,3 +58,7 @@ FILES_pci-irq-affinity = "  \
 	${PYTHON_SITEPACKAGES_DIR}/pci_irq_affinity/ \
 	${PYTHON_SITEPACKAGES_DIR}/pci_irq_affinity_agent-${PV}-py${PYTHON_BASEVERSION}.egg-info/ \
 	"
+
+SYSTEMD_PACKAGES += "pci-irq-affinity"
+SYSTEMD_SERVICE_pci-irq-affinity = "pci-irq-affinity-agent.service"
+SYSTEMD_AUTO_ENABLE_pci-irq-affinity = "enable"

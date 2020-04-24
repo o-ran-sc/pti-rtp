@@ -56,3 +56,10 @@ FILES_worker-utils = "  \
 	${systemd_system_unitdir}/affine-platform.sh.service \
 	${systemd_system_unitdir}/affine-tasks.service \
 	"
+
+SYSTEMD_PACKAGES += "worker-utils"
+SYSTEMD_SERVICE_worker-utils = "\
+	affine-tasks.service \
+	affine-platform.sh.service \
+	"
+SYSTEMD_AUTO_ENABLE_worker-utils = "enable"
