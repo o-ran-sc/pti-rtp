@@ -71,6 +71,7 @@ do_install_append () {
 	install -d -m 755 ${D}/opt/branding
 	mkdir -p ${D}${sysconfdir}/rc.d/init.d
 	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon.init ${D}${sysconfdir}/rc.d/init.d/horizon
+	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon.init ${D}${sysconfdir}/init.d/horizon
 	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon-clearsessions ${D}/${bindir}/horizon-clearsessions
 	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon-patching-restart ${D}/${bindir}/horizon-patching-restart
 	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon-assets-compress ${D}/${bindir}/horizon-assets-compress
