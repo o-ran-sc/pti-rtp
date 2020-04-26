@@ -35,14 +35,8 @@ do_install_prepend () {
 	oe_runmake buildroot=${D} \
 		_sysconfdir=${sysconfdir} _unitdir=${systemd_system_unitdir} _datarootdir=${datadir} \
 		install
-
+	sed -i -e 's|/usr/local/bin/|${bindir}/|' ${D}/${sysconfdir}/init.d/hbsAgent
 }
-
-#pkg_postinst_ontarget_mtce-control () {
-#	# /usr/bin/systemctl enable lighttpd.service
-#	# /usr/bin/systemctl enable qemu_clean.service
-#	/usr/bin/systemctl enable hbsAgent.service
-#}
 
 FILES_mtce-control = " \
 	${datadir}/licenses/mtce-control-1.0/LICENSE \
