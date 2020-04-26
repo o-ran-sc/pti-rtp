@@ -65,6 +65,11 @@ do_install_append() {
 	install -m 755 etc.exclude ${D}/${sysconfdir}/collect/etc.exclude
 	install -m 755 run.exclude ${D}/${sysconfdir}/collect/run.exclude
 
+	sed -i -e 's|/usr/local/bin/|${bindir}/|' \
+	       -e 's|/usr/local/sbin/|${sbindir}/|' \
+		${D}/${sysconfdir}/collect.d/collect* \
+	        ${D}/${sbindir}/collect*
+
 	ln -sf ${sbindir}/collect ${D}/${bindir}/collect
 }
 

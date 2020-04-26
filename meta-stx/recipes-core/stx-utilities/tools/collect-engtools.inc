@@ -74,6 +74,12 @@ do_install_append() {
 	install -d -m0755 ${D}/${systemd_system_unitdir}
 	install -m0644 -p -D collect-engtools.service ${D}/${systemd_system_unitdir}
 
+	sed -i -e 's/network.service/networking.service/' \
+		${D}/${systemd_system_unitdir}/collect-engtools.service
+
+	sed -i -e 's|/usr/local/bin/|${bindir}/|' \
+		${D}/${sysconfdir}/init.d/collect-engtools.sh \
+	        ${D}/${bindir}/cleanup-engtools.sh
 }
 
 FILES_collect-engtools = "  \
