@@ -80,6 +80,7 @@ do_compile () {
 
 	# Host a server for the charts
 	helm serve --repo-path . &
+	sleep 1
 	helm repo rm local
 	helm repo add local http://localhost:8879/charts
 
@@ -92,9 +93,8 @@ do_compile () {
 	make node-feature-discovery
 	cd -
 
-	# Terminate helm server
-	pid=`/bin/pidof helm`
-	kill ${pid}
+	# Terminate helm server (the last backgrounded task)
+	kill $!
 	rm -rf ${helm_home}
 
 	# Create a chart tarball compliant with sysinv kube-app.py
