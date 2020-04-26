@@ -78,6 +78,7 @@ do_compile () {
 	# Host a server for the charts
 	tmpdir=`mktemp -d ${B}/charts-XXXXXX`
 	helm serve ${tmpdir} --address localhost:8879 --url http://localhost:8879/charts &
+	sleep 1
 	helm repo rm local
 	helm repo add local http://localhost:8879/charts
 
@@ -92,9 +93,8 @@ do_compile () {
 	make rabbitmq
 	make ceph-rgw
 
-	# terminate helm server
-	pid=`/bin/pidof helm`
-	kill ${pid}
+	# terminate helm server (the last backgrounded task)
+	kill $!
 	rm -rf ${helm_home}
 }
 
