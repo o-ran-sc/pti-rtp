@@ -411,6 +411,7 @@ pkg_postinst_ontarget_net-snmp-config() {
 
 	install -m 644 ${SRCPATH}/stx.snmpd.conf    ${datadir}/starlingx/stx.snmpd.conf
 	install -m 755 ${SRCPATH}/stx.snmpd         ${sysconfdir}/rc.d/init.d/snmpd
+	install -m 755 ${SRCPATH}/stx.snmpd         ${sysconfdir}/init.d/snmpd
 	install -m 660 ${SRCPATH}/stx.snmp.conf     ${datadir}/snmp/snmp.conf
 	install -m 644 ${SRCPATH}/snmpd.service     ${sysconfdir}/systemd/system/snmpd.service
 	
