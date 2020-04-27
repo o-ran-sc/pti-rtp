@@ -15,7 +15,8 @@
 
 FILESEXTRAPATHS_append:= ":${THISDIR}/linux:"
 
-SRC_URI += "file://stx-kconfig.cfg"
+SRC_URI_append_poky-stx = " file://stx-kconfig.cfg"
+SRC_URI_append_anaconda = " file://stx-anaconda-kconfig.cfg"
 
 KERNEL_EXTRA_FEATURES_append = " \
     features/xfs/xfs.scc \
