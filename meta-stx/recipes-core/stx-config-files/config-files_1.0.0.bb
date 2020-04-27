@@ -358,7 +358,9 @@ pkg_postinst_ontarget_lighttpd-config() {
 
 	# /etc/rc.d/init.d/lighttpd is not a config file, so replace it here if it doesn't match
 	cp --preserve=xattr -f ${datadir}/starlingx/lighttpd.init ${sysconfdir}/rc.d/init.d/lighttpd
+	cp --preserve=xattr -f ${datadir}/starlingx/lighttpd.init ${sysconfdir}/init.d/lighttpd
 	chmod 755 ${sysconfdir}/rc.d/init.d/lighttpd
+	chmod 755 ${sysconfdir}/init.d/lighttpd
 }
 
 pkg_postinst_ontarget_logrotate-config() {
