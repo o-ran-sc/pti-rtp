@@ -85,14 +85,13 @@ python () {
 do_install_append() {
 
     KEYSTONE_CONF_DIR=${D}${sysconfdir}/keystone
-    KEYSTONE_DATA_DIR=${D}${localstatedir}/lib/keystone
+    KEYSTONE_DATA_DIR=${D}${datadir}/keystone
     KEYSTONE_PACKAGE_DIR=${D}${PYTHON_SITEPACKAGES_DIR}/keystone
     APACHE_CONF_DIR=${D}${sysconfdir}/apache2/conf.d/
 
 
     # Create directories
     install -m 755 -d ${KEYSTONE_CONF_DIR}
-    install -m 755 -d ${KEYSTONE_DATA_DIR}
     install -m 755 -d ${APACHE_CONF_DIR}
     install -d ${D}${localstatedir}/log/${SRCNAME}
 
@@ -192,6 +191,7 @@ role_tree_dn = ou=Roles,${LDAP_DN} \
     
     install -m 755 ${WORKDIR}/${PN}/stx-files/keystone-fernet-keys-rotate-active ${D}/${bindir}/keystone-fernet-keys-rotate-active
     install -m 440 ${WORKDIR}/${PN}/stx-files/password-rules.conf ${KEYSTONE_CONF_DIR}/password-rules.conf
+    install -m 755 -d ${KEYSTONE_DATA_DIR}
     install -m 755 ${WORKDIR}/${PN}/stx-files/public.py ${KEYSTONE_DATA_DIR}/public.py
     install -m 644 ${WORKDIR}/${PN}/stx-files/openstack-keystone.service ${D}${systemd_system_unitdir}/openstack-keystone.service
     install -m 755 ${WORKDIR}/${PN}/stx-files/keystone-all ${D}${bindir}/keystone-all
@@ -208,11 +208,6 @@ pkg_postinst_${SRCNAME}-cronjobs () {
 	# database.  So we create a cronjob for cleaning these expired tokens.
 	echo "${KEYSTONE_TOKEN_FLUSH_TIME} root /usr/bin/keystone-manage token_flush" >> /etc/crontab
     fi
-}
-
-pkg_postinst_${SRCNAME} () {
-    # openstak-keystone will be run in httpd/apache2 instead of standalone
-    ln -sf ${systemd_system_unitdir}/apache2.service $D${sysconfdir}/systemd/system/openstack-keystone.service
 }
 
 PACKAGES += " ${SRCNAME}-tests ${SRCNAME} ${SRCNAME}-setup ${SRCNAME}-cronjobs"
@@ -241,6 +236,7 @@ FILES_${SRCNAME} = "${bindir}/* \
     ${datadir}/openstack-dashboard/openstack_dashboard/api/keystone-httpd.py \
     ${sysconfdir}/apache2/conf.d/keystone.conf \
     ${systemd_system_unitdir}/openstack-keystone.service \
+    ${datadir} \
     "
 
 DEPENDS += " \
