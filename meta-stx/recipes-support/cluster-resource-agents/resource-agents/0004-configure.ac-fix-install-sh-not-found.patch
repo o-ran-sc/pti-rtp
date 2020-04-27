@@ -1,4 +1,7 @@
-configure.ac: fix install-sh not found
+From e2dff24c2d99e91c88a5532405a668f995b24a86 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 27 Apr 2020 11:55:33 +0800
+Subject: [PATCH 4/4] configure.ac: fix install-sh not found
 
 Fix configure.ac to cope with new autoconf.
 Recent autoconfs generate a bad configure when AM_INIT_AUTOMAKE is
@@ -12,12 +15,16 @@ Upstream-Status: Pending
 https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=724116
 
 Signed-off-by: Hongxu Jia <hongxu.jia@windriver.com>
+
+Rebase for 4.1.1
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
  configure.ac | 15 ++++++++-------
  1 file changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index e8e2a7b..f3c8b9f 100644
+index 4d5fb96..af7f646 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -23,13 +23,20 @@ AC_INIT([resource-agents],
@@ -42,9 +49,9 @@ index e8e2a7b..f3c8b9f 100644
  AC_CANONICAL_HOST
  
  dnl Where #defines go (e.g. `AC_CHECK_HEADERS' below)
-@@ -76,12 +83,6 @@ AC_ARG_WITH(pkg-name,
-       [AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])])
- AM_CONDITIONAL([HAVE_SYSTEMD], [test "x$with_systemdsystemunitdir" != "xno"])
+@@ -84,12 +91,6 @@ AC_ARG_WITH([systemdtmpfilesdir],
+      fi
+ AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$with_systemdtmpfilesdir" -a "x$with_systemdtmpfilesdir" != xno ])
  
 -dnl 
 -dnl AM_INIT_AUTOMAKE([1.11.1 foreign dist-bzip2 dist-xz])
@@ -56,5 +63,5 @@ index e8e2a7b..f3c8b9f 100644
  
  CC_IN_CONFIGURE=yes
 -- 
-1.8.1.2
+2.7.4
 

@@ -1,15 +1,22 @@
-fix header defs lookup
+From 6f3f2d6c129577f8666aee7b506d0b52a58bba0e Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 27 Apr 2020 11:53:55 +0800
+Subject: [PATCH 3/4] fix header defs lookup
 
 Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+Rebase for 4.1.1
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
  configure.ac | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 3326b53..8b5706a 100644
+index e1ed2e8..4d5fb96 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -140,9 +140,8 @@ extract_header_define() {
+@@ -148,9 +148,8 @@ extract_header_define() {
  	  Cfile=$srcdir/extract_define.$2.${$}
  	  printf "#include <stdio.h>\n" > ${Cfile}.c
  	  printf "#include <%s>\n" $1 >> ${Cfile}.c
@@ -22,5 +29,5 @@ index 3326b53..8b5706a 100644
  	  printf $value
  	  rm -f ${Cfile}.c ${Cfile}
 -- 
-1.8.3.1
+2.7.4
 
