@@ -1,15 +1,22 @@
-Set OCF_ROOT_DIR to ${libdir}/ocf
+From 09c0d3deaed7aa4aa6ec07dd89c4233833133c72 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 27 Apr 2020 11:53:02 +0800
+Subject: [PATCH 2/4] Set OCF_ROOT_DIR to ${libdir}/ocf
 
 Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+Rebase for 4.1.1
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
  configure.ac | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index bb45717..3326b53 100644
+index 113503e..e1ed2e8 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -406,7 +406,7 @@ dnl Variables needed for substitution
+@@ -413,7 +413,7 @@ dnl Variables needed for substitution
  AC_CHECK_HEADERS(heartbeat/glue_config.h)
  
  if test "$ac_cv_header_heartbeat_glue_config_h" = "yes"; then
@@ -19,5 +26,5 @@ index bb45717..3326b53 100644
    enable_libnet=no
  fi
 -- 
-1.8.3.1
+2.7.4
 

@@ -1,0 +1,30 @@
+From f46352af3ad505830d14b016bc48310fd1c3cea5 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 27 Apr 2020 11:51:58 +0800
+Subject: [PATCH 1/4] disable doc build
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+
+Rebase for 4.1.1
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index fccaca4..afd8fa5 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -37,7 +37,7 @@ RGMANAGER = with
+ endif
+ 
+ if BUILD_LINUX_HA
+-SUBDIRS	+= include heartbeat tools ldirectord doc systemd
++SUBDIRS	+= include heartbeat tools ldirectord systemd
+ LINUX_HA = without
+ else
+ LINUX_HA = with
+-- 
+2.7.4
+
