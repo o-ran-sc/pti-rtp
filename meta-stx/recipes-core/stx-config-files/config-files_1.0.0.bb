@@ -160,7 +160,11 @@ RDEPENDS_lighttpd-config += " \
 RDEPENDS_logrotate-config += " logrotate cronie"
 RDEPENDS_memcached-custom += "memcached"
 RDEPENDS_mlx4-config += ""
-RDEPENDS_net-snmp-config += " net-snmp"
+RDEPENDS_net-snmp-config += " \
+	net-snmp \
+	net-snmp-server-snmpd \
+	net-snmp-server-snmptrapd \
+	"
 RDEPENDS_nfs-utils-config += " nfs-utils"
 RDEPENDS_ntp-config += " ntp"
 RDEPENDS_openldap-config += " \
