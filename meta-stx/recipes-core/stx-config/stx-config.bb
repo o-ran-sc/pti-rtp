@@ -28,6 +28,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 SRC_URI = " \
 	git://opendev.org/starlingx/config.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
 	file://0001-stx-config-remove-argparse-requirement-from-sysinv.patch \
+	file://0002-cgts-client-handle-exceptions-other-than-CalledProcessErr.patch \
 	"
 
 DEPENDS = "\

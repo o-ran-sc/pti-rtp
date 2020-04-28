@@ -1,0 +1,30 @@
+From 7ed620de2987bebfb41fe5506c1296e8d03560d5 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 28 Apr 2020 17:24:01 +0800
+Subject: [PATCH] pci.py: handle exceptions other than CalledProcessError
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ sysinv/sysinv/sysinv/sysinv/agent/pci.py | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sysinv/sysinv/sysinv/sysinv/agent/pci.py b/sysinv/sysinv/sysinv/sysinv/agent/pci.py
+index 5d3a2fd..14fb0c5 100644
+--- a/sysinv/sysinv/sysinv/sysinv/agent/pci.py
++++ b/sysinv/sysinv/sysinv/sysinv/agent/pci.py
+@@ -539,6 +539,12 @@ class PCIOperator(object):
+                         LOG.info("Could not determine DPDK support for "
+                                  "NIC (vendor %s device: %s), defaulting "
+                                  "to False", vendor, device)
++                except Exception as e:
++                    dpdksupport = False
++                    LOG.debug("An exception of type %s occurred:\n%s" % (type(e), e))
++                    LOG.info("Could not determine DPDK support for "
++                             "NIC (vendor %s device: %s), defaulting "
++                             "to False", vendor, device)
+ 
+                 # determine the net directory for this device
+                 dirpcinet = self.get_pci_net_directory(a)
+-- 
+2.7.4
+
