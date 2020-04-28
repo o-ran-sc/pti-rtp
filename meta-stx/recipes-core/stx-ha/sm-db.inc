@@ -18,7 +18,9 @@ PACKAGES += " sm-db"
 DEPENDS =+ "sqlite3-native"
 
 do_configure_append () {
-	:
+	cd ${S}/service-mgmt/sm-db
+	oe_runmake clean
+	rm -rf database/sm.db database/sm.hb.db
 } 
 
 do_compile_append () {

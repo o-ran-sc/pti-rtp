@@ -28,7 +28,8 @@ RDEPENDS_libsm-common = " sm-common-libs"
 
 
 do_configure_prepend () {
-	:
+	cd ${S}/service-mgmt/sm-common/src
+	oe_runmake clean
 } 
 
 do_compile_prepend () {
@@ -47,9 +48,6 @@ do_install_prepend () {
  
 	cd ${S}/service-mgmt/sm-common/
 	install -d -m 755 ${D}/${systemd_system_unitdir}
-	# install -m 755 -d ${D}/${sysconfdir}/pmon.d
-	# install -m 755 -d ${D}/${sysconfdir}/init.d
-
 	install -m 644 -p -D scripts/sm-eru.service ${D}/${systemd_system_unitdir}/sm-eru.service
 	install -m 644 -p -D scripts/sm-watchdog.service ${D}/${systemd_system_unitdir}/sm-watchdog.service
 

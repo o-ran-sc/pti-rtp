@@ -26,6 +26,9 @@ RDEPENDS_sm += " \
 	"
 
 do_configure_append () {
+	cd ${S}/service-mgmt/sm/src
+	oe_runmake clean
+
 	# fix the hardcoded path
 	sed -i -e "s|/usr/local/sbin|${sbindir}|" \
 		${S}/service-mgmt/sm-common/src/sm_types.h \
