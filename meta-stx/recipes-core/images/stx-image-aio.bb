@@ -52,6 +52,7 @@ IMAGE_FEATURES += " \
 	"
 
 inherit stx-postrun
+inherit extrausers-config
 inherit core-image
 inherit distro_features_check
 inherit openstack-base
