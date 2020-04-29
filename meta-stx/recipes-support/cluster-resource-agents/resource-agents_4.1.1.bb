@@ -64,7 +64,6 @@ ALTERNATIVE_LINK_NAME[drbd.sh] = "${datadir}/cluster/drbd.sh"
 
 EXTRA_OECONF += " \
     --disable-fatal-warnings \
-    --with-rsctmpdir=/var/run/heartbeat/rsctmp \
 "
 
 do_install_append() {
