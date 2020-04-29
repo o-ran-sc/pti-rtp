@@ -18,7 +18,11 @@ PACKAGES += " sysinv"
 RDEPENDS_sysinv += " python"
 RDEPENDS_sysinv += " bash"
 
-inherit setuptools distutils python-dir systemd
+inherit setuptools distutils python-dir systemd useradd
+
+USERADD_PACKAGES = "sysinv"
+USERADD_PARAM_sysinv = "-r -g sysinv -u 168 -d /var/lib/sysinv -s /sbin/nologin -c 'sysinv Daemons' sysinv"
+GROUPADD_PARAM_sysinv = "-r -g 168 sysinv"
 
 DEPENDS += " \
 	python-pbr-native \
