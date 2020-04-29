@@ -54,6 +54,7 @@ SRC_URI = " \
 	file://syslog-ng-config-systemd-service.patch \
 	file://syslog-ng-conf-fix-the-source.patch \
 	file://syslog-ng-conf-replace-match-with-message.patch \
+	file://lighttpd-init-script-chroot.patch \
 	"
 
 do_configure () {
