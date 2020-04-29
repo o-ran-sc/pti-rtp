@@ -19,6 +19,13 @@ inherit setuptools
 
 do_configure_prepend () {
 	cd ${S}/nfv/nfv-vim
+	sed -i -e 's|@SYSCONFDIR@|${sysconfdir}|g' \
+		scripts/vim \
+		scripts/vim-api \
+		scripts/vim-webserver \
+		nfv_vim/config.ini
+	sed -i -e 's|@PYTHONROOT@|${libdir}/python2.7/site-packages|g' nfv_vim/config.ini
+
 	distutils_do_configure
 } 
 
