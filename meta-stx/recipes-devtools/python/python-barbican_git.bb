@@ -88,6 +88,9 @@ do_install_append() {
 
     sed -e "s:%BARBICAN_CONF_DIR%:${sysconfdir}/${SRCNAME}:g" \
         -i ${D}/${PYTHON_SITEPACKAGES_DIR}/${SRCNAME}/tests/api/test_resources_policy.py
+
+    install -m 0755 -d ${D}/${sysconfdir}/tmpfiles.d
+    echo "d ${localstatedir}/log/barbican 0750 barbican barbican -" >> ${D}/${sysconfdir}/tmpfiles.d/barbican.conf
 }
 
 USERADD_PACKAGES = "${PN}"
@@ -106,6 +109,7 @@ FILES_${SRCNAME} = "${sysconfdir}/${SRCNAME}/* \
 	            ${bindir}/* \
                     ${localstatedir}/* \
                     ${systemd_system_unitdir} \
+                    ${sysconfdir}/tmpfiles.d/barbican.conf \
 "
 
 ALLOW_EMPTY_${SRCNAME}-setup = "1"

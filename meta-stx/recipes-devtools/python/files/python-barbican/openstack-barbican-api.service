@@ -10,8 +10,8 @@ Group=barbican
 RuntimeDirectory=barbican
 RuntimeDirectoryMode=770
 ExecStart=/usr/bin/gunicorn --pid /run/barbican/pid -c /etc/barbican/gunicorn-config.py --paste /etc/barbican/barbican-api-paste.ini
-ExecReload=/usr/bin/kill -s HUP $MAINPID
-ExecStop=/usr/bin/kill -s TERM $MAINPID
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
 StandardError=syslog
 Restart=on-failure
 
