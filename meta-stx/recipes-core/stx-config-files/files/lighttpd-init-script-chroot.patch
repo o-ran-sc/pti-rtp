@@ -1,0 +1,14 @@
+diff -ru a/lighttpd-config/files/lighttpd.init b/lighttpd-config/files/lighttpd.init
+--- a/lighttpd-config/files/lighttpd.init       2020-04-29 07:07:49.040288478 +0000
++++ b/lighttpd-config/files/lighttpd.init       2020-04-29 07:09:35.332285981 +0000
+@@ -59,6 +59,10 @@
+     mkdir -p /scratch/lighttpd
+     mount --bind /scratch/lighttpd /www/tmp/
+     chown www /www/tmp/
++    # /dev/null is required in chroot env
++    mkdir /www/dev
++    cp /dev/null /www/dev
++    chmod 777 /www/dev/null
+
+     echo -n "Starting $DESC..."
+
