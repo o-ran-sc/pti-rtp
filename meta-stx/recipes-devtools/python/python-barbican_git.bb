@@ -146,7 +146,6 @@ RDEPENDS_${PN} += " \
         python-pastedeploy \
         python-paste \
         python-pycrypto \
-        python-pysqlite \
         python-keystoneclient \
         python-sqlalchemy \
         python-stevedore \

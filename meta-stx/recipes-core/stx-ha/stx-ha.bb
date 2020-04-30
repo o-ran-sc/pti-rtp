@@ -54,8 +54,7 @@ DEPENDS += " \
 	sqlite3 \
 	python \
 	python-pbr-native \
-        glib-2.0 \
-	sqlite3 \
+	glib-2.0 \
 	"
 
 require sm-common.inc

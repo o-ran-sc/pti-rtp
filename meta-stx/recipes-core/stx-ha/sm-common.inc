@@ -19,7 +19,7 @@ PACKAGES += " sm-eru"
 
 RDEPENDS_sm-common-libs += " \
 	bash \
-	sqlite \
+	sqlite3 \
 	util-linux \
 	systemd \
 	"
