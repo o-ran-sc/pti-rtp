@@ -22,9 +22,6 @@ SRCNAME = "config-files"
 S = "${WORKDIR}/git"
 PV = "1.0.0"
 
-
-# TODO:
-
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "\
 	file://systemd-config/files/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
@@ -67,7 +64,6 @@ do_compile () {
 
 do_install () {
 	install -m 0755 -d ${D}/${datadir}/starlingx/config-files
-	# for f in $(find ./ -not -path "./docker-config/*" -name '*\.spec' | cut -d '/' -f2);
 	for f in $(find ./ -name '*\.spec' | cut -d '/' -f2);
 	do 
 		tar -c $f -f - | tar -C ${D}/${datadir}/starlingx/config-files -xf -;
@@ -75,6 +71,11 @@ do_install () {
 	find ${D}/${datadir}/starlingx/config-files -name centos -exec rm -rf {} +
 	rm -rf ${D}/${datadir}/starlingx/config-files/centos-release-config 
 	chown -R root:root ${D}/${datadir}/starlingx/config-files/
+
+	# For io-scheduler-config
+	mkdir -p  ${D}/${sysconfdir}/udev/rules.d
+	install -m 644 ${S}/io-scheduler/centos/files/60-io-scheduler.rules ${D}/${sysconfdir}/udev/rules.d/60-io-scheduler.rules
+	rm -rf ${D}/${datadir}/starlingx/config-files/io-scheduler
 }
 
 PACKAGES ?= ""
@@ -108,7 +109,7 @@ PACKAGES += "syslog-ng-config"
 PACKAGES += "systemd-config"
 PACKAGES += "util-linux-config"
 
-
+FILES_${PN} = ""
 FILES_audit-config = "${datadir}/starlingx/config-files/audit-config/"
 FILES_dhclient-config = "${datadir}/starlingx/config-files/dhcp-config/"
 FILES_dnsmasq-config = "${datadir}/starlingx/config-files/dnsmasq-config/"
@@ -116,7 +117,7 @@ FILES_docker-config = "${datadir}/starlingx/config-files/docker-config/"
 FILES_initscripts-config = "${datadir}/starlingx/config-files/initscripts-config/"
 FILES_filesystem-scripts= "${datadir}/starlingx/config-files/filesystem-scripts/"
 FILES_haproxy-config= "${datadir}/starlingx/config-files/haproxy-config/"
-FILES_ioscheduler-config= "${datadir}/starlingx/config-files/io-scheduler/"
+FILES_ioscheduler-config= "${sysconfdir}/udev/rules.d/60-io-scheduler.rules"
 FILES_iptables-config= "${datadir}/starlingx/config-files/iptables-config/"
 FILES_iscsi-initiator-utils-config = "${datadir}/starlingx/config-files/iscsi-initiator-utils-config/"
 FILES_lighttpd-config= "${datadir}/starlingx/config-files/lighttpd-config/"
@@ -708,10 +709,6 @@ pkg_postinst_ontarget_util-linux-config() {
 pkg_postinst_ontarget_ioscheduler-config() {
 #	%description
 #	CGCS io scheduler configuration and tuning.
-
-	SRCPATH=${datadir}/starlingx/config-files/io-scheduler/
-
-	install -m 644 ${SRCPATH}/60-io-scheduler.rules ${sysconfdir}/udev/rules.d/60-io-scheduler.rules
 
 	/bin/udevadm control --reload-rules
 	/bin/udevadm trigger --type=devices --subsystem-match=block
