@@ -499,27 +499,43 @@ pkg_postinst_ontarget_openldap-config() {
 	chmod 644 ${systemd_system_unitdir}/slapd
 }
 
-pkg_postinst_ontarget_openssh-config() {
+pkg_postinst_openssh-config() {
 #	%description
 #	package StarlingX configuration files of openssh to system folder.
 
 
-	SRCPATH=${datadir}/starlingx/config-files/openssh-config/files
+	SRCPATH=$D${datadir}/starlingx/config-files/openssh-config/files
 
-	install -m 644 ${SRCPATH}/sshd.service  ${sysconfdir}/systemd/system/sshd.service
-	install -m 644 ${SRCPATH}/ssh_config    ${datadir}/starlingx/ssh_config
-	install -m 600 ${SRCPATH}/sshd_config   ${datadir}/starlingx/sshd_config
+	install -m 644 ${SRCPATH}/sshd.service  $D${sysconfdir}/systemd/system/sshd.service
+	install -m 644 ${SRCPATH}/ssh_config    $D${datadir}/starlingx/ssh_config
+	install -m 600 ${SRCPATH}/sshd_config   $D${datadir}/starlingx/sshd_config
 
 	# remove the unsupported and deprecated options
 	sed -i -e 's/^\(GSSAPIAuthentication.*\)/#\1/' \
 	       -e 's/^\(GSSAPICleanupCredentials.*\)/#\1/' \
 	       -e 's/^\(UsePrivilegeSeparation.*\)/#\1/' \
-	       ${datadir}/starlingx/sshd_config
+	       $D${datadir}/starlingx/sshd_config
 
-	sed -i -e 's/\(GSSAPIAuthentication yes\)/#\1/' ${datadir}/starlingx/ssh_config
+	sed -i -e 's/\(GSSAPIAuthentication yes\)/#\1/' $D${datadir}/starlingx/ssh_config
 	
-	cp -f ${datadir}/starlingx/ssh_config  ${sysconfdir}/ssh/ssh_config
-	cp -f ${datadir}/starlingx/sshd_config ${sysconfdir}/ssh/sshd_config
+	cp -f $D${datadir}/starlingx/ssh_config  $D${sysconfdir}/ssh/ssh_config
+	cp -f $D${datadir}/starlingx/sshd_config $D${sysconfdir}/ssh/sshd_config
+
+	# enable syslog-ng service by default
+	OPTS=""
+	if [ -n "$D" ]; then
+		OPTS="--root=$D"
+	fi
+	if [ -z "$D" ]; then
+		systemctl daemon-reload
+	fi
+
+	systemctl $OPTS enable sshd.service
+
+	if [ -z "$D" ]; then
+		systemctl --no-block restart sshd.service
+	fi
+
 }
 
 pkg_postinst_ontarget_openvswitch-config() {
