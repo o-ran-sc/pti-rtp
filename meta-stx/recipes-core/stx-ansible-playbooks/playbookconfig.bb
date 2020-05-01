@@ -68,12 +68,18 @@ do_install () {
 		DESTDIR=${D}/${datadir}/ansible/stx-ansible
 }
 
-pkg_postinst_ontarget_${PN}() { 
-	cp /etc/ansible/ansible.cfg /etc/ansible/ansible.cfg.orig
-	cp /etc/ansible/hosts /etc/ansible/hosts.orig
-	cp /usr/share/ansible/stx-ansible/playbooks/ansible.cfg /etc/ansible
-	cp /usr/share/ansible/stx-ansible/playbooks/hosts /etc/ansible
+ANSIBLE_SSH_TIMEOUT = "60"
+ANSIBLE_SSH_RETRY = "3"
 
+pkg_postinst_${PN}() {
+	cp $D${sysconfdir}/ansible/ansible.cfg $D${sysconfdir}/ansible/ansible.cfg.orig
+	cp $D${sysconfdir}/ansible/hosts $D${sysconfdir}/ansible/hosts.orig
+	cp $D${datadir}/ansible/stx-ansible/playbooks/ansible.cfg $D${sysconfdir}/ansible
+	cp $D${datadir}/ansible/stx-ansible/playbooks/hosts $D${sysconfdir}/ansible
+
+	sed -i -e 's/#timeout = .*/timeout = ${ANSIBLE_SSH_TIMEOUT}/' \
+	       -e 's/#retries = .*/retries = ${ANSIBLE_SSH_RETRY}/' \
+	       $D${sysconfdir}/ansible/ansible.cfg
 }
 
 FILES_${PN} = " \
