@@ -16,6 +16,7 @@
 PACKAGES += " influxdb-extensions"
 
 RDEPENDS_influxdb-extensions += " \
+	influxdb \
 	systemd \
 	python-influxdb \
 	"
