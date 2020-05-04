@@ -69,7 +69,6 @@ do_install () {
 		tar -c $f -f - | tar -C ${D}/${datadir}/starlingx/config-files -xf -;
 	done
 	find ${D}/${datadir}/starlingx/config-files -name centos -exec rm -rf {} +
-	rm -rf ${D}/${datadir}/starlingx/config-files/centos-release-config 
 	chown -R root:root ${D}/${datadir}/starlingx/config-files/
 
 	# For io-scheduler-config
@@ -80,6 +79,7 @@ do_install () {
 
 PACKAGES ?= ""
 PACKAGES += "audit-config"
+PACKAGES += "centos-release-config"
 PACKAGES += "dhclient-config"
 PACKAGES += "dnsmasq-config"
 PACKAGES += "docker-config"
@@ -111,6 +111,7 @@ PACKAGES += "util-linux-config"
 
 FILES_${PN} = ""
 FILES_audit-config = "${datadir}/starlingx/config-files/audit-config/"
+FILES_centos-release-config = "${datadir}/starlingx/config-files/centos-release-config/"
 FILES_dhclient-config = "${datadir}/starlingx/config-files/dhcp-config/"
 FILES_dnsmasq-config = "${datadir}/starlingx/config-files/dnsmasq-config/"
 FILES_docker-config = "${datadir}/starlingx/config-files/docker-config/"
@@ -248,6 +249,13 @@ RDEPENDS_util-linux-config += " util-linux"
 pkg_postinst_ontarget_audit-config() {
 	cp -f ${datadir}/starlingx/config-files/audit-config/files/syslog.conf ${sysconfdir}/audisp/plugins.d/syslog.conf
 	chmod 640 ${sysconfdir}/audisp/plugins.d/syslog.conf
+}
+
+pkg_postinst_centos-release-config() {
+        sed 's/@PLATFORM_RELEASE@/${STX_REL}/' $D${datadir}/starlingx/config-files/centos-release-config/files/issue >> $D${sysconfdir}/issue
+        sed 's/@PLATFORM_RELEASE@/${STX_REL}/' $D${datadir}/starlingx/config-files/centos-release-config/files/issue.net >> $D${sysconfdir}/issue.net
+        chmod 644 $D${sysconfdir}/issue
+        chmod 644 $D${sysconfdir}/issue.net
 }
 
 pkg_postinst_ontarget_dhclient-config() {

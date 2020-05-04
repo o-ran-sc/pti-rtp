@@ -70,6 +70,7 @@ RDEPENDS_packagegroup-stx-config = " \
 
 RDEPENDS_packagegroup-stx-config-files  = " \
 	audit-config \
+	centos-release-config \
 	dhclient-config \
 	dnsmasq-config \
 	docker-config \
