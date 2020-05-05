@@ -17,6 +17,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI += " \
 	file://0900-inject-milisec-in-syslog-date.patch \
+	file://0001-systemd-remove-the-log-about-var-run.patch \
 	"
 
 STX_DEFAULT_LOCALE ?= "en_US.UTF-8"

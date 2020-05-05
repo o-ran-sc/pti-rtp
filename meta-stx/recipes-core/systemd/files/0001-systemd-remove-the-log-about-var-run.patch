@@ -1,0 +1,55 @@
+From f7c80240b43fbf79ccca366b512874c271771818 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 5 May 2020 16:00:34 +0800
+Subject: [PATCH] systemd: remove the log about /var/run
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ src/core/dbus-service.c  | 3 ---
+ src/core/load-fragment.c | 2 --
+ src/tmpfiles/tmpfiles.c  | 2 --
+ 3 files changed, 7 deletions(-)
+
+diff --git a/src/core/dbus-service.c b/src/core/dbus-service.c
+index 0eb336c..baf7343 100644
+--- a/src/core/dbus-service.c
++++ b/src/core/dbus-service.c
+@@ -341,9 +341,6 @@ static int bus_service_set_transient_property(
+                                 if (!z)
+                                         return log_oom();
+ 
+-                                if (!UNIT_WRITE_FLAGS_NOOP(flags))
+-                                        log_unit_notice(u, "Transient unit's PIDFile= property references path below legacy directory /var/run, updating %s → %s; please update client accordingly.", n, z);
+-
+                                 free_and_replace(n, z);
+                         }
+                 }
+diff --git a/src/core/load-fragment.c b/src/core/load-fragment.c
+index 537bca3..4ffac83 100644
+--- a/src/core/load-fragment.c
++++ b/src/core/load-fragment.c
+@@ -4286,8 +4286,6 @@ int config_parse_pid_file(
+                 if (!z)
+                         return log_oom();
+ 
+-                log_syntax(unit, LOG_NOTICE, filename, line, 0, "PIDFile= references path below legacy directory /var/run/, updating %s → %s; please update the unit file accordingly.", n, z);
+-
+                 free_and_replace(*s, z);
+         } else
+                 free_and_replace(*s, n);
+diff --git a/src/tmpfiles/tmpfiles.c b/src/tmpfiles/tmpfiles.c
+index b66765b..bfce982 100644
+--- a/src/tmpfiles/tmpfiles.c
++++ b/src/tmpfiles/tmpfiles.c
+@@ -2479,8 +2479,6 @@ static int patch_var_run(const char *fname, unsigned line, char **path) {
+          * there's no immediate need for action by the user. However, in the interest of making things less confusing
+          * to the user, let's still inform the user that these snippets should really be updated. */
+ 
+-        log_notice("[%s:%u] Line references path below legacy directory /var/run/, updating %s → %s; please update the tmpfiles.d/ drop-in file accordingly.", fname, line, *path, n);
+-
+         free_and_replace(*path, n);
+ 
+         return 0;
+-- 
+2.7.4
+
