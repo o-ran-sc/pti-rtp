@@ -57,3 +57,5 @@ pkg_postinst_ontarget_${PN} () {
 }
 
 FILES_${PN} = " "
+
+DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"

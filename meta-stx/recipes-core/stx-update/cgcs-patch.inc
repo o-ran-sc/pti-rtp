@@ -17,7 +17,7 @@ PACKAGES += " cgcs-patch"
 PACKAGES += " cgcs-patch-agent"
 PACKAGES += " cgcs-patch-controller"
 
-inherit setuptools
+inherit setuptools systemd
 
 RDEPENDS_cgcs-patch_append = " \
 	bash \
@@ -134,3 +134,18 @@ FILES_cgcs-patch-controller = " \
 	${sysconfdir}/init.d/sw-patch-controller \
 	${systemd_system_unitdir}/sw-patch-controller.service \
 	"
+
+SYSTEMD_PACKAGES += "cgcs-patch"
+SYSTEMD_SERVICE_cgcs-patch = "sw-patch.service"
+SYSTEMD_AUTO_ENABLE_cgcs-patch = "enable"
+
+SYSTEMD_PACKAGES += "cgcs-patch-agent"
+SYSTEMD_SERVICE_cgcs-patch-agent = "sw-patch-agent.service"
+SYSTEMD_AUTO_ENABLE_cgcs-patch-agent = "enable"
+
+SYSTEMD_PACKAGES += "cgcs-patch-controller"
+SYSTEMD_SERVICE_cgcs-patch-controller = " \
+	sw-patch-controller.service \
+	sw-patch-controller-daemon.service \
+	"
+SYSTEMD_AUTO_ENABLE_cgcs-patch-controller = "enable"
