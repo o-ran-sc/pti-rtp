@@ -49,7 +49,6 @@ SRC_URI = " \
 	file://util-linux-pam-postlogin.patch \
 	file://syslog-ng-config-parse-err.patch \
 	file://syslog-ng-config-systemd-service.patch \
-	file://syslog-ng-conf-fix-the-source.patch \
 	file://syslog-ng-conf-replace-match-with-message.patch \
 	file://lighttpd-init-script-chroot.patch \
 	"
