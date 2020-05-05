@@ -38,6 +38,8 @@ do_install_append() {
 		GOENABLEDDIR=${D}/${sysconfdir}/goenabled.d \
 		PLATFORMCONFDIR=${D}/${sysconfdir}/platform \
 		SYSTEMDDIR=${D}/${systemd_system_unitdir}
+
+	sed -i -e 's|drbdadm|${base_sbindir}/drbdadm|' ${D}/${sysconfdir}/init.d/affine-tasks.sh
 }
 
 FILES_worker-utils = "  \
