@@ -6,7 +6,7 @@ diff -ru a/lighttpd-config/files/lighttpd.init b/lighttpd-config/files/lighttpd.
      mount --bind /scratch/lighttpd /www/tmp/
      chown www /www/tmp/
 +    # /dev/null is required in chroot env
-+    mkdir /www/dev
++    mkdir -p /www/dev
 +    cp /dev/null /www/dev
 +    chmod 777 /www/dev/null
 
