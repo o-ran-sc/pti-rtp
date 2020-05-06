@@ -146,7 +146,7 @@ RDEPENDS_audit-config += " \
 	audit-python \
 	"
 RDEPENDS_dhclient-config += "dhcp-client"
-RDEPENDS_dnsmasq-config += ""
+RDEPENDS_dnsmasq-config += "dnsmasq"
 RDEPENDS_docker-config += "docker-ce logrotate "
 RDEPENDS_initscripts-config += "initscripts"
 RDEPENDS_filesystem-scripts += ""

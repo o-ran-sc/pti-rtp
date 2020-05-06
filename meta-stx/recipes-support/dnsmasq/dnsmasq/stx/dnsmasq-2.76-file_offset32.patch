@@ -1,0 +1,12 @@
+diff --git a/src/helper.c b/src/helper.c
+index de31383..a843b41 100644
+--- a/src/helper.c
++++ b/src/helper.c
+@@ -14,7 +14,6 @@
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+-#include <stdio.h>
+ #include "dnsmasq.h"
+ 
+ #ifdef HAVE_SCRIPT

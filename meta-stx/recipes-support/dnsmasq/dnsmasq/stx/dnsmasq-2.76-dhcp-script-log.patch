@@ -1,0 +1,582 @@
+From 87444dc6977b61096127dcdfe87dc6cf2c0167d6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20Men=C5=A1=C3=ADk?= <pemensik@redhat.com>
+Date: Sun, 16 Apr 2017 20:20:08 +0100
+Subject: [PATCH] Capture and log  STDOUT and STDERR output from dhcp-script.
+
+(cherry picked from commit c77fb9d8f09d136fa71bde2469c4fd11cefa6f4a)
+
+Compile-time check on buffer sizes for leasefile parsing code.
+
+(cherry picked from commit bf4e62c19e619f7edf8d03d58d33a5752f190bfd)
+
+Improve error handling with shcp-script "init" mode.
+
+(cherry picked from commit 3a8b0f6fccf464b1ec6d24c0e00e540ab2b17705)
+
+Tweak logging introduced in 3a8b0f6fccf464b1ec6d24c0e00e540ab2b17705
+
+(cherry picked from commit efff74c1aea14757ce074db28e02671c7f7bb5f5)
+
+Don't die() on failing to parse lease-script output.
+
+(cherry picked from commit 05f76dab89d5b879519a4f45b0cccaa1fc3d162d)
+---
+ man/dnsmasq.8       |   4 +-
+ src/dhcp-common.c   |  16 +++---
+ src/dhcp-protocol.h |   4 ++
+ src/dnsmasq.c       |   8 +++
+ src/dnsmasq.h       |  54 +++++++++---------
+ src/helper.c        |  56 +++++++++++++++++-
+ src/lease.c         | 159 +++++++++++++++++++++++++++++++---------------------
+ src/log.c           |   4 +-
+ src/rfc3315.c       |   2 +-
+ 9 files changed, 202 insertions(+), 105 deletions(-)
+
+diff --git a/man/dnsmasq.8 b/man/dnsmasq.8
+index 0521534..97d0a4f 100644
+--- a/man/dnsmasq.8
++++ b/man/dnsmasq.8
+@@ -1551,8 +1551,8 @@ database.
+ 
+ 
+ All file descriptors are
+-closed except stdin, stdout and stderr which are open to /dev/null
+-(except in debug mode).
++closed except stdin, which is open to /dev/null, and stdout and stderr which capture output for logging by dnsmasq. 
++(In debug mode, stdio, stdout and stderr file are left as those inherited from the invoker of dnsmasq).
+ 
+ The script is not invoked concurrently: at most one instance
+ of the script is ever running (dnsmasq waits for an instance of script to exit
+diff --git a/src/dhcp-common.c b/src/dhcp-common.c
+index 08528e8..ecc752b 100644
+--- a/src/dhcp-common.c
++++ b/src/dhcp-common.c
+@@ -20,11 +20,11 @@
+ 
+ void dhcp_common_init(void)
+ {
+-    /* These each hold a DHCP option max size 255
+-       and get a terminating zero added */
+-  daemon->dhcp_buff = safe_malloc(256);
+-  daemon->dhcp_buff2 = safe_malloc(256); 
+-  daemon->dhcp_buff3 = safe_malloc(256);
++  /* These each hold a DHCP option max size 255
++     and get a terminating zero added */
++  daemon->dhcp_buff = safe_malloc(DHCP_BUFF_SZ);
++  daemon->dhcp_buff2 = safe_malloc(DHCP_BUFF_SZ); 
++  daemon->dhcp_buff3 = safe_malloc(DHCP_BUFF_SZ);
+   
+   /* dhcp_packet is used by v4 and v6, outpacket only by v6 
+      sizeof(struct dhcp_packet) is as good an initial size as any,
+@@ -855,14 +855,14 @@ void log_context(int family, struct dhcp_context *context)
+       if (context->flags & CONTEXT_RA_STATELESS)
+ 	{
+ 	  if (context->flags & CONTEXT_TEMPLATE)
+-	    strncpy(daemon->dhcp_buff, context->template_interface, 256);
++	    strncpy(daemon->dhcp_buff, context->template_interface, DHCP_BUFF_SZ);
+ 	  else
+ 	    strcpy(daemon->dhcp_buff, daemon->addrbuff);
+ 	}
+       else 
+ #endif
+-	inet_ntop(family, start, daemon->dhcp_buff, 256);
+-      inet_ntop(family, end, daemon->dhcp_buff3, 256);
++	inet_ntop(family, start, daemon->dhcp_buff, DHCP_BUFF_SZ);
++      inet_ntop(family, end, daemon->dhcp_buff3, DHCP_BUFF_SZ);
+       my_syslog(MS_DHCP | LOG_INFO, 
+ 		(context->flags & CONTEXT_RA_STATELESS) ? 
+ 		_("%s stateless on %s%.0s%.0s%s") :
+diff --git a/src/dhcp-protocol.h b/src/dhcp-protocol.h
+index a31d829..0ea449b 100644
+--- a/src/dhcp-protocol.h
++++ b/src/dhcp-protocol.h
+@@ -19,6 +19,10 @@
+ #define DHCP_CLIENT_ALTPORT 1068
+ #define PXE_PORT 4011
+ 
++/* These each hold a DHCP option max size 255
++   and get a terminating zero added */
++#define DHCP_BUFF_SZ 256
++
+ #define BOOTREQUEST              1
+ #define BOOTREPLY                2
+ #define DHCP_COOKIE              0x63825363
+diff --git a/src/dnsmasq.c b/src/dnsmasq.c
+index 045ec53..9cd4052 100644
+--- a/src/dnsmasq.c
++++ b/src/dnsmasq.c
+@@ -1294,6 +1294,7 @@ static void async_event(int pipe, time_t now)
+ 		daemon->tcp_pids[i] = 0;
+ 	break;
+ 	
++#if defined(HAVE_SCRIPT)	
+       case EVENT_KILLED:
+ 	my_syslog(LOG_WARNING, _("script process killed by signal %d"), ev.data);
+ 	break;
+@@ -1307,12 +1308,19 @@ static void async_event(int pipe, time_t now)
+ 		  daemon->lease_change_command, strerror(ev.data));
+ 	break;
+ 
++      case EVENT_SCRIPT_LOG:
++	my_syslog(MS_SCRIPT | LOG_DEBUG, "%s", msg ? msg : "");
++        free(msg);
++	msg = NULL;
++	break;
++
+ 	/* necessary for fatal errors in helper */
+       case EVENT_USER_ERR:
+       case EVENT_DIE:
+       case EVENT_LUA_ERR:
+ 	fatal_event(&ev, msg);
+ 	break;
++#endif
+ 
+       case EVENT_REOPEN:
+ 	/* Note: this may leave TCP-handling processes with the old file still open.
+diff --git a/src/dnsmasq.h b/src/dnsmasq.h
+index 1896a64..0cfd3c6 100644
+--- a/src/dnsmasq.h
++++ b/src/dnsmasq.h
+@@ -145,30 +145,31 @@ struct event_desc {
+   int event, data, msg_sz;
+ };
+ 
+-#define EVENT_RELOAD    1
+-#define EVENT_DUMP      2
+-#define EVENT_ALARM     3
+-#define EVENT_TERM      4
+-#define EVENT_CHILD     5
+-#define EVENT_REOPEN    6
+-#define EVENT_EXITED    7
+-#define EVENT_KILLED    8
+-#define EVENT_EXEC_ERR  9
+-#define EVENT_PIPE_ERR  10
+-#define EVENT_USER_ERR  11
+-#define EVENT_CAP_ERR   12
+-#define EVENT_PIDFILE   13
+-#define EVENT_HUSER_ERR 14
+-#define EVENT_GROUP_ERR 15
+-#define EVENT_DIE       16
+-#define EVENT_LOG_ERR   17
+-#define EVENT_FORK_ERR  18
+-#define EVENT_LUA_ERR   19
+-#define EVENT_TFTP_ERR  20
+-#define EVENT_INIT      21
+-#define EVENT_NEWADDR   22
+-#define EVENT_NEWROUTE  23
+-#define EVENT_TIME_ERR  24
++#define EVENT_RELOAD     1
++#define EVENT_DUMP       2
++#define EVENT_ALARM      3
++#define EVENT_TERM       4
++#define EVENT_CHILD      5
++#define EVENT_REOPEN     6
++#define EVENT_EXITED     7
++#define EVENT_KILLED     8
++#define EVENT_EXEC_ERR   9
++#define EVENT_PIPE_ERR   10
++#define EVENT_USER_ERR   11
++#define EVENT_CAP_ERR    12
++#define EVENT_PIDFILE    13
++#define EVENT_HUSER_ERR  14
++#define EVENT_GROUP_ERR  15
++#define EVENT_DIE        16
++#define EVENT_LOG_ERR    17
++#define EVENT_FORK_ERR   18
++#define EVENT_LUA_ERR    19
++#define EVENT_TFTP_ERR   20
++#define EVENT_INIT       21
++#define EVENT_NEWADDR    22
++#define EVENT_NEWROUTE   23
++#define EVENT_TIME_ERR   24
++#define EVENT_SCRIPT_LOG 25
+ 
+ /* Exit codes. */
+ #define EC_GOOD        0
+@@ -242,8 +243,9 @@ struct event_desc {
+ 
+ /* extra flags for my_syslog, we use a couple of facilities since they are known 
+    not to occupy the same bits as priorities, no matter how syslog.h is set up. */
+-#define MS_TFTP LOG_USER
+-#define MS_DHCP LOG_DAEMON 
++#define MS_TFTP   LOG_USER
++#define MS_DHCP   LOG_DAEMON
++#define MS_SCRIPT LOG_MAIL
+ 
+ struct all_addr {
+   union {
+diff --git a/src/helper.c b/src/helper.c
+index 9c37e37..de31383 100644
+--- a/src/helper.c
++++ b/src/helper.c
+@@ -14,6 +14,7 @@
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
++#include <stdio.h>
+ #include "dnsmasq.h"
+ 
+ #ifdef HAVE_SCRIPT
+@@ -135,7 +136,7 @@ int create_helper(int event_fd, int err_fd, uid_t uid, gid_t gid, long max_fd)
+ 	max_fd != STDIN_FILENO && max_fd != pipefd[0] && 
+ 	max_fd != event_fd && max_fd != err_fd)
+       close(max_fd);
+-  
++
+ #ifdef HAVE_LUASCRIPT
+   if (daemon->luascript)
+     {
+@@ -189,6 +190,7 @@ int create_helper(int event_fd, int err_fd, uid_t uid, gid_t gid, long max_fd)
+       unsigned char *buf = (unsigned char *)daemon->namebuff;
+       unsigned char *end, *extradata, *alloc_buff = NULL;
+       int is6, err = 0;
++      int pipeout[2];
+ 
+       free(alloc_buff);
+       
+@@ -472,16 +474,54 @@ int create_helper(int event_fd, int err_fd, uid_t uid, gid_t gid, long max_fd)
+       if (!daemon->lease_change_command)
+ 	continue;
+ 
++      /* Pipe to capture stdout and stderr from script */
++      if (!option_bool(OPT_DEBUG) && pipe(pipeout) == -1)
++	continue;
++      
+       /* possible fork errors are all temporary resource problems */
+       while ((pid = fork()) == -1 && (errno == EAGAIN || errno == ENOMEM))
+ 	sleep(2);
+ 
+       if (pid == -1)
+-	continue;
++        {
++	  if (!option_bool(OPT_DEBUG))
++	    {
++	      close(pipeout[0]);
++	      close(pipeout[1]);
++	    }
++	  continue;
++        }
+       
+       /* wait for child to complete */
+       if (pid != 0)
+ 	{
++	  if (!option_bool(OPT_DEBUG))
++	    {
++	      FILE *fp;
++	  
++	      close(pipeout[1]);
++	      
++	      /* Read lines sent to stdout/err by the script and pass them back to be logged */
++	      if (!(fp = fdopen(pipeout[0], "r")))
++		close(pipeout[0]);
++	      else
++		{
++		  while (fgets(daemon->packet, daemon->packet_buff_sz, fp))
++		    {
++		      /* do not include new lines, log will append them */
++		      size_t len = strlen(daemon->packet);
++		      if (len > 0)
++			{
++			  --len;
++			  if (daemon->packet[len] == '\n')
++			    daemon->packet[len] = 0;
++			}
++		      send_event(event_fd, EVENT_SCRIPT_LOG, 0, daemon->packet);
++		    }
++		  fclose(fp);
++		}
++	    }
++	  
+ 	  /* reap our children's children, if necessary */
+ 	  while (1)
+ 	    {
+@@ -504,6 +544,15 @@ int create_helper(int event_fd, int err_fd, uid_t uid, gid_t gid, long max_fd)
+ 	  
+ 	  continue;
+ 	}
++
++      if (!option_bool(OPT_DEBUG))
++	{
++	  /* map stdout/stderr of script to pipeout */
++	  close(pipeout[0]);
++	  dup2(pipeout[1], STDOUT_FILENO);
++	  dup2(pipeout[1], STDERR_FILENO);
++	  close(pipeout[1]);
++	}
+       
+       if (data.action != ACTION_TFTP && data.action != ACTION_ARP)
+ 	{
+@@ -579,7 +628,8 @@ int create_helper(int event_fd, int err_fd, uid_t uid, gid_t gid, long max_fd)
+ 	    hostname = NULL;
+ 	  
+ 	  my_setenv("DNSMASQ_LOG_DHCP", option_bool(OPT_LOG_OPTS) ? "1" : NULL, &err);
+-    }
++	}
++      
+       /* we need to have the event_fd around if exec fails */
+       if ((i = fcntl(event_fd, F_GETFD)) != -1)
+ 	fcntl(event_fd, F_SETFD, i | FD_CLOEXEC);
+diff --git a/src/lease.c b/src/lease.c
+index 20cac90..64047f9 100644
+--- a/src/lease.c
++++ b/src/lease.c
+@@ -21,94 +21,62 @@
+ static struct dhcp_lease *leases = NULL, *old_leases = NULL;
+ static int dns_dirty, file_dirty, leases_left;
+ 
+-void lease_init(time_t now)
++static int read_leases(time_t now, FILE *leasestream)
+ {
+   unsigned long ei;
+   struct all_addr addr;
+   struct dhcp_lease *lease;
+   int clid_len, hw_len, hw_type;
+-  FILE *leasestream;
+-  
+-  leases_left = daemon->dhcp_max;
+-  
+-  if (option_bool(OPT_LEASE_RO))
+-    {
+-      /* run "<lease_change_script> init" once to get the
+-	 initial state of the database. If leasefile-ro is
+-	 set without a script, we just do without any 
+-	 lease database. */
+-#ifdef HAVE_SCRIPT
+-      if (daemon->lease_change_command)
+-	{
+-	  strcpy(daemon->dhcp_buff, daemon->lease_change_command);
+-	  strcat(daemon->dhcp_buff, " init");
+-	  leasestream = popen(daemon->dhcp_buff, "r");
+-	}
+-      else
++  int items;
++  char *domain = NULL;
++
++  *daemon->dhcp_buff3 = *daemon->dhcp_buff2 = '\0';
++
++  /* client-id max length is 255 which is 255*2 digits + 254 colons
++     borrow DNS packet buffer which is always larger than 1000 bytes
++
++     Check various buffers are big enough for the code below */
++
++#if (DHCP_BUFF_SZ < 255) || (MAXDNAME < 64) || (PACKETSZ+MAXDNAME+RRFIXEDSZ  < 764)
++# error Buffer size breakage in leasefile parsing.
+ #endif
+-	{
+-          file_dirty = dns_dirty = 0;
+-          return;
+-        }
+ 
+-    }
+-  else
+-    {
+-      /* NOTE: need a+ mode to create file if it doesn't exist */
+-      leasestream = daemon->lease_stream = fopen(daemon->lease_file, "a+");
+-      
+-      if (!leasestream)
+-	die(_("cannot open or create lease file %s: %s"), daemon->lease_file, EC_FILE);
+-      
+-      /* a+ mode leaves pointer at end. */
+-      rewind(leasestream);
+-    }
+-  
+-  /* client-id max length is 255 which is 255*2 digits + 254 colons 
+-     borrow DNS packet buffer which is always larger than 1000 bytes */
+-  if (leasestream)
+-    while (fscanf(leasestream, "%255s %255s", daemon->dhcp_buff3, daemon->dhcp_buff2) == 2)
++    while ((items=fscanf(leasestream, "%255s %255s", daemon->dhcp_buff3, daemon->dhcp_buff2)) == 2)
+       {
++	*daemon->namebuff = *daemon->dhcp_buff = *daemon->packet = '\0';
++	hw_len = hw_type = clid_len = 0;
++	
+ #ifdef HAVE_DHCP6
+ 	if (strcmp(daemon->dhcp_buff3, "duid") == 0)
+ 	  {
+ 	    daemon->duid_len = parse_hex(daemon->dhcp_buff2, (unsigned char *)daemon->dhcp_buff2, 130, NULL, NULL);
++	    if (daemon->duid_len < 0)
++	      return 0;
+ 	    daemon->duid = safe_malloc(daemon->duid_len);
+ 	    memcpy(daemon->duid, daemon->dhcp_buff2, daemon->duid_len);
+ 	    continue;
+ 	  }
+ #endif
+-
+-	ei = atol(daemon->dhcp_buff3);
+ 	
+ 	if (fscanf(leasestream, " %64s %255s %764s",
+ 		   daemon->namebuff, daemon->dhcp_buff, daemon->packet) != 3)
+-	  break;
++	  return 0;
+ 	
+-	clid_len = 0;
+-	if (strcmp(daemon->packet, "*") != 0)
+-	  clid_len = parse_hex(daemon->packet, (unsigned char *)daemon->packet, 255, NULL, NULL);
+-	
+-	if (inet_pton(AF_INET, daemon->namebuff, &addr.addr.addr4) &&
+-	    (lease = lease4_allocate(addr.addr.addr4)))
++	if (inet_pton(AF_INET, daemon->namebuff, &addr.addr.addr4))
+ 	  {
++	    if ((lease = lease4_allocate(addr.addr.addr4)))
++	      domain = get_domain(lease->addr);
++	    
+ 	    hw_len = parse_hex(daemon->dhcp_buff2, (unsigned char *)daemon->dhcp_buff2, DHCP_CHADDR_MAX, NULL, &hw_type);
+ 	    /* For backwards compatibility, no explict MAC address type means ether. */
+ 	    if (hw_type == 0 && hw_len != 0)
+ 	      hw_type = ARPHRD_ETHER; 
+-
+-	    lease_set_hwaddr(lease, (unsigned char *)daemon->dhcp_buff2, (unsigned char *)daemon->packet, 
+-			     hw_len, hw_type, clid_len, now, 0);
+-	    
+-	    if (strcmp(daemon->dhcp_buff, "*") !=  0)
+-	      lease_set_hostname(lease, daemon->dhcp_buff, 0, get_domain(lease->addr), NULL);
+ 	  }
+ #ifdef HAVE_DHCP6
+ 	else if (inet_pton(AF_INET6, daemon->namebuff, &addr.addr.addr6))
+ 	  {
+ 	    char *s = daemon->dhcp_buff2;
+ 	    int lease_type = LEASE_NA;
+-	    int iaid;
+ 
+ 	    if (s[0] == 'T')
+ 	      {
+@@ -116,23 +84,30 @@ void lease_init(time_t now)
+ 		s++;
+ 	      }
+ 	    
+-	    iaid = strtoul(s, NULL, 10);
+-	    
+ 	    if ((lease = lease6_allocate(&addr.addr.addr6, lease_type)))
+ 	      {
+-		lease_set_hwaddr(lease, NULL, (unsigned char *)daemon->packet, 0, 0, clid_len, now, 0);
+-		lease_set_iaid(lease, iaid);
+-		if (strcmp(daemon->dhcp_buff, "*") !=  0)
+-		  lease_set_hostname(lease, daemon->dhcp_buff, 0, get_domain6((struct in6_addr *)lease->hwaddr), NULL);
++		lease_set_iaid(lease, strtoul(s, NULL, 10));
++		domain = get_domain6((struct in6_addr *)lease->hwaddr);
+ 	      }
+ 	  }
+ #endif
+ 	else
+-	  break;
++	  return 0;
+ 
+ 	if (!lease)
+ 	  die (_("too many stored leases"), NULL, EC_MISC);
+-       	
++
++	if (strcmp(daemon->packet, "*") != 0)
++	  clid_len = parse_hex(daemon->packet, (unsigned char *)daemon->packet, 255, NULL, NULL);
++	
++	lease_set_hwaddr(lease, (unsigned char *)daemon->dhcp_buff2, (unsigned char *)daemon->packet, 
++			 hw_len, hw_type, clid_len, now, 0);
++	
++	if (strcmp(daemon->dhcp_buff, "*") !=  0)
++	  lease_set_hostname(lease, daemon->dhcp_buff, 0, domain, NULL);
++
++	ei = atol(daemon->dhcp_buff3);
++
+ #ifdef HAVE_BROKEN_RTC
+ 	if (ei != 0)
+ 	  lease->expires = (time_t)ei + now;
+@@ -148,7 +123,62 @@ void lease_init(time_t now)
+ 	/* set these correctly: the "old" events are generated later from
+ 	   the startup synthesised SIGHUP. */
+ 	lease->flags &= ~(LEASE_NEW | LEASE_CHANGED);
++	
++	*daemon->dhcp_buff3 = *daemon->dhcp_buff2 = '\0';
+       }
++    
++    return (items == 0 || items == EOF);
++}
++
++void lease_init(time_t now)
++{
++  FILE *leasestream;
++
++  leases_left = daemon->dhcp_max;
++
++  if (option_bool(OPT_LEASE_RO))
++    {
++      /* run "<lease_change_script> init" once to get the
++	 initial state of the database. If leasefile-ro is
++	 set without a script, we just do without any
++	 lease database. */
++#ifdef HAVE_SCRIPT
++      if (daemon->lease_change_command)
++	{
++	  strcpy(daemon->dhcp_buff, daemon->lease_change_command);
++	  strcat(daemon->dhcp_buff, " init");
++	  leasestream = popen(daemon->dhcp_buff, "r");
++	}
++      else
++#endif
++	{
++          file_dirty = dns_dirty = 0;
++          return;
++        }
++
++    }
++  else
++    {
++      /* NOTE: need a+ mode to create file if it doesn't exist */
++      leasestream = daemon->lease_stream = fopen(daemon->lease_file, "a+");
++
++      if (!leasestream)
++	die(_("cannot open or create lease file %s: %s"), daemon->lease_file, EC_FILE);
++
++      /* a+ mode leaves pointer at end. */
++      rewind(leasestream);
++    }
++
++  if (leasestream)
++    {
++      if (!read_leases(now, leasestream))
++	my_syslog(MS_DHCP | LOG_ERR, _("failed to parse lease database, invalid line: %s %s %s %s ..."),
++		  daemon->dhcp_buff3, daemon->dhcp_buff2,
++		  daemon->namebuff, daemon->dhcp_buff);
++
++      if (ferror(leasestream))
++	die(_("failed to read lease file %s: %s"), daemon->lease_file, EC_FILE);
++    }
+   
+ #ifdef HAVE_SCRIPT
+   if (!daemon->lease_stream)
+@@ -162,6 +192,7 @@ void lease_init(time_t now)
+ 	    errno = ENOENT;
+ 	  else if (WEXITSTATUS(rc) == 126)
+ 	    errno = EACCES;
++
+ 	  die(_("cannot run lease-init script %s: %s"), daemon->lease_change_command, EC_FILE);
+ 	}
+       
+diff --git a/src/log.c b/src/log.c
+index 8e66629..5fc860b 100644
+--- a/src/log.c
++++ b/src/log.c
+@@ -288,7 +288,9 @@ void my_syslog(int priority, const char *format, ...)
+     func = "-tftp";
+   else if ((LOG_FACMASK & priority) == MS_DHCP)
+     func = "-dhcp";
+-      
++  else if ((LOG_FACMASK & priority) == MS_SCRIPT)
++    func = "-script";
++	    
+ #ifdef LOG_PRI
+   priority = LOG_PRI(priority);
+ #else
+diff --git a/src/rfc3315.c b/src/rfc3315.c
+index 3f4d69c..a3715cd 100644
+--- a/src/rfc3315.c
++++ b/src/rfc3315.c
+@@ -1975,7 +1975,7 @@ static void log6_packet(struct state *state, char *type, struct in6_addr *addr,
+ 
+   if (addr)
+     {
+-      inet_ntop(AF_INET6, addr, daemon->dhcp_buff2, 255);
++      inet_ntop(AF_INET6, addr, daemon->dhcp_buff2, DHCP_BUFF_SZ - 1);
+       strcat(daemon->dhcp_buff2, " ");
+     }
+   else
+-- 
+2.9.3
+
