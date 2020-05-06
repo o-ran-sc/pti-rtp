@@ -1,0 +1,213 @@
+From d6675196199ddcefccba0d5d745ac4e93aaecd0f Mon Sep 17 00:00:00 2001
+From: Don Penney <don.penney@windriver.com>
+Date: Wed, 4 Dec 2019 22:26:52 -0500
+Subject: [PATCH] Address python3 pylint errors and warnings
+
+This commit addresses issues detected by the updated python3 pylint:
+- Added a return code to the report_app_dependencies function to
+satisfy the E1111 error reported.
+- Added line-specific pylint disable for unused-argument for cases
+where the inclusion of such arguments in the function signature was
+intentional.
+- Added line-specific pylint disable for the duplicate-except case
+found, as python3 has merged IOError into OSError, while these are
+separate exceptions in python2. Once we're running solely on python3,
+this duplicate exception handling can be dropped.
+
+Change-Id: I96a521288e71948f06ad0c88a12c8f475ed8bc99
+Closes-Bug: 1855180
+Signed-off-by: Don Penney <don.penney@windriver.com>
+
+---
+ cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py        | 4 ++--
+ cgcs-patch/cgcs-patch/cgcs_patch/messages.py                    | 2 +-
+ cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py                 | 6 +++---
+ cgcs-patch/cgcs-patch/cgcs_patch/patch_client.py                | 6 +++---
+ cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py            | 8 +++++---
+ cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py             | 2 +-
+ cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py | 2 +-
+ cgcs-patch/cgcs-patch/pylint.rc                                 | 6 +-----
+ 8 files changed, 17 insertions(+), 19 deletions(-)
+
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py b/cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py
+index f1e0262..4c7bd7f 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py
+@@ -182,7 +182,7 @@ class PatchAPIController(object):
+ 
+     @expose('json')
+     @expose('query_hosts.xml', content_type='application/xml')
+-    def query_hosts(self, *args):
++    def query_hosts(self, *args):  # pylint: disable=unused-argument
+         return dict(data=pc.query_host_cache())
+ 
+     @expose('json')
+@@ -197,7 +197,7 @@ class PatchAPIController(object):
+ 
+     @expose('json')
+     @expose('query.xml', content_type='application/xml')
+-    def host_install(self, *args):
++    def host_install(self, *args):  # pylint: disable=unused-argument
+         return dict(error="Deprecated: Use host_install_async")
+ 
+     @expose('json')
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/messages.py b/cgcs-patch/cgcs-patch/cgcs_patch/messages.py
+index a57ea28..6abc29d 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/messages.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/messages.py
+@@ -60,5 +60,5 @@ class PatchMessage(object):
+             return PATCHMSG_STR[self.msgtype]
+         return "invalid-type"
+ 
+-    def handle(self, sock, addr):
++    def handle(self, sock, addr):  # pylint: disable=unused-argument
+         LOG.info("Unhandled message type: %s" % self.msgtype)
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
+index 77930d7..547db52 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
+@@ -150,7 +150,7 @@ class PatchMessageHelloAgent(messages.PatchMessage):
+         resp = PatchMessageHelloAgentAck()
+         resp.send(sock)
+ 
+-    def send(self, sock):
++    def send(self, sock):  # pylint: disable=unused-argument
+         LOG.error("Should not get here")
+ 
+ 
+@@ -196,7 +196,7 @@ class PatchMessageQueryDetailed(messages.PatchMessage):
+         resp = PatchMessageQueryDetailedResp()
+         resp.send(sock)
+ 
+-    def send(self, sock):
++    def send(self, sock):  # pylint: disable=unused-argument
+         LOG.error("Should not get here")
+ 
+ 
+@@ -258,7 +258,7 @@ class PatchMessageAgentInstallReq(messages.PatchMessage):
+         resp.status = pa.handle_install()
+         resp.send(sock, addr)
+ 
+-    def send(self, sock):
++    def send(self, sock):  # pylint: disable=unused-argument
+         LOG.error("Should not get here")
+ 
+ 
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_client.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_client.py
+index 705590c..af189fc 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_client.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_client.py
+@@ -960,7 +960,7 @@ def wait_for_install_complete(agent_ip):
+     return rc
+ 
+ 
+-def host_install(debug, args):
++def host_install(debug, args):  # pylint: disable=unused-argument
+     force = False
+     rc = 0
+ 
+@@ -1072,7 +1072,7 @@ def patch_upload_dir_req(debug, args):
+     return check_rc(req)
+ 
+ 
+-def patch_install_local(debug, args):
++def patch_install_local(debug, args):  # pylint: disable=unused-argument
+     """ This function is used to trigger patch installation prior to configuration """
+     # Check to see if initial configuration has completed
+     if os.path.isfile(INITIAL_CONTROLLER_CONFIG_COMPLETE):
+@@ -1214,7 +1214,7 @@ def patch_is_available_req(args):
+     return rc
+ 
+ 
+-def patch_report_app_dependencies_req(debug, args):
++def patch_report_app_dependencies_req(debug, args):  # pylint: disable=unused-argument
+     if len(args) < 2:
+         print_help()
+ 
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
+index 4b94a5f..79a6401 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
+@@ -392,7 +392,7 @@ class PatchMessageHelloAgentAck(messages.PatchMessage):
+                                  self.agent_state)
+         pc.hosts_lock.release()
+ 
+-    def send(self, sock):
++    def send(self, sock):  # pylint: disable=unused-argument
+         LOG.error("Should not get here")
+ 
+ 
+@@ -469,7 +469,7 @@ class PatchMessageQueryDetailedResp(messages.PatchMessage):
+         else:
+             pc.hosts_lock.release()
+ 
+-    def send(self, sock):
++    def send(self, sock):  # pylint: disable=unused-argument
+         LOG.error("Should not get here")
+ 
+ 
+@@ -525,7 +525,7 @@ class PatchMessageAgentInstallResp(messages.PatchMessage):
+         pc.hosts[addr[0]].install_reject_reason = self.reject_reason
+         pc.hosts_lock.release()
+ 
+-    def send(self, sock):
++    def send(self, sock):  # pylint: disable=unused-argument
+         LOG.error("Should not get here")
+ 
+ 
+@@ -2298,6 +2298,8 @@ class PatchController(PatchService):
+         finally:
+             self.patch_data_lock.release()
+ 
++        return True
++
+     def query_app_dependencies(self):
+         """
+         Query application dependencies
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py
+index 281a286..e9017f2 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py
+@@ -1253,7 +1253,7 @@ class PatchFile(object):
+             msg = "Failed during patch extraction"
+             LOG.exception(msg)
+             raise PatchFail(msg)
+-        except IOError:
++        except IOError:  # pylint: disable=duplicate-except
+             msg = "Failed during patch extraction"
+             LOG.exception(msg)
+             raise PatchFail(msg)
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py b/cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py
+index e2b02c0..1db4b68 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py
+@@ -17,6 +17,6 @@ import cgcs_patch.patch_controller  # noqa: E402
+ class CgcsPatchControllerTestCase(testtools.TestCase):
+ 
+     @mock.patch('six.moves.builtins.open')
+-    def test_cgcs_patch_controller_instantiate(self, mock_open):
++    def test_cgcs_patch_controller_instantiate(self, mock_open):  # pylint: disable=unused-argument
+         # pylint: disable=unused-variable
+         pc = cgcs_patch.patch_controller.PatchController()  # noqa: F841
+diff --git a/cgcs-patch/cgcs-patch/pylint.rc b/cgcs-patch/cgcs-patch/pylint.rc
+index 812b6b5..a2d888b 100644
+--- a/cgcs-patch/cgcs-patch/pylint.rc
++++ b/cgcs-patch/cgcs-patch/pylint.rc
+@@ -44,16 +44,12 @@ symbols=no
+ # --enable=similarities". If you want to run only the classes checker, but have
+ # no Warning level messages displayed, use"--disable=all --enable=classes
+ # --disable=W"
+-# E1111 assignment-from-no-return
+ # W0107 unnecessary-pass
+ # W0603 global-statement
+-# W0612 unused-variable
+-# W0613 unused-argument
+ # W0703 broad-except
+-# W0705 duplicate-except
+ # W1201 logging-not-lazy
+ # W1505, deprecated-method
+-disable=C, R, E1111, W0107, W0603, W0612, W0613, W0703, W0705, W1201, W1505
++disable=C, R, W0107, W0603, W0703, W1201, W1505
+ 
+ 
+ [REPORTS]

@@ -1,4 +1,4 @@
-From a6912bf7cffaade9647d8921816cc30db85630bb Mon Sep 17 00:00:00 2001
+From 80ee2e342d1854f439a1ec25c2f6a3a3625a0720 Mon Sep 17 00:00:00 2001
 From: Don Penney <don.penney@windriver.com>
 Date: Sun, 22 Dec 2019 22:45:18 -0500
 Subject: [PATCH] Remove use of rpmUtils.miscutils from cgcs-patch
@@ -14,6 +14,7 @@ Change-Id: I2a04f3dbf85d62c87ca1afcf988b672aafceb642
 Story: 2006228
 Task: 37871
 Signed-off-by: Don Penney <don.penney@windriver.com>
+
 ---
  cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py        | 11 +++++------
  cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py   |  6 +++---
@@ -24,7 +25,7 @@ Signed-off-by: Don Penney <don.penney@windriver.com>
  6 files changed, 40 insertions(+), 13 deletions(-)
 
 diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
-index ed6f67e..547db52 100644
+index b95b79d..77930d7 100644
 --- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
 +++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
 @@ -19,9 +19,8 @@ import sys
@@ -61,7 +62,7 @@ index ed6f67e..547db52 100644
                      # Versions match, nothing to do.
                      continue
 diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
-index 60b2b14..79a6401 100644
+index 1ba8f5e..4b94a5f 100644
 --- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
 +++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
 @@ -17,7 +17,7 @@ import rpm
@@ -85,7 +86,7 @@ index 60b2b14..79a6401 100644
                      if self.patch_data.metadata[patch_id]["repostate"] == constants.AVAILABLE:
                          # The RPM is not expected to be installed.
 diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py
-index 211c2c9..5866e8b 100644
+index 832e4e9..281a286 100644
 --- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py
 +++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_functions.py
 @@ -176,6 +176,24 @@ def parse_rpm_filename(filename):
@@ -127,7 +128,7 @@ index c953e4f..bd1eef9 100644
  import cgcs_patch.patch_agent  # noqa: E402
  
 diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py b/cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py
-index 1c603b2..1db4b68 100644
+index d11623f..e2b02c0 100644
 --- a/cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py
 +++ b/cgcs-patch/cgcs-patch/cgcs_patch/tests/test_patch_controller.py
 @@ -10,8 +10,6 @@ import sys
@@ -168,6 +169,3 @@ index a5eb8d4..653c65a 100644
 +        for ver, expected in versions.items():
 +            result = cgcs_patch.patch_functions.parse_pkgver(ver)
 +            self.assertEqual(result, expected)
--- 
-2.7.4
-

@@ -1,0 +1,673 @@
+From b206b6574a75dfc3793886529064e3d938759be8 Mon Sep 17 00:00:00 2001
+From: Don Penney <don.penney@windriver.com>
+Date: Mon, 23 Dec 2019 14:36:08 -0500
+Subject: [PATCH] Clean up pylint W1201 logging-not-lazy in cgcs-patch
+
+Change-Id: Ib461890ddf7635645d42660dc07a153e2449b09e
+Story: 2007050
+Task: 37874
+Signed-off-by: Don Penney <don.penney@windriver.com>
+
+---
+ .../cgcs-patch/cgcs_patch/api/controllers/root.py  |  2 +-
+ cgcs-patch/cgcs-patch/cgcs_patch/base.py           |  4 +-
+ cgcs-patch/cgcs-patch/cgcs_patch/messages.py       |  2 +-
+ cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py    | 76 +++++++++----------
+ .../cgcs-patch/cgcs_patch/patch_controller.py      | 86 +++++++++++-----------
+ cgcs-patch/cgcs-patch/pylint.rc                    |  3 +-
+ 6 files changed, 86 insertions(+), 87 deletions(-)
+
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py b/cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py
+index 4c7bd7f..883b58d 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/api/controllers/root.py
+@@ -135,7 +135,7 @@ class PatchAPIController(object):
+     def upload_dir(self, **kwargs):
+         files = []
+         for path in kwargs.values():
+-            LOG.info("upload-dir: Retrieving patches from %s" % path)
++            LOG.info("upload-dir: Retrieving patches from %s", path)
+             for f in glob.glob(path + '/*.patch'):
+                 if os.path.isfile(f):
+                     files.append(f)
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/base.py b/cgcs-patch/cgcs-patch/cgcs_patch/base.py
+index 8e47905..e12e26c 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/base.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/base.py
+@@ -160,11 +160,11 @@ class PatchService(object):
+             if result == self.mcast_addr:
+                 return
+         except subprocess.CalledProcessError as e:
+-            LOG.error("Command output: %s" % e.output)
++            LOG.error("Command output: %s", e.output)
+             return
+ 
+         # Close the socket and set it up again
+-        LOG.info("Detected missing multicast addr (%s). Reconfiguring" % self.mcast_addr)
++        LOG.info("Detected missing multicast addr (%s). Reconfiguring", self.mcast_addr)
+         while self.setup_socket() is None:
+             LOG.info("Unable to setup sockets. Waiting to retry")
+             time.sleep(5)
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/messages.py b/cgcs-patch/cgcs-patch/cgcs_patch/messages.py
+index 6abc29d..86ff99f 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/messages.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/messages.py
+@@ -61,4 +61,4 @@ class PatchMessage(object):
+         return "invalid-type"
+ 
+     def handle(self, sock, addr):  # pylint: disable=unused-argument
+-        LOG.info("Unhandled message type: %s" % self.msgtype)
++        LOG.info("Unhandled message type: %s", self.msgtype)
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
+index 547db52..3abd891 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
+@@ -70,7 +70,7 @@ def setflag(fname):
+         with open(fname, "w") as f:
+             f.write("%d\n" % os.getpid())
+     except Exception:
+-        LOG.exception("Failed to update %s flag" % fname)
++        LOG.exception("Failed to update %s flag", fname)
+ 
+ 
+ def clearflag(fname):
+@@ -78,7 +78,7 @@ def clearflag(fname):
+         try:
+             os.remove(fname)
+         except Exception:
+-            LOG.exception("Failed to clear %s flag" % fname)
++            LOG.exception("Failed to clear %s flag", fname)
+ 
+ 
+ def check_install_uuid():
+@@ -101,7 +101,7 @@ def check_install_uuid():
+     controller_install_uuid = str(req.text).rstrip()
+ 
+     if install_uuid != controller_install_uuid:
+-        LOG.error("Local install_uuid=%s doesn't match controller=%s" % (install_uuid, controller_install_uuid))
++        LOG.error("Local install_uuid=%s doesn't match controller=%s", install_uuid, controller_install_uuid)
+         return False
+ 
+     return True
+@@ -239,7 +239,7 @@ class PatchMessageAgentInstallReq(messages.PatchMessage):
+         messages.PatchMessage.encode(self)
+ 
+     def handle(self, sock, addr):
+-        LOG.info("Handling host install request, force=%s" % self.force)
++        LOG.info("Handling host install request, force=%s", self.force)
+         global pa
+         resp = PatchMessageAgentInstallResp()
+ 
+@@ -354,7 +354,7 @@ class PatchAgent(PatchService):
+             config = yaml.load(output)
+         except subprocess.CalledProcessError as e:
+             LOG.exception("Failed to query channels")
+-            LOG.error("Command output: %s" % e.output)
++            LOG.error("Command output: %s", e.output)
+             return False
+         except Exception:
+             LOG.exception("Failed to query channels")
+@@ -390,23 +390,23 @@ class PatchAgent(PatchService):
+                         config[channel].get('baseurl') != ch_baseurl):
+                     # Config is invalid
+                     add_channel = True
+-                    LOG.warning("Invalid smart config found for %s" % channel)
++                    LOG.warning("Invalid smart config found for %s", channel)
+                     try:
+                         output = subprocess.check_output(smart_cmd +
+                                                          ["channel", "--yes",
+                                                           "--remove", channel],
+                                                          stderr=subprocess.STDOUT)
+                     except subprocess.CalledProcessError as e:
+-                        LOG.exception("Failed to configure %s channel" % channel)
+-                        LOG.error("Command output: %s" % e.output)
++                        LOG.exception("Failed to configure %s channel", channel)
++                        LOG.error("Command output: %s", e.output)
+                         return False
+             else:
+                 # Channel is missing
+                 add_channel = True
+-                LOG.warning("Channel %s is missing from config" % channel)
++                LOG.warning("Channel %s is missing from config", channel)
+ 
+             if add_channel:
+-                LOG.info("Adding channel %s" % channel)
++                LOG.info("Adding channel %s", channel)
+                 cmd_args = ["channel", "--yes", "--add", channel,
+                             "type=%s" % ch_type,
+                             "name=%s" % ch_name]
+@@ -417,8 +417,8 @@ class PatchAgent(PatchService):
+                     output = subprocess.check_output(smart_cmd + cmd_args,
+                                                      stderr=subprocess.STDOUT)
+                 except subprocess.CalledProcessError as e:
+-                    LOG.exception("Failed to configure %s channel" % channel)
+-                    LOG.error("Command output: %s" % e.output)
++                    LOG.exception("Failed to configure %s channel", channel)
++                    LOG.error("Command output: %s", e.output)
+                     return False
+ 
+                 updated = True
+@@ -431,7 +431,7 @@ class PatchAgent(PatchService):
+             config = yaml.load(output)
+         except subprocess.CalledProcessError as e:
+             LOG.exception("Failed to query smart config")
+-            LOG.error("Command output: %s" % e.output)
++            LOG.error("Command output: %s", e.output)
+             return False
+         except Exception:
+             LOG.exception("Failed to query smart config")
+@@ -441,15 +441,15 @@ class PatchAgent(PatchService):
+         nolinktos = 'rpm-nolinktos'
+         if config.get(nolinktos) is not True:
+             # Set the flag
+-            LOG.warning("Setting %s option" % nolinktos)
++            LOG.warning("Setting %s option", nolinktos)
+             try:
+                 output = subprocess.check_output(smart_cmd +
+                                                  ["config", "--set",
+                                                   "%s=true" % nolinktos],
+                                                  stderr=subprocess.STDOUT)
+             except subprocess.CalledProcessError as e:
+-                LOG.exception("Failed to configure %s option" % nolinktos)
+-                LOG.error("Command output: %s" % e.output)
++                LOG.exception("Failed to configure %s option", nolinktos)
++                LOG.error("Command output: %s", e.output)
+                 return False
+ 
+             updated = True
+@@ -458,15 +458,15 @@ class PatchAgent(PatchService):
+         nosignature = 'rpm-check-signatures'
+         if config.get(nosignature) is not False:
+             # Set the flag
+-            LOG.warning("Setting %s option" % nosignature)
++            LOG.warning("Setting %s option", nosignature)
+             try:
+                 output = subprocess.check_output(smart_cmd +
+                                                  ["config", "--set",
+                                                   "%s=false" % nosignature],
+                                                  stderr=subprocess.STDOUT)
+             except subprocess.CalledProcessError as e:
+-                LOG.exception("Failed to configure %s option" % nosignature)
+-                LOG.error("Command output: %s" % e.output)
++                LOG.exception("Failed to configure %s option", nosignature)
++                LOG.error("Command output: %s", e.output)
+                 return False
+ 
+             updated = True
+@@ -476,7 +476,7 @@ class PatchAgent(PatchService):
+                 subprocess.check_output(smart_update, stderr=subprocess.STDOUT)
+             except subprocess.CalledProcessError as e:
+                 LOG.exception("Failed to update smartpm")
+-                LOG.error("Command output: %s" % e.output)
++                LOG.error("Command output: %s", e.output)
+                 return False
+ 
+             # Reset the patch op counter to force a detailed query
+@@ -584,7 +584,7 @@ class PatchAgent(PatchService):
+                     self.installed[pkgname] = version.split('@')[0]
+                     break
+             except subprocess.CalledProcessError:
+-                LOG.error("Failed to query installed version of %s" % pkgname)
++                LOG.error("Failed to query installed version of %s", pkgname)
+ 
+             self.changes = True
+ 
+@@ -641,7 +641,7 @@ class PatchAgent(PatchService):
+             subprocess.check_output(smart_update, stderr=subprocess.STDOUT)
+         except subprocess.CalledProcessError as e:
+             LOG.error("Failed to update smartpm")
+-            LOG.error("Command output: %s" % e.output)
++            LOG.error("Command output: %s", e.output)
+             # Set a state to "unknown"?
+             return False
+ 
+@@ -663,7 +663,7 @@ class PatchAgent(PatchService):
+             output = subprocess.check_output(smart_query_installed)
+             pkgs_installed = self.parse_smart_pkglist(output)
+         except subprocess.CalledProcessError as e:
+-            LOG.error("Failed to query installed pkgs: %s" % e.output)
++            LOG.error("Failed to query installed pkgs: %s", e.output)
+             # Set a state to "unknown"?
+             return False
+ 
+@@ -671,7 +671,7 @@ class PatchAgent(PatchService):
+             output = subprocess.check_output(smart_query_base)
+             pkgs_base = self.parse_smart_pkglist(output)
+         except subprocess.CalledProcessError as e:
+-            LOG.error("Failed to query base pkgs: %s" % e.output)
++            LOG.error("Failed to query base pkgs: %s", e.output)
+             # Set a state to "unknown"?
+             return False
+ 
+@@ -679,7 +679,7 @@ class PatchAgent(PatchService):
+             output = subprocess.check_output(smart_query_updates)
+             pkgs_updates = self.parse_smart_pkglist(output)
+         except subprocess.CalledProcessError as e:
+-            LOG.error("Failed to query patched pkgs: %s" % e.output)
++            LOG.error("Failed to query patched pkgs: %s", e.output)
+             # Set a state to "unknown"?
+             return False
+ 
+@@ -722,11 +722,11 @@ class PatchAgent(PatchService):
+         # Look for new packages
+         self.check_groups()
+ 
+-        LOG.info("Patch state query returns %s" % self.changes)
+-        LOG.info("Installed: %s" % self.installed)
+-        LOG.info("To install: %s" % self.to_install)
+-        LOG.info("To remove: %s" % self.to_remove)
+-        LOG.info("Missing: %s" % self.missing_pkgs)
++        LOG.info("Patch state query returns %s", self.changes)
++        LOG.info("Installed: %s", self.installed)
++        LOG.info("To install: %s", self.to_install)
++        LOG.info("To remove: %s", self.to_remove)
++        LOG.info("Missing: %s", self.missing_pkgs)
+ 
+         return True
+ 
+@@ -794,16 +794,16 @@ class PatchAgent(PatchService):
+             try:
+                 if verbose_to_stdout:
+                     print("Installing software updates...")
+-                LOG.info("Installing: %s" % ", ".join(install_set))
++                LOG.info("Installing: %s", ", ".join(install_set))
+                 output = subprocess.check_output(smart_install_cmd + install_set, stderr=subprocess.STDOUT)
+                 changed = True
+                 for line in output.split('\n'):
+-                    LOG.info("INSTALL: %s" % line)
++                    LOG.info("INSTALL: %s", line)
+                 if verbose_to_stdout:
+                     print("Software updated.")
+             except subprocess.CalledProcessError as e:
+                 LOG.exception("Failed to install RPMs")
+-                LOG.error("Command output: %s" % e.output)
++                LOG.error("Command output: %s", e.output)
+                 rc = False
+                 if verbose_to_stdout:
+                     print("WARNING: Software update failed.")
+@@ -820,16 +820,16 @@ class PatchAgent(PatchService):
+                 try:
+                     if verbose_to_stdout:
+                         print("Handling patch removal...")
+-                    LOG.info("Removing: %s" % ", ".join(remove_set))
++                    LOG.info("Removing: %s", ", ".join(remove_set))
+                     output = subprocess.check_output(smart_remove_cmd + remove_set, stderr=subprocess.STDOUT)
+                     changed = True
+                     for line in output.split('\n'):
+-                        LOG.info("REMOVE: %s" % line)
++                        LOG.info("REMOVE: %s", line)
+                     if verbose_to_stdout:
+                         print("Patch removal complete.")
+                 except subprocess.CalledProcessError as e:
+                     LOG.exception("Failed to remove RPMs")
+-                    LOG.error("Command output: %s" % e.output)
++                    LOG.error("Command output: %s", e.output)
+                     rc = False
+                     if verbose_to_stdout:
+                         print("WARNING: Patch removal failed.")
+@@ -862,7 +862,7 @@ class PatchAgent(PatchService):
+                     self.node_is_patched = False
+                 except subprocess.CalledProcessError as e:
+                     LOG.exception("In-Service patch scripts failed")
+-                    LOG.error("Command output: %s" % e.output)
++                    LOG.error("Command output: %s", e.output)
+                     # Fail the patching operation
+                     rc = False
+ 
+@@ -1071,7 +1071,7 @@ def main():
+             # In certain cases, the lighttpd server could still be running using
+             # its default port 80, as opposed to the port configured in platform.conf
+             global http_port_real
+-            LOG.info("Failed install_uuid check via http_port=%s. Trying with default port 80" % http_port_real)
++            LOG.info("Failed install_uuid check via http_port=%s. Trying with default port 80", http_port_real)
+             http_port_real = 80
+ 
+         pa.handle_install(verbose_to_stdout=True, disallow_insvc_patch=True)
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
+index 79a6401..f2b24c8 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_controller.py
+@@ -137,11 +137,11 @@ class AgentNeighbour(object):
+         if out_of_date != self.out_of_date or requires_reboot != self.requires_reboot:
+             self.out_of_date = out_of_date
+             self.requires_reboot = requires_reboot
+-            LOG.info("Agent %s (%s) reporting out_of_date=%s, requires_reboot=%s" % (
+-                self.hostname,
+-                self.ip,
+-                self.out_of_date,
+-                self.requires_reboot))
++            LOG.info("Agent %s (%s) reporting out_of_date=%s, requires_reboot=%s",
++                     self.hostname,
++                     self.ip,
++                     self.out_of_date,
++                     self.requires_reboot)
+ 
+         if self.last_query_id != query_id:
+             self.last_query_id = query_id
+@@ -488,7 +488,7 @@ class PatchMessageAgentInstallReq(messages.PatchMessage):
+         LOG.error("Should not get here")
+ 
+     def send(self, sock):
+-        LOG.info("sending install request to node: %s" % self.ip)
++        LOG.info("sending install request to node: %s", self.ip)
+         self.encode()
+         message = json.dumps(self.message)
+         sock.sendto(message, (self.ip, cfg.agent_port))
+@@ -512,7 +512,7 @@ class PatchMessageAgentInstallResp(messages.PatchMessage):
+         messages.PatchMessage.encode(self)
+ 
+     def handle(self, sock, addr):
+-        LOG.info("Handling install resp from %s" % addr[0])
++        LOG.info("Handling install resp from %s", addr[0])
+         global pc
+         # LOG.info("Handling hello ack")
+ 
+@@ -551,7 +551,7 @@ class PatchMessageDropHostReq(messages.PatchMessage):
+             return
+ 
+         if self.ip is None:
+-            LOG.error("Received PATCHMSG_DROP_HOST_REQ with no ip: %s" % json.dumps(self.data))
++            LOG.error("Received PATCHMSG_DROP_HOST_REQ with no ip: %s", json.dumps(self.data))
+             return
+ 
+         pc.drop_host(self.ip, sync_nbr=False)
+@@ -602,7 +602,7 @@ class PatchController(PatchService):
+                 with open(app_dependency_filename, 'r') as f:
+                     self.app_dependencies = json.loads(f.read())
+             except Exception:
+-                LOG.exception("Failed to read app dependencies: %s" % app_dependency_filename)
++                LOG.exception("Failed to read app dependencies: %s", app_dependency_filename)
+         else:
+             self.app_dependencies = {}
+ 
+@@ -658,7 +658,7 @@ class PatchController(PatchService):
+             counter = config.getint('runtime', 'patch_op_counter')
+             self.patch_op_counter = counter
+ 
+-            LOG.info("patch_op_counter is: %d" % self.patch_op_counter)
++            LOG.info("patch_op_counter is: %d", self.patch_op_counter)
+         except configparser.Error:
+             LOG.exception("Failed to read state info")
+ 
+@@ -679,9 +679,9 @@ class PatchController(PatchService):
+                                               "rsync://%s/patching/" % host_url,
+                                               "%s/" % patch_dir],
+                                              stderr=subprocess.STDOUT)
+-            LOG.info("Synced to mate patching via rsync: %s" % output)
++            LOG.info("Synced to mate patching via rsync: %s", output)
+         except subprocess.CalledProcessError as e:
+-            LOG.error("Failed to rsync: %s" % e.output)
++            LOG.error("Failed to rsync: %s", e.output)
+             return False
+ 
+         try:
+@@ -691,9 +691,9 @@ class PatchController(PatchService):
+                                               "rsync://%s/repo/" % host_url,
+                                               "%s/" % repo_root_dir],
+                                              stderr=subprocess.STDOUT)
+-            LOG.info("Synced to mate repo via rsync: %s" % output)
++            LOG.info("Synced to mate repo via rsync: %s", output)
+         except subprocess.CalledProcessError:
+-            LOG.error("Failed to rsync: %s" % output)
++            LOG.error("Failed to rsync: %s", output)
+             return False
+ 
+         self.read_state_file()
+@@ -710,7 +710,7 @@ class PatchController(PatchService):
+                 with open(app_dependency_filename, 'r') as f:
+                     self.app_dependencies = json.loads(f.read())
+             except Exception:
+-                LOG.exception("Failed to read app dependencies: %s" % app_dependency_filename)
++                LOG.exception("Failed to read app dependencies: %s", app_dependency_filename)
+         else:
+             self.app_dependencies = {}
+ 
+@@ -757,7 +757,7 @@ class PatchController(PatchService):
+                         continue
+ 
+                     if patch_id not in self.patch_data.metadata:
+-                        LOG.error("Patch data missing for %s" % patch_id)
++                        LOG.error("Patch data missing for %s", patch_id)
+                         continue
+ 
+                     # If the patch is on a different release than the host, skip it.
+@@ -811,7 +811,7 @@ class PatchController(PatchService):
+                         continue
+ 
+                     if patch_id not in self.patch_data.metadata:
+-                        LOG.error("Patch data missing for %s" % patch_id)
++                        LOG.error("Patch data missing for %s", patch_id)
+                         continue
+ 
+                     if personality not in self.patch_data.metadata[patch_id]:
+@@ -835,7 +835,7 @@ class PatchController(PatchService):
+                         continue
+ 
+                     if patch_id not in self.patch_data.metadata:
+-                        LOG.error("Patch data missing for %s" % patch_id)
++                        LOG.error("Patch data missing for %s", patch_id)
+                         continue
+ 
+                     if personality not in self.patch_data.metadata[patch_id]:
+@@ -902,10 +902,10 @@ class PatchController(PatchService):
+ 
+             if os.path.exists(semchk):
+                 try:
+-                    LOG.info("Running semantic check: %s" % semchk)
++                    LOG.info("Running semantic check: %s", semchk)
+                     subprocess.check_output([semchk] + patch_state_args,
+                                             stderr=subprocess.STDOUT)
+-                    LOG.info("Semantic check %s passed" % semchk)
++                    LOG.info("Semantic check %s passed", semchk)
+                 except subprocess.CalledProcessError as e:
+                     msg = "Semantic check failed for %s:\n%s" % (patch_id, e.output)
+                     LOG.exception(msg)
+@@ -1158,7 +1158,7 @@ class PatchController(PatchService):
+             # Copy the RPMs. If a failure occurs, clean up copied files.
+             copied = []
+             for rpmfile in rpmlist:
+-                LOG.info("Copy %s to %s" % (rpmfile, rpmlist[rpmfile]))
++                LOG.info("Copy %s to %s", rpmfile, rpmlist[rpmfile])
+                 try:
+                     shutil.copy(rpmfile, rpmlist[rpmfile])
+                     copied.append(rpmlist[rpmfile])
+@@ -1167,7 +1167,7 @@ class PatchController(PatchService):
+                     LOG.exception(msg)
+                     # Clean up files
+                     for filename in copied:
+-                        LOG.info("Cleaning up %s" % filename)
++                        LOG.info("Cleaning up %s", filename)
+                         os.remove(filename)
+ 
+                     raise RpmFail(msg)
+@@ -1206,7 +1206,7 @@ class PatchController(PatchService):
+                                                       "comps.xml",
+                                                       rdir],
+                                                      stderr=subprocess.STDOUT)
+-                    LOG.info("Repo[%s] updated:\n%s" % (ver, output))
++                    LOG.info("Repo[%s] updated:\n%s", ver, output)
+                 except subprocess.CalledProcessError:
+                     msg = "Failed to update the repo for %s" % ver
+                     LOG.exception(msg)
+@@ -1387,7 +1387,7 @@ class PatchController(PatchService):
+                                                       "comps.xml",
+                                                       rdir],
+                                                      stderr=subprocess.STDOUT)
+-                    LOG.info("Repo[%s] updated:\n%s" % (ver, output))
++                    LOG.info("Repo[%s] updated:\n%s", ver, output)
+                 except subprocess.CalledProcessError:
+                     msg = "Failed to update the repo for %s" % ver
+                     LOG.exception(msg)
+@@ -1529,7 +1529,7 @@ class PatchController(PatchService):
+                                               "comps.xml",
+                                               repo_dir[release]],
+                                              stderr=subprocess.STDOUT)
+-            LOG.info("Repo[%s] updated:\n%s" % (release, output))
++            LOG.info("Repo[%s] updated:\n%s", release, output)
+         except subprocess.CalledProcessError:
+             msg = "Failed to update the repo for %s" % release
+             LOG.exception(msg)
+@@ -1844,7 +1844,7 @@ class PatchController(PatchService):
+         for patch_id in sorted(patch_ids):
+             if patch_id not in self.patch_data.metadata.keys():
+                 errormsg = "%s is unrecognized\n" % patch_id
+-                LOG.info("patch_query_dependencies: %s" % errormsg)
++                LOG.info("patch_query_dependencies: %s", errormsg)
+                 results["error"] += errormsg
+                 failure = True
+         self.patch_data_lock.release()
+@@ -1892,7 +1892,7 @@ class PatchController(PatchService):
+             errormsg = "A commit cannot be performed with non-REL status patches in the system:\n"
+             for patch_id in non_rel_list:
+                 errormsg += "    %s\n" % patch_id
+-            LOG.info("patch_commit rejected: %s" % errormsg)
++            LOG.info("patch_commit rejected: %s", errormsg)
+             results["error"] += errormsg
+             return results
+ 
+@@ -1901,7 +1901,7 @@ class PatchController(PatchService):
+         for patch_id in sorted(patch_ids):
+             if patch_id not in self.patch_data.metadata.keys():
+                 errormsg = "%s is unrecognized\n" % patch_id
+-                LOG.info("patch_commit: %s" % errormsg)
++                LOG.info("patch_commit: %s", errormsg)
+                 results["error"] += errormsg
+                 failure = True
+         self.patch_data_lock.release()
+@@ -1925,7 +1925,7 @@ class PatchController(PatchService):
+             errormsg = "The following patches are not applied and cannot be committed:\n"
+             for patch_id in avail_list:
+                 errormsg += "    %s\n" % patch_id
+-            LOG.info("patch_commit rejected: %s" % errormsg)
++            LOG.info("patch_commit rejected: %s", errormsg)
+             results["error"] += errormsg
+             return results
+ 
+@@ -2039,7 +2039,7 @@ class PatchController(PatchService):
+                                                   "comps.xml",
+                                                   rdir],
+                                                  stderr=subprocess.STDOUT)
+-                LOG.info("Repo[%s] updated:\n%s" % (ver, output))
++                LOG.info("Repo[%s] updated:\n%s", ver, output)
+             except subprocess.CalledProcessError:
+                 msg = "Failed to update the repo for %s" % ver
+                 LOG.exception(msg)
+@@ -2100,7 +2100,7 @@ class PatchController(PatchService):
+                 self.hosts_lock.release()
+                 msg = "Unknown host specified: %s" % host_ip
+                 msg_error += msg + "\n"
+-                LOG.error("Error in host-install: " + msg)
++                LOG.error("Error in host-install: %s", msg)
+                 return dict(info=msg_info, warning=msg_warning, error=msg_error)
+ 
+         msg = "Running host-install for %s (%s), force=%s, async_req=%s" % (host_ip, ip, force, async_req)
+@@ -2128,7 +2128,7 @@ class PatchController(PatchService):
+             # async_req install requested, so return now
+             msg = "Patch installation request sent to %s." % self.hosts[ip].hostname
+             msg_info += msg + "\n"
+-            LOG.info("host-install async_req: " + msg)
++            LOG.info("host-install async_req: %s", msg)
+             return dict(info=msg_info, warning=msg_warning, error=msg_error)
+ 
+         # Now we wait, up to ten mins... TODO: Wait on a condition
+@@ -2141,7 +2141,7 @@ class PatchController(PatchService):
+                 self.hosts_lock.release()
+                 msg = "Agent expired while waiting: %s" % ip
+                 msg_error += msg + "\n"
+-                LOG.error("Error in host-install: " + msg)
++                LOG.error("Error in host-install: %s", msg)
+                 break
+ 
+             if not self.hosts[ip].install_pending:
+@@ -2150,17 +2150,17 @@ class PatchController(PatchService):
+                 if self.hosts[ip].install_status:
+                     msg = "Patch installation was successful on %s." % self.hosts[ip].hostname
+                     msg_info += msg + "\n"
+-                    LOG.info("host-install: " + msg)
++                    LOG.info("host-install: %s", msg)
+                 elif self.hosts[ip].install_reject_reason:
+                     msg = "Patch installation rejected by %s. %s" % (
+                         self.hosts[ip].hostname,
+                         self.hosts[ip].install_reject_reason)
+                     msg_error += msg + "\n"
+-                    LOG.error("Error in host-install: " + msg)
++                    LOG.error("Error in host-install: %s", msg)
+                 else:
+                     msg = "Patch installation failed on %s." % self.hosts[ip].hostname
+                     msg_error += msg + "\n"
+-                    LOG.error("Error in host-install: " + msg)
++                    LOG.error("Error in host-install: %s", msg)
+ 
+                 self.hosts_lock.release()
+                 break
+@@ -2172,7 +2172,7 @@ class PatchController(PatchService):
+         if not resp_rx:
+             msg = "Timeout occurred while waiting response from %s." % ip
+             msg_error += msg + "\n"
+-            LOG.error("Error in host-install: " + msg)
++            LOG.error("Error in host-install: %s", msg)
+ 
+         return dict(info=msg_info, warning=msg_warning, error=msg_error)
+ 
+@@ -2203,7 +2203,7 @@ class PatchController(PatchService):
+                 self.hosts_lock.release()
+                 msg = "Unknown host specified: %s" % host_ip
+                 msg_error += msg + "\n"
+-                LOG.error("Error in drop-host: " + msg)
++                LOG.error("Error in drop-host: %s", msg)
+                 return dict(info=msg_info, warning=msg_warning, error=msg_error)
+ 
+         msg = "Running drop-host for %s (%s)" % (host_ip, ip)
+@@ -2272,8 +2272,8 @@ class PatchController(PatchService):
+ 
+         appname = kwargs.get("app")
+ 
+-        LOG.info("Handling app dependencies report: app=%s, patch_ids=%s" %
+-                 (appname, ','.join(patch_ids)))
++        LOG.info("Handling app dependencies report: app=%s, patch_ids=%s",
++                 appname, ','.join(patch_ids))
+ 
+         self.patch_data_lock.acquire()
+ 
+@@ -2516,7 +2516,7 @@ class PatchControllerMainThread(threading.Thread):
+                 inputs = [pc.sock_in] + agent_query_conns
+                 outputs = []
+ 
+-                # LOG.info("Running select, remaining=%d" % remaining)
++                # LOG.info("Running select, remaining=%d", remaining)
+                 rlist, wlist, xlist = select.select(inputs, outputs, inputs, remaining)
+ 
+                 if (len(rlist) == 0 and
+@@ -2641,7 +2641,7 @@ class PatchControllerMainThread(threading.Thread):
+                     for n in nbrs:
+                         # Age out controllers after 2 minutes
+                         if pc.controller_neighbours[n].get_age() >= 120:
+-                            LOG.info("Aging out controller %s from table" % n)
++                            LOG.info("Aging out controller %s from table", n)
+                             del pc.controller_neighbours[n]
+                     pc.controller_neighbours_lock.release()
+ 
+@@ -2650,7 +2650,7 @@ class PatchControllerMainThread(threading.Thread):
+                     for n in nbrs:
+                         # Age out hosts after 1 hour
+                         if pc.hosts[n].get_age() >= 3600:
+-                            LOG.info("Aging out host %s from table" % n)
++                            LOG.info("Aging out host %s from table", n)
+                             del pc.hosts[n]
+                             for patch_id in pc.interim_state.keys():
+                                 if n in pc.interim_state[patch_id]:
+diff --git a/cgcs-patch/cgcs-patch/pylint.rc b/cgcs-patch/cgcs-patch/pylint.rc
+index a2d888b..57a9829 100644
+--- a/cgcs-patch/cgcs-patch/pylint.rc
++++ b/cgcs-patch/cgcs-patch/pylint.rc
+@@ -47,9 +47,8 @@ symbols=no
+ # W0107 unnecessary-pass
+ # W0603 global-statement
+ # W0703 broad-except
+-# W1201 logging-not-lazy
+ # W1505, deprecated-method
+-disable=C, R, W0107, W0603, W0703, W1201, W1505
++disable=C, R, W0107, W0603, W0703, W1505
+ 
+ 
+ [REPORTS]
