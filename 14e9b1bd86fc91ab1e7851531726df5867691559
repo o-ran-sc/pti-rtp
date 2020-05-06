@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c0d91ea4_1b0da0f7",
+        "filename": "meta-stx/conf/distro/files/ks/poky_stx_aio_ks.cfg",
+        "patchSetId": 1
+      },
+      "lineNbr": 733,
+      "author": {
+        "id": 1000109
+      },
+      "writtenOn": "2020-05-06T14:19:10Z",
+      "side": 0,
+      "message": "Why disable it directly?",
+      "revId": "14e9b1bd86fc91ab1e7851531726df5867691559",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}
