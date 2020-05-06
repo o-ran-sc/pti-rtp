@@ -89,6 +89,9 @@ do_install_append () {
 	install -m 500 sw-patch-agent-restart ${D}/${sbindir}/sw-patch-agent-restart 
 	install -m 500 sw-patch-init.sh ${D}/${sysconfdir}/init.d/sw-patch
 	install -m 500 sw-patch-controller-init.sh ${D}/${sysconfdir}/init.d/sw-patch-controller 
+
+	sed -i -e 's/createrepo/createrepo_c/' ${D}/${sysconfdir}/init.d/sw-patch-controller
+
 	install -m 555 patch_check_goenabled.sh ${D}/${sysconfdir}/goenabled.d/patch_check_goenabled.sh 
 	install -m 444 patching.logrotate ${D}/${sysconfdir}/logrotate.d/patching 
 	
