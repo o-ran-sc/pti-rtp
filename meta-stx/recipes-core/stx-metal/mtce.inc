@@ -69,10 +69,10 @@ do_install_prepend () {
 	install -m 755 -d ${D}/${sysconfdir}/pmon.d
 	install -m 755 -d ${D}/${sysconfdir}/logrotate.d
 	
-	install -m 755 -d ${D}/${sysconfdir}/serverices.d
-	install -m 755 -d ${D}/${sysconfdir}/serverices.d/controller
-	install -m 755 -d ${D}/${sysconfdir}/serverices.d/worker
-	install -m 755 -d ${D}/${sysconfdir}/serverices.d/storage
+	install -m 755 -d ${D}/${sysconfdir}/services.d
+	install -m 750 -d ${D}/${sysconfdir}/services.d/controller
+	install -m 750 -d ${D}/${sysconfdir}/services.d/worker
+	install -m 750 -d ${D}/${sysconfdir}/services.d/storage
 	
 	cd ${S}/mtce/src/
 	install -m 755 -p -D scripts/mtcAgent ${D}/${libdir}/ocf/resource.d/platform
@@ -151,9 +151,9 @@ do_install_prepend () {
 	install -m 755 -p -D scripts/goenabled ${D}/${sysconfdir}/init.d/goenabled
 	
 	# start or stop services test script
-	install -m 755 -p -D scripts/mtcTest ${D}/${sysconfdir}/serverices.d/worker
-	install -m 755 -p -D scripts/mtcTest ${D}/${sysconfdir}/serverices.d/controller
-	install -m 755 -p -D scripts/mtcTest ${D}/${sysconfdir}/serverices.d/storage
+	install -m 755 -p -D scripts/mtcTest ${D}/${sysconfdir}/services.d/worker
+	install -m 755 -p -D scripts/mtcTest ${D}/${sysconfdir}/services.d/controller
+	install -m 755 -p -D scripts/mtcTest ${D}/${sysconfdir}/services.d/storage
 	install -m 755 -p -D scripts/runservices ${D}/${sysconfdir}/init.d/runservices
 	
 	
@@ -293,9 +293,9 @@ FILES_mtce = " \
 	${sysconfdir}/bmc/server_profiles.d/sensor_hp380_v1_ilo_v4.profile \
 	${sysconfdir}/bmc/server_profiles.d/sensor_hp360_v1_ilo_v4.profile \
 	${sysconfdir}/bmc/server_profiles.d/sensor_quanta_v1_ilo_v4.profile \
-	${sysconfdir}/serverices.d/worker/mtcTest \
-	${sysconfdir}/serverices.d/controller/mtcTest \
-	${sysconfdir}/serverices.d/storage/mtcTest \
+	${sysconfdir}/services.d/worker/mtcTest \
+	${sysconfdir}/services.d/controller/mtcTest \
+	${sysconfdir}/services.d/storage/mtcTest \
 	${sysconfdir}/mtc/fsmond.conf \
 	${sysconfdir}/mtc/tmp/ \
 	${sysconfdir}/mtc.ini \
