@@ -19,6 +19,7 @@ RDEPENDS_collectd-extensions += " \
 	systemd \
 	collectd \
 	fm-api \
+	ntpq \
 	python-influxdb \
 	python-oslo.concurrency \
 	python-httplib2 \
