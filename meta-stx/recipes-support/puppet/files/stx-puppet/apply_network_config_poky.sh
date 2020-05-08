@@ -280,6 +280,12 @@ function sysinv_agent_lock {
 # synchronize with sysinv-agent audit
 sysinv_agent_lock $ACQUIRE_LOCK
 
+# check if this is a duplicated configuration
+if diff -I '^#' "/var/run/interfaces.puppet" "/etc/network/interfaces"; then
+    do_rm /var/run/interfaces.puppet
+    exit 0
+fi
+
 # now copy the puppet changed interfaces to /etc/network/interfaces
 do_mv /var/run/interfaces.puppet /etc/network/interfaces
 
