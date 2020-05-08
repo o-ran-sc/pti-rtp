@@ -280,16 +280,23 @@ function sysinv_agent_lock {
 # synchronize with sysinv-agent audit
 sysinv_agent_lock $ACQUIRE_LOCK
 
-# now copy the puppet changed interfaces to /etc/network/interfaces
-do_mv /var/run/interfaces.puppet /etc/network/interfaces
+# check if this is a duplicated configuration
+if ! diff -I '^#' "/var/run/interfaces.puppet" "/etc/network/interfaces" > /dev/null; then
+    # now copy the puppet changed interfaces to /etc/network/interfaces
+    do_mv /var/run/interfaces.puppet /etc/network/interfaces
 
-# now restart networking service 
-/etc/init.d/networking restart
+    # now restart networking service 
+    /etc/init.d/networking restart
 
-sleep 5
+    sleep 5
+else
+    # need to remove this file also
+    do_rm /var/run/interfaces.puppet
+fi
+
 
 # workaround the loopback label addresses cannot be configured as scope of host
-ip addr show lo | egrep "inet.*lo:" > /tmp/loop$$
+ip addr show lo | egrep "inet.*global.*lo:" > /tmp/loop$$
 
 while read addr_info; do 
 	echo $addr_info
