@@ -37,6 +37,7 @@ IMAGE_INSTALL = "\
     dhcp-client \
     ldd \
     rng-tools \
+    gptfdisk \
 "
 
 IMAGE_LINGUAS = "en-us en-gb"
