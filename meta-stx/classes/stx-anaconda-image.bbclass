@@ -29,6 +29,7 @@ INSTALLER_CONFDIR = "${IMAGE_ROOTFS}/installer-config"
 KICKSTART_FILE ??= ""
 KICKSTART_FILE_EXTRA ??= ""
 WRL_INSTALLER_CONF ?= ""
+REPO_INCLUDE_PKG ??= ""
 REPO_EXCLUDE_PKG ?= ""
 
 build_iso_prepend() {
@@ -94,9 +95,14 @@ wrl_installer_copy_local_repos() {
             if [ -d "$deploy_dir_rpm/"$arch -a ! -d "${IMAGE_ROOTFS}/Packages.$prj_name/"$arch ]; then
                 channel_priority=$(expr $channel_priority - 5)
                 echo "$channel_priority $arch" >> ${IMAGE_ROOTFS}/Packages.$prj_name/.feedpriority
-                wrl_installer_hardlinktree "$deploy_dir_rpm/"$arch "${IMAGE_ROOTFS}/Packages.$prj_name/."
             fi
         done
+
+        cd ${deploy_dir_rpm}
+        for pkg in `cat ${REPO_INCLUDE_PKG}`; do
+            cp --parents -vf */${pkg}.rpm ${IMAGE_ROOTFS}/Packages.$prj_name/
+        done
+        cd -
 
         for pkg in ${REPO_EXCLUDE_PKG}; do
             rm -rf ${IMAGE_ROOTFS}/Packages.$prj_name/${pkg}
