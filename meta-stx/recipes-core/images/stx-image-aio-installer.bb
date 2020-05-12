@@ -51,7 +51,7 @@ IMAGE_ROOTFS_EXTRA_SPACE =" + 102400"
 inherit core-image stx-anaconda-image
 
 KICKSTART_FILE ?= "${LAYER_PATH_meta-stx}/conf/distro/files/ks/poky_stx_aio_ks.cfg"
-REPO_INCLUDE_PKG ?= "${LAYER_PATH_meta-stx}/conf/distro/files/pkglist/poky-stx-aio-pkg-list.txt"
+REPO_INCLUDE_PKG ?= "${LAYER_PATH_meta-stx}/conf/distro/files/pkglist/poky-stx-aio-pkg-list.cfg"
 
 # Only the ones prefix with poky_stx_ are tested and working
 KICKSTART_FILE_EXTRA ?= " \
