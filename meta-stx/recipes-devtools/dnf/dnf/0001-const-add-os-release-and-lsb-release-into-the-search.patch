@@ -1,0 +1,26 @@
+From b3e40ea4aa3b890d3df6b10bb7ef0ddb3efb89a4 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 13 May 2020 22:48:04 +0800
+Subject: [PATCH] const: add os-release and lsb-release into the search list
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ dnf/const.py.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dnf/const.py.in b/dnf/const.py.in
+index 44a204a..a795098 100644
+--- a/dnf/const.py.in
++++ b/dnf/const.py.in
+@@ -25,7 +25,7 @@ CONF_FILENAME='/etc/dnf/dnf.conf' # :api
+ CONF_AUTOMATIC_FILENAME='/etc/dnf/automatic.conf'
+ DISTROVERPKG=('system-release(releasever)', 'system-release',
+               'distribution-release(releasever)', 'distribution-release',
+-              'redhat-release', 'suse-release')
++              'redhat-release', 'suse-release', 'os-release', 'lsb-release')
+ GROUP_PACKAGE_TYPES = ('mandatory', 'default', 'conditional') # :api
+ INSTALLONLYPKGS=['kernel', 'kernel-PAE',
+                  'installonlypkg(kernel)',
+-- 
+2.7.4
+
