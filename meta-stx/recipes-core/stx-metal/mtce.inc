@@ -42,6 +42,8 @@ do_configure_prepend () {
 } 
 
 do_compile_prepend () {
+	# use sed to correct the path of systemctl
+	sed -i -e 's|${bindir}/systemctl|${base_bindir}/systemctl|' ${S}/mtce/src/pmon/pmonHdlr.cpp
 	cd ${S}/mtce/src/
 	oe_runmake -e VER=1 VER_MJR=1 INCLUDES=" -I. -I../alarm -I../heartbeat -I../maintenance \
 	                        -I../hostw -I../public -I../smash -I../common -I../hwmon \
