@@ -1,0 +1,72 @@
+From 059984de897fe2c8c48811ceb76a0331f94b3557 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 13 May 2020 22:10:01 +0800
+Subject: [PATCH] patch_agent: do not do the packages_iter if pkggrp is None
+
+Addn the handling of packages_iter to the else block to avoid:
+AttributeError: 'NoneType' object has no attribute 'packages_iter'
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py | 44 ++++++++++++-------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
+index d8bc375..489d484 100644
+--- a/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
++++ b/cgcs-patch/cgcs-patch/cgcs_patch/patch_agent.py
+@@ -490,29 +490,29 @@ class PatchAgent(PatchService):
+                 break
+ 
+         if pkggrp is None:
+-            LOG.error("Could not find software group: %s", grp_id)
+-
+-        for pkg in pkggrp.packages_iter():
+-            try:
+-                res = pkgs_installed.filter(name=pkg.name)
+-                if len(res) == 0:
+-                    found_pkg = avail.filter(name=pkg.name)
+-                    self.missing_pkgs_dnf.append(found_pkg[0])
+-                    self.missing_pkgs.append(found_pkg[0].name)
++            LOG.warning("Could not find software group: %s", grp_id)
++        else:
++            for pkg in pkggrp.packages_iter():
++                try:
++                    res = pkgs_installed.filter(name=pkg.name)
++                    if len(res) == 0:
++                        found_pkg = avail.filter(name=pkg.name)
++                        self.missing_pkgs_dnf.append(found_pkg[0])
++                        self.missing_pkgs.append(found_pkg[0].name)
++                        self.changes = True
++                except dnf.exceptions.PackageNotFoundError:
++                    self.missing_pkgs_dnf.append(pkg)
++                    self.missing_pkgs.append(pkg.name)
+                     self.changes = True
+-            except dnf.exceptions.PackageNotFoundError:
+-                self.missing_pkgs_dnf.append(pkg)
+-                self.missing_pkgs.append(pkg.name)
+-                self.changes = True
+-
+-        self.installed = self.pkgobjs_to_list(self.installed_dnf)
+-        self.to_install = self.pkgobjs_to_list(self.to_install_dnf + self.to_downgrade_dnf)
+-
+-        LOG.info("Patch state query returns %s", self.changes)
+-        LOG.info("Installed: %s", self.installed)
+-        LOG.info("To install: %s", self.to_install)
+-        LOG.info("To remove: %s", self.to_remove)
+-        LOG.info("Missing: %s", self.missing_pkgs)
++
++            self.installed = self.pkgobjs_to_list(self.installed_dnf)
++            self.to_install = self.pkgobjs_to_list(self.to_install_dnf + self.to_downgrade_dnf)
++
++            LOG.info("Patch state query returns %s", self.changes)
++            LOG.info("Installed: %s", self.installed)
++            LOG.info("To install: %s", self.to_install)
++            LOG.info("To remove: %s", self.to_remove)
++            LOG.info("Missing: %s", self.missing_pkgs)
+ 
+         return True
+ 
+-- 
+2.7.4
+
