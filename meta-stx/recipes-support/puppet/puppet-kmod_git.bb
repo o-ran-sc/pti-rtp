@@ -26,6 +26,7 @@ S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/camptocamp/puppet-kmod;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
 	file://${PN}/Add-gemspec.patch \
+	file://${PN}/persistent-module-load-poky.patch \
 	"
 
 inherit ruby
