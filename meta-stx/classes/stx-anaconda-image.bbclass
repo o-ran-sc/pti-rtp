@@ -100,7 +100,12 @@ wrl_installer_copy_local_repos() {
 
         cd ${deploy_dir_rpm}
         for pkg in `cat ${REPO_INCLUDE_PKG}`; do
-            cp --parents -vf */${pkg}.rpm ${IMAGE_ROOTFS}/Packages.$prj_name/
+            pkg_file=$(find . -type f -name ${pkg}.rpm)
+            if [ -z "${pkg_file}" ]; then
+                bbwarn "Package ${pkg}.rpm not found, please check if there is anything wrong or just remove it from the list."
+            else
+                cp --parents -vf ${pkg_file} ${IMAGE_ROOTFS}/Packages.$prj_name/
+            fi
         done
         cd -
 
