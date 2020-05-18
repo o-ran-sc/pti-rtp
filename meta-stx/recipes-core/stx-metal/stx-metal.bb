@@ -45,6 +45,7 @@ SRC_URI = "git://opendev.org/starlingx/metal.git;protocol=${PROTOCOL};rev=${SRCR
 		file://0001-Use-LDFLAGS-when-linking-and-pass-flags-down-to-subm.patch \
 		file://0001-stx-metal-remove-argparse-requirement-from-inventory.patch \
 		file://stx-warrior-adjust-paths.patch \
+		file://pmon_send_pulse.patch \
 		"
 
 inherit setuptools systemd
