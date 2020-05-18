@@ -56,8 +56,10 @@ RDEPENDS_${PN} += " \
 
 
 do_install_append() {
-	:
+	install -d -m 755 ${D}/${sysconfdir}/bash_completion.d
+	install -p -D -m 664 tools/cinder.bash_completion ${D}/${sysconfdir}/bash_completion.d/cinder.bash_completion
 }
 
 FILES_${PN} += " \
+	${sysconfdir}/bash_completion.d/ \
 	"
