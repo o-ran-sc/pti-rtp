@@ -55,8 +55,11 @@ RDEPENDS_${PN} += " \
 
 
 do_install_append() {
-	:
+	install -d -m 755 ${D}/${sysconfdir}/bash_completion.d
+	install -p -D -m 664 tools/glance.bash_completion ${D}/${sysconfdir}/bash_completion.d/glance
+
 }
 
 FILES_${PN} += " \
+	${sysconfdir}/bash_completion.d/ \
 	"
