@@ -29,6 +29,7 @@ SRC_URI = " \
 	git://opendev.org/starlingx/config.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
 	file://0001-stx-config-remove-argparse-requirement-from-sysinv.patch \
 	file://0002-cgts-client-handle-exceptions-other-than-CalledProcessErr.patch \
+	file://sriovpf-bring-up.patch \
 	"
 
 DEPENDS = "\
