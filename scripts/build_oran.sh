@@ -21,7 +21,7 @@ SUPPORTED_BSP="intel-x86-64 nxp-lx2xxx"
 WRTEMPLATE_COMMON="feature/oran-host-rt-tune feature/kubernetes feature/self-hosted"
 WRTEMPLATE_X86="feature/hosts-ia feature/kvm feature/dpdk"
 
-SRC_ORAN_BRANCH="master"
+SRC_ORAN_BRANCH="bronze"
 SRC_WRL_BRANCH="WRLINUX_10_18_BASE"
 SRC_WRL_URL="git://github.com/WindRiver-Labs/wrlinux-x.git"
 
