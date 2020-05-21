@@ -24,14 +24,13 @@ PV = "1.0.0"
 
 LICENSE = "Apache-2.0"
 
-# TODO:
-#3b83ef96387f14655fc854ddc3c6bd57  ./collectd-extensions/src/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./influxdb-extensions/src/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./monitor-tools/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./monitor-tools/scripts/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./vm-topology/vm-topology/LICENSE
-
-LIC_FILES_CHKSUM = "file://collectd-extensions/src/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
+LIC_FILES_CHKSUM = " \
+	file://collectd-extensions/src/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://influxdb-extensions/src/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://monitor-tools/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://monitor-tools/scripts/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://vm-topology/vm-topology/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	"
 
 SRC_URI = "git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH}"
 
