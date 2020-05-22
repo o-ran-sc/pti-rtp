@@ -13,6 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+MAJOR = "${@d.getVar('PV').split('.')[0]}"
+MINOR = "${@d.getVar('PV').split('.')[1]}"
+
 PACKAGES += " mtce"
 PACKAGES += " mtce-pmon"
 PACKAGES += " mtce-hwmon"
@@ -54,9 +57,6 @@ do_compile_prepend () {
 }
 
 do_install_prepend () {
-# TODO: 
-# Really need to fix the package;s Makefile
-
 	cd ${S}/mtce/src/
 	install -m 755 -d ${D}/${bindir}
 	install -m 755 -d ${D}/${sbindir}
@@ -187,9 +187,9 @@ do_install_prepend () {
 	
 	# software development files
 	install -m 644 -p -D heartbeat/mtceHbsCluster.h ${D}/${includedir}/mtceHbsCluster.h
-	install -m 755 -p -D public/libamon.so.1 ${D}/${libdir}/
-	#cd ${D}/%{_libdir} ; ln -s libamon.so.$MAJOR libamon.so.$MAJOR.$MINOR
-	#cd ${D}/%{_libdir} ; ln -s libamon.so.$MAJOR libamon.so
+	install -m 755 -p -D public/libamon.so.${MAJOR} ${D}/${libdir}/
+	cd ${D}/${libdir} ; ln -s libamon.so.${MAJOR} libamon.so.${MAJOR}.${MINOR}
+	cd ${D}/${libdir} ; ln -s libamon.so.${MAJOR} libamon.so
 }
 
 SYSTEMD_PACKAGES += " \
@@ -265,7 +265,7 @@ FILES_mtce = " \
 	${sbindir}/fsync \
 	${sbindir}/dmemchk.sh \
 	${libdir}/ocf/resource.d/platform/mtcAgent \
-	${libdir}/libamon.so.1 \
+	${libdir}/libamon${SOLIBS} \
 	${systemd_system_unitdir}/mtcalarm.service \
 	${systemd_system_unitdir}/goenabled.service \
 	${systemd_system_unitdir}/mtclog.service \
