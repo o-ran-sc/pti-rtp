@@ -35,31 +35,38 @@ LICENSE = "GPLv2"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=393a5ca445f6965873eca0259a17f833"
 
-SRC_URI = "https://downloads.sourceforge.net/project/ldapscripts/ldapscripts/ldapscripts-2.0.8/ldapscripts-2.0.8.tgz"
+PROTOCOL = "https"
+BRANCH = "r/stx.3.0"
+SRCNAME = "integ"
+SRCREV = "0bf4b546df8c7fdec8cfc6cb6f71b9609ee54306"
+
+SRC_URI = " \
+	https://downloads.sourceforge.net/project/ldapscripts/ldapscripts/ldapscripts-2.0.8/ldapscripts-2.0.8.tgz \
+	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH};destsuffix=stx-patches;subpath=ldap/ldapscripts/files \
+	"
 SRC_URI[md5sum] = "99a7222215eaea2c8bc790d0437f22ea"
 SRC_URI[sha256sum] = "7db3848501f257a10417c9bcfc0b70b76d0a8093eb993f2354925e156c3419ff"
 
-SRC_URI += " file://sudo-support.patch \
-             file://sudo-delete-support.patch \
-             file://log_timestamp.patch \
-             file://ldap-user-setup-support.patch \
-             file://allow-anonymous-bind-for-ldap-search.patch \
-             file://ldapscripts.conf.cgcs \
-	file://ldapadduser.template.cgcs \
-	file://ldapaddgroup.template.cgcs \
-	file://ldapmoduser.template.cgcs \
-	file://ldapaddsudo.template.cgcs \
-	file://ldapmodsudo.template.cgcs \
-	file://ldapscripts.passwd \
-"
+do_patch_append () {
+    bb.build.exec_func('stx_do_patch', d)
+}
 
-SOURCE1 = "${WORKDIR}/ldapscripts.conf.cgcs"
-SOURCE2 = "${WORKDIR}/ldapadduser.template.cgcs"
-SOURCE3 = "${WORKDIR}/ldapaddgroup.template.cgcs"
-SOURCE4 = "${WORKDIR}/ldapmoduser.template.cgcs"
-SOURCE5 = "${WORKDIR}/ldapaddsudo.template.cgcs"
-SOURCE6 = "${WORKDIR}/ldapmodsudo.template.cgcs"
-SOURCE7 = "${WORKDIR}/ldapscripts.passwd"
+stx_do_patch () {
+	cd ${S}
+	patch -p1 < ${WORKDIR}/stx-patches/sudo-support.patch
+	patch -p1 < ${WORKDIR}/stx-patches/sudo-delete-support.patch
+	patch -p1 < ${WORKDIR}/stx-patches/log_timestamp.patch
+	patch -p1 < ${WORKDIR}/stx-patches/ldap-user-setup-support.patch
+	patch -p1 < ${WORKDIR}/stx-patches/allow-anonymous-bind-for-ldap-search.patch
+}
+
+SOURCE1 = "${WORKDIR}/stx-patches/ldapscripts.conf.cgcs"
+SOURCE2 = "${WORKDIR}/stx-patches/ldapadduser.template.cgcs"
+SOURCE3 = "${WORKDIR}/stx-patches/ldapaddgroup.template.cgcs"
+SOURCE4 = "${WORKDIR}/stx-patches/ldapmoduser.template.cgcs"
+SOURCE5 = "${WORKDIR}/stx-patches/ldapaddsudo.template.cgcs"
+SOURCE6 = "${WORKDIR}/stx-patches/ldapmodsudo.template.cgcs"
+SOURCE7 = "${WORKDIR}/stx-patches/ldapscripts.passwd"
 
 do_configure () {
 	cd ${S}
