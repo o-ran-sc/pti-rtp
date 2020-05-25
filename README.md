@@ -60,3 +60,22 @@ $ ./build_oran.sh -w ${WORKSPACE}
 If all go well, you will get the ISO image in:
 ${WORKSPACE}/prj_wrl1018_oran/tmp-glibc/deploy/images/intel-x86-64/oran-image-inf-host-intel-x86-64.iso
 
+## License
+Copyright (C) 2019 Wind River Systems, Inc.
+
+Source code included in the tree for individual recipes is under the LICENSE
+stated in the associated recipe (.bb file) unless otherwise stated.
+
+The metadata is under the following license unless otherwise stated.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
