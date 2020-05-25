@@ -50,6 +50,10 @@ DISTRO_FEATURES_append = " kvm"
 DISTRO_FEATURES_append = " openstack"
 PREFERRED_PROVIDER_virtual/containerd = "containerd-opencontainers"
 
+# packagegroup-base-zeroconf depends on libnss-mdns which breaks
+# the dns resolution for StarlingX
+DISTRO_FEATURES_remove = "zeroconf"
+
 #Graphics and misc
 #DISTRO_FEATURES_append = " x11 opengl"
 #EXTRA_IMAGE_FEATURES_append = " x11-base"
