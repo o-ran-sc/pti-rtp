@@ -13,21 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-#SUMMARY = "The RPM package management system"
-#DESCRIPTION = "The RPM Package Manager (RPM) is a powerful command line driven \
-#package management system capable of installing, uninstalling, \
-#verifying, querying, and updating software packages. Each software \
-#package consists of an archive of files along with information about \
-#the package like its version, a description, etc."
-
-#SUMMARY_${PN}-dev = "Development files for manipulating RPM packages"
-#DESCRIPTION_${PN}-dev = "This package contains the RPM C library and header files. These \
-#development files will simplify the process of writing programs that \
-#manipulate RPM packages and databases. These files are intended to \
-#simplify the process of creating graphical package managers or any \
-#other tools that need an intimate knowledge of RPM packages in order \
-#to function."
-
 SUMMARY_python2-rpm = "Python bindings for apps which will manupulate RPM packages"
 DESCRIPTION_python2-rpm = "The python2-rpm package contains a module that permits applications \
 written in the Python programming language to use the interface \
@@ -90,49 +75,6 @@ PACKAGECONFIG[imaevm] = "--with-imaevm,,ima-evm-utils"
 
 ASNEEDED = ""
 
-# Direct rpm-native to read configuration from our sysroot, not the one it was compiled in
-# libmagic also has sysroot path contamination, so override it
-
-#WRAPPER_TOOLS = " \
-#   ${bindir}/rpm \
-#   ${bindir}/rpm2archive \
-#   ${bindir}/rpm2cpio \
-#   ${bindir}/rpmbuild \
-#   ${bindir}/rpmdb \
-#   ${bindir}/rpmgraph \
-#   ${bindir}/rpmkeys \
-#   ${bindir}/rpmsign \
-#   ${bindir}/rpmspec \
-#   ${libdir}/rpm/rpmdeps \
-#"
-
-#do_install_append_class-native() {
-#        for tool in ${WRAPPER_TOOLS}; do
-#                create_wrapper ${D}$tool \
-#                        RPM_CONFIGDIR=${STAGING_LIBDIR_NATIVE}/rpm \
-#                        RPM_ETCCONFIGDIR=${STAGING_DIR_NATIVE} \
-#                        MAGIC=${STAGING_DIR_NATIVE}${datadir_native}/misc/magic.mgc \
-#                        RPM_NO_CHROOT_FOR_SCRIPTS=1
-#        done
-#}
-
-#do_install_append_class-nativesdk() {
-#        for tool in ${WRAPPER_TOOLS}; do
-#                create_wrapper ${D}$tool \
-#                        RPM_CONFIGDIR='`dirname $''realpath`'/${@os.path.relpath(d.getVar('libdir'), d.getVar('bindir'))}/rpm \
-#                        RPM_ETCCONFIGDIR='$'{RPM_ETCCONFIGDIR-'`dirname $''realpath`'/${@os.path.relpath(d.getVar('sysconfdir'), d.getVar('bindir'))}/..} \
-#                        MAGIC='`dirname $''realpath`'/${@os.path.relpath(d.getVar('datadir'), d.getVar('bindir'))}/misc/magic.mgc \
-#                        RPM_NO_CHROOT_FOR_SCRIPTS=1
-#        done
-#
-#        rm -rf ${D}/var
-#}
-
-# Rpm's make install creates var/tmp which clashes with base-files packaging
-#do_install_append_class-target() {
-#    rm -rf ${D}/var
-#}
-
 do_compile_append () {
 	cd python
 	cp -r ../../git/python/* ./
@@ -165,13 +107,6 @@ do_install_append () {
 		--install-lib=${PYTHON_SITEPACKAGES_DIR}/ --install-data=${datadir}
 }
 
-#FILES_${PN} += "${libdir}/rpm-plugins/*.so \
-#                ${libdir}/rpm \
-#               "
-
-#FILES_${PN}-dev += "${libdir}/rpm-plugins/*.la \
-#                    "
-
 PACKAGES = "python2-rpm rpm2-dbg"
 PROVIDES = "python2-rpm rpm2-dbg"
 FILES_python2-rpm = " \
@@ -185,11 +120,3 @@ FILES_python2-rpm = " \
 RDEPENDS_${PN} = "bash perl python-core"
 RDEPENDS_python2-rpm = "rpm"
 DEPENDS_python2-rpm = "rpm"
-# PACKAGE_PREPROCESS_FUNCS += "rpm_package_preprocess"
-
-# Do not specify a sysroot when compiling on a target.
-#rpm_package_preprocess () {
-#	sed -i -e 's:--sysroot[^ ]*::g' \
-#	    ${PKGD}/${libdir}/rpm/macros
-#}
-
