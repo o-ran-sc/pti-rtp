@@ -7,7 +7,7 @@ Release-notes
 =============
 
 
-This document provides the release notes for 1.0.0 of RTP.
+This document provides the release notes for 2.0.0 of RTP.
 
 .. contents::
    :depth: 3
@@ -24,12 +24,24 @@ Version history
 | 2019-11-02         | 1.0.0              | Jackie Huang       | Initial version    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2020-06-14         | 2.0.0.             | Xiaohua Zhang      |                    |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
 |                    |                    |                    |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-|                    |                    |                    |                    |
-|                    |                    |                    |                    |
-+--------------------+--------------------+--------------------+--------------------+
+
+Version 2.0.0, 2020-06-14
+-------------------------
+- Second version (Bronze)
+- Based on Yocto version 2.7
+- Linux kernel 5.0 with preempt-rt patches
+- Leverage the StarlingX 3.0
+- Support the AIO (all-in-one) deployment scenario
+- With Software Management, Configuration Management, Host Management, Service Management, and Service Management enabled for IA platform
+- Support the Kubernetes Cluster for ARM platform (verified by NXP LX2160A)
+- With the ansbile bootstrap supported for IA platform
+
 
 Version 1.0.0, 2019-11-02
 -------------------------
@@ -44,4 +56,5 @@ Version 1.0.0, 2019-11-02
   - multus-cni-3.3
   - node-feature-discovery-0.4.0
   - cpu-manager-for-kubernetes-1.3.1
+
 

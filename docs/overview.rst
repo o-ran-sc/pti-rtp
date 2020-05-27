@@ -2,41 +2,55 @@
 .. SPDX-License-Identifier: CC-BY-4.0
 .. Copyright (C) 2019 Wind River Systems, Inc.
 
-RTP Overview 
-============
+RTP Overview (INF)
+==================
 
-This project implements a real time platform to deploy the O-CU and O-DU.
+This project implements a real time platform (rtp) to deploy the O-CU and O-DU.
 
-In O-RAN architecture, the O-DU and O-CU could have different deployed scenarios. 
-In general the performance sensitive parts of the 5G stack require real time platform, 
+In O-RAN architecture, the O-DU and O-CU could have different deployed scenarios.
+The could be container based or VM based, in this release, we only cover the container one. 
+In general the performance sensitive parts of the 5G stack require real time platform,
+especially for O-DU, the L1 and L2 are requiring the real time feature,
 the platform should support the Preemptive Scheduling feature. 
-
-For example, from implementation perspective, the non-virtualized DU, 
-VM based DU and container based DU are requiring a real time host system. 
+ 
 Following requirements are going to address the container based solution:
 
-1.Support Node Feature Discovery
+1.Support the real time kernel
+
+2.Support Node Feature Discovery
 
 
-2.Support CPU Affinity and Isolation
+3.Support CPU Affinity and Isolation
 
 
-3.Support Dynamic HugePages Allocation
+4.Support Dynamic HugePages Allocation
 
 
 And for the network requirements, the following should be supported:
+
 1.Multiple Networking Interface
 
 
 2.High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
 
 
-It will support the X86_64 and ARM.
+In the Bronze release, the following components and services are enabled:
 
+1. Fault Management
 
-This is based on Yocto/OpenEmbedded, so it includes a Yocto/OpenEmbedded compatible
-layers meta-oran and wrapper scripts to pull all required Yocto/OE layers to build
-out the reference platform.
+2. Configuration Management
+
+3. Software Management
+
+4. Host Management
+
+5. Service Management
+
+6. Support the ansible bootstrap to implement the zero touch provisioning
+
+NOTE: These features leverage the StarlingX (www.starlingx.io). And in Bronze release, these features are only avalaible for IA platform.
+
+NOTE: In this release single server solution is supported only. All the functionalities include controller functions, storage functions and compute functions are integrated in the single server.  
 
 About Yocto and OpenEmbedded
 ----------------------------
@@ -50,6 +64,11 @@ is developed by the OpenEmbedded community, which was formally established in 20
 OpenEmbedded is the recommended build system of the Yocto Project, which is a Linux
 Foundation workgroup that assists commercial companies in the development of Linux-based
 systems for embedded products.
+
+
+About StarlingX
+---------------
+StarlingX is a complete cloud infrastructure software stack for the edge used by the most demanding applications in industrial IOT, telecom, video delivery and other ultra-low latency use cases. With deterministic low latency required by edge applications, and tools that make distributed edge manageable, StarlingX provides a container-based infrastructure for edge implementations in scalable solutions that is ready for production now.
 
 Contact info
 ------------
