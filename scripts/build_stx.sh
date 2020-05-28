@@ -37,7 +37,6 @@ SRC_YP_URL="\
     git://git.yoctoproject.org/meta-cloud-services \
     git://git.yoctoproject.org/meta-security \
     git://git.yoctoproject.org/meta-intel \
-    git://git.yoctoproject.org/meta-security \
     git://git.yoctoproject.org/meta-selinux \
     https://github.com/intel-iot-devkit/meta-iot-cloud \
     git://git.openembedded.org/meta-python2 \
