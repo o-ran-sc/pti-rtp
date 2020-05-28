@@ -38,6 +38,7 @@ IMAGE_INSTALL = "\
     ldd \
     rng-tools \
     gptfdisk \
+    pxe-installer-initramfs \
 "
 
 IMAGE_LINGUAS = "en-us en-gb"
