@@ -85,7 +85,6 @@ pkg_postinst_pxe-network-installer() {
 	install -m 0644 $D${datadir}/syslinux/reboot.c32 $D/pxeboot
 	install -m 0644 $D${datadir}/syslinux/pxechn.c32 $D/pxeboot
 	install -m 0644 $D${datadir}/syslinux/pxelinux.0 $D/pxeboot
-	install -m 0644 $D${datadir}/syslinux/gpxelinux.0 $D/pxeboot
 }
 
 FILES_pxe-network-installer = " \
