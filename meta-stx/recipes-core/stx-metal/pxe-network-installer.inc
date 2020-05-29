@@ -66,7 +66,10 @@ do_install_prepend () {
 	install -m 644 efi-centos-pxe-worker_lowlatency-install ${D}/pxeboot/pxelinux.cfg.files/efi-pxe-worker_lowlatency-install-${STX_REL}
 	install -m 644 efi-centos-pxe-smallsystem_lowlatency-install ${D}/pxeboot/pxelinux.cfg.files/efi-pxe-smallsystem_lowlatency-install-${STX_REL}
 
-	sed -i "s/xxxSW_VERSIONxxx/${STX_REL}/g" ${D}/pxeboot/pxelinux.cfg.files/pxe-* ${D}/pxeboot/pxelinux.cfg.files/efi-pxe-* 
+	sed -i -e "s/xxxSW_VERSIONxxx/${STX_REL}/g" \
+	       -e "s/inst.ks/ks/g" \
+	       -e "s/\(xxxAPPEND_OPTIONSxxx\)/LABEL=initrd-install \1/" \
+	       ${D}/pxeboot/pxelinux.cfg.files/pxe-* ${D}/pxeboot/pxelinux.cfg.files/efi-pxe-*
 	
 	# Copy Titanium grub.cfg. It will be used to create ISO on the Controller.
 	install -m 0644 ${S}/bsp-files/grub.cfg ${D}/pxeboot/EFI/ 
