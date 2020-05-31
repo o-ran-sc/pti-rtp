@@ -136,6 +136,7 @@ RDEPENDS_packagegroup-stx-metal = " \
 	mtce-storage \
 	python-inventoryclient \
 	pxe-network-installer \
+	platform-kickstarts \
 	"
 
 RDEPENDS_packagegroup-stx-monitoring = " \
