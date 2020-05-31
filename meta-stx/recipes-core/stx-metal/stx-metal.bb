@@ -71,7 +71,7 @@ require mtce-control.inc
 require mtce-storage.inc
 require python-inventoryclient.inc
 require pxe-network-installer.inc
-# require kickstart.inc
+require platform-kickstarts.inc
 
 do_configure () {
 	:
