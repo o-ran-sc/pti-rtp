@@ -251,8 +251,8 @@ pkg_postinst_ontarget_audit-config() {
 }
 
 pkg_postinst_centos-release-config() {
-        sed 's/@PLATFORM_RELEASE@/${STX_REL}/' $D${datadir}/starlingx/config-files/centos-release-config/files/issue >> $D${sysconfdir}/issue
-        sed 's/@PLATFORM_RELEASE@/${STX_REL}/' $D${datadir}/starlingx/config-files/centos-release-config/files/issue.net >> $D${sysconfdir}/issue.net
+        sed 's/@PLATFORM_RELEASE@/${ORAN_REL}/' $D${datadir}/starlingx/config-files/centos-release-config/files/issue >> $D${sysconfdir}/issue
+        sed 's/@PLATFORM_RELEASE@/${ORAN_REL}/' $D${datadir}/starlingx/config-files/centos-release-config/files/issue.net >> $D${sysconfdir}/issue.net
         chmod 644 $D${sysconfdir}/issue
         chmod 644 $D${sysconfdir}/issue.net
 }
