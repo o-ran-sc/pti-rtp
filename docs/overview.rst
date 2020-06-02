@@ -19,9 +19,7 @@ Following requirements are going to address the container based solution:
 
 2.Support Node Feature Discovery
 
-
 3.Support CPU Affinity and Isolation
-
 
 4.Support Dynamic HugePages Allocation
 
