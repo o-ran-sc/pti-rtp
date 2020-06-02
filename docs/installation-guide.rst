@@ -100,7 +100,7 @@ Software Installation and Deployment
 `````````````````````````````````````````````
 
 2.1 First Login
-```````````````
+'''''''''''''''
 Example:
 
 ::
@@ -112,10 +112,10 @@ Example:
     ping 8.8.8.8 
 
 2.3 Login the server through SSH
-````````````````````````````````
+''''''''''''''''''''''''''''''''
 
 2.4 Prepare the localhost.yml for bootstrap
-```````````````````````````````````````````
+'''''''''''''''''''''''''''''''''''''''''''
 
 Example:
 
@@ -140,7 +140,7 @@ Example:
     docker_https_proxy: https://xxx.xxx.xxx.xxx:8080
 
 2.5 Run the bootstrap
-`````````````````````
+'''''''''''''''''''''
 
 Use the following command:
 
@@ -156,7 +156,7 @@ After the bootstrap successfully finish, it will show as following:
     localhost                  : ok=256  changed=135  unreachable=0    failed=0    skipped=220  rescued=0    ignored=0
 
 2.6 Configure the OAM network
-`````````````````````````````
+'''''''''''''''''''''''''''''
 
 Example:
 
@@ -239,7 +239,7 @@ Example:
   +--------------+--------------------------------------+--------+--------------+
   
 2.7 Configure the NTP server
-````````````````````````````
+''''''''''''''''''''''''''''
 
 Example:
 
@@ -263,7 +263,7 @@ Example:
   +--------------+--------------------------------------+
   
 2.8 Configure the Storage by using the second hard drive as ceph backend
-````````````````````````````````````````````````````````````````````````
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Example:
 
@@ -332,8 +332,9 @@ Example:
   +--------------------------------------+----------+-------+-----------------------+--------------------------------------+-------------------------------------------------------+--------------+------------------+-----------+
   
 2.9 Configure the SR-IOV enabled network
-````````````````````````````````````````
-It need :
+''''''''''''''''''''''''''''''''''''''''
+
+It needs :
   - assign the label of SR-IOV
   - change the CPU policy to static
   - change the hugepage setting
@@ -649,7 +650,7 @@ Example:
   +------------------+--------------------------------------+
   
 2.10 Unlock the server
-``````````````````````
+''''''''''''''''''''''
 
 Example:
 
@@ -745,7 +746,7 @@ Example:
 ````````````````````````````
 
 3.1 After controller-0 is rebooted and up running, download the DPDK
-````````````````````````````````````````````````````````````````````
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ::
 
@@ -770,8 +771,8 @@ Example:
 
   sudo ln -s dpdk-stable-17.11.10 dpdk-stable
 
-3.1 Prepare the yaml file for the network assignment container
-``````````````````````````````````````````````````````````````
+3.2 Prepare the yaml file for the network assignment container
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 The following the exmaple of the yaml file:
 
@@ -804,8 +805,8 @@ The following the exmaple of the yaml file:
   > }'
   > EOF
 
-3.2 Run the network assignent container for the 2 VFs
-`````````````````````````````````````````````````````
+3.3 Run the network assignent container for the 2 VFs
+'''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ::
 
@@ -813,8 +814,8 @@ The following the exmaple of the yaml file:
   networkattachmentdefinition.k8s.cni.cncf.io/sriov-data-dpdk-0 created
   networkattachmentdefinition.k8s.cni.cncf.io/sriov-data-dpdk-1 created
 
-3.3 Prepare the VF container yaml file
-``````````````````````````````````````
+3.4 Prepare the VF container yaml file
+''''''''''''''''''''''''''''''''''''''
 
 ::
 
@@ -884,8 +885,8 @@ The following the exmaple of the yaml file:
   >       path: /usr/src/
   > EOF
 
-3.4 Run the VF container
-````````````````````````
+3.5 Run the VF container
+''''''''''''''''''''''''
 
 Start the VF container.
 
@@ -1020,6 +1021,7 @@ Build the test_pmd application
   Press enter to continue ...
 
 Check the VF PCI information:
+
 ::
 
   root@pod-with-dpdk-vfs-0:/usr/src/dpdk# printenv | grep PCIDEVICE_INTEL_COM
@@ -1027,6 +1029,7 @@ Check the VF PCI information:
   PCIDEVICE_INTEL_COM_PCI_SRIOV_NET_PHYSNET0=0000:05:11.0
 
 Exit from pod back to host to find which VFs are assigned to this pod by check the pci address:
+
 ::
 
   [root@controller-0 sysadmin(keystone_admin)]# ls -l /sys/class/net/ens2f0/device/virtfn*
