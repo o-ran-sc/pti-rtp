@@ -53,7 +53,7 @@ Following minimum hardware requirements must be met for installation of O-RAN IN
 +--------------------+----------------------------------------------------+
 | **# of servers**   | 1                                                  |
 +--------------------+----------------------------------------------------+
-| **CPU**            | 2                                                  |
+| **CPU**            | 4                                                  |
 |                    |                                                    |
 +--------------------+----------------------------------------------------+
 | **RAM**            | 16G                                                |
@@ -741,7 +741,409 @@ Example:
   | vim_progress_status   | None                                            |
   +-----------------------+-------------------------------------------------+
   
+3. Simple use case for sriov
+````````````````````````````
+
+3.1 After controller-0 is rebooted and up running, download the DPDK
+````````````````````````````````````````````````````````````````````
+
+::
+
+  [sysadmin@controller-0 ~(keystone_admin)]$ cd /opt
+  [sysadmin@controller-0 opt(keystone_admin)]$ sudo wget https://fast.dpdk.org/rel/dpdk-17.11.10.tar.xz
+  Password:
+  --2020-06-04 02:35:30--  https://fast.dpdk.org/rel/dpdk-17.11.10.tar.xz
+  Resolving fast.dpdk.org... 151.101.2.49, 151.101.66.49, 151.101.130.49, ...
+  Connecting to fast.dpdk.org|151.101.2.49|:443... connected.
   
+  HTTP request sent, awaiting response... 200 OK
+  Length: 10251680 (9.8M) [application/octet-stream]
+  Saving to: ‘dpdk-17.11.10.tar.xz’
+  
+  dpdk-17.11.10.tar.xz                        100% 
+  [========================================================================================>]   9.78M  
+  1.48MB/s    in 6.8s
+
+  2020-06-04 02:35:40 (1.43 MB/s) - ‘dpdk-17.11.10.tar.xz’ saved [10251680/10251680]
+
+  sudo tar xvf dpdk-17.11.10.tar.xz
+
+  sudo ln -s dpdk-stable-17.11.10 dpdk-stable
+
+3.1 Prepare the yaml file for the network assignment container
+``````````````````````````````````````````````````````````````
+
+The following the exmaple of the yaml file:
+
+::
+
+  [sysadmin@controller-0 sriov(keystone_admin)]$ cat <<EOF > netdef-data-dpdk.yaml
+  > apiVersion: "k8s.cni.cncf.io/v1"
+  > kind: NetworkAttachmentDefinition
+  > metadata:
+  >   name: sriov-data-dpdk-0
+  >   annotations:
+  >     k8s.v1.cni.cncf.io/resourceName: intel.com/pci_sriov_net_physnet0
+  > spec:
+  >   config: '{
+  >   "type": "sriov",
+  >   "name": "sriov-data-dpdk-0"
+  > }'
+  >
+  > ---
+  > apiVersion: "k8s.cni.cncf.io/v1"
+  > kind: NetworkAttachmentDefinition
+  > metadata:
+  >   name: sriov-data-dpdk-1
+  >   annotations:
+  >     k8s.v1.cni.cncf.io/resourceName: intel.com/pci_sriov_net_physnet1
+  > spec:
+  >   config: '{
+  >   "type": "sriov",
+  >   "name": "sriov-data-dpdk-1"
+  > }'
+  > EOF
+
+3.2 Run the network assignent container for the 2 VFs
+`````````````````````````````````````````````````````
+
+::
+
+  [sysadmin@controller-0 sriov(keystone_admin)]$ kubectl create -f netdef-data-dpdk.yaml
+  networkattachmentdefinition.k8s.cni.cncf.io/sriov-data-dpdk-0 created
+  networkattachmentdefinition.k8s.cni.cncf.io/sriov-data-dpdk-1 created
+
+3.3 Prepare the VF container yaml file
+``````````````````````````````````````
+
+::
+
+  [sysadmin@controller-0 sriov(keystone_admin)]$ cat <<EOF > pod-with-dpdk-vfs-0.yaml
+  > apiVersion: v1
+  > kind: Pod
+  metadata:
+  > metadata:
+  >   name: pod-with-dpdk-vfs-0
+  >   annotations:
+  >     k8s.v1.cni.cncf.io/networks: '[
+  >             { "name": "sriov-data-dpdk-0" },
+              { "name": "sriov-data-dpdk-1" }
+  >             { "name": "sriov-data-dpdk-1" }
+  >     ]'
+  > spec:
+  >   restartPolicy: Never
+  >   containers:
+  >   - name: pod-with-dpdk-vfs-0
+  >     image: wrsnfv/ubuntu-dpdk-build:v0.3
+  >     env:
+  >     - name: RTE_SDK
+  >       value: "/usr/src/dpdk"
+  >     command:
+  >     - sleep
+  >     - infinity
+  >     stdin: true
+  >     tty: true
+  >     securityContext:
+  >       privileged: true
+  >       capabilities:
+  >         add:
+  >         - ALL
+  >     resources:
+  >       requests:
+  >         cpu: 4
+  >         memory: 4Gi
+  >         intel.com/pci_sriov_net_physnet0: '1'
+  >         intel.com/pci_sriov_net_physnet1: '1'
+  >       limits:
+  >         cpu: 4
+  >         hugepages-1Gi: 2Gi
+  >         memory: 4Gi
+  >         intel.com/pci_sriov_net_physnet0: '1'
+  >         intel.com/pci_sriov_net_physnet1: '1'
+  >     volumeMounts:
+  >     - mountPath: /mnt/huge-1048576kB
+  >       name: hugepage
+  >     - name: dpdk-volume
+  >       mountPath: /usr/src/dpdk
+  >     - name: lib-volume
+  >       mountPath: /lib/modules
+  >     - name: src-volume
+  >       mountPath: /usr/src/
+  >   volumes:
+  >   - name: hugepage
+  >     emptyDir:
+  >       medium: HugePages
+  >   - name: dpdk-volume
+  >     hostPath:
+  >       path: /opt/dpdk-stable/
+  >   - name: lib-volume
+  >     hostPath:
+  >       path: /lib/modules
+  >   - name: src-volume
+  >     hostPath:
+  >       path: /usr/src/
+  > EOF
+
+3.4 Run the VF container
+````````````````````````
+
+Start the VF container.
+
+::
+
+  [sysadmin@controller-0 sriov(keystone_admin)]$ kubectl create -f pod-with-dpdk-vfs-0.yaml
+  pod/pod-with-dpdk-vfs-0 created
+
+  [sysadmin@controller-0 sriov(keystone_admin)]$ kubectl get pod
+  NAME                  READY   STATUS    RESTARTS   AGE
+  pod-with-dpdk-vfs-0   1/1     Running   0          6m40s
+
+Login the VF container
+
+::
+
+  kubectl exec -it pod-with-dpdk-vfs-0 -- bash
+
+Build the DPDK
+
+::
+
+  cd /lib/modules/5.0.19-rt11-yocto-preempt-rt/build
+
+  root@pod-with-dpdk-vfs-0:/lib/modules/5.0.19-rt11-yocto-preempt-rt/build# make prepare
+    HOSTCC  scripts/basic/fixdep
+    HOSTCC  scripts/kconfig/conf.o
+    HOSTCC  scripts/kconfig/confdata.o
+    HOSTCC  scripts/kconfig/expr.o
+    HOSTCC  scripts/kconfig/symbol.o
+    HOSTCC  scripts/kconfig/preprocess.o
+    HOSTCC  scripts/kconfig/zconf.lex.o
+    HOSTCC  scripts/kconfig/zconf.tab.o
+    HOSTLD  scripts/kconfig/conf
+  scripts/kconfig/conf  --syncconfig Kconfig
+    HOSTCC  arch/x86/tools/relocs_32.o
+    HOSTCC  arch/x86/tools/relocs_64.o
+    HOSTCC  arch/x86/tools/relocs_common.o
+    HOSTLD  arch/x86/tools/relocs
+    HOSTCC  scripts/genksyms/genksyms.o
+    YACC    scripts/genksyms/parse.tab.c
+    HOSTCC  scripts/genksyms/parse.tab.o
+    LEX     scripts/genksyms/lex.lex.c
+    YACC    scripts/genksyms/parse.tab.h
+    HOSTCC  scripts/genksyms/lex.lex.o
+    HOSTLD  scripts/genksyms/genksyms
+    HOSTCC  scripts/bin2c
+    HOSTCC  scripts/kallsyms
+    HOSTCC  scripts/conmakehash
+    HOSTCC  scripts/recordmcount
+    HOSTCC  scripts/sortextable
+    HOSTCC  scripts/asn1_compiler
+    HOSTCC  scripts/sign-file
+    HOSTCC  scripts/extract-cert
+    CC      scripts/mod/empty.o
+    HOSTCC  scripts/mod/mk_elfconfig
+    MKELF   scripts/mod/elfconfig.h
+    HOSTCC  scripts/mod/modpost.o
+    CC      scripts/mod/devicetable-offsets.s
+    UPD     scripts/mod/devicetable-offsets.h
+    HOSTCC  scripts/mod/file2alias.o
+    HOSTCC  scripts/mod/sumversion.o
+    HOSTLD  scripts/mod/modpost
+    CC      kernel/bounds.s
+    CC      arch/x86/kernel/asm-offsets.s
+    CALL    scripts/checksyscalls.sh
+
+Build the test_pmd application
+
+::
+
+  cd $RTE_SDK
+  ./usertools/dpdk-setup.sh
+  Option: 14
+    CC config.o
+    CC iofwd.o
+    CC macfwd.o
+    CC macswap.o
+    CC flowgen.o
+    CC rxonly.o
+    CC txonly.o
+    CC csumonly.o
+    CC icmpecho.o
+    CC tm.o
+    LD testpmd
+    INSTALL-APP testpmd
+    INSTALL-MAP testpmd.map
+  == Build app/proc_info
+    CC main.o
+    LD dpdk-procinfo
+    INSTALL-APP dpdk-procinfo
+    INSTALL-MAP dpdk-procinfo.map
+  == Build app/pdump
+    CC main.o
+    LD dpdk-pdump
+    INSTALL-APP dpdk-pdump
+    INSTALL-MAP dpdk-pdump.map
+  == Build app/test-crypto-perf
+    CC main.o
+    CC cperf_ops.o
+    CC cperf_options_parsing.o
+    CC cperf_test_vectors.o
+    CC cperf_test_throughput.o
+    CC cperf_test_latency.o
+    CC cperf_test_pmd_cyclecount.o
+    CC cperf_test_verify.o
+    CC cperf_test_vector_parsing.o
+    CC cperf_test_common.o
+    LD dpdk-test-crypto-perf
+    INSTALL-APP dpdk-test-crypto-perf
+    INSTALL-MAP dpdk-test-crypto-perf.map
+  == Build app/test-eventdev
+    CC evt_main.o
+    CC evt_options.o
+    CC evt_test.o
+    CC parser.o
+    CC test_order_common.o
+    CC test_order_queue.o
+    CC test_order_atq.o
+    CC test_perf_common.o
+    CC test_perf_queue.o
+    CC test_perf_atq.o
+    LD dpdk-test-eventdev
+    INSTALL-APP dpdk-test-eventdev
+    INSTALL-MAP dpdk-test-eventdev.map
+  Build complete [x86_64-native-linuxapp-gcc]
+  Installation cannot run with T defined and DESTDIR undefined
+  ------------------------------------------------------------------------------
+  RTE_TARGET exported as x86_64-native-linuxapp-gcc
+  ------------------------------------------------------------------------------
+
+  Press enter to continue ...
+
+Check the VF PCI information:
+::
+
+  root@pod-with-dpdk-vfs-0:/usr/src/dpdk# printenv | grep PCIDEVICE_INTEL_COM
+  PCIDEVICE_INTEL_COM_PCI_SRIOV_NET_PHYSNET1=0000:05:11.1
+  PCIDEVICE_INTEL_COM_PCI_SRIOV_NET_PHYSNET0=0000:05:11.0
+
+Exit from pod back to host to find which VFs are assigned to this pod by check the pci address:
+::
+
+  [root@controller-0 sysadmin(keystone_admin)]# ls -l /sys/class/net/ens2f0/device/virtfn*
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f0/device/virtfn0 -> ../0000:05:10.0
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f0/device/virtfn1 -> ../0000:05:10.2
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f0/device/virtfn2 -> ../0000:05:10.4
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f0/device/virtfn3 -> ../0000:05:10.6
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f0/device/virtfn4 -> ../0000:05:11.0
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f0/device/virtfn5 -> ../0000:05:11.2
+
+  [root@controller-0 sysadmin(keystone_admin)]# ls -l /sys/class/net/ens2f1/device/virtfn*
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f1/device/virtfn0 -> ../0000:05:10.1
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f1/device/virtfn1 -> ../0000:05:10.3
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f1/device/virtfn2 -> ../0000:05:10.5
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f1/device/virtfn3 -> ../0000:05:10.7
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f1/device/virtfn4 -> ../0000:05:11.1
+  lrwxrwxrwx 1 root root 0 Jun  4 02:12 /sys/class/net/ens2f1/device/virtfn5 -> ../0000:05:11.3
+
+  [root@controller-0 sysadmin(keystone_admin)]# sudo ip link set ens2f0 vf 4 mac 9e:fd:e6:dd:c1:01
+  [root@controller-0 sysadmin(keystone_admin)]# sudo ip link set ens2f1 vf 4 mac 9e:fd:e6:dd:c1:02
+
+
+Get back to pod and run the test_pmd
+
+::
+
+  cd $RTE_SDK/x86_64-native-linuxapp-gcc/app/
+
+  taskset -p --cpu-list 1
+  pid 1's current affinity list: 2,3,18,19
+
+  ./testpmd --socket-mem 1024,1024 -l 2,3 -w 0000:05:11.0 -w 0000:05:11.1 --file-prefix=testpmd_ -- --auto- 
+  start --tx-first --stats-period 1 --disable-hw-vlan --eth-peer=0,"9e:fd:e6:dd:c1:02" --eth- 
+  peer=1,"9e:fd:e6:dd:c1:01"
+  EAL: Detected 32 lcore(s)
+  EAL: No free hugepages reported in hugepages-2048kB
+  EAL: Probing VFIO support...
+  EAL: VFIO support initialized
+  EAL: PCI device 0000:05:11.0 on NUMA socket 0
+  EAL:   probe driver: 8086:10ed net_ixgbe_vf
+  EAL:   using IOMMU type 1 (Type 1)
+  EAL: PCI device 0000:05:11.1 on NUMA socket 0
+  EAL:   probe driver: 8086:10ed net_ixgbe_vf
+  Auto-start selected
+  Ports to start sending a burst of packets first
+  Warning: lsc_interrupt needs to be off when  using tx_first. Disabling.
+  USER1: create a new mbuf pool <mbuf_pool_socket_0>: n=155456, size=2176, socket=0
+  Configuring Port 0 (socket 0)
+  Port 0: 9E:FD:E6:DD:C1:01
+  Configuring Port 1 (socket 0)
+  Port 1: 9E:FD:E6:DD:C1:02
+  Checking link statuses...
+  Port0 Link Up. speed 10000 Mbps- full-duplex
+  Port1 Link Up. speed 10000 Mbps- full-duplex
+  Done
+  No commandline core given, start packet forwarding
+  io packet forwarding - ports=2 - cores=1 - streams=2 - NUMA support enabled, MP over anonymous pages 
+  disabled
+  Logical Core 3 (socket 0) forwards packets on 2 streams:
+    RX P=0/Q=0 (socket 0) -> TX P=1/Q=0 (socket 0) peer=9E:FD:E6:DD:C1:01
+    RX P=1/Q=0 (socket 0) -> TX P=0/Q=0 (socket 0) peer=9E:FD:E6:DD:C1:02
+
+    io packet forwarding packets/burst=32
+    nb forwarding cores=1 - nb forwarding ports=2
+    port 0:
+    CRC stripping enabled
+    RX queues=1 - RX desc=128 - RX free threshold=32
+    RX threshold registers: pthresh=8 hthresh=8  wthresh=0
+    TX queues=1 - TX desc=512 - TX free threshold=32
+    TX threshold registers: pthresh=32 hthresh=0  wthresh=0
+    TX RS bit threshold=32 - TXQ flags=0xf01
+    port 1:
+    CRC stripping enabled
+    RX queues=1 - RX desc=128 - RX free threshold=32
+    RX threshold registers: pthresh=8 hthresh=8  wthresh=0
+    TX queues=1 - TX desc=512 - TX free threshold=32
+    TX threshold registers: pthresh=32 hthresh=0  wthresh=0
+    TX RS bit threshold=32 - TXQ flags=0xf01
+
+  Port statistics ====================================
+    ######################## NIC statistics for port 0  ########################
+    RX-packets: 56         RX-missed: 0          RX-bytes:  4096
+    RX-errors: 0
+    RX-nombuf:  0
+    TX-packets: 64         TX-errors: 0          TX-bytes:  4096
+
+    Throughput (since last show)
+    Rx-pps:            0
+    Tx-pps:            0
+    ############################################################################
+
+    ######################## NIC statistics for port 1  ########################
+    RX-packets: 432        RX-missed: 0          RX-bytes:  27712
+    RX-errors: 0
+    RX-nombuf:  0
+    TX-packets: 461        TX-errors: 0          TX-bytes:  30080
+
+    Throughput (since last show)
+    Rx-pps:            0
+    Tx-pps:            0
+    ############################################################################
+
+  Port statistics ====================================
+    ######################## NIC statistics for port 0  ########################
+    RX-packets: 14124641   RX-missed: 0          RX-bytes:  903977344
+    RX-errors: 0
+    RX-nombuf:  0
+    TX-packets: 14170205   TX-errors: 0          TX-bytes:  906893376
+
+    Throughput (since last show)
+    Rx-pps:      7068409
+    Tx-pps:      7091206
+    ############################################################################
+
+
+
+
   
   
 References
