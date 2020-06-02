@@ -48,6 +48,7 @@ SRC_URI = "git://opendev.org/starlingx/metal.git;protocol=${PROTOCOL};rev=${SRCR
 	file://0008-stx-warrior-adjust-paths.patch \
 	file://0009-pmon_send_pulse.patch \
 	file://0010-libamon-add-shared-option.patch \
+	file://0011-kickstarts-adjustment-fnd-fixes-or-poky-stx.patch \
 	"
 
 inherit setuptools systemd
