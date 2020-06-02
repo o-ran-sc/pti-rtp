@@ -38,129 +38,129 @@ In the Bronze release, the following components and services are enabled:
 
 1. Fault Management
 
-   Framework for infrastructure services to raise and persist alarm and event data.
+   - Framework for infrastructure services to raise and persist alarm and event data.
    
-    Set, clear and query customer alarms
+     - Set, clear and query customer alarms
 
-    Generate customer logs for significant events
+     - Generate customer logs for significant events
 
-   Maintains an Active Alarm List
+   - Maintains an Active Alarm List
 
-   Provides REST API to query alarms and events, also available through SNMP traps
+   - Provides REST API to query alarms and events, also available through SNMP traps
 
-   Support for alarm suppression
+   - Support for alarm suppression
 
-   Operator alarms
+   - Operator alarms
 
-    On platform nodes and resources
+     - On platform nodes and resources
 
-    On hosted virtual resources
+     - On hosted virtual resources
 
-   Operator logs - Event List
+   - Operator logs - Event List
 
-    Logging of sets/clears of alarms
+     - Logging of sets/clears of alarms
 
-    Related to platform nodes and resources
+     - Related to platform nodes and resources
     
-    Related to hosted virtual resources
+     - Related to hosted virtual resources
 
 2. Configuration Management
 
-   Manages Installation and Commissioning
+   - Manages Installation and Commissioning
    
-    Auto-discover of new nodes
+     - Auto-discover of new nodes
 
-    Full Infrastructure management
+     - Full Infrastructure management
 
-    Manage installation parameters (i.e. console, root disks)
+     - Manage installation parameters (i.e. console, root disks)
 
-   Nodal Configuration
+   - Nodal Configuration
 
-    Node role, role profiles
+     - Node role, role profiles
 
-    Core, memory (including huge page) assignments
+     - Core, memory (including huge page) assignments
 
-    Network Interfaces and storage assignments
+     - Network Interfaces and storage assignments
 
-   Hardware Discovery
+   - Hardware Discovery
 
-    CPU/cores, SMT, processors, memory, huge pages
+     - CPU/cores, SMT, processors, memory, huge pages
 
-    Storage, ports
+     - Storage, ports
 
-    GPUs, storage, Crypto/compression H/W
+     - GPUs, storage, Crypto/compression H/W
 
 3. Software Management
 
-   Manages Installation and Commissioning
+   - Manages Installation and Commissioning
 
-    Auto-discover of new nodes
+     - Auto-discover of new nodes
 
-    Full Infrastructure management
+     - Full Infrastructure management
 
-    Manage installation parameters (i.e. console, root disks)
+     - Manage installation parameters (i.e. console, root disks)
 
-   Nodal Configuration
+   - Nodal Configuration
 
-    Node role, role profiles
+     - Node role, role profiles
 
-    Core, memory (including huge page) assignments
+     - Core, memory (including huge page) assignments
 
-    Network Interfaces and storage assignments
+     - Network Interfaces and storage assignments
 
-   Hardware Discovery
+   - Hardware Discovery
 
-    CPU/cores, SMT, processors, memory, huge pages
+     - CPU/cores, SMT, processors, memory, huge pages
 
-    Storage, ports
+     - Storage, ports
 
-    GPUs, storage, Crypto/compression H/W
+     - GPUs, storage, Crypto/compression H/W
 4. Host Management
 
-   Full life-cycle and availability management of the physical hosts
+   - Full life-cycle and availability management of the physical hosts
 
-   Detects and automatically handles host failures and initiates recovery
+   - Detects and automatically handles host failures and initiates recovery
 
-   Monitoring and fault reporting for:
+   - Monitoring and fault reporting for:
 
-    Cluster connectivity
+     - Cluster connectivity
 
-    Critical process failures
+     - Critical process failures
 
-    Resource utilization thresholds, interface states
+     - Resource utilization thresholds, interface states
 
-    H/W fault / sensors, host watchdog
+     - H/W fault / sensors, host watchdog
 
-    Activity progress reporting
+     - Activity progress reporting
 
-   Interfaces with board management (BMC)
+   - Interfaces with board management (BMC)
 
-    For out of band reset
+     - For out of band reset
 
-    Power-on/off
+     - Power-on/off
 
-    H/W sensor monitoring
+     - H/W sensor monitoring
 5. Service Management
 
-   Manages high availability of critical infrastructure and cluster services
+   - Manages high availability of critical infrastructure and cluster services
 
-    Supports many redundancy models: N, or N+M
+     - Supports many redundancy models: N, or N+M
 
-    Active or passive monitoring of services
+     - Active or passive monitoring of services
 
-    Allows for specifying the impact of a service failure and escalation policy
+     - Allows for specifying the impact of a service failure and escalation policy
 
-    Automatically recovers failed services
+     - Automatically recovers failed services
 
-   Uses multiple messaging paths to avoid split-brain communication failures
+   - Uses multiple messaging paths to avoid split-brain communication failures
 
-    Up to 3 independent communication paths
+     - Up to 3 independent communication paths
 
-    LAG can also be configured for multi-link protection of each path
+     - LAG can also be configured for multi-link protection of each path
 
-    Messages are authenticated using HMAC
+     - Messages are authenticated using HMAC
 
-    SHA-512 if configured / enabled on an interface by-interface basis
+     - SHA-512 if configured / enabled on an interface by-interface basis
 6. Support the ansible bootstrap to implement the zero touch provisioning
 
 Enable the ansible configuration functions for infrastructure itself including the image installation and service configuration.
@@ -192,4 +192,5 @@ Contact info
 ------------
 If you need support or add new features/components, please feel free to contact the following:
 - Jackie Huang <jackie.huang@windriver.com>
+
 - Xiaohua Zhang <xiaohua.zhang@windriver.com> 
