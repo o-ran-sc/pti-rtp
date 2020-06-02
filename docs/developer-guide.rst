@@ -24,11 +24,9 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
 .. _`OpenEmbedded wiki`: http://www.openembedded.org/wiki/Main_Page
 
 
-Processes
----------
 
 1. Prerequisite for build environment
-`````````````````````````````````````
+-------------------------------------
 
 * Your host need to meet the requirements for Yocto, please refer to:
 
@@ -64,7 +62,7 @@ Processes
 
 
 2. Use wrapper script build_inf.sh to setup build env and build the INF AIO x86 image
-`````````````````````````````````````````````````````````````````````````````````````
+-------------------------------------------------------------------------------------
 
 ::
 
@@ -80,7 +78,7 @@ If all go well, you will get the ISO image in:
 ${WORKSPACE}/prj_oran_inf_anaconda/tmp-glibc/deploy/images/intel-corei7-64/inf-image-aio-installer-intel-corei7-64.iso
 
 3. (Optional) Use wrapper script build_oran.sh to setup build env and build the lagecy x86 image
-````````````````````````````````````````````````````````````````````````````````````````````````
+------------------------------------------------------------------------------------------------
 
 Note: The lagecy image is the Kubernetes Cluster image as the same one in Amber (1.0) release.
 
@@ -98,7 +96,8 @@ If all go well, you will get the ISO image in:
 ${WORKSPACE}/prj_oran_inf/tmp-glibc/deploy/images/intel-x86-64/oran-image-inf-host-intel-x86-64.iso
 
 4. (Optional) Use wrapper script build_oran.sh to setup build env and build the ARM Kubernetes Cluster image
-``````````````````````````````````````````````````````````````````````````````````````````````````````````````
+------------------------------------------------------------------------------------------------------------
+
 Note:
   * the ARM Kubernetes Cluster image only supports the BSP nxp-lx2xxx and is verified with the board NXP LX2160ARDB
   * The ISO image is supported yet.

@@ -15,18 +15,20 @@ the platform should support the Preemptive Scheduling feature.
  
 Following requirements are going to address the container based solution:
 
+::
+
 1.Support the real time kernel
 
 2.Support Node Feature Discovery
 
-
 3.Support CPU Affinity and Isolation
-
 
 4.Support Dynamic HugePages Allocation
 
 
 And for the network requirements, the following should be supported:
+
+::
 
 1.Multiple Networking Interface
 
