@@ -51,20 +51,20 @@ IMAGE_ROOTFS_EXTRA_SPACE =" + 102400"
 
 inherit core-image stx-anaconda-image
 
-KICKSTART_FILE ?= "${LAYER_PATH_meta-stx}/conf/distro/files/ks/poky_stx_aio_ks.cfg"
+DEFAULT_KICKSTART ?= "smallsystem_lowlatency_ks.cfg"
+STX_KICKSTART_DIR ?= "${INSTALLER_TARGET_BUILD}/tmp/deploy/images/${MACHINE}/stx-kickstarts/"
+KICKSTART_FILE ?= "${STX_KICKSTART_DIR}/${DEFAULT_KICKSTART}"
 
-# Only the ones prefix with poky_stx_ are tested and working
 KICKSTART_FILE_EXTRA ?= " \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/poky_stx_aio_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/aio_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/aio_lowlatency_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/controller_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/net_controller_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/net_smallsystem_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/net_smallsystem_lowlatency_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/net_storage_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/net_worker_ks.cfg \
-    ${LAYER_PATH_meta-stx}/conf/distro/files/ks/net_worker_lowlatency_ks.cfg \
+    ${STX_KICKSTART_DIR}/smallsystem_ks.cfg \
+    ${STX_KICKSTART_DIR}/smallsystem_lowlatency_ks.cfg \
+    ${STX_KICKSTART_DIR}/controller_ks.cfg \
+    ${STX_KICKSTART_DIR}/net_controller_ks.cfg \
+    ${STX_KICKSTART_DIR}/net_smallsystem_ks.cfg \
+    ${STX_KICKSTART_DIR}/net_smallsystem_lowlatency_ks.cfg \
+    ${STX_KICKSTART_DIR}/net_storage_ks.cfg \
+    ${STX_KICKSTART_DIR}/net_worker_ks.cfg \
+    ${STX_KICKSTART_DIR}/net_worker_lowlatency_ks.cfg \
 "
 
 SYSLINUX_CFG_LIVE = "${LAYER_PATH_meta-stx}/conf/distro/files/syslinux.cfg"
