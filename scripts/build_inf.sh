@@ -90,8 +90,8 @@ where:
     -r whether to inherit rm_work (default is Yes)
     -s whether to skip update the repo if already exists
 examples:
-./build_stx.sh
-./build_stx.sh -w workspace_1234 -r no -e /path/to/extra_local.conf
+$0
+$0 -w workspace_1234 -r no -e /path/to/extra_local.conf
 ENDHELP
 }
 
@@ -237,7 +237,7 @@ fi
 SRC_LAYER_DIR=${WORKSPACE}/src_layers
 SRC_ORAN_DIR=${SRC_LAYER_DIR}/oran
 PRJ_BUILD_DIR=${WORKSPACE}/prj_oran_stx
-PRJ_BUILD_DIR_ANACONDA=${WORKSPACE}/prj_oran_stx_anaconda
+PRJ_BUILD_DIR_ANACONDA=${WORKSPACE}/prj_oran_inf_anaconda
 PRJ_SHARED_DIR=${WORKSPACE}/prj_shared
 PRJ_SHARED_DL_DIR=${WORKSPACE}/prj_shared/downloads
 PRJ_SHARED_SS_DIR=${WORKSPACE}/prj_shared/sstate-cache
@@ -245,8 +245,10 @@ SRC_META_PATCHES=${SRC_ORAN_DIR}/rtp/scripts/meta-patches/src_stx
 SRC_CONFIGS=${SRC_ORAN_DIR}/rtp/scripts/configs
 IMG_STX=stx-image-aio
 IMG_ANACONDA=stx-image-aio-installer
+IMG_INF=inf-image-aio-installer
 ISO_STX=${PRJ_BUILD_DIR}/tmp/deploy/images/${BSP}/${IMG_STX}-${BSP}.iso
 ISO_ANACONDA=${PRJ_BUILD_DIR_ANACONDA}/tmp-glibc/deploy/images/${BSP}/${IMG_ANACONDA}-${BSP}.iso
+ISO_INF=${PRJ_BUILD_DIR_ANACONDA}/tmp-glibc/deploy/images/${BSP}/${IMG_INF}-${BSP}.iso
 
 prepare_workspace () {
     msg_step="Create workspace for the build"
@@ -489,9 +491,13 @@ build_anaconda_image () {
     echo_cmd "Build the ${IMG_ANACONDA} image"
     bitbake ${DRYRUN} ${IMG_ANACONDA} 2>&1|tee logs/bitbake_${IMG_ANACONDA}_${TIMESTAMP}.log
 
+    if [ -z "${DRYRUN}" ]; then
+        cp -Pf ${ISO_ANACONDA} ${ISO_INF}
+    fi
+
     echo_step_end
 
-    echo_info "Build succeeded, you can get the image in ${ISO_ANACONDA}"
+    echo_info "Build succeeded, you can get the image in ${ISO_INF}"
 }
 
 #########################################################################
