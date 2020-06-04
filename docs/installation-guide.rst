@@ -28,7 +28,7 @@ Version history
 | 2019-11-02         | 1.0.0              | Jackie Huang       | Initail version    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-|                    |                    |                    |                    |
+| 2020-06-03         | 2.0.0 (Bronze)     | Xiaohua Zhang      | Bronze version     |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 |                    |                    |                    |                    |
@@ -56,13 +56,13 @@ Following minimum hardware requirements must be met for installation of O-RAN IN
 | **CPU**            | 2                                                  |
 |                    |                                                    |
 +--------------------+----------------------------------------------------+
-| **RAM**            | 4G                                                 |
+| **RAM**            | 16G                                                |
 |                    |                                                    |
 +--------------------+----------------------------------------------------+
-| **Disk**           | 20G                                                |
+| **Disk**           | 500G * 2                                           |
 |                    |                                                    |
 +--------------------+----------------------------------------------------+
-| **NICs**           | 1                                                  |
+| **NICs**           | 2                                                  |
 |                    |                                                    |
 +--------------------+----------------------------------------------------+
 
@@ -75,7 +75,7 @@ Software Installation and Deployment
 ````````````````````````````````````````````
 
 - Please see the README.md file for how to build the image.
-- The Image is a live ISO image with CLI installer: oran-image-inf-host-intel-x86-64.iso
+- The Image is a live ISO image with CLI installer: inf-image-aio-installer-intel-corei7-64.iso
 
 1.1 Burn the image to the USB device
 ''''''''''''''''''''''''''''''''''''
@@ -84,576 +84,670 @@ Software Installation and Deployment
 
 ::
 
-  $ sudo dd if=/path/to/oran-image-inf-host-intel-x86-64.iso of=/dev/sdX bs=1M
+  $ sudo dd if=/path/to/inf-image-aio-installer-intel-corei7-64.iso of=/dev/sdX bs=1M
 
-1.2 Insert the USB device in the target to be booted.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''
+1.2 Install the server
+''''''''''''''''''''''
 
-1.3 Reboot the target from the USB device.
-''''''''''''''''''''''''''''''''''''''''''
+- Reboot the target from the USB device.
 
-1.4 Select "Graphics console install" or "Serial console install" and press ENTER
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+- Select "Graphics console install" or "Serial console install" and press ENTER
 
-1.5 Select the hard disk and press ENTER
-''''''''''''''''''''''''''''''''''''''''
+- Remove the USB device and press ENTER to reboot
 
-Notes: In this installer, you can only select which hard disk to install, the whole disk will be used and partitioned automatically.
 
-- e.g. insert "sda" and press ENTER
+2. Configuration and initialize the bootstrap
+`````````````````````````````````````````````
 
-1.6 Remove the USB device and press ENTER to reboot
-'''''''''''''''''''''''''''''''''''''''''''''''''''
-
-2. Configuration for better real time performance
-`````````````````````````````````````````````````
-
-Notes: Some of the tuning options are machine specific or depend on use cases,
-like the hugepages, isolcpus, rcu_nocbs, kthread_cpus, irqaffinity, nohz_full and
-so on, please do not just copy and past.
-
-- Edit the grub.cfg with the following example tuning options
+2.1 First Login
+```````````````
+Example:
 
 ::
 
-  # Notes: the grub.cfg file path is different for legacy and UEFI mode
-  #   For legacy mode: /boot/grub/grub.cfg
-  #   For UEFI mode: /boot/EFI/BOOT/grub.cfg
+    ifconfig eno1 128.224.180.14/24 up
 
-  grub_cfg="/boot/grub/grub.cfg"
-  #grub_cfg="/boot/EFI/BOOT/grub.cfg"
+    ip route add default via 128.224.180.1
 
-  # In this example, 1-16 cores are isolated for real time processes
-  root@intel-x86-64:~# rt_tuning="crashkernel=auto biosdevname=0 iommu=pt usbcore.autosuspend=-1 nmi_watchdog=0 softlockup_panic=0 intel_iommu=on cgroup_enable=memory skew_tick=1 hugepagesz=1G hugepages=4 default_hugepagesz=1G isolcpus=1-16 rcu_nocbs=1-16 kthread_cpus=0 irqaffinity=0 nohz=on nohz_full=1-16 intel_idle.max_cstate=0 processor.max_cstate=1 intel_pstate=disable nosoftlockup idle=poll mce=ignore_ce"
+    ping 8.8.8.8 
 
-  # optional to add the console setting
-  root@intel-x86-64:~# console="console=ttyS0,115200"
+2.3 Login the server through SSH
+````````````````````````````````
 
-  root@intel-x86-64:~# sed -i "/linux / s/$/ $console $rt_tuning/" $grub_cfg
+2.4 Prepare the localhost.yml for bootstrap
+```````````````````````````````````````````
 
-
-- Reboot the target
+Example:
 
 ::
 
-  root@intel-x86-64:~# reboot
+    system_mode: simplex
 
-3. Kubernetes cluster and plugins deployment instructions (All-in-one)
-``````````````````````````````````````````````````````````````````````
-This instruction will show you how to deploy kubernetes cluster and plugins in an all-in-one example scenario after the above installation.
+    external_oam_subnet: 128.224.180.0/24
 
-3.1 Change the hostname (Optional)
-''''''''''''''''''''''''''''''''''
+    external_oam_gateway_address: 128.224.180.1
 
-::
+    external_oam_floating_address: 128.224.180.14
 
-  # Assuming the hostname is oran-aio, ip address is <aio_host_ip>
-  # please DO NOT copy and paste, use your actaul hostname and ip address
-  root@intel-x86-64:~# echo oran-aio > /etc/hostname
-  root@intel-x86-64:~# export AIO_HOST_IP="<aio_host_ip>"
-  root@intel-x86-64:~# echo "$AIO_HOST_IP oran-aio" >> /etc/hosts
+    admin_username: admin
 
-3.2 Disable swap for Kubernetes
-'''''''''''''''''''''''''''''''
+    admin_password: Wind123!
 
-::
+    ansible_become_pass: Wind123!
 
-  root@intel-x86-64:~# sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-  root@intel-x86-64:~# systemctl mask dev-sda4.swap
+    docker_http_proxy: http://xxx.xxx.xxx.xxx:8080
 
-3.3 Set the proxy for docker (Optional)
-'''''''''''''''''''''''''''''''''''''''
+    docker_https_proxy: https://xxx.xxx.xxx.xxx:8080
 
-- If you are under a firewall, you may need to set the proxy for docker to pull images
+2.5 Run the bootstrap
+`````````````````````
+
+Use the following command:
 
 ::
 
-  root@intel-x86-64:~# HTTP_PROXY="http://<your_proxy_server_ip>:<port>"
-  root@intel-x86-64:~# mkdir /etc/systemd/system/docker.service.d/
-  root@intel-x86-64:~# cat << EOF > /etc/systemd/system/docker.service.d/http-proxy.conf
-  [Service]
-  Environment="HTTP_PROXY=$HTTP_PROXY" "NO_PROXY=localhost,127.0.0.1,localaddress,.localdomain.com,$AIO_HOST_IP,10.244.0.0/16"
-  EOF
+    ansible-playbook /usr/share/ansible/stx-ansible/playbooks/bootstrap.yml -vvv
 
-3.4 Reboot the target
-'''''''''''''''''''''
+After the bootstrap successfully finish, it will show as following:
 
 ::
 
-  root@intel-x86-64:~# reboot
+    PLAY RECAP ******************************************************************************************************************************************
+    localhost                  : ok=256  changed=135  unreachable=0    failed=0    skipped=220  rescued=0    ignored=0
 
-3.5 Initialize kubernetes cluster master
-''''''''''''''''''''''''''''''''''''''''
+2.6 Configure the OAM network
+`````````````````````````````
 
-::
-
-  root@oran-aio:~# kubeadm init --kubernetes-version v1.16.2 --pod-network-cidr=10.244.0.0/16
-  root@oran-aio:~# mkdir -p $HOME/.kube
-  root@oran-aio:~# cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  root@oran-aio:~# chown $(id -u):$(id -g) $HOME/.kube/config
-
-3.6 Make the master also works as a worker node
-'''''''''''''''''''''''''''''''''''''''''''''''
+Example:
 
 ::
 
-  root@oran-aio:~# kubectl taint nodes oran-aio node-role.kubernetes.io/master-
+  controller-0:~$ source /etc/platform/openrc
 
-3.7 Deploy flannel
-''''''''''''''''''
+  [sysadmin@controller-0 ~(keystone_admin)]$ OAM_IF=eno1
 
-::
-
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/flannel/kube-flannel.yml
-
-Check that the aio node is ready after flannel is successfully deployed and running
-
-::
-
-  root@oran-aio:~# kubectl get pods --all-namespaces |grep flannel
-  kube-system   kube-flannel-ds-amd64-bwt52        1/1     Running   0          3m24s
-
-  root@oran-aio:~# kubectl get nodes
-  NAME       STATUS   ROLES    AGE     VERSION
-  oran-aio   Ready    master   3m17s   v1.15.2-dirty
-
-3.8 Deploy kubernetes dashboard
-'''''''''''''''''''''''''''''''
-
-Deploy kubernetes dashboard
-
-::
-
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/kubernetes-dashboard/kubernetes-dashboard-admin.rbac.yaml
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/kubernetes-dashboard/kubernetes-dashboard.yaml
-
-Verify that the dashboard is up and running
-
-::
-
-  # Check the pod for dashboard
-  root@oran-aio:~# kubectl get pods --all-namespaces |grep dashboard
-  kube-system   kubernetes-dashboard-5b67bf4d5f-ghg4f   1/1     Running   0          64s
-
-Access the dashboard UI in a web browser with the https url, port number is 30443.
-
-- For detail usage, please refer to `Doc for dashboard`_
-
-.. _`Doc for dashboard`: https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
-
-3.9 Deploy Multus-CNI
-'''''''''''''''''''''
-
-::
-
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/multus-cni/multus-daemonset.yml
-
-Verify that the multus-cni is up and running
-
-::
-
-  root@oran-aio:~# kubectl get pods --all-namespaces | grep -i multus
-  kube-system   kube-multus-ds-amd64-hjpk4              1/1     Running   0          7m34s
-
-- For further validating, please refer to the `Multus-CNI quick start`_
-
-.. _`Multus-CNI quick start`: https://github.com/intel/multus-cni/blob/master/doc/quickstart.md
-
-3.10 Deploy NFD (node-feature-discovery)
-''''''''''''''''''''''''''''''''''''''''
-
-::
-
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/node-feature-discovery/nfd-master.yaml
-  root@oran-aio:~# kubectl apply -f /etc/kubernetes/plugins/node-feature-discovery/nfd-worker-daemonset.yaml
-
-Verify that nfd-master and nfd-worker are up and running
-
-::
-
-  root@oran-aio:~# kubectl get pods --all-namespaces |grep nfd
-  default       nfd-master-7v75k                        1/1     Running   0          91s
-  default       nfd-worker-xn797                        1/1     Running   0          24s
-
-Verify that the node is labeled by nfd:
-
-::
-
-  root@oran-aio:~# kubectl describe nodes|grep feature.node.kubernetes
-                     feature.node.kubernetes.io/cpu-cpuid.AESNI=true
-                     feature.node.kubernetes.io/cpu-cpuid.AVX=true
-                     feature.node.kubernetes.io/cpu-cpuid.AVX2=true
-                     (...snip...)
-
-3.11 Deploy SRIOV CNI
-'''''''''''''''''''''
-
-Provision VF drivers and devices
-
-
-Enumerate  PF Devices
-
-::
-
-  root@oran-aio:~/dpdk-18.08/usertools# lspci -D |grep 82599
-  0000:04:00.0 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
-  0000:04:00.1 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
-
-Correlate the PF device to eth interfaces and bring them up
-
-::
-
-  root@oran-aio:~# ethtool -i eth4  |grep bus-info
-  bus-info: 0000:04:00.0
-  root@oran-aio:~# ethtool -i eth5  |grep bus-info
-  bus-info: 0000:04:00.1
-  root@oran-aio:~# ifconfig eth4 up
-  root@oran-aio:~# ifconfig eth5 up
-
-Load VF Driver modules
-
-::
-
-  root@oran-aio:~# modprobe ixgbevf
-  root@oran-aio:~# modprobe uio
-  root@oran-aio:~# modprobe igb-uio
-  root@oran-aio:~# modprobe vfio
-  root@oran-aio:~# modprobe vfio-pci
-  root@oran-aio:~# lsmod |grep ixgbevf
-  ixgbevf                61440  0
-  root@oran-aio:~# lsmod |grep vfio
-  vfio_pci               40960  0
-  vfio_virqfd            16384  1 vfio_pci
-  vfio_iommu_type1       24576  0
-  vfio                   24576  2 vfio_iommu_type1,vfio_pci
-  irqbypass              16384  2 vfio_pci,kvm
-
-
-Bind VF drivers to VF devices
-
-::
-
-  root@oran-aio:~# cat /sys/bus/pci/devices/0000\:04\:00.0/sriov_totalvfs
-  root@oran-aio:~# cat /sys/bus/pci/devices/0000\:04\:00.1/sriov_totalvfs
-  root@oran-aio:~# cat /sys/bus/pci/devices/0000\:04\:00.0/sriov_numvfs
-  root@oran-aio:~# cat /sys/bus/pci/devices/0000\:04\:00.1/sriov_numvfs
-  root@oran-aio:~# echo 8 > /sys/bus/pci/devices/0000\:04\:00.0/sriov_numvfs
-  root@oran-aio:~# echo 8 > /sys/bus/pci/devices/0000\:04\:00.1/sriov_numvfs
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-if-modify controller-0 $OAM_IF -c platform
+    
+  +-----------------+--------------------------------------+
+  | Property        | Value                                |
+  +-----------------+--------------------------------------+
+  | ifname          | eno1                                 |
+  +-----------------+--------------------------------------+
+  | iftype          | ethernet                             |
+  +-----------------+--------------------------------------+
+  | ports           | [u'eno1']                            |
+  +-----------------+--------------------------------------+
+  | imac            | 3c:a8:2a:1d:31:d0                    |
+  +-----------------+--------------------------------------+
+  | imtu            | 1500                                 |
+  +-----------------+--------------------------------------+
+  | ifclass         | platform                             |
+  +-----------------+--------------------------------------+
+  | aemode          | None                                 |
+  +-----------------+--------------------------------------+
+  | schedpolicy     | None                                 |
+  +-----------------+--------------------------------------+
+  | txhashpolicy    | None                                 |
+  +-----------------+--------------------------------------+
+  | uuid            | 95a32d13-01fc-43d2-90ab-801970fb3859 |
+  +-----------------+--------------------------------------+
+  | ihost_uuid      | 08c23843-afa4-4b80-a285-be126365276e |
+  +-----------------+--------------------------------------+
+  | vlan_id         | None                                 |
+  +-----------------+--------------------------------------+
+  | uses            | []                                   |
+  +-----------------+--------------------------------------+
+  | used_by         | []                                   |
+  +-----------------+--------------------------------------+
+  | created_at      | 2020-06-03T08:21:17.526303+00:00     |
+  +-----------------+--------------------------------------+
+  | updated_at      | 2020-06-03T10:02:54.682501+00:00     |
+  +-----------------+--------------------------------------+
+  | sriov_numvfs    | 0                                    |
+  +-----------------+--------------------------------------+
+  | sriov_vf_driver | None                                 |
+  +-----------------+--------------------------------------+
+  | accelerated     | [False]                              |
+  +-----------------+--------------------------------------+
   
-  root@oran-aio:~# lspci -D |grep 82599
-  0000:04:00.0 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
-  0000:04:00.1 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
-  0000:04:10.0 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:10.1 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:10.2 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:10.3 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:10.4 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:10.5 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:10.6 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:10.7 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:11.0 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:11.1 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:11.2 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:11.3 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:11.4 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:11.5 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:11.6 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
-  0000:04:11.7 Ethernet controller: Intel Corporation 82599 Ethernet Controller Virtual Function (rev 01)
+  [sysadmin@controller-0 ~(keystone_admin)]$ system interface-network-assign controller-0 $OAM_IF oam
   
-  root@oran-aio:~# dpdk-devbind -b vfio-pci 0000:04:11.0 0000:04:11.1 0000:04:11.2 0000:04:11.3 0000:04:11.4 0000:04:11.5 0000:04:11.6 0000:04:11.7
+  +--------------+--------------------------------------+
+  | Property     | Value                                |
+  +--------------+--------------------------------------+
+  | hostname     | controller-0                         |
+  +--------------+--------------------------------------+
+  | uuid         | 32592cc3-9d66-4961-a51e-23686da00290 |
+  +--------------+--------------------------------------+
+  | ifname       | eno1                                 |
+  +--------------+--------------------------------------+
+  | network_name | oam                                  |
+  +--------------+--------------------------------------+
   
-  root@oran-aio:~# dpdk-devbind --status-dev net
   
-  Network devices using DPDK-compatible driver
-  ============================================
-  0000:04:11.0 '82599 Ethernet Controller Virtual Function 10ed' drv=vfio-pci unused=ixgbevf,igb_uio
-  0000:04:11.1 '82599 Ethernet Controller Virtual Function 10ed' drv=vfio-pci unused=ixgbevf,igb_uio
-  0000:04:11.2 '82599 Ethernet Controller Virtual Function 10ed' drv=vfio-pci unused=ixgbevf,igb_uio
-  0000:04:11.3 '82599 Ethernet Controller Virtual Function 10ed' drv=vfio-pci unused=ixgbevf,igb_uio
-  0000:04:11.4 '82599 Ethernet Controller Virtual Function 10ed' drv=vfio-pci unused=ixgbevf,igb_uio
-  0000:04:11.5 '82599 Ethernet Controller Virtual Function 10ed' drv=vfio-pci unused=ixgbevf,igb_uio
-  0000:04:11.6 '82599 Ethernet Controller Virtual Function 10ed' drv=vfio-pci unused=ixgbevf,igb_uio
-  0000:04:11.7 '82599 Ethernet Controller Virtual Function 10ed' drv=vfio-pci unused=ixgbevf,igb_uio
+  [sysadmin@controller-0 ~(keystone_admin)]$
+  [sysadmin@controller-0 ~(keystone_admin)]$ system interface-network-list controller-0
   
-  Network devices using kernel driver
-  ===================================
-  0000:04:00.0 '82599ES 10-Gigabit SFI/SFP+ Network Connection 10fb' if=eth4 drv=ixgbe unused=igb_uio,vfio-pci
-  0000:04:00.1 '82599ES 10-Gigabit SFI/SFP+ Network Connection 10fb' if=eth5 drv=ixgbe unused=igb_uio,vfio-pci
-  0000:04:10.0 '82599 Ethernet Controller Virtual Function 10ed' if=eth6 drv=ixgbevf unused=igb_uio,vfio-pci
-  0000:04:10.1 '82599 Ethernet Controller Virtual Function 10ed' if=eth14 drv=ixgbevf unused=igb_uio,vfio-pci
-  0000:04:10.2 '82599 Ethernet Controller Virtual Function 10ed' if=eth7 drv=ixgbevf unused=igb_uio,vfio-pci
-  0000:04:10.3 '82599 Ethernet Controller Virtual Function 10ed' if=eth15 drv=ixgbevf unused=igb_uio,vfio-pci
-  0000:04:10.4 '82599 Ethernet Controller Virtual Function 10ed' if=eth8 drv=ixgbevf unused=igb_uio,vfio-pci
-  0000:04:10.5 '82599 Ethernet Controller Virtual Function 10ed' if=eth16 drv=ixgbevf unused=igb_uio,vfio-pci
-  0000:04:10.6 '82599 Ethernet Controller Virtual Function 10ed' if= drv=ixgbevf unused=igb_uio,vfio-pci
-  0000:04:10.7 '82599 Ethernet Controller Virtual Function 10ed' if=eth17 drv=ixgbevf unused=igb_uio,vfio-pci
+  +--------------+--------------------------------------+--------+--------------+
+  | hostname     | uuid                                 | ifname | network_name |
+  +--------------+--------------------------------------+--------+--------------+
+  | controller-0 | 2478f4c0-a7b4-4656-aa2a-97a0e8891955 | lo     | mgmt         |
+  +--------------+--------------------------------------+--------+--------------+
+  | controller-0 | 32592cc3-9d66-4961-a51e-23686da00290 | eno1   | oam          |
+  +--------------+--------------------------------------+--------+--------------+
+  | controller-0 | 43721e4d-4f52-4b4b-bd02-0efa00ef2124 | lo     | cluster-host |
+  +--------------+--------------------------------------+--------+--------------+
+  
+2.7 Configure the NTP server
+````````````````````````````
 
+Example:
 
-Build SRIOV CNI
+::
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$
+  [sysadmin@controller-0 ~(keystone_admin)]$ system ntp-modify ntpservers=0.pool.ntp.org,1.pool.ntp.org
+  
+  +--------------+--------------------------------------+
+  | Property     | Value                                |
+  +--------------+--------------------------------------+
+  | uuid         | 8fbe5712-6ba0-4e61-b174-ed60f152f616 |
+  +--------------+--------------------------------------+
+  | ntpservers   | 0.pool.ntp.org,1.pool.ntp.org        |
+  +--------------+--------------------------------------+
+  | isystem_uuid | 802ee0be-3728-4df4-b9f7-1533c67fd960 |
+  +--------------+--------------------------------------+
+  | created_at   | 2020-06-03T08:19:47.812249+00:00     |
+  +--------------+--------------------------------------+
+  | updated_at   | None                                 |
+  +--------------+--------------------------------------+
+  
+2.8 Configure the Storage by using the second hard drive as ceph backend
+````````````````````````````````````````````````````````````````````````
+
+Example:
 
 ::
 
-  root@oran-aio:~# HTTP_PROXY="http://<your_proxy_server_ip>:<port>"
+  [sysadmin@controller-0 ~(keystone_admin)]$
   
-  root@oran-aio:~# wget https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
-  root@oran-aio:~# tar -zxvf go1.14.1.linux-amd64.tar.gz
-  root@oran-aio:~# PATH=$PATH:/root/go/bin/
-  root@oran-aio:~# git clone https://github.com/intel/sriov-cni
-  root@oran-aio:~# cd sriov-cni
-  root@oran-aio:~/sriov-cni# make
-  root@oran-aio:~/sriov-cni# cp build/sriov /opt/cni/bin
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-disk-list controller-0
   
-  root@oran-aio:~# cd ~/
-  root@oran-aio:~# git clone https://github.com/intel/sriov-network-device-plugin
-  root@oran-aio:~# cd sriov-network-device-plugin
-  root@oran-aio:~/sriov-network-device-plugin# git fetch origin pull/196/head:fpgadp
-  root@oran-aio:~/sriov-network-device-plugin# git checkout fpgadp
-  root@oran-aio:~/sriov-network-device-plugin# make image
-  root@oran-aio:~/sriov-network-device-plugin# docker images |grep sriov-device-plugin
-  nfvpe/sriov-device-plugin                             latest              f4e6bbefad67        5 minutes ago       25.5MB
-
-
-Deploy SRIOV CNI
+  +--------------------------------------+-----------+---------+---------+-------+------------+--------------+---------+-----------------------------+
+  | uuid                                 | device_no | device_ | device_ | size_ | available_ | rpm          | serial_ | device_path                 |
+  |                                      | de        | num     | type    | gib   | gib        |              | id      |                             |
+  +--------------------------------------+-----------+---------+---------+-------+------------+--------------+---------+-----------------------------+
+  | 3884f906-cb9b-4052-bcb8-8be70e599b9f | /dev/sda  | 2048    | HDD     | 1117. | 868.759    | Undetermined | PDNLH0B | /dev/disk/by-path/pci-0000: |
+  +--------------------------------------+-----------+---------+---------+-------+------------+--------------+---------+-----------------------------+
+  |                                      |           |         |         | 782   |            |              | RH8W4QQ | 03:00.0-scsi-0:1:0:0        |
+  +--------------------------------------+-----------+---------+---------+-------+------------+--------------+---------+-----------------------------+
+  |                                      |           |         |         |       |            |              |         |                             |
+  | 4e6c4b16-11e6-40b7-a2ff-751b14b8f0e9 | /dev/sdb  | 2064    | HDD     | 1117. | 0.0        | Undetermined | PDNLH0B | /dev/disk/by-path/pci-0000: |
+  +--------------------------------------+-----------+---------+---------+-------+------------+--------------+---------+-----------------------------+
+  |                                      |           |         |         | 782   |            |              | RH8W4QQ | 03:00.0-scsi-0:1:0:1        |
+  +--------------------------------------+-----------+---------+---------+-------+------------+--------------+---------+-----------------------------+
+  |                                      |           |         |         |       |            |              |         |                             |
+  +--------------------------------------+-----------+---------+---------+-------+------------+--------------+---------+-----------------------------+
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-disk-list controller-0 | awk '/\/dev\/sdb/{print $2}' | xargs -i system host-stor-add controller-0 {}
+  
+  +------------------+-------------------------------------------------------+
+  | Property         | Value                                                 |
+  +------------------+-------------------------------------------------------+
+  | osdid            | 0                                                     |
+  +------------------+-------------------------------------------------------+
+  | function         | osd                                                   |
+  +------------------+-------------------------------------------------------+
+  | state            | configuring-on-unlock                                 |
+  +------------------+-------------------------------------------------------+
+  | journal_location | 71a9d508-06f6-4f5a-84f2-4723e70b1ecf                  |
+  +------------------+-------------------------------------------------------+
+  | journal_size_gib | 1024                                                  |
+  +------------------+-------------------------------------------------------+
+  | journal_path     | /dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:1-part2 |
+  +------------------+-------------------------------------------------------+
+  | journal_node     | /dev/sdb2                                             |
+  +------------------+-------------------------------------------------------+
+  | uuid             | 71a9d508-06f6-4f5a-84f2-4723e70b1ecf                  |
+  +------------------+-------------------------------------------------------+
+  | ihost_uuid       | 08c23843-afa4-4b80-a285-be126365276e                  |
+  +------------------+-------------------------------------------------------+
+  | idisk_uuid       | 4e6c4b16-11e6-40b7-a2ff-751b14b8f0e9                  |
+  +------------------+-------------------------------------------------------+
+  | tier_uuid        | db6eabf9-9922-4d8e-9740-c0f9878e692d                  |
+  +------------------+-------------------------------------------------------+
+  | tier_name        | storage                                               |
+  +------------------+-------------------------------------------------------+
+  | created_at       | 2020-06-03T10:03:55.645744+00:00                      |
+  +------------------+-------------------------------------------------------+
+  | updated_at       | None                                                  |
+  +------------------+-------------------------------------------------------+
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-stor-list controller-0
+  
+  +--------------------------------------+----------+-------+-----------------------+--------------------------------------+-------------------------------------------------------+--------------+------------------+-----------+
+  | uuid                                 | function | osdid | state                 | idisk_uuid                           | journal_path                                          | journal_node | journal_size_gib | tier_name |
+  +--------------------------------------+----------+-------+-----------------------+--------------------------------------+-------------------------------------------------------+--------------+------------------+-----------+
+  | 71a9d508-06f6-4f5a-84f2-4723e70b1ecf | osd      | 0     | configuring-on-unlock | 4e6c4b16-11e6-40b7-a2ff-751b14b8f0e9 | /dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:1-part2 | /dev/sdb2    | 1                | storage   |
+  +--------------------------------------+----------+-------+-----------------------+--------------------------------------+-------------------------------------------------------+--------------+------------------+-----------+
+  
+2.9 Configure the SR-IOV enabled network
+````````````````````````````````````````
+It need :
+  - assign the label of SR-IOV
+  - change the CPU policy to static
+  - change the hugepage setting
+  - create the data network
+  - assign the SR-IOV interface to data network
+  
+Example:
 
 ::
 
-  root@oran-aio:~/sriov-network-device-plugin# cat <<EOF> deployments/sriovdp_configMap.yaml
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: sriovdp-config
-    namespace: kube-system
-  data:
-    config.json: |
-      {
-          "resourceList": [{
-                  "resourceName": "intel_sriov_netdevice",
-                  "selectors": {
-                      "vendors": ["8086"],
-                      "devices": ["154c", "10ed"],
-                      "drivers": ["i40evf", "ixgbevf"]
-                  }
-              },
-              {
-                  "resourceName": "intel_sriov_dpdk",
-                  "selectors": {
-                      "vendors": ["8086"],
-                      "devices": ["154c", "10ed"],
-                      "drivers": ["vfio-pci"]
-                  }
-              },
-              {
-                  "resourceName": "mlnx_sriov_rdma",
-                  "isRdma": true,
-                  "selectors": {
-                      "vendors": ["15b3"],
-                      "devices": ["1018"],
-                      "drivers": ["mlx5_ib"]
-                  }
-              }
-          ]
-      }
-  EOF
+  [sysadmin@controller-0 ~(keystone_admin)]$ WORKER=controller-0
   
-  root@oran-aio:~/sriov-network-device-plugin# kubectl create -f deployments/sriovdp_configMap.yaml
-  root@oran-aio:~/sriov-network-device-plugin# kubectl create -f deployments/k8s-v1.16/sriovdp-daemonset.yaml
-
-  root@oran-aio:~/sriov-network-device-plugin# kubectl get pods --all-namespaces |grep kube-sriov-device-plugin
-  kube-system   kube-sriov-device-plugin-amd64-6lm8n   1/1     Running   0          12m
+  [sysadmin@controller-0 ~(keystone_admin)]$
   
-  root@oran-aio:~/sriov-network-device-plugin# kubectl -n kube-system logs kube-sriov-device-plugin-amd64-6lm8n
-  I0327 02:14:46.488409   14488 manager.go:115] Creating new ResourcePool: intel_sriov_netdevice
-  I0327 02:14:46.488427   14488 factory.go:144] device added: [pciAddr: 0000:04:10.0, vendor: 8086, device: 10ed, driver: ixgbevf]
-  I0327 02:14:46.488439   14488 factory.go:144] device added: [pciAddr: 0000:04:10.1, vendor: 8086, device: 10ed, driver: ixgbevf]
-  I0327 02:14:46.488446   14488 factory.go:144] device added: [pciAddr: 0000:04:10.2, vendor: 8086, device: 10ed, driver: ixgbevf]
-  I0327 02:14:46.488459   14488 factory.go:144] device added: [pciAddr: 0000:04:10.3, vendor: 8086, device: 10ed, driver: ixgbevf]
-  I0327 02:14:46.488467   14488 factory.go:144] device added: [pciAddr: 0000:04:10.4, vendor: 8086, device: 10ed, driver: ixgbevf]
-  I0327 02:14:46.488473   14488 factory.go:144] device added: [pciAddr: 0000:04:10.5, vendor: 8086, device: 10ed, driver: ixgbevf]
-  I0327 02:14:46.488479   14488 factory.go:144] device added: [pciAddr: 0000:04:10.6, vendor: 8086, device: 10ed, driver: ixgbevf]
-  I0327 02:14:46.488485   14488 factory.go:144] device added: [pciAddr: 0000:04:10.7, vendor: 8086, device: 10ed, driver: ixgbevf]
-  I0327 02:14:46.488502   14488 manager.go:128] New resource server is created for intel_sriov_netdevice ResourcePool
-  I0327 02:14:46.488511   14488 manager.go:114]
-  I0327 02:14:46.488516   14488 manager.go:115] Creating new ResourcePool: intel_sriov_dpdk
-  I0327 02:14:46.488529   14488 factory.go:144] device added: [pciAddr: 0000:04:11.0, vendor: 8086, device: 10ed, driver: vfio-pci]
-  I0327 02:14:46.488538   14488 factory.go:144] device added: [pciAddr: 0000:04:11.1, vendor: 8086, device: 10ed, driver: vfio-pci]
-  I0327 02:14:46.488545   14488 factory.go:144] device added: [pciAddr: 0000:04:11.2, vendor: 8086, device: 10ed, driver: vfio-pci]
-  I0327 02:14:46.488551   14488 factory.go:144] device added: [pciAddr: 0000:04:11.3, vendor: 8086, device: 10ed, driver: vfio-pci]
-  I0327 02:14:46.488562   14488 factory.go:144] device added: [pciAddr: 0000:04:11.4, vendor: 8086, device: 10ed, driver: vfio-pci]
-  I0327 02:14:46.488569   14488 factory.go:144] device added: [pciAddr: 0000:04:11.5, vendor: 8086, device: 10ed, driver: vfio-pci]
-  I0327 02:14:46.488575   14488 factory.go:144] device added: [pciAddr: 0000:04:11.6, vendor: 8086, device: 10ed, driver: vfio-pci]
-  I0327 02:14:46.488581   14488 factory.go:144] device added: [pciAddr: 0000:04:11.7, vendor: 8086, device: 10ed, driver: vfio-pci]
-  I0327 02:14:46.488591   14488 manager.go:128] New resource server is created for intel_sriov_dpdk ResourcePool
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-label-assign $WORKER sriovdp=enabled
+  
+  +-------------+--------------------------------------+
+  | Property    | Value                                |
+  +-------------+--------------------------------------+
+  | uuid        | 7101010d-1897-4cc8-8c87-7dffaebf848b |
+  +-------------+--------------------------------------+
+  | host_uuid   | 08c23843-afa4-4b80-a285-be126365276e |
+  +-------------+--------------------------------------+
+  | label_key   | sriovdp                              |
+  +-------------+--------------------------------------+
+  | label_value | enabled                              |
+  +-------------+--------------------------------------+
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-label-assign $WORKER kube-cpu-mgr-policy=static
+  
+  +-------------+--------------------------------------+
+  | Property    | Value                                |
+  +-------------+--------------------------------------+
+  | uuid        | 4936f32b-6939-4115-b643-846bd50e7738 |
+  +-------------+--------------------------------------+
+  | host_uuid   | 08c23843-afa4-4b80-a285-be126365276e |
+  +-------------+--------------------------------------+
+  | label_key   | kube-cpu-mgr-policy                  |
+  +-------------+--------------------------------------+
+  | label_value | static                               |
+  +-------------+--------------------------------------+
+  
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-memory-modify $WORKER -1G 7  0
+  
+  +-------------------------------------+--------------------------------------+
+  | Property                            | Value                                |
+  +-------------------------------------+--------------------------------------+
+  | Memory: Usable Total (MiB)          | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |         Platform     (MiB)          | 7000                                 |
+  +-------------------------------------+--------------------------------------+
+  |         Available    (MiB)          | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  | Huge Pages Configured               | True                                 |
+  +-------------------------------------+--------------------------------------+
+  | vSwitch Huge Pages: Size (MiB)      | 1024                                 |
+  +-------------------------------------+--------------------------------------+
+  |                     Total           | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |                     Available       | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |                     Required        | None                                 |
+  +-------------------------------------+--------------------------------------+
+  | Application  Pages (4K): Total      | None                                 |
+  +-------------------------------------+--------------------------------------+
+  | Application  Huge Pages (2M): Total | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |                 Available           | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  | Application  Huge Pages (1G): Total | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |                 Total Pending       | 7                                    |
+  +-------------------------------------+--------------------------------------+
+  |                 Available           | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  | uuid                                | 15702f44-2281-41f3-8c83-a1e9a300ad01 |
+  +-------------------------------------+--------------------------------------+
+  | ihost_uuid                          | 08c23843-afa4-4b80-a285-be126365276e |
+  +-------------------------------------+--------------------------------------+
+  | inode_uuid                          | d52648bc-dfa6-4214-afa3-5d2148ee4180 |
+  +-------------------------------------+--------------------------------------+
+  | created_at                          | 2020-06-03T08:21:27.468357+00:00     |
+  +-------------------------------------+--------------------------------------+
+  | updated_at                          | 2020-06-03T10:10:49.159080+00:00     |
+  +-------------------------------------+--------------------------------------+
+  
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-memory-modify $WORKER -1G 7 1
+  
+  +-------------------------------------+--------------------------------------+
+  | Property                            | Value                                |
+  +-------------------------------------+--------------------------------------+
+  | Memory: Usable Total (MiB)          | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |         Platform     (MiB)          | 1000                                 |
+  +-------------------------------------+--------------------------------------+
+  |         Available    (MiB)          | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  | Huge Pages Configured               | True                                 |
+  +-------------------------------------+--------------------------------------+
+  | vSwitch Huge Pages: Size (MiB)      | 1024                                 |
+  +-------------------------------------+--------------------------------------+
+  |                     Total           | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |                     Available       | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |                     Required        | None                                 |
+  +-------------------------------------+--------------------------------------+
+  | Application  Pages (4K): Total      | None                                 |
+  +-------------------------------------+--------------------------------------+
+  | Application  Huge Pages (2M): Total | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |                 Available           | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  | Application  Huge Pages (1G): Total | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  |                 Total Pending       | 7                                    |
+  +-------------------------------------+--------------------------------------+
+  |                 Available           | 0                                    |
+  +-------------------------------------+--------------------------------------+
+  | uuid                                | 544580b9-0f2a-41a1-b4e3-90fdf5c8f7e0 |
+  +-------------------------------------+--------------------------------------+
+  | ihost_uuid                          | 08c23843-afa4-4b80-a285-be126365276e |
+  +-------------------------------------+--------------------------------------+
+  | inode_uuid                          | e02c3c41-03b7-4f49-8244-bca851fa2d2f |
+  +-------------------------------------+--------------------------------------+
+  | created_at                          | 2020-06-03T08:21:27.566279+00:00     |
+  +-------------------------------------+--------------------------------------+
+  | updated_at                          | 2020-06-03T10:10:49.220907+00:00     |
+  +-------------------------------------+--------------------------------------+
+  
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ PHYSNET0='physnet0'
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ PHYSNET1='physnet1'
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ WORKER=controller-0
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system datanetwork-add ${PHYSNET0} flat
+  
+  +--------------+--------------------------------------+
+  | Property     | Value                                |
+  +--------------+--------------------------------------+
+  | id           | 1                                    |
+  +--------------+--------------------------------------+
+  | uuid         | 0ffe0b0a-35ff-45b2-9a62-63a494d2d18b |
+  +--------------+--------------------------------------+
+  | name         | physnet0                             |
+  +--------------+--------------------------------------+
+  | network_type | flat                                 |
+  +--------------+--------------------------------------+
+  | mtu          | 1500                                 |
+  +--------------+--------------------------------------+
+  | description  | None                                 |
+  +--------------+--------------------------------------+
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system datanetwork-add ${PHYSNET1} flat
+  
+  +--------------+--------------------------------------+
+  | Property     | Value                                |
+  +--------------+--------------------------------------+
+  | id           | 2                                    |
+  +--------------+--------------------------------------+
+  | uuid         | 899ca8ba-6800-4d62-aed4-3770878da738 |
+  +--------------+--------------------------------------+
+  | name         | physnet1                             |
+  +--------------+--------------------------------------+
+  | network_type | flat                                 |
+  +--------------+--------------------------------------+
+  | mtu          | 1500                                 |
+  +--------------+--------------------------------------+
+  | description  | None                                 |
+  +--------------+--------------------------------------+
+  
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-port-list controller-0
+  
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | uuid                                 | name   | type     | pci address  | device | processor | accelerated | device type                                           |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | 7007dfb1-ea55-4355-9d27-3ed4c6696283 | eno1   | ethernet | 0000:02:00.0 | 0      | 0         | False       | NetXtreme BCM5719 Gigabit Ethernet PCIe [1657]        |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | 51f62ecf-7897-43e3-beb8-46ae5550ef05 | eno2   | ethernet | 0000:02:00.1 | 0      | 0         | False       | NetXtreme BCM5719 Gigabit Ethernet PCIe [1657]        |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | e987725e-ab45-4151-b53d-94ba21706eb4 | eno3   | ethernet | 0000:02:00.2 | 0      | 0         | False       | NetXtreme BCM5719 Gigabit Ethernet PCIe [1657]        |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | f4a8115a-ca0b-4336-a634-2cad77c5a88c | eno4   | ethernet | 0000:02:00.3 | 0      | 0         | False       | NetXtreme BCM5719 Gigabit Ethernet PCIe [1657]        |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | 88965882-c816-42e8-ba0e-d3ff6f9f553e | eno49  | ethernet | 0000:04:00.0 | 0      | 0         | False       | OneConnect NIC (Skyhawk) [0720]                       |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | 98e2cedc-9ef8-4ca0-b3e0-db3a2bd0273a | eno50  | ethernet | 0000:04:00.1 | 0      | 0         | False       | OneConnect NIC (Skyhawk) [0720]                       |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | e75d7aa6-7832-4ec4-9dd4-ea8300773fd8 | ens2f0 | ethernet | 0000:05:00.0 | 0      | 0         | True        | 82599ES 10-Gigabit SFI/SFP+ Network Connection [10fb] |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  | 8ac4ffca-4a61-4b47-8e17-171f2e6cea66 | ens2f1 | ethernet | 0000:05:00.1 | 0      | 0         | True        | 82599ES 10-Gigabit SFI/SFP+ Network Connection [10fb] |
+  +--------------------------------------+--------+----------+--------------+--------+-----------+-------------+-------------------------------------------------------+
+  
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ INTL_IF=ens2f0
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-if-modify -m 1500 -n sriov0 -c pci-sriov -N 6 --vf-driver=vfio $WORKER $INTL_IF
+  
+  +-----------------+--------------------------------------+
+  | Property        | Value                                |
+  +-----------------+--------------------------------------+
+  | ifname          | sriov0                               |
+  +-----------------+--------------------------------------+
+  | iftype          | ethernet                             |
+  +-----------------+--------------------------------------+
+  | ports           | [u'ens2f0']                          |
+  +-----------------+--------------------------------------+
+  | imac            | 00:1b:21:b3:46:2c                    |
+  +-----------------+--------------------------------------+
+  | imtu            | 1500                                 |
+  +-----------------+--------------------------------------+
+  | ifclass         | pci-sriov                            |
+  +-----------------+--------------------------------------+
+  | aemode          | None                                 |
+  +-----------------+--------------------------------------+
+  | schedpolicy     | None                                 |
+  +-----------------+--------------------------------------+
+  | txhashpolicy    | None                                 |
+  +-----------------+--------------------------------------+
+  | uuid            | 9450b1ae-d1a1-4ecb-811a-fa3cb1cdf362 |
+  +-----------------+--------------------------------------+
+  | ihost_uuid      | 08c23843-afa4-4b80-a285-be126365276e |
+  +-----------------+--------------------------------------+
+  | vlan_id         | None                                 |
+  +-----------------+--------------------------------------+
+  | uses            | []                                   |
+  +-----------------+--------------------------------------+
+  | used_by         | []                                   |
+  +-----------------+--------------------------------------+
+  | created_at      | 2020-06-03T12:34:11.633254+00:00     |
+  +-----------------+--------------------------------------+
+  | updated_at      | 2020-06-04T02:01:28.168127+00:00     |
+  +-----------------+--------------------------------------+
+  | sriov_numvfs    | 6                                    |
+  +-----------------+--------------------------------------+
+  | sriov_vf_driver | vfio                                 |
+  +-----------------+--------------------------------------+
+  | accelerated     | [True]                               |
+  +-----------------+--------------------------------------+
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system interface-datanetwork-assign ${WORKER} sriov0 ${PHYSNET0}
+  
+  +------------------+--------------------------------------+
+  | Property         | Value                                |
+  +------------------+--------------------------------------+
+  | hostname         | controller-0                         |
+  +------------------+--------------------------------------+
+  | uuid             | 1d35219d-3258-42e7-8f0e-41d865710d58 |
+  +------------------+--------------------------------------+
+  | ifname           | sriov0                               |
+  +------------------+--------------------------------------+
+  | datanetwork_name | physnet0                             |
+  +------------------+--------------------------------------+
+  
+  
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ INTL_IF=ens2f1
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-if-modify -m 1500 -n sriov1 -c pci-sriov -N 6 --vf-driver=vfio $WORKER $INTL_IF
+  
+  +-----------------+--------------------------------------+
+  | Property        | Value                                |
+  +-----------------+--------------------------------------+
+  | ifname          | sriov1                               |
+  +-----------------+--------------------------------------+
+  | iftype          | ethernet                             |
+  +-----------------+--------------------------------------+
+  | ports           | [u'ens2f1']                          |
+  +-----------------+--------------------------------------+
+  | imac            | 00:1b:21:b3:46:2d                    |
+  +-----------------+--------------------------------------+
+  | imtu            | 1500                                 |
+  +-----------------+--------------------------------------+
+  | ifclass         | pci-sriov                            |
+  +-----------------+--------------------------------------+
+  | aemode          | None                                 |
+  +-----------------+--------------------------------------+
+  | schedpolicy     | None                                 |
+  +-----------------+--------------------------------------+
+  | txhashpolicy    | None                                 |
+  +-----------------+--------------------------------------+
+  | uuid            | 13d5ee99-0399-4b6b-a359-0f96660afdc4 |
+  | ihost_uuid      | 08c23843-afa4-4b80-a285-be126365276e |
+  | vlan_id         | None                                 |
+  | uses            | []                                   |
+  | used_by         | []                                   |
+  | created_at      | 2020-06-03T12:34:12.072624+00:00     |
+  | updated_at      | 2020-06-04T02:03:51.405322+00:00     |
+  | sriov_numvfs    | 6                                    |
+  | sriov_vf_driver | vfio                                 |
+  | accelerated     | [True]                               |
+  +-----------------+--------------------------------------+
+  
+  [sysadmin@controller-0 ~(keystone_admin)]$ system interface-datanetwork-assign ${WORKER} sriov1 ${PHYSNET1}
+  
+  +------------------+--------------------------------------+
+  | Property         | Value                                |
+  +------------------+--------------------------------------+
+  | hostname         | controller-0                         |
+  +------------------+--------------------------------------+
+  | uuid             | a87c6a5f-0c53-4ebf-9a32-38366700426f |
+  +------------------+--------------------------------------+
+  | ifname           | sriov1                               |
+  +------------------+--------------------------------------+
+  | datanetwork_name | physnet1                             |
+  +------------------+--------------------------------------+
+  
+2.10 Unlock the server
+``````````````````````
 
-
-Test intel_sriov_netdeivce
+Example:
 
 ::
-
-  root@oran-aio:~/sriov-network-device-plugin# cat <<EOF> deployments/sriov-crd.yaml
-  apiVersion: "k8s.cni.cncf.io/v1"
-  kind: NetworkAttachmentDefinition
-  metadata:
-    name: sriov-net1
-    annotations:
-      k8s.v1.cni.cncf.io/resourceName: intel.com/intel_sriov_netdevice
-  spec:
-    config: '{
-    "type": "sriov",
-    "cniVersion": "0.3.1",
-    "name": "sriov-network",
-    "vlan": 100,
-    "ipam": {
-      "type": "host-local",
-      "subnet": "10.56.217.0/24",
-      "routes": [{
-        "dst": "0.0.0.0/0"
-      }],
-      "gateway": "10.56.217.1"
-    }
-  }'
-  EOF
   
-  root@oran-aio:~/sriov-network-device-plugin# kubectl create -f deployments/sriov-crd.yaml
-  root@oran-aio:~/sriov-network-device-plugin# kubectl create -f deployments/pod-tc1.yaml
-  root@oran-aio:~/sriov-network-device-plugin# kubectl get pods  |grep testpod1
-  root@oran-aio:~/sriov-network-device-plugin# ip link |grep 'vlan 100'
-    vf 3 MAC a6:01:0a:34:39:e1, vlan 100, spoof checking on, link-state auto, trust off, query_rss off
-   
-  root@oran-aio:~/sriov-network-device-plugin# kubectl exec -it testpod1 -- ip addr show |grep a6:01:0a:34:39:e1 -C 2
-    valid_lft forever preferred_lft forever
-  21: net1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
-    link/ether a6:01:0a:34:39:e1 brd ff:ff:ff:ff:ff:ff
-    inet 10.56.217.3/24 brd 10.56.217.255 scope global net1
-       valid_lft forever preferred_lft forever
-
-
-Test intel_sriov_dpdk
-
-::
-
-  root@oran-aio:~/sriov-network-device-plugin# cat <<EOF> deployments/sriovdpdk-crd.yaml
-  apiVersion: "k8s.cni.cncf.io/v1"
-  kind: NetworkAttachmentDefinition
-  metadata:
-    name: sriov1-vfio
-    annotations:
-      k8s.v1.cni.cncf.io/resourceName: intel.com/intel_sriov_dpdk
-  spec:
-    config: '{
-    "type": "sriov",
-    "cniVersion": "0.3.1",
-    "vlan": 101,
-    "name": "sriov1-vfio"
-  }'
-  EOF
+  [sysadmin@controller-0 ~(keystone_admin)]$ system host-unlock controller-0
   
-  root@oran-aio:~/sriov-network-device-plugin# cat <<EOF> deployments/dpdk-1g.yaml
-  apiVersion: v1
-  kind: Pod
-  metadata:
-    name: dpdk-1g
-    annotations:
-      k8s.v1.cni.cncf.io/networks: '[
-         {"name": "sriov1-vfio"},
-         {"name": "sriov1-vfio"}
-      ]'
-  spec:
-    restartPolicy: Never
-    containers:
-    - name: dpdk-1g
-      image: centos/tools
-      imagePullPolicy: IfNotPresent
-      volumeMounts:
-      - mountPath: /mnt/huge-2048
-        name: hugepage
-      - name: lib-modules
-        mountPath: /lib/modules
-      - name: src
-        mountPath: /usr/src
-      command: ["/bin/bash", "-ec", "sleep infinity"]
-      securityContext:
-        privileged: true
-        capabilities:
-          add:
-          - ALL
-      resources:
-        requests:
-          memory: 4Gi
-          hugepages-1Gi: 4Gi
-          intel.com/intel_sriov_dpdk: '2'
-        limits:
-          memory: 4Gi
-          hugepages-1Gi: 4Gi
-          intel.com/intel_sriov_dpdk: '2'
-    imagePullSecrets:
-    - name: admin-registry-secret
-    volumes:
-    - name: hugepage
-      emptyDir:
-        medium: HugePages
-    - name: lib-modules
-      hostPath:
-        path: /lib/modules
-    - name: src
-      hostPath:
-        path: /usr/src
-    imagePullSecrets:
-    - name: admin-registry-secret
-  EOF
+  +-----------------------+-------------------------------------------------+
+  | Property              | Value                                           |
+  +-----------------------+-------------------------------------------------+
+  | action                | none                                            |
+  +-----------------------+-------------------------------------------------+
+  | administrative        | locked                                          |
+  +-----------------------+-------------------------------------------------+
+  | availability          | online                                          |
+  +-----------------------+-------------------------------------------------+
+  | bm_ip                 | None                                            |
+  +-----------------------+-------------------------------------------------+
+  | bm_type               | none                                            |
+  +-----------------------+-------------------------------------------------+
+  | bm_username           | None                                            |
+  +-----------------------+-------------------------------------------------+
+  | boot_device           | /dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0 |
+  +-----------------------+-------------------------------------------------+
+  | capabilities          | {u'stor_function': u'monitor'}                  |
+  +-----------------------+-------------------------------------------------+
+  | clock_synchronization | ntp                                             |
+  +-----------------------+-------------------------------------------------+
+  | config_applied        | 3daf20c7-c032-4aa2-839d-93da92051bea            |
+  +-----------------------+-------------------------------------------------+
+  | config_status         | Config out-of-date                              |
+  +-----------------------+-------------------------------------------------+
+  | config_target         | bdaf20c7-c032-4aa2-839d-93da92051bea            |
+  +-----------------------+-------------------------------------------------+
+  | console               | tty0                                            |
+  +-----------------------+-------------------------------------------------+
+  | created_at            | 2020-06-03T08:20:59.372602+00:00                |
+  +-----------------------+-------------------------------------------------+
+  | hostname              | controller-0                                    |
+  +-----------------------+-------------------------------------------------+
+  | id                    | 1                                               |
+  +-----------------------+-------------------------------------------------+
+  | install_output        | graphical                                       |
+  +-----------------------+-------------------------------------------------+
+  | install_state         | None                                            |
+  +-----------------------+-------------------------------------------------+
+  | install_state_info    | None                                            |
+  +-----------------------+-------------------------------------------------+
+  | inv_state             | inventoried                                     |
+  +-----------------------+-------------------------------------------------+
+  | invprovision          | provisioning                                    |
+  +-----------------------+-------------------------------------------------+
+  | location              | {}                                              |
+  +-----------------------+-------------------------------------------------+
+  | mgmt_ip               | 192.168.204.2                                   |
+  +-----------------------+-------------------------------------------------+
+  | mgmt_mac              | 00:00:00:00:00:00                               |
+  +-----------------------+-------------------------------------------------+
+  | operational           | disabled                                        |
+  +-----------------------+-------------------------------------------------+
+  | personality           | controller                                      |
+  +-----------------------+-------------------------------------------------+
+  | reserved              | False                                           |
+  +-----------------------+-------------------------------------------------+
+  | rootfs_device         | /dev/disk/by-path/pci-0000:03:00.0-scsi-0:1:0:0 |
+  +-----------------------+-------------------------------------------------+
+  | serialid              | None                                            |
+  +-----------------------+-------------------------------------------------+
+  | software_load         | 19.12                                           |
+  +-----------------------+-------------------------------------------------+
+  | subfunction_avail     | online                                          |
+  +-----------------------+-------------------------------------------------+
+  | subfunction_oper      | disabled                                        |
+  +-----------------------+-------------------------------------------------+
+  | subfunctions          | controller,worker                               |
+  +-----------------------+-------------------------------------------------+
+  | task                  | Unlocking                                       |
+  +-----------------------+-------------------------------------------------+
+  | tboot                 | false                                           |
+  +-----------------------+-------------------------------------------------+
+  | ttys_dcd              | None                                            |
+  +-----------------------+-------------------------------------------------+
+  | updated_at            | 2020-06-04T02:04:59.514854+00:00                |
+  +-----------------------+-------------------------------------------------+
+  | uptime                | 49475                                           |
+  +-----------------------+-------------------------------------------------+
+  | uuid                  | 08c23843-afa4-4b80-a285-be126365276e            |
+  +-----------------------+-------------------------------------------------+
+  | vim_progress_status   | None                                            |
+  +-----------------------+-------------------------------------------------+
   
-  root@oran-aio:~/sriov-network-device-plugin# kubectl create -f deployments/sriovdpdk-crd.yaml
-  root@oran-aio:~/sriov-network-device-plugin# kubectl create -f deployments/dpdk-1g.yaml
   
-  root@oran-aio:~/sriov-network-device-plugin# root@oran-aio:~/sriov-network-device-plugin# kubectl get pods | grep dpdk
-  dpdk-1g    1/1     Running   0          13s
   
-  root@oran-aio:~/sriov-network-device-plugin# ip link |grep 101
-    vf 7 MAC 00:00:00:00:00:00, vlan 101, spoof checking on, link-state auto, trust off, query_rss off
-    vf 6 MAC 00:00:00:00:00:00, vlan 101, spoof checking on, link-state auto, trust off, query_rss off
-
-
-Now test with dpdk
-
-::
-
-  ### build following package and copy to target server: bitbake bison;bitbake kernel-devsrc
-  root@oran-aio:~/sriov-network-device-plugin# rpm -ivh ~/bison-3.0.4-r0.corei7_64.rpm
-  root@oran-aio:~/sriov-network-device-plugin# rpm -ivh ~/kernel-devsrc-1.0-r0.intel_x86_64.rpm
-
-  root@oran-aio:~/sriov-network-device-plugin# kubectl exec -it $(kubectl get pods -o wide | grep dpdk | awk '{ print $1 }') -- /bin/bash
-  [root@dpdk-1g /]# export |grep INTEL
-    declare -x PCIDEVICE_INTEL_COM_INTEL_SRIOV_DPDK="0000:04:11.6,0000:04:11.5"
   
-  [root@dpdk-1g /]# yum -y install wget ncurses-devel unzip libpcap-devel ncurses-devel libedit-devel pciutils lua-devel
-  
-  [root@dpdk-1g /]# cd /opt
-  [root@dpdk-1g /]# wget https://fast.dpdk.org/rel/dpdk-18.08.tar.xz
-  [root@dpdk-1g /]# tar xf dpdk-18.08.tar.xz
-  [root@dpdk-1g /]# cd dpdk-18.08/
-  [root@dpdk-1g /]# sed -i 's/CONFIG_RTE_EAL_IGB_UIO=y/CONFIG_RTE_EAL_IGB_UIO=n/g' config/common_linuxapp
-  [root@dpdk-1g /]# sed -i 's/CONFIG_RTE_LIBRTE_KNI=y/CONFIG_RTE_LIBRTE_KNI=n/g' config/common_linuxapp
-  [root@dpdk-1g /]# sed -i 's/CONFIG_RTE_KNI_KMOD=y/CONFIG_RTE_KNI_KMOD=n/g' config/common_linuxapp
-  [root@dpdk-1g /]# export RTE_SDK=/opt/dpdk-18.08
-  [root@dpdk-1g /]# export RTE_TARGET=x86_64-native-linuxapp-gcc
-  [root@dpdk-1g /]# export RTE_BIND=$RTE_SDK/usertools/dpdk-devbind.py
-  [root@dpdk-1g /]# make install T=$RTE_TARGET
-  [root@dpdk-1g /]# cd examples/helloworld
-  [root@dpdk-1g /]# make
-  [root@dpdk-1g /]# NR_hugepages=2
-  [root@dpdk-1g /]# ./build/helloworld -l 1-4 -n 4 -m $NR_hugepages
-  ...
-      hello from core 2
-      hello from core 3
-      hello from core 4
-      hello from core 1
-
-
-
 References
 ----------
+  
+- `StarlingX`_
 
-- `Flannel`_
-- `Doc for dashboard`_
-- `Multus-CNI quick start`_
-
-.. _`Flannel`: https://github.com/coreos/flannel/blob/master/README.md
+.. _`StarlingX`: https://docs.starlingx.io/
+          
