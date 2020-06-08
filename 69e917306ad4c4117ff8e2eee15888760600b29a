@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d9d872b5_a77b57e4",
+        "filename": "docs/installation-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1000398
+      },
+      "writtenOn": "2020-06-08T13:42:28Z",
+      "side": 1,
+      "message": "this line is also need to be changed.",
+      "range": {
+        "startLine": 100,
+        "startChar": 0,
+        "endLine": 100,
+        "endChar": 45
+      },
+      "revId": "69e917306ad4c4117ff8e2eee15888760600b29a",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec9cc689_479817b9",
+        "filename": "docs/installation-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 746,
+      "author": {
+        "id": 1000398
+      },
+      "writtenOn": "2020-06-08T13:42:28Z",
+      "side": 1,
+      "message": "dito",
+      "range": {
+        "startLine": 746,
+        "startChar": 0,
+        "endLine": 746,
+        "endChar": 28
+      },
+      "revId": "69e917306ad4c4117ff8e2eee15888760600b29a",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53",
+      "unresolved": true
+    }
+  ]
+}
