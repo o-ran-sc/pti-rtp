@@ -63,8 +63,24 @@ Processes
     python34-pip xz which SDL-devel xterm
 
 
-2. Use wrapper script build_oran.sh to setup build env and build the image
-``````````````````````````````````````````````````````````````````````````
+2. Use wrapper script build_inf.sh to setup build env and build the image
+`````````````````````````````````````````````````````````````````````````
+
+::
+
+  # Get the wrapper script with either curl or wget
+  $ curl -o build_inf.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf.sh;hb=HEAD'
+  $ wget -O build_inf.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf.sh;hb=HEAD'
+
+  $ chmod +x build_inf.sh
+  $ WORKSPACE=/path/to/workspace
+  $ ./build_inf.sh -w ${WORKSPACE}
+
+If all go well, you will get the ISO image in:
+${WORKSPACE}/prj_oran_inf_anaconda/tmp-glibc/deploy/images/intel-corei7-64/inf-image-aio-installer-intel-corei7-64.iso
+
+3. (Optional) Use wrapper script build_oran.sh to setup build env and build the lagecy image
+````````````````````````````````````````````````````````````````````````````````````````````
 
 ::
 
@@ -73,7 +89,7 @@ Processes
   $ wget -O build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
   
   $ chmod +x build_oran.sh
-  $ WORKSPACE=/path/to/workspace
+  $ WORKSPACE=/path/to/workspace_lagecy
   $ ./build_oran.sh -w ${WORKSPACE}
 
 If all go well, you will get the ISO image in:
