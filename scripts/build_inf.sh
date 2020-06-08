@@ -31,17 +31,17 @@ SRC_YP_BRANCH="warrior"
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
 SRC_YP_URL="\
-    git://git.yoctoproject.org/poky \
-    git://git.openembedded.org/meta-openembedded \
-    git://git.yoctoproject.org/meta-virtualization \
-    git://git.yoctoproject.org/meta-cloud-services \
-    git://git.yoctoproject.org/meta-security \
-    git://git.yoctoproject.org/meta-intel \
-    git://git.yoctoproject.org/meta-selinux \
-    https://github.com/intel-iot-devkit/meta-iot-cloud \
-    git://git.openembedded.org/meta-python2 \
-    https://git.yoctoproject.org/git/meta-dpdk \
-    git://git.yoctoproject.org/meta-anaconda \
+    git://git.yoctoproject.org/poky;commit=f65b24e \
+    git://git.openembedded.org/meta-openembedded;commit=a24acf9 \
+    git://git.yoctoproject.org/meta-virtualization;commit=343b5e2 \
+    git://git.yoctoproject.org/meta-cloud-services;commit=f8e76d1 \
+    git://git.yoctoproject.org/meta-security;commit=4f7be0d \
+    git://git.yoctoproject.org/meta-intel;commit=29ee485 \
+    git://git.yoctoproject.org/meta-selinux;commit=ebea591 \
+    https://github.com/intel-iot-devkit/meta-iot-cloud;commit=8b6c156 \
+    git://git.openembedded.org/meta-python2;commit=6740870 \
+    https://git.yoctoproject.org/git/meta-dpdk;commit=c8c30c2 \
+    git://git.yoctoproject.org/meta-anaconda;commit=82c305d \
 "
 
 SUB_LAYER_META_OE="\
@@ -79,7 +79,7 @@ TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 help_info () {
 cat << ENDHELP
 Usage:
-$(basename $0) [-w WORKSPACE_DIR] [-b BSP] [-n] [-h] [-r Yes|No] [-s] [-e EXTRA_CONF]
+$(basename $0) [-w WORKSPACE_DIR] [-b BSP] [-n] [-h] [-r Yes|No] [-e EXTRA_CONF]
 where:
     -w WORKSPACE_DIR is the path for the project
     -b BPS is one of supported BSP: "${SUPPORTED_BSP}"
@@ -88,7 +88,6 @@ where:
     -h this help info
     -e EXTRA_CONF is the pat for extra config file
     -r whether to inherit rm_work (default is Yes)
-    -s whether to skip update the repo if already exists
 examples:
 $0
 $0 -w workspace_1234 -r no -e /path/to/extra_local.conf
@@ -160,6 +159,7 @@ clone_update_repo () {
     REPO_BRANCH=$1
     REPO_URL=$2
     REPO_NAME=$3
+    REPO_COMMIT=$4
 
     if [ -d ${REPO_NAME}/.git ]; then
         if [ "${SKIP_UPDATE}" == "Yes" ]; then
@@ -175,6 +175,14 @@ clone_update_repo () {
         RUN_CMD="git clone --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_NAME}"
         echo_cmd "Cloning the source of repo '${REPO_NAME}':"
         ${RUN_CMD}
+
+        if [ -n "${REPO_COMMIT}" ]; then
+            cd ${REPO_NAME}
+            RUN_CMD="git checkout -b ${REPO_BRANCH}-${REPO_COMMIT} ${REPO_COMMIT}"
+            echo_cmd "Checkout the repo ${REPO_NAME} to specific commit: ${REPO_COMMIT}"
+            ${RUN_CMD}
+            cd -
+        fi
     fi
 }
 
@@ -191,11 +199,11 @@ source_env () {
 
 DRYRUN=""
 EXTRA_CONF=""
-SKIP_UPDATE="No"
+SKIP_UPDATE="Yes"
 RM_WORK="Yes"
 BSP="intel-corei7-64"
 
-while getopts "w:b:e:r:nsh" OPTION; do
+while getopts "w:b:e:r:nh" OPTION; do
     case ${OPTION} in
         w)
             WORKSPACE=`readlink -f ${OPTARG}`
@@ -208,9 +216,6 @@ while getopts "w:b:e:r:nsh" OPTION; do
             ;;
         n)
             DRYRUN="-n"
-            ;;
-        s)
-            SKIP_UPDATE="Yes"
             ;;
         r)
             check_yn_rm_work ${OPTARG}
@@ -289,8 +294,9 @@ prepare_src () {
 
     cd ${SRC_LAYER_DIR}
     for layer_url in ${SRC_YP_URL}; do
-        layer_name=$(basename ${layer_url})
-        clone_update_repo ${SRC_YP_BRANCH} ${layer_url} ${layer_name}
+        layer_name=$(basename ${layer_url%%;commit*})
+        layer_commit=$(basename ${layer_url##*;commit=})
+        clone_update_repo ${SRC_YP_BRANCH} ${layer_url%%;commit*} ${layer_name} ${layer_commit}
     done
 
     echo_step_end
@@ -304,7 +310,7 @@ prepare_src () {
         # backup current branch
         local_branch=$(git rev-parse --abbrev-ref HEAD)
         git branch -m "${local_branch}_${TIMESTAMP}"
-        git checkout ${local_branch}
+        git checkout -b ${local_branch} ${local_branch##*-}
 
         for p in $(ls -1 ${SRC_META_PATCHES}/${l}); do
             echo_info "Apllying patch: ${SRC_META_PATCHES}/${l}/${p}"
@@ -321,7 +327,7 @@ add_layer_stx_build () {
     source_env ${PRJ_BUILD_DIR}
     SRC_LAYERS=""
     for layer_url in ${SRC_YP_URL}; do
-        layer_name=$(basename ${layer_url})
+        layer_name=$(basename ${layer_url%%;commit*})
         case ${layer_name} in
         poky)
             continue
