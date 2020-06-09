@@ -30,7 +30,7 @@ LIC_FILES_CHKSUM = "\
 "
 
 DEPENDS = "ruby-native zlib openssl tcl libyaml gdbm readline libffi libnsl2"
-DEPENDS_class-native = "openssl-native libyaml-native readline-native libnsl2"
+DEPENDS_class-native = "zlib-native openssl-native libyaml-native readline-native libnsl2"
 
 SHRT_VER = "${@oe.utils.trim_version("${PV}", 2)}"
 SRC_URI = " \
