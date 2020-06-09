@@ -38,15 +38,17 @@ LIC_FILES_CHKSUM = " \
 
 
 SRC_URI = "git://opendev.org/starlingx/metal.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
-		file://0001-mtce-compute-dont-install-empty-directory-unless-nee.patch \
-		file://0001-mtce-control-dont-install-empty-directory-unless-nee.patch \
-		file://0001-mtce-storage-dont-install-empty-directory-unless-nee.patch \
-		file://0001-Use-snprintf-to-avoid-overflowing-amon.tx_buf.patch \
-		file://0001-Use-LDFLAGS-when-linking-and-pass-flags-down-to-subm.patch \
-		file://0001-stx-metal-remove-argparse-requirement-from-inventory.patch \
-		file://stx-warrior-adjust-paths.patch \
-		file://pmon_send_pulse.patch \
-		"
+	file://0001-mtce-compute-dont-install-empty-directory-unless-nee.patch \
+	file://0002-mtce-control-dont-install-empty-directory-unless-nee.patch \
+	file://0003-mtce-storage-dont-install-empty-directory-unless-nee.patch \
+	file://0004-Use-snprintf-to-avoid-overflowing-amon.tx_buf.patch \
+	file://0005-Use-LDFLAGS-when-linking-and-pass-flags-down-to-subm.patch \
+	file://0006-stx-metal-remove-argparse-requirement-from-inventory.patch \
+	file://0007-mtce-do-not-use-which-to-check-CC.patch \
+	file://0008-stx-warrior-adjust-paths.patch \
+	file://0009-pmon_send_pulse.patch \
+	file://0010-libamon-add-shared-option.patch \
+	"
 
 inherit setuptools systemd
 
