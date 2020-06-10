@@ -97,6 +97,7 @@ DRYRUN=""
 EXTRA_CONF=""
 RM_WORK="Yes"
 BSP="intel-x86-64"
+IMAGE_TYPE="iso"
 
 while getopts "w:b:e:r:nh" OPTION; do
     case ${OPTION} in
@@ -129,6 +130,11 @@ fi
 
 if [ -n "${BSP_VALID}" ]; then
     BSP="${BSP_VALID}"
+fi
+
+# iso image is not supported by nxp-lx2xxx yet
+if [ "${BSP}" == "nxp-lx2xxx" ]; then
+    IMAGE_TYPE="tar.bz2"
 fi
 
 SRC_WRL_DIR=${WORKSPACE}/src_wrlinux
@@ -229,4 +235,4 @@ RUN_CMD="bitbake ${DRYRUN} wr-app-container"
 echo_cmd "Build the wr-app-container image"
 bitbake ${DRYRUN} wr-app-container 2>&1|tee logs/bitbake_wr-app-container_${TIMESTAMP}.log
 
-echo_info "Build succeeded, you can get the image in ${PRJ_BUILD_DIR}/tmp-glibc/deploy/images/intel-x86-64/oran-image-inf-host-intel-x86-64.iso"
+echo_info "Build succeeded, you can get the image in ${PRJ_BUILD_DIR}/tmp-glibc/deploy/images/${BSP}/oran-image-inf-host-${BSP}.${IMAGE_TYPE}"
