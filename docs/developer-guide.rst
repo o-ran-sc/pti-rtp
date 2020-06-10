@@ -63,8 +63,8 @@ Processes
     python34-pip xz which SDL-devel xterm
 
 
-2. Use wrapper script build_inf.sh to setup build env and build the image
-`````````````````````````````````````````````````````````````````````````
+2. Use wrapper script build_inf.sh to setup build env and build the INF AIO x86 image
+`````````````````````````````````````````````````````````````````````````````````````
 
 ::
 
@@ -79,18 +79,39 @@ Processes
 If all go well, you will get the ISO image in:
 ${WORKSPACE}/prj_oran_inf_anaconda/tmp-glibc/deploy/images/intel-corei7-64/inf-image-aio-installer-intel-corei7-64.iso
 
-3. (Optional) Use wrapper script build_oran.sh to setup build env and build the lagecy image
-````````````````````````````````````````````````````````````````````````````````````````````
+3. (Optional) Use wrapper script build_oran.sh to setup build env and build the lagecy x86 image
+````````````````````````````````````````````````````````````````````````````````````````````````
+
+Note: The lagecy image is the Kubernetes Cluster image as the same one in Amber (1.0) release.
 
 ::
 
   # Get the wrapper script with either curl or wget
   $ curl -o build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
   $ wget -O build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
-  
+
   $ chmod +x build_oran.sh
   $ WORKSPACE=/path/to/workspace_lagecy
   $ ./build_oran.sh -w ${WORKSPACE}
 
 If all go well, you will get the ISO image in:
-${WORKSPACE}/prj_wrl1018_oran/tmp-glibc/deploy/images/intel-x86-64/oran-image-inf-host-intel-x86-64.iso
+${WORKSPACE}/prj_oran_inf/tmp-glibc/deploy/images/intel-x86-64/oran-image-inf-host-intel-x86-64.iso
+
+4. (Optional) Use wrapper script build_oran.sh to setup build env and build the ARM Kubernetes Cluster image
+``````````````````````````````````````````````````````````````````````````````````````````````````````````````
+Note:
+  * the ARM Kubernetes Cluster image only supports the BSP nxp-lx2xxx and is verified with the board NXP LX2160ARDB
+  * The ISO image is supported yet.
+
+::
+
+  # Get the wrapper script with either curl or wget
+  $ curl -o build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
+  $ wget -O build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
+
+  $ chmod +x build_oran.sh
+  $ WORKSPACE=/path/to/workspace_arm
+  $ ./build_oran.sh -w ${WORKSPACE} -b nxp-lx2xxx
+
+If all go well, you will get the rootfs image in:
+${WORKSPACE}/prj_oran_inf/tmp-glibc/deploy/images/nxp-lx2xxx/oran-image-inf-host-nxp-lx2xxx.tar.bz2

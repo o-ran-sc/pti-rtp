@@ -2,8 +2,8 @@
 .. SPDX-License-Identifier: CC-BY-4.0
 .. Copyright (C) 2019 Wind River Systems, Inc.
 
-RTP Overview (INF)
-==================
+Infrastructure Overview (INF)
+=============================
 
 This project implements a real time platform (rtp) to deploy the O-CU and O-DU.
 
@@ -191,6 +191,7 @@ StarlingX is a complete cloud infrastructure software stack for the edge used by
 Contact info
 ------------
 If you need support or add new features/components, please feel free to contact the following:
+
 - Jackie Huang <jackie.huang@windriver.com>
 
 - Xiaohua Zhang <xiaohua.zhang@windriver.com> 
