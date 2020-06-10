@@ -51,11 +51,19 @@ RDEPENDS_${PN}-base = "\
     tunctl \
     udev \
     udev-extraconf \
-    turbostat \
     cpupower \
     cpufrequtils \
-    msr-tools \
     htop \
+"
+
+RDEPENDS_${PN}-base_append_x86 = "\
+    turbostat \
+    msr-tools \
+"
+
+RDEPENDS_${PN}-base_append_x86-64 = "\
+    turbostat \
+    msr-tools \
 "
 
 RDEPENDS_${PN}-docker = "\
