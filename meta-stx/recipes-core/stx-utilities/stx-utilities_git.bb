@@ -52,6 +52,7 @@ LIC_FILES_CHKSUM = " \
 
 SRC_URI = " \
 	git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
+	file://0001-cpumap_functions.sh-fix-perl-experimental-feature-is.patch \
 	"
 
 inherit setuptools distutils python-dir systemd
