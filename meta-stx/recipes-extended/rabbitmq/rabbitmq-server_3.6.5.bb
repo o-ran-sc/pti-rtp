@@ -28,10 +28,10 @@ SRC_URI = " \
     file://rabbitmq-server-0004-Allow-guest-login-from-non-loopback-connections.patch \
     file://rabbitmq-server-0005-Avoid-RPC-roundtrips-in-list-commands.patch \
     file://rabbitmq-server-0006-rabbit_prelaunch-must-use-RABBITMQ_SERVER_ERL_ARGS.patch \
+    file://rabbitmq-server-0007-rabbitmq-script-wrapper-allow-to-run-as-root.patch \
     file://rabbitmq-common-0001-Avoid-RPC-roundtrips-while-listing-items.patch;patchdir=deps/rabbit_common \
     file://rabbitmq-common-0002-Use-proto_dist-from-command-line.patch;patchdir=deps/rabbit_common \
     file://rabbitmq-server-fails-with-home-not-set.patch \
-    file://rabbitmq-script-wrapper \
     file://rabbitmq-server.logrotate \
     file://rabbitmq-server.tmpfiles \
 "
@@ -80,9 +80,9 @@ do_install() {
 
     # Copy all necessary lib files etc.
     install -p -D -m 0644 ${S}/docs/rabbitmq-server.service.example ${D}${systemd_system_unitdir}/rabbitmq-server.service
-    install -p -D -m 0755 ${WORKDIR}/rabbitmq-script-wrapper ${D}${sbindir}/rabbitmqctl
-    install -p -D -m 0755 ${WORKDIR}/rabbitmq-script-wrapper ${D}${sbindir}/rabbitmq-server
-    install -p -D -m 0755 ${WORKDIR}/rabbitmq-script-wrapper ${D}${sbindir}/rabbitmq-plugins
+    install -p -D -m 0755 ${S}/scripts/rabbitmq-script-wrapper ${D}${sbindir}/rabbitmqctl
+    install -p -D -m 0755 ${S}/scripts/rabbitmq-script-wrapper ${D}${sbindir}/rabbitmq-server
+    install -p -D -m 0755 ${S}/scripts/rabbitmq-script-wrapper ${D}${sbindir}/rabbitmq-plugins
 
     # Make necessary symlinks
     mkdir -p ${D}${RABBIT_LIB_DIR}/bin
