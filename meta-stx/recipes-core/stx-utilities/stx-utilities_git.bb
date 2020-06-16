@@ -24,29 +24,28 @@ PV = "1.0.0"
 
 LICENSE = "Apache-2.0"
 
-#e7b3e2a120f5d4c0f6f562a52b6badf4  ./security/tpm2-openssl-engine/tpm2-openssl-engine/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/build-info/build-info-1.0/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/namespace-utils/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/namespace-utils/namespace-utils/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/nfscheck/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/nfscheck/files/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/pci-irq-affinity-agent/files/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/platform-util/platform-util/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/platform-util/scripts/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/stx-extensions/files/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/update-motd/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/update-motd/files/LICENSE
-#3b83ef96387f14655fc854ddc3c6bd57  ./utilities/worker-utils/worker-utils/LICENSE
-
 LIC_FILES_CHKSUM = " \
 	file://ceph/ceph-manager/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	file://ceph/python-cephclient/python-cephclient/LICENSE;md5=41687b590435621fc0676ac02c51154f \
 	file://security/stx-ssl/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://security/tpm2-openssl-engine/tpm2-openssl-engine/LICENSE;md5=e7b3e2a120f5d4c0f6f562a52b6badf4 \
 	file://tools/collector/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	file://tools/collector/scripts/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	file://tools/engtools/hostdata-collectors/scripts/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/build-info/build-info-1.0/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	file://utilities/logmgmt/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	file://utilities/logmgmt/logmgmt/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/namespace-utils/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/namespace-utils/namespace-utils/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/nfscheck/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/nfscheck/files/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/pci-irq-affinity-agent/files/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/platform-util/platform-util/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/platform-util/scripts/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/stx-extensions/files/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/update-motd/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/update-motd/files/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://utilities/worker-utils/worker-utils/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	"
 
 
