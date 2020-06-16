@@ -392,7 +392,7 @@ python __anonymous() {
                 raise bb.parse.SkipPackage("The count of INSTALLER_TARGET_BUILD and KICKSTART_FILE not match!")
             for kickstart_file in kickstart_files.split():
                 if not os.path.exists(kickstart_file):
-                    raise bb.parse.SkipPackage("The kickstart file %s in KICKSTART_FILE doesn't exist!" % kickstart_file)
+                    bb.warn("The kickstart file %s in KICKSTART_FILE doesn't exist!" % kickstart_file)
 
 }
 
