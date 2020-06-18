@@ -439,36 +439,39 @@ pkg_postinst_ontarget_net-snmp-config() {
 }
 
 
-pkg_postinst_ontarget_nfs-utils-config() {
+pkg_postinst_nfs-utils-config() {
 #	%description
 #	package customized configuration and service files of nfs-utils to system folder.
 
 
-	SRCPATH=${datadir}/starlingx/config-files/nfs-utils-config/files
+	SRCPATH=$D${datadir}/starlingx/config-files/nfs-utils-config/files
 	
 
-	install -m 755 -p -D ${SRCPATH}/nfscommon		${sysconfdir}/init.d
-	install -m 644 -p -D ${SRCPATH}/nfscommon.service	${systemd_system_unitdir}/
-	install -m 755 -p -D ${SRCPATH}/nfsserver		${sysconfdir}/init.d
-	install -m 644 -p -D ${SRCPATH}/nfsserver.service	${systemd_system_unitdir}
-	install -m 644 -p -D ${SRCPATH}/nfsmount.conf		${datadir}/starlingx/stx.nfsmount.conf
+	install -m 755 -p -D ${SRCPATH}/nfscommon		$D${sysconfdir}/init.d
+	install -m 644 -p -D ${SRCPATH}/nfscommon.service	$D${systemd_system_unitdir}/
+	install -m 755 -p -D ${SRCPATH}/nfsserver		$D${sysconfdir}/init.d
+	install -m 644 -p -D ${SRCPATH}/nfsserver.service	$D${systemd_system_unitdir}
+	install -m 644 -p -D ${SRCPATH}/nfsmount.conf		$D${datadir}/starlingx/stx.nfsmount.conf
 	
-	cp -f ${datadir}/starlingx/stx.nfsmount.conf ${sysconfdir}/nfsmount.conf
-	chmod 644 ${sysconfdir}/nfsmount.conf
+	cp -f $D${datadir}/starlingx/stx.nfsmount.conf $D${sysconfdir}/nfsmount.conf
+	chmod 644 $D${sysconfdir}/nfsmount.conf
 
-	# STX - disable these service files as rpc-statd is started by nfscommon
-	/bin/systemctl disable rpc-statd.service
-	/bin/systemctl disable rpc-statd-notify.service
-	/bin/systemctl disable nfs-lock.service
-	/bin/systemctl disable nfslock.service 
+	# enable nfs services by default
+	OPTS=""
+	if [ -n "$D" ]; then
+		OPTS="--root=$D"
+	fi
+	if [ -z "$D" ]; then
+		systemctl daemon-reload
+	fi
 
-	/bin/systemctl enable nfscommon.service  >/dev/null 2>&1 || :
-	/bin/systemctl enable nfsserver.service  >/dev/null 2>&1 || :
+	systemctl $OPTS enable nfscommon.service
+	systemctl $OPTS enable nfsserver.service
 
-	# For now skiping the preun rule
-	#/bin/systemctl disable nfscommon.service >/dev/null 2>&1 || :
-	#/bin/systemctl disable nfsserver.service >/dev/null 2>&1 || :
-
+	if [ -z "$D" ]; then
+		systemctl --no-block restart nfscommon.service
+		systemctl --no-block restart nfsserver.service
+	fi
 }
 
 pkg_postinst_ontarget_ntp-config() {
@@ -528,7 +531,7 @@ pkg_postinst_openssh-config() {
 	cp -f $D${datadir}/starlingx/ssh_config  $D${sysconfdir}/ssh/ssh_config
 	cp -f $D${datadir}/starlingx/sshd_config $D${sysconfdir}/ssh/sshd_config
 
-	# enable syslog-ng service by default
+	# enable sshd service by default
 	OPTS=""
 	if [ -n "$D" ]; then
 		OPTS="--root=$D"
