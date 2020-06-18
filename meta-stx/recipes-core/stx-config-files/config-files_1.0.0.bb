@@ -51,6 +51,7 @@ SRC_URI = " \
 	file://syslog-ng-config-systemd-service.patch \
 	file://syslog-ng-conf-replace-match-with-message.patch \
 	file://lighttpd-init-script-chroot.patch \
+	file://nfsserver-remvoe-the-f-option-for-rpc.mountd.patch \
 	"
 
 do_configure () {
