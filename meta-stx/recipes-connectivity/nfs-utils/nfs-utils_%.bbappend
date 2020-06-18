@@ -15,4 +15,10 @@
 
 do_install_append() {
 	mv ${D}/${sbindir}/sm-notify ${D}/${sbindir}/nfs-utils-client_sm-notify
+
+	# install nfs.conf and enable udp proto
+	install -m 0755 ${S}/nfs.conf ${D}${sysconfdir}
+	sed -i -e 's/#\(\[nfsd\]\)/\1/' -e 's/#\( udp=\).*/\1y/' ${D}${sysconfdir}/nfs.conf
 }
+
+SYSTEMD_AUTO_ENABLE = "disable"
