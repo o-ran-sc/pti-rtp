@@ -19,6 +19,9 @@ do_install_append() {
 	# install nfs.conf and enable udp proto
 	install -m 0755 ${S}/nfs.conf ${D}${sysconfdir}
 	sed -i -e 's/#\(\[nfsd\]\)/\1/' -e 's/#\( udp=\).*/\1y/' ${D}${sysconfdir}/nfs.conf
+
+	# add initial exports file
+	echo "# Initial exports for nfs" > ${D}${sysconfdir}/exports
 }
 
 SYSTEMD_AUTO_ENABLE = "disable"
