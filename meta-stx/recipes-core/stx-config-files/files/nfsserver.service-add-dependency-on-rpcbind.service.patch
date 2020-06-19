@@ -1,0 +1,25 @@
+From e95e967943c351d63e733d1263d0b0d83c2fb8dc Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Fri, 19 Jun 2020 10:19:04 +0800
+Subject: [PATCH] nfsserver.service: add dependency on rpcbind.service
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ nfs-utils-config/files/nfsserver.service | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/nfs-utils-config/files/nfsserver.service b/nfs-utils-config/files/nfsserver.service
+index 93bfd6d..1ee3a07 100644
+--- a/nfs-utils-config/files/nfsserver.service
++++ b/nfs-utils-config/files/nfsserver.service
+@@ -1,6 +1,6 @@
+ [Unit]
+ Description=StarlingX Filesystem Server
+-After=network.target nfscommon.service hwclock.service
++After=network.target nfscommon.service hwclock.service rpcbind.service
+ Before=ntpd.service
+ 
+ [Service]
+-- 
+2.7.4
+
