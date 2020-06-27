@@ -40,6 +40,7 @@ SRC_URI = "git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=$
 	file://0002-Install-sm-eru-sm-eru-dump-and-sm-eru-watchdog.patch \
 	file://0003-pragma-ignore-Wunused-result-errors-with-gcc-8.3.patch \
 	file://0004-Cast-size_t-to-int-to-silence-gcc-8.3.patch \
+	file://0005-libsm_watchdog_nfs-add-missing-dependency-on-libsm_c.patch \
 	"
 
 inherit setuptools

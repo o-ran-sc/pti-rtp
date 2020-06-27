@@ -1,0 +1,26 @@
+From 0374eb585bc3e47e914c7f523f904923a447d2f7 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sat, 27 Jun 2020 10:26:58 +0800
+Subject: [PATCH] libsm_watchdog_nfs: add missing dependency on libsm_common.so
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ service-mgmt/sm-common/src/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/service-mgmt/sm-common/src/Makefile b/service-mgmt/sm-common/src/Makefile
+index 7d138f9..487dfa0 100644
+--- a/service-mgmt/sm-common/src/Makefile
++++ b/service-mgmt/sm-common/src/Makefile
+@@ -53,7 +53,7 @@ libsm_watchdog_nfs.so: libsm_watchdog_nfs.so.$(VER_MJR)
+ libsm_watchdog_nfs.so.$(VER_MJR): libsm_watchdog_nfs.so.$(VER)
+ 	ln -sf $^ $@
+ 
+-libsm_watchdog_nfs.so.$(VER): libsm_common.so.$(VER)
++libsm_watchdog_nfs.so.$(VER): libsm_common.so.$(VER) libsm_common.so
+ 	$(CXX) $(INCLUDES) $(CCFLAGS) $(EXTRACCFLAGS) sm_watchdog_nfs.c ${LDFLAGS} $(LDLIBS) -L./ -lsm_common -Wl,-soname,libsm_watchdog_nfs.so.$(VER_MJR) -o $@
+ 
+ sm_watchdog: libsm_common.so
+-- 
+2.7.4
+
