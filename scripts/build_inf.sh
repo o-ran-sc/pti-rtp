@@ -382,6 +382,7 @@ add_configs_stx_build () {
 
     if [ "${RM_WORK}" == "Yes" ]; then
         echo "INHERIT += 'rm_work'" | tee -a conf/local.conf
+        echo "RM_WORK_EXCLUDE += '${IMG_STX}'" | tee -a conf/local.conf
     fi
 
 
@@ -462,6 +463,7 @@ add_configs_anaconda_build () {
 
     if [ "${RM_WORK}" == "Yes" ]; then
         echo "INHERIT += 'rm_work'" | tee -a conf/local.conf
+        echo "RM_WORK_EXCLUDE += '${IMG_ANACONDA}'" | tee -a conf/local.conf
     fi
 
     if [ "${EXTRA_CONF}" != "" ] && [ -f "${EXTRA_CONF}" ]; then
