@@ -375,6 +375,7 @@ add_configs_stx_build () {
     echo_info "Adding the following extra configs into local.conf"
     cat ${SRC_CONFIGS}/local-stx.conf | \
         sed -e "s/@BSP@/${BSP}/" | tee -a conf/local.conf
+    cat ${SRC_CONFIGS}/local-mirrors.conf | tee -a conf/local.conf
 
     echo "DL_DIR = '${PRJ_SHARED_DL_DIR}'" | tee -a conf/local.conf
     echo "SSTATE_DIR = '${PRJ_SHARED_SS_DIR}'" | tee -a conf/local.conf
@@ -454,6 +455,7 @@ add_configs_anaconda_build () {
         sed -e "s/@BSP@/${BSP}/" \
             -e "s|@TARGET_BUILD@|${PRJ_BUILD_DIR}|" \
             | tee -a conf/local.conf
+    cat ${SRC_CONFIGS}/local-mirrors.conf | tee -a conf/local.conf
 
     echo "DL_DIR = '${PRJ_SHARED_DL_DIR}'" | tee -a conf/local.conf
     echo "SSTATE_DIR = '${PRJ_SHARED_SS_DIR}'" | tee -a conf/local.conf
