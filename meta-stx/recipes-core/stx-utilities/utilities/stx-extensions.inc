@@ -31,19 +31,19 @@ do_compile_append() {
 do_install_append() {
 	cd ${S}/utilities/stx-extensions/files
 
-	install -p -d -m0755 ${D}/${sysconfdir}/sysctl.d
-	install -m0755 coredump-sysctl.conf ${D}/${sysconfdir}/sysctl.d/50-coredump.conf
+	install -p -d -m 0755 ${D}/${sysconfdir}/sysctl.d
+	install -m 0644 coredump-sysctl.conf ${D}/${sysconfdir}/sysctl.d/50-coredump.conf
 
 	# Fix the systemd unitdir and the arguments for kernel.core_pattern
 	sed -i -e 's|${nonarch_libdir}/systemd|${systemd_unitdir}|' \
 	       -e 's/%p/%P/' -e 's/%e/%c %h %e/' \
 	       ${D}/${sysconfdir}/sysctl.d/50-coredump.conf
 
-	install -p -d -m0755 ${D}/${sysconfdir}/systemd/coredump.conf.d
-	install -m0755 coredump.conf ${D}/${sysconfdir}/systemd/coredump.conf.d/coredump.conf
+	install -p -d -m 0755 ${D}/${sysconfdir}/systemd/coredump.conf.d
+	install -m 0644 coredump.conf ${D}/${sysconfdir}/systemd/coredump.conf.d/coredump.conf
 
-	install -p -d -m0755 ${D}/${sysconfdir}/modules-load.d
-	install -m0644 modules-load-vfio.conf ${D}/${sysconfdir}/modules-load.d/vfio.conf
+	install -p -d -m 0755 ${D}/${sysconfdir}/modules-load.d
+	install -m 0644 modules-load-vfio.conf ${D}/${sysconfdir}/modules-load.d/vfio.conf
 
 }
 
