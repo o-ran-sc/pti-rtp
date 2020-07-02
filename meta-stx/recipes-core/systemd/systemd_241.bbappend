@@ -28,3 +28,7 @@ do_install_append () {
 }
 
 FILES_${PN} += "${sysconfdir}/locale.conf"
+
+PACKAGECONFIG_append = " \
+    coredump \
+"
