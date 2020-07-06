@@ -15,6 +15,7 @@
 
 PREFERRED_VERSION_ceph = "13.2.2"
 PREFERRED_VERSION_dnsmasq = "2.76"
+PREFERRED_VERSION_json-c = "0.11"
 PREFERRED_VERSION_keyutils = "1.6"
 PREFERRED_VERSION_python-voluptuous = "0.8.9"
 PREFERRED_VERSION_python3-cherrypy = "18.2.0"
