@@ -18,12 +18,13 @@ inherit openssl10
 
 DEPENDS += " libnsl2"
 
-# file://ruby-CVE-2017-9226.patch # Not applicable
+SRCREV = "1a828cad2d559e2ff55a5f01cc5de217b9c9bc2b"
+
 SRC_URI += " \
-           file://ruby-CVE-2017-9228.patch \
-	   file://ext.socket.extmk.patch \
-           "
-#  file://run-ptest 
+	git://github.com/ruby/spec.git;protocol=https;rev=${SRCREV};destsuffix=spec/rubyspec \
+	file://ruby-CVE-2017-9228.patch \
+	file://ext.socket.extmk.patch \
+	"
 
 SRC_URI[md5sum] = "05db49992d01731fee023cad09bb4e52"
 SRC_URI[sha256sum] = "8690bd6b4949c333b3919755c4e48885dbfed6fd055fe9ef89930bde0d2376f8"
@@ -40,7 +41,6 @@ PACKAGECONFIG[valgrind] = "--with-valgrind=yes, --with-valgrind=no, valgrind"
 
 EXTRA_AUTORECONF += "--exclude=aclocal"
 
-#    --disable-versioned-paths 
 EXTRA_OECONF ?= " "
 EXTRA_OECONF = "\
     --disable-install-doc \
@@ -57,7 +57,7 @@ EXTRA_OEMAKE = " \
 do_configure_prepend() {
     cd ${S}
     rm -rf spec/rubyspec
-    git clone git://github.com/ruby/rubyspec.git spec/rubyspec
+    cp -rf ${WORKDIR}/spec ${S}
     cd ${B}
 }
 
