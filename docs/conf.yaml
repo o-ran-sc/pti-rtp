@@ -1,3 +1,6 @@
 ---
 project_cfg: oran
 project: pti-rtp
+
+# Change this to ReleaseBranchName to modify the header
+version: Amber
