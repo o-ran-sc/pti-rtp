@@ -48,4 +48,4 @@ FILES_sysinv-agent = " \
 
 SYSTEMD_PACKAGES += "sysinv-agent"
 SYSTEMD_SERVICE_sysinv-agent = "sysinv-agent.service"
-SYSTEMD_AUTO_ENABLE_sysinv-agent = "disable"
+SYSTEMD_AUTO_ENABLE_sysinv-agent = "enable"
