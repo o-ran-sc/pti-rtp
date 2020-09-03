@@ -2,4 +2,3 @@
 #
 add1d629e64dce7097223c93ca6e710c1460b5ba                                	GitHub Replication
 c3c50bfe7b6c49afaa94c23365e2f849fc2b100a                                	saml/oran-gerrit-pti-rtp-committers
-ldap:cn=oran-gerrit-pti-rtp-committers,ou=Groups,dc=freestandards,dc=org	ldap/oran-gerrit-pti-rtp-committers
