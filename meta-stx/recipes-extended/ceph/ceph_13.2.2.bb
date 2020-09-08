@@ -113,6 +113,7 @@ do_configure_prepend () {
 do_install_append () {
     mv ${D}${bindir}/ceph-disk ${D}${sbindir}/ceph-disk
     sed -i -e 's:${WORKDIR}.*python2.7:${bindir}/python:' ${D}${sbindir}/ceph-disk
+    sed -i -e 's:${sbindir}/service:${bindir}/service:' ${D}/${libdir}/python2.7/site-packages/ceph_disk/main.py
     sed -i -e 's:${WORKDIR}.*python2.7:${bindir}/python:' ${D}${bindir}/ceph
     sed -i -e 's:${WORKDIR}.*python2.7:${bindir}/python:' ${D}${bindir}/ceph-detect-init
     find ${D} -name SOURCES.txt | xargs sed -i -e 's:${WORKDIR}::'
