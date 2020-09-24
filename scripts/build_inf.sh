@@ -30,18 +30,20 @@ SRC_YP_BRANCH="warrior"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
+SRC_STX_URL="https://opendev.org/starlingx/meta-starlingx"
+
 SRC_YP_URL="\
-    git://git.yoctoproject.org/poky;commit=f65b24e \
-    git://git.openembedded.org/meta-openembedded;commit=a24acf9 \
-    git://git.yoctoproject.org/meta-virtualization;commit=343b5e2 \
-    git://git.yoctoproject.org/meta-cloud-services;commit=f8e76d1 \
-    git://git.yoctoproject.org/meta-security;commit=4f7be0d \
-    git://git.yoctoproject.org/meta-intel;commit=29ee485 \
-    git://git.yoctoproject.org/meta-selinux;commit=ebea591 \
-    https://github.com/intel-iot-devkit/meta-iot-cloud;commit=8b6c156 \
-    git://git.openembedded.org/meta-python2;commit=6740870 \
-    https://git.yoctoproject.org/git/meta-dpdk;commit=c8c30c2 \
-    git://git.yoctoproject.org/meta-anaconda;commit=82c305d \
+    git://git.yoctoproject.org/poky;commit=HEAD \
+    git://git.openembedded.org/meta-openembedded;commit=HEAD \
+    git://git.openembedded.org/meta-python2;commit=HEAD \
+    git://git.yoctoproject.org/meta-virtualization;commit=HEAD \
+    git://git.yoctoproject.org/meta-cloud-services;commit=HEAD \
+    git://git.yoctoproject.org/meta-security;commit=HEAD \
+    git://git.yoctoproject.org/meta-intel;commit=HEAD \
+    git://git.yoctoproject.org/meta-selinux;commit=HEAD \
+    git://git.yoctoproject.org/meta-dpdk;commit=HEAD \
+    git://git.yoctoproject.org/meta-anaconda;commit=HEAD \
+    git://github.com/intel-iot-devkit/meta-iot-cloud;commit=HEAD \
 "
 
 SUB_LAYER_META_OE="\
@@ -57,7 +59,13 @@ SUB_LAYER_META_OE="\
 "
 
 SUB_LAYER_META_CLOUD_SERVICES="meta-openstack"
-SUB_LAYER_META_SECURITY="meta-security-compliance"
+SUB_LAYER_STX="\
+    meta-stx-cloud \
+    meta-stx-distro \
+    meta-stx-flock \
+    meta-stx-integ \
+    meta-stx-virt \
+"
 
 # For anaconda build
 SUB_LAYER_META_OE_ANACONDA="\
@@ -79,12 +87,13 @@ TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 help_info () {
 cat << ENDHELP
 Usage:
-$(basename $0) [-w WORKSPACE_DIR] [-b BSP] [-n] [-h] [-r Yes|No] [-e EXTRA_CONF]
+$(basename $0) [-w WORKSPACE_DIR] [-b BSP] [-n] [-u] [-h] [-r Yes|No] [-e EXTRA_CONF]
 where:
     -w WORKSPACE_DIR is the path for the project
     -b BPS is one of supported BSP: "${SUPPORTED_BSP}"
        (default is intel-corei7-64 if not specified.)
     -n dry-run only for bitbake
+    -u update the repo if it exists
     -h this help info
     -e EXTRA_CONF is the pat for extra config file
     -r whether to inherit rm_work (default is Yes)
@@ -203,7 +212,7 @@ SKIP_UPDATE="Yes"
 RM_WORK="Yes"
 BSP="intel-corei7-64"
 
-while getopts "w:b:e:r:nh" OPTION; do
+while getopts "w:b:e:r:unh" OPTION; do
     case ${OPTION} in
         w)
             WORKSPACE=`readlink -f ${OPTARG}`
@@ -217,6 +226,9 @@ while getopts "w:b:e:r:nh" OPTION; do
         n)
             DRYRUN="-n"
             ;;
+        u)
+            SKIP_UPDATE="No"
+	    ;;
         r)
             check_yn_rm_work ${OPTARG}
             ;;
@@ -241,6 +253,7 @@ fi
 #########################################################################
 SRC_LAYER_DIR=${WORKSPACE}/src_layers
 SRC_ORAN_DIR=${SRC_LAYER_DIR}/oran
+SRC_STX_DIR=${SRC_LAYER_DIR}/meta-starlingx
 PRJ_BUILD_DIR=${WORKSPACE}/prj_oran_stx
 PRJ_BUILD_DIR_ANACONDA=${WORKSPACE}/prj_oran_inf_anaconda
 PRJ_SHARED_DIR=${WORKSPACE}/prj_shared
@@ -280,9 +293,7 @@ prepare_src () {
         echo_info "Use the cloned oran repo: ${CLONED_ORAN_REPO}"
         mkdir -p ${SRC_ORAN_DIR}/rtp
         cd ${SRC_ORAN_DIR}/rtp
-        rm -rf meta-oran meta-stx scripts
-        ln -sf ${CLONED_ORAN_REPO}/meta-oran meta-oran
-        ln -sf ${CLONED_ORAN_REPO}/meta-stx meta-stx
+        rm -rf scripts
         ln -sf ${CLONED_ORAN_REPO}/scripts scripts
     else
         echo_info "Cloning oran layer:"
@@ -299,25 +310,30 @@ prepare_src () {
         clone_update_repo ${SRC_YP_BRANCH} ${layer_url%%;commit*} ${layer_name} ${layer_commit}
     done
 
+    echo_info "Cloning or update meta-starlingx layers:"
+    clone_update_repo ${SRC_STX_BRANCH} ${SRC_STX_URL} $(basename ${SRC_STX_URL})
+
     echo_step_end
 
-    # Apply meta patches
-    for l in $(ls -1 ${SRC_META_PATCHES}); do
-        msg_step="Apply meta patches for ${l}"
-        echo_step_start
-        cd ${SRC_LAYER_DIR}/${l}
-
-        # backup current branch
-        local_branch=$(git rev-parse --abbrev-ref HEAD)
-        git branch -m "${local_branch}_${TIMESTAMP}"
-        git checkout -b ${local_branch} ${local_branch##*-}
-
-        for p in $(ls -1 ${SRC_META_PATCHES}/${l}); do
-            echo_info "Apllying patch: ${SRC_META_PATCHES}/${l}/${p}"
-            git am ${SRC_META_PATCHES}/${l}/${p}
-        done
-        echo_step_end
-    done
+# Not andy meta-patch is needed for the time being, but new ones may be needed and added
+# sometime in the future, so just leave these code commented out here.
+#    # Apply meta patches
+#    for l in $(ls -1 ${SRC_META_PATCHES}); do
+#        msg_step="Apply meta patches for ${l}"
+#        echo_step_start
+#        cd ${SRC_LAYER_DIR}/${l}
+#
+#        # backup current branch
+#        local_branch=$(git rev-parse --abbrev-ref HEAD)
+#        git branch -m "${local_branch}_${TIMESTAMP}"
+#        git checkout -b ${local_branch} ${local_branch##*-}
+#
+#        for p in $(ls -1 ${SRC_META_PATCHES}/${l}); do
+#            echo_info "Apllying patch: ${SRC_META_PATCHES}/${l}/${p}"
+#            git am ${SRC_META_PATCHES}/${l}/${p}
+#        done
+#        echo_step_end
+#    done
 }
 
 add_layer_stx_build () {
@@ -326,7 +342,7 @@ add_layer_stx_build () {
 
     source_env ${PRJ_BUILD_DIR}
     SRC_LAYERS=""
-    for layer_url in ${SRC_YP_URL}; do
+    for layer_url in ${SRC_YP_URL} ${SRC_STX_URL}; do
         layer_name=$(basename ${layer_url%%;commit*})
         case ${layer_name} in
         poky)
@@ -343,10 +359,9 @@ add_layer_stx_build () {
                 SRC_LAYERS="${SRC_LAYERS} ${SRC_LAYER_DIR}/${layer_name}/${sub_layer}"
             done
             ;;
-        meta-security)
-            SRC_LAYERS="${SRC_LAYERS} ${SRC_LAYER_DIR}/${layer_name}"
-            for sub_layer in ${SUB_LAYER_META_SECURITY}; do
-                SRC_LAYERS="${SRC_LAYERS} ${SRC_LAYER_DIR}/${layer_name}/${sub_layer}"
+        meta-starlingx)
+            for sub_layer in ${SUB_LAYER_STX}; do
+                SRC_LAYERS="${SRC_LAYERS} ${SRC_STX_DIR}/${sub_layer}"
             done
             ;;
         *)
@@ -355,8 +370,6 @@ add_layer_stx_build () {
 
         esac
     done
-
-    SRC_LAYERS="${SRC_LAYERS} ${SRC_ORAN_DIR}/rtp/meta-stx"
 
     for src_layer in ${SRC_LAYERS}; do
         RUN_CMD="bitbake-layers add-layer ${src_layer}"
@@ -435,7 +448,8 @@ add_layer_anaconda_build () {
     done
     SRC_LAYERS="${SRC_LAYERS} ${SRC_LAYER_DIR}/meta-intel"
     SRC_LAYERS="${SRC_LAYERS} ${SRC_LAYER_DIR}/meta-anaconda"
-    SRC_LAYERS="${SRC_LAYERS} ${SRC_ORAN_DIR}/rtp/meta-stx"
+    SRC_LAYERS="${SRC_LAYERS} ${SRC_STX_DIR}/meta-stx-distro"
+    SRC_LAYERS="${SRC_LAYERS} ${SRC_STX_DIR}/meta-stx-integ"
 
     for src_layer in ${SRC_LAYERS}; do
         RUN_CMD="bitbake-layers add-layer ${src_layer}"
