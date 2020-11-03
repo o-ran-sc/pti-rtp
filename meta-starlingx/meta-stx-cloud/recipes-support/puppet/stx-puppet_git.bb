@@ -37,6 +37,7 @@ SRC_URI = " \
 	file://${BPN}/0007-puppet-manifests-etcd-override-typo-and-journalctl.patch \
 	file://${BPN}/0008-puppet-manifests-keystone-include-platform-client.patch \
 	file://${BPN}/0009-puppet-manifests-lvm-remove-lvmetad.patch \
+	file://${BPN}/0010-puppet-manifest-apply-workaround-to-ignore-known-err.patch \
 	file://${BPN}/get-boot-device-from-cmdline.patch \
 	file://${BPN}/poky-specific-apply-network-config-script.patch \
 	file://${BPN}/apply_network_config_poky.sh \
