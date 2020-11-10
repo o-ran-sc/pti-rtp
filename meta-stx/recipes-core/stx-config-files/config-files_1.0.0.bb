@@ -580,6 +580,9 @@ pkg_postinst_ontarget_pam-config() {
 	
 	cp -f ${datadir}/starlingx/stx.system-auth ${sysconfdir}/pam.d/system-auth
 	cp -f ${datadir}/starlingx/sshd.pam    ${sysconfdir}/pam.d/sshd
+
+	sed -i -e '/password .*pam_ldap.so/,/session .*revoke/ s/^$/password required pam_deny.so\n/g' \
+		${sysconfdir}/pam.d/system-auth
 }
 
 pkg_postinst_ontarget_rabbitmq-server-config() {
