@@ -50,6 +50,7 @@ SRC_URI = "git://opendev.org/starlingx/metal.git;protocol=${PROTOCOL};rev=${SRCR
 	file://0010-libamon-add-shared-option.patch \
 	file://0011-kickstarts-adjustment-fnd-fixes-or-poky-stx.patch \
 	file://0012-kickstarts-add-setting-for-debain-style-networking.patch \
+	file://0013-kickstarts-add-vlan-setting-for-debain-style-network.patch \
 	"
 
 inherit setuptools systemd
