@@ -1,0 +1,43 @@
+From 97228a9287bec2049767d175f97226d90b4be943 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sun, 22 Nov 2020 22:00:58 +0800
+Subject: [PATCH] kickstarts: add vlan setting for debain style networking
+
+Yocto uses debain style for networking, the previous patch
+kickstarts-add-setting-for-debain-style-networking.patch
+has fixed the non-vlan scenario but not for vlan scenario,
+so add vlan settings as well.
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ bsp-files/kickstarts/post_net_common.cfg | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/bsp-files/kickstarts/post_net_common.cfg b/bsp-files/kickstarts/post_net_common.cfg
+index 46cdeeb..c000348 100755
+--- a/bsp-files/kickstarts/post_net_common.cfg
++++ b/bsp-files/kickstarts/post_net_common.cfg
+@@ -135,6 +135,18 @@ VLAN=yes
+ LINKDELAY=20
+ EOF
+
++    # For Debian style networking settings
++    cat << EOF >> /etc/network/interfaces
++auto $mgmt_dev vlan$mgmt_vlan
++
++iface $mgmt_dev inet dhcp
++
++iface vlan$mgmt_vlan inet dhcp
++    vlan-raw-device $mgmt_dev
++    pre-up /sbin/modprobe -q 8021q
++EOF
++
++
+     # Reject DHCPOFFER from DHCP server that doesn't send
+     # wrs-install-uuid option
+     echo "require wrs-install-uuid;" >>/etc/dhcp/dhclient.conf
+--
+2.7.4
+

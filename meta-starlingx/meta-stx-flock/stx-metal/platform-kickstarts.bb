@@ -7,6 +7,7 @@ LIC_FILES_CHKSUM = "file://kickstart/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd5
 SRC_URI += " \
 	file://kickstarts-adjustment-and-fixes-or-poky-stx.patch;striplevel=2 \
 	file://kickstarts-add-setting-for-debain-style-networking.patch;striplevel=2 \
+	file://kickstarts-add-vlan-setting-for-debain-style-network.patch;striplevel=2 \
 	"
 
 PACKAGES += " \
