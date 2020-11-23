@@ -1,0 +1,43 @@
+From 3d8cce4420f84bac979e9b10384fddb4d7c810d9 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 18 Nov 2020 09:45:54 +0800
+Subject: [PATCH] kubernetes.pp: add re-tries for docker login
+
+The docker login to local registry may sometimes fail:
+Error: docker login registry.local:9001 -u admin -p St8rlingX* returned 1 instead of one of [0]
+
+It's rare and the root cause is not found yet, but a re-try will always succeed,
+so add re-tries and a try sleep between re-tries to workaround it for now.
+
+Upstream-Status: Inappropriate [workaround]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ puppet-manifests/src/modules/platform/manifests/kubernetes.pp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/puppet-manifests/src/modules/platform/manifests/kubernetes.pp b/puppet-manifests/src/modules/platform/manifests/kubernetes.pp
+index 3fa1c8a..af69373 100644
+--- a/puppet-manifests/src/modules/platform/manifests/kubernetes.pp
++++ b/puppet-manifests/src/modules/platform/manifests/kubernetes.pp
+@@ -269,6 +269,8 @@ class platform::kubernetes::master::init
+     -> exec { 'login local registry':
+       command   => "docker login registry.local:9001 -u ${::platform::dockerdistribution::params::registry_username} -p ${::platform::dockerdistribution::params::registry_password}", # lint:ignore:140chars
+       logoutput => true,
++      tries     => 3,
++      try_sleep => 1,
+     }
+
+     -> exec { 'kubeadm to pre pull images':
+@@ -384,6 +386,8 @@ class platform::kubernetes::worker::init
+       exec { 'login local registry':
+         command   => "docker login registry.local:9001 -u ${::platform::dockerdistribution::params::registry_username} -p ${::platform::dockerdistribution::params::registry_password}", # lint:ignore:140chars
+         logoutput => true,
++        tries     => 3,
++        try_sleep => 1,
+       }
+
+       -> exec { 'load k8s pause image':
+--
+2.7.4
+
