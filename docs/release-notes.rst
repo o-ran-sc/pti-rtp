@@ -7,7 +7,7 @@ Release-notes
 =============
 
 
-This document provides the release notes for 2.0.0 of RTP.
+This document provides the release notes for 3.0.0 of RTP.
 
 .. contents::
    :depth: 3
@@ -27,9 +27,15 @@ Version history
 | 2020-06-14         | 2.0.0.             | Xiaohua Zhang      |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-|                    |                    |                    |                    |
+| 2020-11-23         | 3.0.0              | Xiaohua Zhang      |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+
+Version 3.0.0, 2020-11-23
+-------------------------
+- Third version (Cherry)
+- Based on version 2.0.0 (Bronze)
+- Add the AIO (all-in-one) 2 servers mode (High Availability)
 
 Version 2.0.0, 2020-06-14
 -------------------------
