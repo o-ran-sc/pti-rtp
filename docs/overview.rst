@@ -31,6 +31,8 @@ And for the network requirements, the following should be supported:
 
 2.High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
 
+In the Cherry release, besides the Bronze release features, it has the 2 server mode supported. And these 2 servers will be active and standby mode to provide the high availability (HA) capability.
+The controller functionality and storage functionality will be deployed at the 2 servers with standby-active mode managed by "service management". If one server or one service in one server has error, it will be switched from active to standby one to maintain the service availability.
 
 In the Bronze release, the following components and services are enabled:
 
@@ -166,7 +168,7 @@ Enable the ansible configuration functions for infrastructure itself including t
 
 NOTE: These features leverage the StarlingX (www.starlingx.io). And in Bronze release, these features are only avalaible for IA platform.
 
-NOTE: In this release single server solution is supported only. All the functionalities include controller functions, storage functions and compute functions are integrated in the single server.  
+NOTE: In Bronze release single server solution is supported only. All the functionalities include controller functions, storage functions and compute functions are integrated in the single server.  
 
 About Yocto and OpenEmbedded
 ----------------------------
