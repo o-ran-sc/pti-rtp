@@ -1,0 +1,67 @@
+From c08ad0a7c950cf35a3f178fe8b84beb227bfe5ca Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Fri, 13 Nov 2020 17:45:42 +0800
+Subject: [PATCH] poky-stx.rb: add vlan support for poky-stx
+
+Current rules in poky-stx.rb doesn't recognize vlan mode,
+so add the mode option and corresponding handling for vlan
+to support vlan.
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ lib/puppet/provider/network_config/poky-stx.rb | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/lib/puppet/provider/network_config/poky-stx.rb b/lib/puppet/provider/network_config/poky-stx.rb
+index 17fa34c..9b0506a 100644
+--- a/lib/puppet/provider/network_config/poky-stx.rb
++++ b/lib/puppet/provider/network_config/poky-stx.rb
+@@ -45,7 +45,7 @@ Puppet::Type.type(:network_config).provide(:pokystx) do
+
+     # These fields are going to get rearranged to resolve issue 16
+     # https://github.com/adrienthebo/puppet-network/issues/16
+-    attr_accessor :ipaddress, :netmask, :family, :method, :mtu
++    attr_accessor :ipaddress, :netmask, :family, :method, :mtu, :mode
+
+     # Options hash
+     attr_reader :options
+@@ -66,6 +66,7 @@ Puppet::Type.type(:network_config).provide(:pokystx) do
+         :family    => @family,
+         :method    => @method,
+         :mtu       => @mtu,
++        :mode      => @mode,
+         :options   => squeeze_options
+       }
+
+@@ -185,6 +186,7 @@ Puppet::Type.type(:network_config).provide(:pokystx) do
+           #Instance[name].name   = name
+           Instance[name].family = family
+           Instance[name].method = method
++          Instance[name].mode   = :raw
+
+         else
+           # If we match on a string with a leading iface, but it isn't in the
+@@ -219,6 +221,7 @@ Puppet::Type.type(:network_config).provide(:pokystx) do
+             when 'address'; Instance[name].ipaddress    = val
+             when 'netmask'; Instance[name].netmask      = val
+             when 'mtu';     Instance[name].mtu          = val
++            when 'vlan-raw-device'; Instance[name].mode = :vlan
+             else            Instance[name].options[key] << val
+             end
+           else
+@@ -260,6 +263,11 @@ Puppet::Type.type(:network_config).provide(:pokystx) do
+         stanza << %{iface #{provider.name} #{provider.family} #{provider.method}}
+       end
+
++      if provider.options['VLAN'] and  provider.options['VLAN'] == 'yes'
++        raw_device = provider.options['PHYSDEV']
++        stanza << "    vlan-raw-device #{raw_device}"
++      end
++
+       [
+         [:ipaddress, 'address'],
+         [:netmask,   'netmask'],
+--
+2.7.4
