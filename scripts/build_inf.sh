@@ -293,8 +293,9 @@ prepare_src () {
         echo_info "Use the cloned oran repo: ${CLONED_ORAN_REPO}"
         mkdir -p ${SRC_ORAN_DIR}/rtp
         cd ${SRC_ORAN_DIR}/rtp
-        rm -rf scripts
+        rm -rf meta-stx-oran scripts
         ln -sf ${CLONED_ORAN_REPO}/scripts scripts
+        ln -sf ${CLONED_ORAN_REPO}/meta-stx-oran meta-stx-oran
     else
         echo_info "Cloning oran layer:"
         cd ${SRC_ORAN_DIR}
@@ -370,6 +371,8 @@ add_layer_stx_build () {
 
         esac
     done
+    SRC_LAYERS="${SRC_LAYERS} ${SRC_ORAN_DIR}/rtp/meta-stx-oran"
+
 
     for src_layer in ${SRC_LAYERS}; do
         RUN_CMD="bitbake-layers add-layer ${src_layer}"
@@ -450,6 +453,7 @@ add_layer_anaconda_build () {
     SRC_LAYERS="${SRC_LAYERS} ${SRC_LAYER_DIR}/meta-anaconda"
     SRC_LAYERS="${SRC_LAYERS} ${SRC_STX_DIR}/meta-stx-distro"
     SRC_LAYERS="${SRC_LAYERS} ${SRC_STX_DIR}/meta-stx-integ"
+    SRC_LAYERS="${SRC_LAYERS} ${SRC_ORAN_DIR}/rtp/meta-stx-oran"
 
     for src_layer in ${SRC_LAYERS}; do
         RUN_CMD="bitbake-layers add-layer ${src_layer}"
