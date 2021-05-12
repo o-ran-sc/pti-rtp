@@ -1,17 +1,16 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
-SRCREV_FORMAT = "opendev"
-SRCREV_opendev = "d778e862571957ece3c404c0c37d325769772fde"
-SUBPATH0 = "openldap-config"
-DSTSUFX0 = "stx-configfiles"
+inherit stx-metadata
+
+STX_REPO = "config-files"
+STX_SUBPATH = "openldap-config"
 
 LICENSE_append = "& Apache-2.0"
 LIC_FILES_CHKSUM += "\
-	file://stx-configfiles-LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
+	file://${STX_METADATA_PATH}/files/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57 \
 	"
 
 SRC_URI += " \
-	git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX0};branch="r/stx.3.0";subpath=${SUBPATH0};name=opendev \
 	file://rootdn-should-not-bypass-ppolicy.patch \
 	file://0021-openldap-and-stx-source-and-config-files.patch \
 	"
@@ -109,14 +108,6 @@ EXTRA_OECONF += " \
 # --enable-wrappers
 # --enable-moznss-compatibility=yes
 
-do_unpack_append() {
-    bb.build.exec_func('do_copy_config_files', d)
-}
-
-do_copy_config_files () {
-    cp -pf ${WORKDIR}/${DSTSUFX0}/files/LICENSE ${S}/stx-configfiles-LICENSE
-}
-
 do_configure_append () {
    cd ${S}
    ln -f -s ${S}/contrib/slapd-modules/smbk5pwd/smbk5pwd.c servers/slapd/overlays
@@ -162,16 +153,15 @@ do_install_append () {
 
 	sed -i -e 's:\(/sbin/runuser\):/usr\1:g' ${D}/usr/libexec/openldap/functions 
 
-	install -m 755 ${WORKDIR}/${DSTSUFX0}/files/initscript ${D}/${sysconfdir}/init.d/openldap
-        install -m 600 ${WORKDIR}/${DSTSUFX0}/files/slapd.conf ${D}/${sysconfdir}/openldap/slapd.conf
+	install -m 755 ${STX_METADATA_PATH}/files/initscript ${D}/${sysconfdir}/init.d/openldap
+	install -m 600 ${STX_METADATA_PATH}/files/slapd.conf ${D}/${sysconfdir}/openldap/slapd.conf
 
-        install -m 600 ${WORKDIR}/${DSTSUFX0}/files/initial_config.ldif ${D}/${sysconfdir}/openldap/initial_config.ldif
+	install -m 600 ${STX_METADATA_PATH}/files/initial_config.ldif ${D}/${sysconfdir}/openldap/initial_config.ldif
 
-        # install -D -m 644 ${WORKDIR}/${DSTSUFX0}/files/slapd.service ${D}/${sysconfdir}/systemd/system/slapd.service
-        install -D -m 644 ${WORKDIR}/${DSTSUFX0}/files/slapd.service ${D}/${systemd_system_unitdir}/slapd.service
-        sed -i -e 's|/var/run|/run|' ${D}/${systemd_system_unitdir}/slapd.service
+	install -D -m 644 ${STX_METADATA_PATH}/files/slapd.service ${D}/${systemd_system_unitdir}/slapd.service
+	sed -i -e 's|/var/run|/run|' ${D}/${systemd_system_unitdir}/slapd.service
 
-        install -m 644 ${WORKDIR}/${DSTSUFX0}/files/slapd.sysconfig ${D}/${sysconfdir}/sysconfig/slapd
+	install -m 644 ${STX_METADATA_PATH}/files/slapd.sysconfig ${D}/${sysconfdir}/sysconfig/slapd
 
 }
 
