@@ -1,9 +1,9 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
-SRCREV_FORMAT = "opendev"
-SRCREV_opendev = "d778e862571957ece3c404c0c37d325769772fde"
-SUBPATH0 = "syslog-ng-config"
-DSTSUFX0 = "stx-configfiles"
+inherit stx-metadata
+
+STX_REPO = "config-files"
+STX_SUBPATH = "syslog-ng-config"
 
 LICENSE_append = "& Apache-2.0"
 LIC_FILES_CHKSUM += "\
@@ -11,7 +11,6 @@ LIC_FILES_CHKSUM += "\
 	"
 
 SRC_URI += " \
-	git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX0};branch="r/stx.3.0";subpath=${SUBPATH0};name=opendev \
 	file://syslog-ng-config-parse-err.patch;striplevel=3 \
 	file://syslog-ng-config-systemd-service.patch;striplevel=3 \
 	file://syslog-ng-conf-replace-match-with-message.patch;striplevel=3 \ 
@@ -23,12 +22,12 @@ do_unpack_append() {
 }
 
 do_copy_config_files () {
-    cp -pf ${WORKDIR}/${DSTSUFX0}/files/LICENSE ${S}/stx-configfiles-LICENSE
-    cp -pf ${WORKDIR}/${DSTSUFX0}/files/syslog-ng.conf ${S}/syslog-ng.conf
-    cp -pf ${WORKDIR}/${DSTSUFX0}/files/syslog-ng.service ${S}/syslog-ng.service
-    cp -pf ${WORKDIR}/${DSTSUFX0}/files/syslog-ng.logrotate ${S}/syslog-ng.logortate
-    cp -pf ${WORKDIR}/${DSTSUFX0}/files/remotelogging.conf ${S}/remotelogging.conf
-    cp -pf ${WORKDIR}/${DSTSUFX0}/files//fm_event_syslogger ${S}/fm_event_syslogger
+    cp -pf ${STX_METADATA_PATH}/files/LICENSE ${S}/stx-configfiles-LICENSE
+    cp -pf ${STX_METADATA_PATH}/files/syslog-ng.conf ${S}/syslog-ng.conf
+    cp -pf ${STX_METADATA_PATH}/files/syslog-ng.service ${S}/syslog-ng.service
+    cp -pf ${STX_METADATA_PATH}/files/syslog-ng.logrotate ${S}/syslog-ng.logortate
+    cp -pf ${STX_METADATA_PATH}/files/remotelogging.conf ${S}/remotelogging.conf
+    cp -pf ${STX_METADATA_PATH}/files//fm_event_syslogger ${S}/fm_event_syslogger
 }
 
 do_install_append () {
