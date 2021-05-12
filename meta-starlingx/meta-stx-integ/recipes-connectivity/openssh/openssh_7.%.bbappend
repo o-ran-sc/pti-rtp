@@ -15,15 +15,16 @@
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
-BRANCH = "r/stx.3.0"
-SRCREV = "d778e862571957ece3c404c0c37d325769772fde"
+inherit stx-metadata
+
+STX_REPO = "config-files"
+STX_SUBPATH = "openssh-config"
 
 SRC_URI += "\
     file://stx/sshd.init \
     file://stx/sshd-keygen \
     file://stx/sshd-keygen.service \
     file://stx/sshd.sysconfig \
-    git://opendev.org/starlingx/config-files.git;protocol=https;rev=${SRCREV};branch=${BRANCH};destsuffix=stx-configfiles;subpath=openssh-config \
     file://openssh-config-rm-hmac-ripemd160.patch \
 "
 
@@ -32,13 +33,13 @@ do_unpack_append() {
 }
 
 do_copy_config_files () {
-    cp -f ${WORKDIR}/stx-configfiles/files/sshd_config ${S}
+    cp -f ${STX_METADATA_PATH}/files/sshd_config ${S}
     # remove the unsupported and deprecated options
     sed -i -e 's/^\(GSSAPIAuthentication.*\)/#\1/' \
            -e 's/^\(GSSAPICleanupCredentials.*\)/#\1/' \
            -e 's/^\(UsePrivilegeSeparation.*\)/#\1/' \
            ${S}/sshd_config
-    cp -f ${WORKDIR}/stx-configfiles/files/ssh_config ${S}
+    cp -f ${STX_METADATA_PATH}/files/ssh_config ${S}
 }
 
 SYSTEMD_SERVICE_${PN}-sshd = "sshd.service"
@@ -55,7 +56,7 @@ do_install_append () {
     install -m 644 ${WORKDIR}/stx/sshd.sysconfig ${D}/${sysconfdir}/sysconfig/sshd
 
     install -m 755 ${WORKDIR}/stx/sshd-keygen ${D}/${sbindir}/sshd-keygen
-    install -m644 ${WORKDIR}/stx-configfiles/files/sshd.service ${D}/${systemd_system_unitdir}/sshd.service
+    install -m644 ${STX_METADATA_PATH}/files/sshd.service ${D}/${systemd_system_unitdir}/sshd.service
     install -m644 ${WORKDIR}/stx/sshd-keygen.service ${D}/${systemd_system_unitdir}/sshd-keygen.service
 
     install -d ${D}/${sysconfdir}/tmpfiles.d
