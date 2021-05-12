@@ -7,7 +7,7 @@ LICENSE = "MPL-1.1"
 LIC_FILES_CHKSUM = "file://LICENSE-MPL-RabbitMQ;md5=ce8293a7cc187353c90cb24a8ecee4ce"
 
 SRC_URI = " \
-    http://www.rabbitmq.com/releases/rabbitmq-server/v${PV}/${PN}-${PV}.tar.xz \
+    https://github.com/rabbitmq/${BPN}/releases/download/rabbitmq_v3_6_5/${BP}.tar.xz \
     file://rabbitmq-server-0001-Remove-excessive-sd_notify-code.patch \
     file://rabbitmq-server-0002-Add-systemd-notification-support.patch \
     file://rabbitmq-server-0003-Revert-Distinct-exit-codes-for-CLI-utilities.patch \
