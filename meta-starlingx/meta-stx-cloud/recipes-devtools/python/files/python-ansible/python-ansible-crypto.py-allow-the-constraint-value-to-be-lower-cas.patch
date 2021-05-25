@@ -1,0 +1,31 @@
+From 1efb4cc41494201f6773ce2e92a562c96708dcb7 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 26 May 2021 14:17:07 +0800
+Subject: [PATCH] crypto.py: allow the constraint value to be lower case
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ lib/ansible/module_utils/crypto.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/ansible/module_utils/crypto.py b/lib/ansible/module_utils/crypto.py
+index 9b579a8..550ec26 100644
+--- a/lib/ansible/module_utils/crypto.py
++++ b/lib/ansible/module_utils/crypto.py
+@@ -1813,9 +1813,9 @@ def cryptography_get_basic_constraints(constraints):
+     if constraints:
+         for constraint in constraints:
+             if constraint.startswith('CA:'):
+-                if constraint == 'CA:TRUE':
++                if constraint == 'CA:TRUE' or constraint == 'CA:true':
+                     ca = True
+-                elif constraint == 'CA:FALSE':
++                elif constraint == 'CA:FALSE' or constraint == 'CA:false':
+                     ca = False
+                 else:
+                     raise OpenSSLObjectError('Unknown basic constraint value "{0}" for CA'.format(constraint[3:]))
+-- 
+2.7.4
+
