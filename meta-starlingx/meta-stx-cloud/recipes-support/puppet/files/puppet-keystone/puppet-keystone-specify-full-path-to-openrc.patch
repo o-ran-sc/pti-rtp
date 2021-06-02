@@ -4,6 +4,9 @@ Date: Wed, 8 Jan 2020 15:54:44 -0800
 Subject: [PATCH] puppet-keystone: specify full path to openrc
 
 issue 48: keystone endpoints cannot be populated properly
+
+Upstream-Status: Inappropriate [poky-stx specific]
+
 ---
  manifests/deps.pp | 7 +++++++
  1 file changed, 7 insertions(+)

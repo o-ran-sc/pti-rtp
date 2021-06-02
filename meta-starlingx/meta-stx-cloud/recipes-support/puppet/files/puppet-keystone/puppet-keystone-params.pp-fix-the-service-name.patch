@@ -3,6 +3,8 @@ From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 11 Mar 2020 11:12:34 +0800
 Subject: [PATCH] params.pp: fix the service name of openstack-keystone
 
+Upstream-Status: Inappropriate [poky-stx specific]
+
 Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
  manifests/params.pp | 2 +-
