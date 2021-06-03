@@ -162,8 +162,6 @@ RDEPENDS_packagegroup-stx-upstream = " \
 	python-ironicclient \
 	python-keystoneauth1 \
 	python-keystoneclient \
-	python-magnumclient \
-	python-muranoclient \
 	python-novaclient \
 	python-openstackclient \
 	python-openstacksdk \
