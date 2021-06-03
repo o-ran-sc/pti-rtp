@@ -1,5 +1,9 @@
 
-RDEPENDS_${PN} += " bash"
-PV = "0.25.0+git${SRCPV}"
-SRCREV="9cd0ef2ac5b8cc90df344f69edc8ac68224f292e"
+PV = "0.36.0+git${SRCPV}"
+SRCREV="8b85e8c954baf550aefad83d8b48955a3c2382ed"
 
+RDEPENDS_${PN} += " \
+	bash \
+	python-munch \
+	python2-os-service-types \
+	"
