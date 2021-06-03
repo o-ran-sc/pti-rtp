@@ -5,11 +5,11 @@ SECTION = "devel/python"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=34400b68072d710fecd0a2940a0d1658"
 
-SRCREV = "44a4dbd6ce2642daeaca9f45ac99e2d1b39e805a"
+SRCREV = "40c19aa44361e13ac997d325d357d3e4748fa063"
 SRCNAME = "python-glanceclient"
 BRANCH = "stable/train"
 PROTOCOL = "https"
-PV = "2.16.0+git${SRCPV}"
+PV = "2.17.0+git${SRCPV}"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/openstack/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH}"
