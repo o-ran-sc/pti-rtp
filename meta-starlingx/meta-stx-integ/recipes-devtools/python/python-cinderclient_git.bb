@@ -5,11 +5,11 @@ SECTION = "devel/python"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3572962e13e5e739b30b0864365e0795"
 
-SRCREV = "4e17e1d1912f1902a37e4db543e38cdbe3961358"
+SRCREV = "a63d4d651ae2f7614224f716b3ef8ebf392a6b78"
 SRCNAME = "python-cinderclient"
 BRANCH = "stable/train"
 PROTOCOL = "https"
-PV = "4.1.0+git${SRCPV}"
+PV = "5.0.0+git${SRCPV}"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/openstack/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH}"
