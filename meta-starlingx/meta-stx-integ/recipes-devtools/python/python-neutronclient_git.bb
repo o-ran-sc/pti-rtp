@@ -5,11 +5,11 @@ SECTION = "devel/python"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
 
-SRCREV = "680b417111dbbda9e318700286c4efd9055f1af3"
+SRCREV = "115f60f0056899d536d5dd3e6491cd0f999cfd90"
 SRCNAME = "python-neutronclient"
 BRANCH = "stable/train"
 PROTOCOL = "https"
-PV = "6.12.0+git${SRCPV}"
+PV = "6.14.0+git${SRCPV}"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/openstack/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH}"
@@ -34,6 +34,7 @@ RDEPENDS_${PN} += " \
         python-netaddr \
         python-osc-lib \
         python-oslo.i18n \
+        python-oslo.log \
         python-oslo.serialization \
         python-oslo.utils \
         python-os-client-config \
