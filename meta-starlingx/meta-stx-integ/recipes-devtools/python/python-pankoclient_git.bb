@@ -1,11 +1,10 @@
 
 DESCRIPTION = "python-pankoclient"
-STABLE = "master"
 PROTOCOL = "https"
-BRANCH = "master"
-SRCREV = "572aee9cf6ac618eb5d1ea325f9e59414d387dbf"
+BRANCH = "stable/train"
+SRCREV = "28b55860a2e71fe1fd015d868d64500d3b36470c"
 S = "${WORKDIR}/git"
-PV = "0.5.0"
+PV = "0.7.0+git${SRCPV}"
 
 LICENSE = "Apache-2.0"
 
