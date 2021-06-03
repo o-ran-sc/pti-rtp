@@ -1,8 +1,8 @@
 
 
-PV = "3.19.0+git${SRCPV}"
-SRCREV = "83359fbe4fd7e5850abd45a467bf197c284519b1"
+PV = "4.0.0+git${SRCPV}"
+SRCREV = "aa64eb6b0acc6e049c81fd856b75cda2f905c84c"
 
 SRC_URI = " \
-        git://github.com/openstack/python-openstackclient.git;branch=stable/stein \
+        git://github.com/openstack/python-openstackclient.git;branch=stable/train \
 	"
