@@ -9,4 +9,5 @@ SRCREV = "237737bbd2488bcae6822dfadc4977d86ea642d7"
 
 SRC_URI += "\
 	file://nfs-utils-config-remove-the-f-option-for-rpc.mountd.patch \
+	file://lighttpd-config-init-script-chroot.patch \
 	"

@@ -1,3 +1,7 @@
+Upstream-Status: Inappropriate [poky-stx specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+
 diff -ru a/lighttpd-config/files/lighttpd.init b/lighttpd-config/files/lighttpd.init
 --- a/lighttpd-config/files/lighttpd.init       2020-04-29 07:07:49.040288478 +0000
 +++ b/lighttpd-config/files/lighttpd.init       2020-04-29 07:09:35.332285981 +0000
