@@ -7,12 +7,12 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=7cdb54622cacc9bc9b2883091e6dd669"
 
 SRC_URI = "git://github.com/openstack/python-novaclient.git;branch=stable/pike"
 
-SRCREV = "62bf8809c660ed0675f301c235b1d434caeaf580"
+SRCREV = "cd396b8b61ed7496f4166a2237b27aa0a138f6e5"
 SRCNAME = "python-novaclient"
 PROTOCOL = "https"
 BRANCH = "stable/train"
 S = "${WORKDIR}/git"
-PV = "13.0.0+git${SRCPV}"
+PV = "15.1.0+git${SRCPV}"
 
 SRC_URI = "git://github.com/openstack/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH}"
 
