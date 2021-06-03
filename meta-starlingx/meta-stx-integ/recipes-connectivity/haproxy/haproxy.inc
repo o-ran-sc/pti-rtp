@@ -22,17 +22,16 @@ DEPENDS = "libpcre openssl zlib"
 
 MAJOR_VER = "${@'.'.join(d.getVar('PV').split('.')[0:2])}"
 
-SRCREV_FORMAT = "opendev"
-SRCREV_opendev = "d778e862571957ece3c404c0c37d325769772fde"
-SUBPATH0 = "haproxy-config"
-DSTSUFX0 = "stx-configfiles"
+inherit stx-metadata
+
+STX_REPO = "config-files"
+STX_SUBPATH = "haproxy-config"
 
 SRC_URI = "\
-        git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX0};branch="r/stx.3.0";subpath=${SUBPATH0};name=opendev \
 	https://www.haproxy.org/download/${MAJOR_VER}/src/haproxy-${PV}.tar.gz \
-           file://haproxy.service \
-           file://haproxy.cfg \
-          "
+	file://haproxy.service \
+	file://haproxy.cfg \
+	"
 
 inherit systemd useradd
 
@@ -98,9 +97,9 @@ do_install() {
 	install -D -m 755 contrib/iprange/iprange ${D}${bindir}/iprange
 	
 	install -d -m 755 ${D}/${sysconfdir}/haproxy/errors/
-	install -m 755 ${WORKDIR}/stx-configfiles/files/503.http ${D}/${sysconfdir}/haproxy/errors/503.http
+	install -m 755 ${STX_METADATA_PATH}/files/503.http ${D}/${sysconfdir}/haproxy/errors/503.http
 	
-	install -p -D -m 0755 ${WORKDIR}/stx-configfiles/files/haproxy.sh ${D}/${sysconfdir}/init.d/haproxy
+	install -p -D -m 0755 ${STX_METADATA_PATH}/files/haproxy.sh ${D}/${sysconfdir}/init.d/haproxy
 }
 
 DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
