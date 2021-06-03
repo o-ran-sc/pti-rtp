@@ -5,11 +5,11 @@ SECTION = "devel/python"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1dece7821bf3fd70fe1309eaa37d52a2"
 
-SRCREV = "6d03e61986418a3a95635405ae65ae9f28a5c61e"
+SRCREV = "a8651ec642058a17cd7a6b3648d8250450a73efb"
 SRCNAME = "python-aodhclient"
 BRANCH = "stable/train"
 PROTOCOL = "https"
-PV = "1.2.0+git${SRCPV}"
+PV = "1.3.0+git${SRCPV}"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/openstack/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH}"
@@ -36,6 +36,7 @@ RDEPENDS_${PN} += " \
         python-six \
         python-osc-lib \
 	python-pyparsing \
+	python-osprofiler \
 	"
 
 
