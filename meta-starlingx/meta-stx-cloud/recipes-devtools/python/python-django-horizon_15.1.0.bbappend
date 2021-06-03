@@ -1,15 +1,10 @@
+inherit stx-metadata
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-SRC_URI += " \
-	file://${BPN}/guni_config.py \
-	file://${BPN}/horizon-assets-compress \
-	file://${BPN}/horizon-clearsessions \
-	file://${BPN}/horizon.init \
-	file://${BPN}/horizon-patching-restart \
-	file://${BPN}/openstack-dashboard-httpd-2.4.conf \
-	file://${BPN}/openstack-dashboard-httpd-logging.conf \
-	file://${BPN}/python-django-horizon-logrotate.conf \
-	file://${BPN}/python-django-horizon-systemd.conf \
+STX_REPO = "upstream"
+STX_SUBPATH = "openstack/python-horizon/centos/files"
+
+SRC_URI_STX += " \
+	file://0001-Remove-the-hard-coded-internal-URL-for-keystone.patch \
 	"
 
 do_configure_prepend () {
@@ -23,8 +18,8 @@ do_configure_prepend () {
 	rm -rf horizon.egg-info
 
 	# drop config snippet
-	cp -p ${WORKDIR}/${BPN}/openstack-dashboard-httpd-logging.conf .
-	cp -p ${WORKDIR}/${BPN}/guni_config.py .
+	cp -p ${STX_METADATA_PATH}/openstack-dashboard-httpd-logging.conf .
+	cp -p ${STX_METADATA_PATH}/guni_config.py .
 
 	# customize default settings
 	# WAS [PATCH] disable debug, move web root
@@ -56,20 +51,20 @@ do_install_append () {
 	# STX
 	install -d -m 755 ${D}/opt/branding
 	mkdir -p ${D}${sysconfdir}/rc.d/init.d
-	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon.init ${D}${sysconfdir}/rc.d/init.d/horizon
-	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon.init ${D}${sysconfdir}/init.d/horizon
-	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon-clearsessions ${D}/${bindir}/horizon-clearsessions
-	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon-patching-restart ${D}/${bindir}/horizon-patching-restart
-	install -m 755 -D -p ${WORKDIR}/${BPN}/horizon-assets-compress ${D}/${bindir}/horizon-assets-compress
+	install -m 755 -D -p ${STX_METADATA_PATH}/horizon.init ${D}${sysconfdir}/rc.d/init.d/horizon
+	install -m 755 -D -p ${STX_METADATA_PATH}/horizon.init ${D}${sysconfdir}/init.d/horizon
+	install -m 755 -D -p ${STX_METADATA_PATH}/horizon-clearsessions ${D}/${bindir}/horizon-clearsessions
+	install -m 755 -D -p ${STX_METADATA_PATH}/horizon-patching-restart ${D}/${bindir}/horizon-patching-restart
+	install -m 755 -D -p ${STX_METADATA_PATH}/horizon-assets-compress ${D}/${bindir}/horizon-assets-compress
 
 	# drop httpd-conf snippet
-	install -m 0644 -D -p ${WORKDIR}/${BPN}/openstack-dashboard-httpd-2.4.conf ${D}${sysconfdir}/httpd/conf.d/openstack-dashboard.conf
+	install -m 0644 -D -p ${STX_METADATA_PATH}/openstack-dashboard-httpd-2.4.conf ${D}${sysconfdir}/httpd/conf.d/openstack-dashboard.conf
 	install -d -m 755 ${D}${datadir}/openstack-dashboard
 	install -d -m 755 ${D}${sysconfdir}/openstack-dashboard
 
 	# create directory for systemd snippet
 	mkdir -p ${D}${systemd_system_unitdir}/httpd.service.d/
-	cp ${WORKDIR}/${BPN}/python-django-horizon-systemd.conf ${D}${systemd_system_unitdir}/httpd.service.d/openstack-dashboard.conf
+	cp ${STX_METADATA_PATH}/python-django-horizon-systemd.conf ${D}${systemd_system_unitdir}/httpd.service.d/openstack-dashboard.conf
 
 	# Copy everything to /usr/share
 	mv ${D}${libdir}/python2.7/site-packages/openstack_dashboard \
@@ -88,7 +83,6 @@ do_install_append () {
 	mv ${D}${datadir}/openstack-dashboard/openstack_dashboard/local/local_settings.py.example ${D}${sysconfdir}/openstack-dashboard/local_settings
 
 	mv ${D}${datadir}/openstack-dashboard/openstack_dashboard/conf/*.json ${D}${sysconfdir}/openstack-dashboard
-	cp -a  ${S}/openstack_dashboard/conf/cinder_policy.d ${D}${sysconfdir}/openstack-dashboard
 	cp -a  ${S}/openstack_dashboard/conf/nova_policy.d ${D}${sysconfdir}/openstack-dashboard
 
 	# copy static files to ${datadir}/openstack-dashboard/static
@@ -103,7 +97,7 @@ do_install_append () {
 
 	# place logrotate config:
 	mkdir -p ${D}${sysconfdir}/logrotate.d
-	cp -a ${WORKDIR}/${BPN}/python-django-horizon-logrotate.conf ${D}${sysconfdir}/logrotate.d/openstack-dashboard
+	cp -a ${STX_METADATA_PATH}/python-django-horizon-logrotate.conf ${D}${sysconfdir}/logrotate.d/openstack-dashboard
 
 	chown -R root:root ${D}
 }
