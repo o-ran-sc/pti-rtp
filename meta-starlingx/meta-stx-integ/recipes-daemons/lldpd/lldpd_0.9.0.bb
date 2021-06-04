@@ -20,35 +20,28 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/ISC;md5=f3b90e
 
 DEPENDS = "libbsd libevent json-c"
 
-
-# Patches pullled from
-# PROTOCOL = "https"
-# BRANCH = "r/stx.3.0"
-# SRCNAME = "integ"
-# SRCREV = "0bf4b546df8c7fdec8cfc6cb6f71b9609ee54306"
-# git://opendev.org/starlingx/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH};destsuffix=stx-patches;subpath=networking/lldpd 
-
 SRC_URI = "\
     http://media.luffy.cx/files/${BPN}/${BPN}-${PV}.tar.gz \
-    file://lldpd-interface-show.patch \
-    file://lldpd-create-run-dir.patch \
-    file://lldpd-i40e-disable.patch \
-    file://lldpd-clear-station.patch \
-    file://i40e-lldp-configure.sh \
-    file://lldpd.init \
-    file://lldpd.default\
     "
 
 SRC_URI[md5sum] = "ed0226129b0c90b3a45c273fe1aba8de"
 SRC_URI[sha256sum] = "300e4a590f7bf21c79d5ff94c2d6a69d0b2c34dbc21e17281496462a04ca80bc"
 
-do_patch_append () {
-    bb.build.exec_func('stx_do_patch', d)
-}
+inherit stx-metadata
 
-SOURCE1 = "${WORKDIR}/lldpd.init"
-SOURCE2 = "${WORKDIR}/lldpd.default"
-SOURCE3 = "${WORKDIR}/i40e-lldp-configure.sh"
+STX_REPO = "integ"
+STX_SUBPATH = "networking/lldpd"
+
+SRC_URI_STX = " \
+    file://centos/files/lldpd-create-run-dir.patch \
+    file://centos/files/lldpd-i40e-disable.patch \
+    file://centos/files/lldpd-clear-station.patch \
+    file://${BP}/lldpd-interface-show.patch \
+    "
+
+SOURCE1 = "${STX_METADATA_PATH}/${BP}/lldpd.init"
+SOURCE2 = "${STX_METADATA_PATH}/${BP}/lldpd.default"
+SOURCE3 = "${STX_METADATA_PATH}/centos/files/i40e-lldp-configure.sh"
 
 DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
 
