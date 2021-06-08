@@ -1,13 +1,19 @@
+inherit stx-metadata
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+STX_REPO = "integ"
+STX_SUBPATH = "config/puppet-modules/${BPN}/centos/files"
+
+SRC_URI_STX += " \
+	file://puppet-network-Kilo-quilt-changes.patch;striplevel=5 \
+	file://puppet-network-support-ipv6.patch;striplevel=5 \
+	file://Don-t-write-absent-to-redhat-route-files-and-test-fo.patch;striplevel=5 \
+	file://fix-absent-options.patch;striplevel=5 \
+	file://permit-inservice-update-of-static-routes.patch;striplevel=5 \
+	file://ipv6-static-route-support.patch;striplevel=5 \
+	file://route-options-support.patch;striplevel=5 \
+	"
+
 SRC_URI += " \
-	file://${BPN}/puppet-network-Kilo-quilt-changes.patch;striplevel=5 \
-	file://${BPN}/puppet-network-support-ipv6.patch;striplevel=5 \
-	file://${BPN}/Don-t-write-absent-to-redhat-route-files-and-test-fo.patch;striplevel=5 \
-	file://${BPN}/fix-absent-options.patch;striplevel=5 \
-	file://${BPN}/permit-inservice-update-of-static-routes.patch;striplevel=5 \
-	file://${BPN}/ipv6-static-route-support.patch;striplevel=5 \
-	file://${BPN}/route-options-support.patch;striplevel=5 \
 	file://${BPN}/0001-Stx-uses-puppet-boolean-instead-of-adrien-boolean.patch \
 	file://${BPN}/puppet-network-updates-for-poky-stx.patch \
 	file://${BPN}/puppet-network-config-poky-provider.patch \
