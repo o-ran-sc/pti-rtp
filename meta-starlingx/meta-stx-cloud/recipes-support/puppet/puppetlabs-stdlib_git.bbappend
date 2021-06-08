@@ -8,10 +8,18 @@ PROTOCOL = "https"
 BRANCH = "master"
 PV = "4.18.0"
 
+inherit stx-metadata
+
+STX_REPO = "integ"
+STX_SUBPATH = "config/puppet-modules/puppet-stdlib-4.12.0/centos/patches"
+
+SRC_URI_STX += " \
+	file://0001-Filter-password-in-logs.patch \
+	"
+
 SRC_URI = " \
 	git://github.com/puppetlabs/puppetlabs-stdlib.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
 	file://puppetlabs-stdlib/Add-gemspec.patch \
-	file://puppetlabs-stdlib/0001-Filter-password-in-logs.patch \
 	"
 
 S = "${WORKDIR}/git"
