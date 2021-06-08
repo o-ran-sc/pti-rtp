@@ -1,8 +1,11 @@
+inherit stx-metadata
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-SRC_URI += " \
-	file://puppet-oslo/0001-Remove-log_dir-from-conf-files.patch \
-	file://puppet-oslo/0002-add-psycopg2-drivername-to-postgresql-settings.patch \
+STX_REPO = "integ"
+STX_SUBPATH = "config/puppet-modules/openstack/${BP}/centos/patches"
+
+SRC_URI_STX += " \
+	file://0001-Remove-log_dir-from-conf-files.patch \
+	file://0002-add-psycopg2-drivername-to-postgresql-settings.patch \
 	"
 
 do_install_append () {
