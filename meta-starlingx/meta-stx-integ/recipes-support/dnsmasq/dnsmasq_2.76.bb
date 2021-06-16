@@ -12,11 +12,10 @@ machines. \
 HOMEPAGE = "http://www.thekelleys.org.uk/dnsmasq"
 SECTION = "net"
 
+inherit stx-metadata
 
-SRCREV_FORMAT = "opendev"
-SRCREV_opendev = "d778e862571957ece3c404c0c37d325769772fde"
-SUBPATH0 = "dnsmasq-config"
-DSTSUFX0 = "stx-configfiles"
+STX_REPO = "config-files"
+STX_SUBPATH = "dnsmasq-config"
 
 # GPLv3 was added in version 2.41 as license option
 LICENSE = "GPLv2 | GPLv3"
@@ -26,7 +25,6 @@ LIC_FILES_CHKSUM = "\
 "
 
 SRC_URI = " \
-    git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX0};branch="r/stx.3.0";subpath=${SUBPATH0};name=opendev \
     http://www.thekelleys.org.uk/${BPN}/${BP}.tar.gz \
     file://init \
     file://dnsmasq-resolvconf.service \
@@ -132,7 +130,7 @@ EOF
         install -m 0644 ${WORKDIR}/99_dnsmasq ${D}${sysconfdir}/default/volatiles
         install -m 0755 ${WORKDIR}/dnsmasq-resolvconf-helper ${D}${bindir}
     fi
-    install -m 755 ${WORKDIR}/${DSTSUFX0}/files/init ${D}/${sysconfdir}/init.d/dnsmasq
+    install -m 755 ${STX_METADATA_PATH}/files/init ${D}/${sysconfdir}/init.d/dnsmasq
 }
 
 DISTRO_FEATURES_BACKFILL_CONSIDERED_remove = "sysvinit"
@@ -143,3 +141,4 @@ RPROVIDES_${PN} += "${PN}-systemd"
 RREPLACES_${PN} += "${PN}-systemd"
 RCONFLICTS_${PN} += "${PN}-systemd"
 SYSTEMD_SERVICE_${PN} = "dnsmasq.service"
+SYSTEMD_AUTO_ENABLE_${PN} = "disable"
