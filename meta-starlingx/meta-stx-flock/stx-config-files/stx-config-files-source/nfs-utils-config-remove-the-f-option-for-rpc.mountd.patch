@@ -5,7 +5,7 @@ Subject: [PATCH] nfsserver: remove the -f option for rpc.mountd
 
 The -f option is not supported any more on newer version of nfs-utils.
 
-Upstream-Status: Pending
+Upstream-Status: Inappropriate [poky-stx specific]
 
 Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
