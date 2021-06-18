@@ -13,16 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-SUBPATH1 = "centos-release-config"
-DSTSUFX1 = "stx-release-config"
-
-SRC_URI += " \
-        git://opendev.org/starlingx/config-files.git;protocol=https;destsuffix=${DSTSUFX1};branch="r/stx.3.0";subpath=${SUBPATH1};name=opendev \
-        "
-
 do_install_append() {
-    install -m 644 ${WORKDIR}/${DSTSUFX1}/files/issue ${D}/${sysconfdir}/issue
-    install -m 644 ${WORKDIR}/${DSTSUFX1}/files/issue.net ${D}/${sysconfdir}/issue.net
-
-    sed -i -e 's/@PLATFORM_RELEASE@/${ORAN_REL}/' ${D}${sysconfdir}/issue*
+    sed -i -e 's/${STX_REL}/${ORAN_REL}/' ${D}${sysconfdir}/issue*
 }
