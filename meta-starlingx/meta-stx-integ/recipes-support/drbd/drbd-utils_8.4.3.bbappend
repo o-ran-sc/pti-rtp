@@ -1,17 +1,24 @@
 
-FILESEXTRAPATHS_append := ":${THISDIR}/${PN}:"
+inherit stx-metadata
 
+STX_REPO = "integ"
+STX_SUBPATH = "filesystem/drbd/drbd-tools/centos"
+
+SRC_URI_STX += " \
+	file://patches/0001-skip_wait_con_int_on_simplex.patch \
+	file://patches/0002-drbd-conditional-crm-dependency.patch \
+	file://patches/0003-drbd_report_condition.patch \
+	file://patches/0004-drbdadm-ipaddr-change.patch \
+	file://patches/0005-drbd_reconnect_standby_standalone.patch \
+	file://patches/0006-avoid-kernel-userspace-version-check.patch \
+	file://patches/0007-Update-OCF-to-attempt-connect-in-certain-states.patch \
+	file://patches/0008-Increase-short-cmd-timeout-to-15-secs.patch \
+	file://patches/0009-Check-for-mounted-device-before-demoting-Primary-DRB.patch \
+	file://patches/0010-backport-drbd-main-ipv6-Fix-interface-indices-larger.patch \
+	file://patches/0011-Unmount-all-targets-during-drbd-stop.patch \
+	"
 
 SRC_URI += " \
-	file://0001-skip_wait_con_int_on_simplex.patch \
-	file://0002-drbd-conditional-crm-dependency.patch \
-	file://0003-drbd_report_condition.patch \
-	file://0004-drbdadm-ipaddr-change.patch \
-	file://0005-drbd_reconnect_standby_standalone.patch \
-	file://0006-avoid-kernel-userspace-version-check.patch \
-	file://0007-Update-OCF-to-attempt-connect-in-certain-states.patch \
-	file://0008-Increase-short-cmd-timeout-to-15-secs.patch \
-	file://0009-Check-for-mounted-device-before-demoting-Primary-DRB.patch \
 	file://0010-Include-sysmacros-for-major-minor-macros.patch \
 	file://0011-Disable-documentation.patch \
 	file://drbd.service \
