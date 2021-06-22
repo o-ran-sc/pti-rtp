@@ -5,11 +5,11 @@ SECTION = "devel/python"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=4a4d0e932ffae1c0131528d30d419c55"
 
-SRCREV = "83d0612e03471f56be3be2b521cc21974118cebe"
+SRCREV = "0a65b1420799e7c7f8736e9f6c234f755ab5ac6b"
 SRCNAME = "keystonemiddleware"
 BRANCH = "stable/train"
 PROTOCOL = "https"
-PV = "5.1.0"
+PV = "7.0.1+git${SRCPV}"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://git.openstack.org/openstack/${SRCNAME}.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH}"
