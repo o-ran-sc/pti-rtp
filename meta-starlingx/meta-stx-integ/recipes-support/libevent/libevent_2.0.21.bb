@@ -6,10 +6,18 @@ SECTION = "libs"
 LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=45c5316ff684bcfe2f9f86d8b1279559"
 
+inherit stx-metadata
+
+STX_REPO = "integ"
+STX_SUBPATH = "base/libevent/files"
+
 SRC_URI = " \
     https://github.com/downloads/libevent/libevent/${BP}-stable.tar.gz \
     file://libevent-obsolete_automake_macros.patch \
     file://libevent-disable_tests.patch \
+"
+
+SRC_URI_STX = " \
     file://libevent-ipv6-client-socket.patch \
 "
 
