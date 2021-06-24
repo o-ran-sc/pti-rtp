@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 SRCREV = "b89d5f388ca701e38a0e0337408f5ccb7e68565f"
 PROTOCOL = "https"
-BRANCH = "master"
+BRANCH = "main"
 PV = "4.18.0"
 
 inherit stx-metadata

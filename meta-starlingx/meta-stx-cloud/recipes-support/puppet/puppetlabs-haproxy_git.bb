@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 PV = "1.5.0"
 SRCREV = "3ac513c0ceb3bcfe35dd2936875189ccfc991a34"
 PROTOCOL = "https"
-BRANCH = "master"
+BRANCH = "main"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/puppetlabs/puppetlabs-haproxy;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \

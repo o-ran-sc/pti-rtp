@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 PV = "3.11.0"
 SRCREV = "920dd76214d87d9b26f0db105886ee89ac266c4e"
 PROTOCOL = "https"
-BRANCH = "master"
+BRANCH = "main"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/puppetlabs/puppetlabs-mysql.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \

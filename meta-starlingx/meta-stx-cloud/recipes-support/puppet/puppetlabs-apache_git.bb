@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 PV = "1.10.0"
 SRCREV = "410309f5facd0df7d836ea66c27ca9514031b6e3"
 PROTOCOL = "https"
-BRANCH = "master"
+BRANCH = "main"
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://github.com/puppetlabs/puppetlabs-apache.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
