@@ -7,10 +7,9 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86e96afa80a52eedda5dccc1af36b4f2"
 PV = "11.3.0"
 SRCREV = "5ad200e9d8af200a8f50f86a2db4cf3f36ab2a4c"
 PROTOCOL = "https"
-BRANCH = "stable/pike"
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://github.com/openstack/puppet-oslo.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
+SRC_URI = "git://github.com/openstack/puppet-oslo.git;protocol=${PROTOCOL};rev=${SRCREV};nobranch=1 \
 	file://puppet-oslo/Add-gemspec.patch \
 	"
 

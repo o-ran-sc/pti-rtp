@@ -13,10 +13,9 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=12a15a9ebddda7d856c783f745e5ee47"
 PV = "11.5.0"
 SRCREV = "d75706e38fdf63f9c3174a526a7d07799390dfeb"
 PROTOCOL = "https"
-BRANCH = "stable/pike"
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://github.com/openstack/puppet-horizon.git;protocol=${PROTOCOL};rev=${SRCREV};branch=${BRANCH} \
+SRC_URI = "git://github.com/openstack/puppet-horizon.git;protocol=${PROTOCOL};rev=${SRCREV};nobranch=1 \
 	file://${PN}/Add-gemspec.patch \
 	"
 
