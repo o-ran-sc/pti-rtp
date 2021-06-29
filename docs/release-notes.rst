@@ -30,6 +30,15 @@ Version history
 | 2020-11-23         | 3.0.0              | Xiaohua Zhang      |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2021-06-29         | 4.0.0              | Xiaohua Zhang      |                    |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
+
+Version 4.0.0, 2021-06-29
+-------------------------
+- Fourth version (D release)
+- Enable the AIO duplex mode (2 servers with High Availabity) with additional worker node.
+- Reconstruct the repo to align the upstream projects include StarlingX and Yocto
 
 Version 3.0.0, 2020-11-23
 -------------------------
