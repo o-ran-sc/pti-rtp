@@ -4,10 +4,10 @@ project_creation_date: '2019-08-07'
 project_category: ''
 lifecycle_state: 'Incubation'
 project_lead: &inf_ptl
-    name: 'Xiaohua Zhang'
-    email: 'xiaohua.zhang@windriver.com'
+    name: 'Jackie Huang'
+    email: 'jackie.huang@windriver.com'
     company: 'Windriver'
-    id: 'Xiaohua626'
+    id: 'jackiehjm'
     timezone: 'China/Beijing'
 primary_contact: *inf_ptl
 issue_tracking:
@@ -46,6 +46,7 @@ committers:
       id: 'lujq'
       timezone: 'Asia/Shanghai'
 tsc:
+    # yamllint disable rule:line-length
     approval: 'https://wiki.o-ran-sc.org/display/TOC/2019+08+14'
     changes:
         - type: 'Addition'
@@ -53,3 +54,7 @@ tsc:
               - 'Jackie Huang'
               - 'Jianqiang Lu'
           link: "https://wiki.o-ran-sc.org/display/TOC/2019+09+18"
+        - type: 'Approval'
+          name:
+              - 'Jackie Huang'
+          link: "https://wiki.o-ran-sc.org/display/TOC#ORANSCTechnicalOversightCommittee(TOC)-20210721"
