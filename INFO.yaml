@@ -31,8 +31,8 @@ repositories:
     - 'pti/rtp'
 committers:
     - name: 'Xiaohua Zhang'
-      email: 'Xiaohua.Zhang@windriver.com'
-      company: 'Wind River'
+      email: 'zhangxiaohua@chinamobile.com'
+      company: 'China Mobile'
       id: 'Xiaohua626'
       timezone: 'Asia/Shanghai'
     - name: 'Jackie Huang'
