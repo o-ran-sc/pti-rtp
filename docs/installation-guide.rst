@@ -19,22 +19,6 @@ real time performance, and example deployment of Kubernetes cluster and plugins.
 The audience of this document is assumed to have basic knowledge in Yocto/Open-Embedded Linux
 and container technology.
 
-Version history
-
-+--------------------+--------------------+--------------------+--------------------+
-| **Date**           | **Ver.**           | **Author**         | **Comment**        |
-|                    |                    |                    |                    |
-+--------------------+--------------------+--------------------+--------------------+
-| 2019-11-02         | 1.0.0              | Jackie Huang       | Initail version    |
-|                    |                    |                    |                    |
-+--------------------+--------------------+--------------------+--------------------+
-| 2020-06-03         | 2.0.0 (Bronze)     | Xiaohua Zhang      | Bronze version     |
-|                    |                    |                    |                    |
-+--------------------+--------------------+--------------------+--------------------+
-| 2020-11-23         | 3.0.0 (Cherry)     | Xiaohua Zhang      | Cherry version     |
-|                    |                    |                    |                    |
-+--------------------+--------------------+--------------------+--------------------+
-
 
 Preface
 -------
