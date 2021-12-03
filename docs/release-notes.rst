@@ -37,7 +37,7 @@ Version history
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 
-Version 5.0.0, 2021-12-03
+Version 5.0.0, 2021-12-15
 -------------------------
 - Fifth version (E release)
 - Upgrade most components to align with StarlingX 5.0
