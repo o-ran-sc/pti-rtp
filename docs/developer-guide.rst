@@ -34,9 +34,9 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
   * `Supported Linux Distributions`_
   * `Required Packages for the Build Host`_
 
-* The recommended and tested host is Ubuntu 16.04/18.04 and CentOS 7.
+The recommended and tested host is Ubuntu 16.04/18.04 and CentOS 7.
 
-  * To install the required packages for Ubuntu 16.04/18.04:
+* To install the required packages for Ubuntu 16.04/18.04:
 
 .. _`Compatible Linux Distribution`: https://www.yoctoproject.org/docs/2.6.3/brief-yoctoprojectqs/brief-yoctoprojectqs.html#brief-compatible-distro
 .. _`Supported Linux Distributions`: https://www.yoctoproject.org/docs/2.6.3/ref-manual/ref-manual.html#detailed-supported-distros
@@ -49,7 +49,7 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
     xz-utils debianutils iputils-ping make xsltproc docbook-utils fop dblatex xmlto \
     python-git
 
-    * To install the required packages for CentOS 7:
+* To install the required packages for CentOS 7:
 
 ::
 
@@ -59,7 +59,6 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
     diffutils diffstat git cpp gcc gcc-c++ glibc-devel texinfo chrpath socat \
     perl-Data-Dumper perl-Text-ParseWords perl-Thread-Queue perl-Digest-SHA \
     python34-pip xz which SDL-devel xterm
-
 
 2. Use wrapper script build_inf.sh to setup build env and build the INF AIO x86 image
 -------------------------------------------------------------------------------------
@@ -77,7 +76,7 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
 If all go well, you will get the ISO image in:
 ${WORKSPACE}/prj_oran_inf_anaconda/tmp-glibc/deploy/images/intel-corei7-64/inf-image-aio-installer-intel-corei7-64.iso
 
-3. (Optional) Use wrapper script build_oran.sh to setup build env and build the lagecy x86 image
+3. (Optional, will be obsoleted in F release) Use wrapper script build_oran.sh to setup build env and build the lagecy x86 image
 ------------------------------------------------------------------------------------------------
 
 Note: The lagecy image is the Kubernetes Cluster image as the same one in Amber (1.0) release.
@@ -95,7 +94,7 @@ Note: The lagecy image is the Kubernetes Cluster image as the same one in Amber 
 If all go well, you will get the ISO image in:
 ${WORKSPACE}/prj_oran_inf/tmp-glibc/deploy/images/intel-x86-64/oran-image-inf-host-intel-x86-64.iso
 
-4. (Optional) Use wrapper script build_oran.sh to setup build env and build the ARM Kubernetes Cluster image
+4. (Optional, will be obsoleted in F release) Use wrapper script build_oran.sh to setup build env and build the ARM Kubernetes Cluster image
 ------------------------------------------------------------------------------------------------------------
 
 Note:
