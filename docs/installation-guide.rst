@@ -13,8 +13,8 @@ Installation Guide
 Abstract
 --------
 
-This document describes how to install O-RAN INF image, example configuration for better
-real time performance, and example deployment of Kubernetes cluster and plugins. 
+This document describes how to install O-RAN INF image, example configuration (All-in-one Duplex)
+for better real time performance, and example deployment of Kubernetes cluster and plugins.
 
 The audience of this document is assumed to have basic knowledge in Yocto/Open-Embedded Linux
 and container technology.
@@ -29,32 +29,37 @@ Before starting the installation and deployment of O-RAN INF, you need to downlo
 Hardware Requirements
 ---------------------
 
-Following minimum hardware requirements must be met for installation of O-RAN INF image:
+Following minimum hardware requirements must be met for installation of O-RAN INF image with AIO-DX:
 
-+--------------------+----------------------------------------------------+
-| **HW Aspect**      | **Requirement**                                    |
-|                    |                                                    |
-+--------------------+----------------------------------------------------+
-| **# of servers**   | 1                                                  |
-+--------------------+----------------------------------------------------+
-| **CPU**            | 4                                                  |
-|                    |                                                    |
-+--------------------+----------------------------------------------------+
-| **RAM**            | 16G                                                |
-|                    |                                                    |
-+--------------------+----------------------------------------------------+
-| **Disk**           | 500G * 2                                           |
-|                    |                                                    |
-+--------------------+----------------------------------------------------+
-| **NICs**           | 2                                                  |
-|                    |                                                    |
-+--------------------+----------------------------------------------------+
++-------------------+----------------------------------------------------------------------------+
+| **HW Aspect**     | **Requirement**                                                            |
+|                   |                                                                            |
++-------------------+----------------------------------------------------------------------------+
+| **# of servers**  | 2                                                                          |
++-------------------+----------------------------------------------------------------------------+
+| **CPU**           | Dual-CPU Intel® Xeon® E5 26xx family (SandyBridge) 8 cores/socket          |
+|                   | or                                                                         |
+|                   | Single-CPU Intel® Xeon® D-15xx family, 8 cores (low-power/low-cost option) |
++-------------------+----------------------------------------------------------------------------+
+| **RAM**           | 32G                                                                        |
+|                   |                                                                            |
++-------------------+----------------------------------------------------------------------------+
+| **Disk**          | * Disk 1: 500G(It's better to be SSD)                                      |
+|                   | * Disk 2: 1 or more 500 GB for Ceph OSD                                    |
++-------------------+----------------------------------------------------------------------------+
+| **NICs**          | * OAM: 1x1GE                                                               |
+|                   | * Data: 1 or more x 10GE (optional)                                        |
++-------------------+----------------------------------------------------------------------------+
+| **BIOS settings** | * Hyper-Threading technology enabled                                       |
+|                   | * Virtualization technology enabled                                        |
+|                   | * VT for directed I/O enabled                                              |
+|                   | * CPU power and performance policy set to performance                      |
+|                   | * CPU C state control disabled                                             |
+|                   | * Plug & play BMC detection disabled                                       |
++-------------------+----------------------------------------------------------------------------+
 
-If want to enable the HA mode which is available in Cherry release, 2 servers are needed.
-
-
-ORAN INF Cherry test on Dell R740
-=================================
+ORAN INF E Release tested on HP ProLiant DL380p Gen8
+====================================================
 
 1. Installation for the first server from the O-RAN INF ISO image
 -----------------------------------------------------------------
@@ -72,7 +77,7 @@ ORAN INF Cherry test on Dell R740
 
     $ sudo dd if=/path/to/inf-image-aio-installer-intel-corei7-64.iso of=/dev/sdX bs=1M
 
-1.2 Install the first Dell-R740 server (controller-0)
+1.2 Install the first server (controller-0)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  Reboot the target from the USB device.
@@ -199,8 +204,8 @@ Example output:
     | vlan_id         | None                                 |
     | uses            | []                                   |
     | used_by         | []                                   |
-    | created_at      | 2020-11-17T00:30:45.265032+00:00     |
-    | updated_at      | 2020-11-17T01:03:39.031612+00:00     |
+    | created_at      | 2021-11-17T00:30:45.265032+00:00     |
+    | updated_at      | 2021-11-17T01:03:39.031612+00:00     |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
     +-----------------+--------------------------------------+
@@ -229,8 +234,8 @@ Example output:
     | vlan_id         | None                                 |
     | uses            | []                                   |
     | used_by         | []                                   |
-    | created_at      | 2020-11-17T00:28:32.365863+00:00     |
-    | updated_at      | 2020-11-17T01:03:45.090904+00:00     |
+    | created_at      | 2021-11-17T00:28:32.365863+00:00     |
+    | updated_at      | 2021-11-17T01:03:45.090904+00:00     |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
     | accelerated     | [True]                               |
@@ -253,8 +258,8 @@ Example output:
     | vlan_id         | None                                 |
     | uses            | []                                   |
     | used_by         | []                                   |
-    | created_at      | 2020-11-17T00:28:32.612230+00:00     |
-    | updated_at      | 2020-11-17T01:03:47.341003+00:00     |
+    | created_at      | 2021-11-17T00:28:32.612230+00:00     |
+    | updated_at      | 2021-11-17T01:03:47.341003+00:00     |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
     | accelerated     | [True]                               |
@@ -278,8 +283,8 @@ Example output:
     | vlan_id         | None                                 |
     | uses            | []                                   |
     | used_by         | []                                   |
-    | created_at      | 2020-11-17T00:28:32.365863+00:00     |
-    | updated_at      | 2020-11-17T01:03:49.368879+00:00     |
+    | created_at      | 2021-11-17T00:28:32.365863+00:00     |
+    | updated_at      | 2021-11-17T01:03:49.368879+00:00     |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
     | accelerated     | [True]                               |
@@ -312,8 +317,8 @@ Example output:
     | vlan_id         | None                                 |
     | uses            | []                                   |
     | used_by         | []                                   |
-    | created_at      | 2020-11-17T00:28:32.612230+00:00     |
-    | updated_at      | 2020-11-17T01:03:53.143795+00:00     |
+    | created_at      | 2021-11-17T00:28:32.612230+00:00     |
+    | updated_at      | 2021-11-17T01:03:53.143795+00:00     |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
     | accelerated     | [True]                               |
@@ -346,7 +351,7 @@ Example output:
     | vlan_id         | 18                                   |
     | uses            | [u'pxeboot0']                        |
     | used_by         | []                                   |
-    | created_at      | 2020-11-17T01:03:57.303000+00:00     |
+    | created_at      | 2021-11-17T01:03:57.303000+00:00     |
     | updated_at      | None                                 |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
@@ -380,7 +385,7 @@ Example output:
     | vlan_id         | 19                                   |
     | uses            | [u'pxeboot0']                        |
     | used_by         | []                                   |
-    | created_at      | 2020-11-17T01:04:02.613518+00:00     |
+    | created_at      | 2021-11-17T01:04:02.613518+00:00     |
     | updated_at      | None                                 |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
@@ -422,7 +427,7 @@ Output
     | uuid         | 3206cf01-c64a-457e-ac66-b8224c9684c3 |
     | ntpservers   | 0.pool.ntp.org,1.pool.ntp.org        |
     | isystem_uuid | cc79b616-d24e-4432-a953-85c9b242cb3a |
-    | created_at   | 2020-11-17T00:27:23.529571+00:00     |
+    | created_at   | 2021-11-17T00:27:23.529571+00:00     |
     | updated_at   | None                                 |
     +--------------+--------------------------------------+
 
@@ -473,7 +478,7 @@ Output
     | idisk_uuid       | 61b6f262-a51f-4310-aeac-373b1c1bbbc2                  |
     | tier_uuid        | 3af8c893-9dd4-40af-afc6-30bb79048448                  |
     | tier_name        | storage                                               |
-    | created_at       | 2020-11-17T01:05:04.063823+00:00                      |
+    | created_at       | 2021-11-17T01:05:04.063823+00:00                      |
     | updated_at       | None                                                  |
     +------------------+-------------------------------------------------------+
     [sysadmin@controller-0 ~(keystone_admin)]$ system host-disk-list controller-0 | awk '/\/dev\/sdc/{print $2}' | xargs -i system host-stor-add controller-0 {}
@@ -492,7 +497,7 @@ Output
     | idisk_uuid       | 81a7f4f9-dd3a-49b5-80d9-e1953aa43c79                  |
     | tier_uuid        | 3af8c893-9dd4-40af-afc6-30bb79048448                  |
     | tier_name        | storage                                               |
-    | created_at       | 2020-11-17T01:05:06.939798+00:00                      |
+    | created_at       | 2021-11-17T01:05:06.939798+00:00                      |
     | updated_at       | None                                                  |
     +------------------+-------------------------------------------------------+
     [sysadmin@controller-0 ~(keystone_admin)]$ system host-stor-list controller-0
@@ -531,7 +536,7 @@ Output:
     | config_status         | None                                            |
     | config_target         | c6ae9b2d-a3c4-4751-a79e-5487ba81ed82            |
     | console               | ttyS0,115200                                    |
-    | created_at            | 2020-11-17T00:28:01.983673+00:00                |
+    | created_at            | 2021-11-17T00:28:01.983673+00:00                |
     | hostname              | controller-0                                    |
     | id                    | 1                                               |
     | install_output        | graphical                                       |
@@ -547,14 +552,14 @@ Output:
     | reserved              | False                                           |
     | rootfs_device         | /dev/disk/by-path/pci-0000:86:00.0-scsi-0:2:0:0 |
     | serialid              | None                                            |
-    | software_load         | 19.12                                           |
+    | software_load         | 21.05                                           |
     | subfunction_avail     | online                                          |
     | subfunction_oper      | disabled                                        |
     | subfunctions          | controller,worker,lowlatency                    |
     | task                  | Unlocking                                       |
     | tboot                 | false                                           |
     | ttys_dcd              | None                                            |
-    | updated_at            | 2020-11-17T01:05:07.015414+00:00                |
+    | updated_at            | 2021-11-17T01:05:07.015414+00:00                |
     | uptime                | 3496                                            |
     | uuid                  | 16afe3a2-ba50-46b8-9fd7-09010059e8b9            |
     | vim_progress_status   | None                                            |
@@ -620,7 +625,7 @@ Once the controller comes back up, check the status of controller-0
     | config_status         | None                                 |
     | config_target         | None                                 |
     | console               | ttyS0,115200                         |
-    | created_at            | 2020-11-17T10:17:44.387813+00:00     |
+    | created_at            | 2021-11-17T10:17:44.387813+00:00     |
     | hostname              | controller-1                         |
     | id                    | 2                                    |
     | install_output        | text                                 |
@@ -636,7 +641,7 @@ Once the controller comes back up, check the status of controller-0
     | reserved              | False                                |
     | rootfs_device         | /dev/sda                             |
     | serialid              | None                                 |
-    | software_load         | 19.12                                |
+    | software_load         | 21.05                                |
     | subfunction_avail     | not-installed                        |
     | subfunction_oper      | disabled                             |
     | subfunctions          | controller,worker,lowlatency         |
@@ -710,8 +715,8 @@ Output:
     | vlan_id         | None                                 |
     | uses            | []                                   |
     | used_by         | []                                   |
-    | created_at      | 2020-11-22T14:01:32.365863+00:00     |
-    | updated_at      | 2020-11-22T15:04:45.090904+00:00     |
+    | created_at      | 2021-11-22T14:01:32.365863+00:00     |
+    | updated_at      | 2021-11-22T15:04:45.090904+00:00     |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
     | accelerated     | [True]                               |
@@ -734,8 +739,8 @@ Output:
     | vlan_id         | None                                 |
     | uses            | []                                   |
     | used_by         | []                                   |
-    | created_at      | 2020-11-22T14:05:16.052229+00:00     |
-    | updated_at      | 2020-11-22T15:08:35.324634+00:00     |
+    | created_at      | 2021-11-22T14:05:16.052229+00:00     |
+    | updated_at      | 2021-11-22T15:08:35.324634+00:00     |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
     | accelerated     | [True]                               |
@@ -769,7 +774,7 @@ Output:
     | vlan_id         | 19                                   |
     | uses            | [u'pxeboot0']                        |
     | used_by         | []                                   |
-    | created_at      | 2020-11-22T15:08:43.932209+00:00     |
+    | created_at      | 2021-11-22T15:08:43.932209+00:00     |
     | updated_at      | None                                 |
     | sriov_numvfs    | 0                                    |
     | sriov_vf_driver | None                                 |
@@ -835,7 +840,7 @@ Output:
     | idisk_uuid       | 1a3f0a36-5961-42e5-a271-e71db1c25d42                  |
     | tier_uuid        | 06b4740e-29db-4896-9600-03ee40fe0d6c                  |
     | tier_name        | storage                                               |
-    | created_at       | 2020-11-22T15:11:55.641193+00:00                      |
+    | created_at       | 2021-11-22T15:11:55.641193+00:00                      |
     | updated_at       | None                                                  |
     +------------------+-------------------------------------------------------+
 
@@ -855,7 +860,7 @@ Output:
     | idisk_uuid       | eddd732f-2cea-49b3-86db-b722c0b1a1ae                  |
     | tier_uuid        | 06b4740e-29db-4896-9600-03ee40fe0d6c                  |
     | tier_name        | storage                                               |
-    | created_at       | 2020-11-22T15:12:04.274839+00:00                      |
+    | created_at       | 2021-11-22T15:12:04.274839+00:00                      |
     | updated_at       | None                                                  |
     +------------------+-------------------------------------------------------+
 
@@ -891,7 +896,7 @@ Unlock controller-1 in order to bring it into service:
     | config_status         | Config out-of-date                   |
     | config_target         | 9747e0ce-2319-409d-b75c-2475bc5065ac |
     | console               | ttyS0,115200                         |
-    | created_at            | 2020-11-22T12:58:11.630526+00:00     |
+    | created_at            | 2021-11-22T12:58:11.630526+00:00     |
     | hostname              | controller-1                         |
     | id                    | 3                                    |
     | install_output        | text                                 |
@@ -907,14 +912,14 @@ Unlock controller-1 in order to bring it into service:
     | reserved              | False                                |
     | rootfs_device         | /dev/sda                             |
     | serialid              | None                                 |
-    | software_load         | 19.12                                |
+    | software_load         | 21.05                                |
     | subfunction_avail     | online                               |
     | subfunction_oper      | disabled                             |
     | subfunctions          | controller,worker,lowlatency         |
     | task                  | Unlocking                            |
     | tboot                 | false                                |
     | ttys_dcd              | None                                 |
-    | updated_at            | 2020-11-22T15:13:09.716324+00:00     |
+    | updated_at            | 2021-11-22T15:13:09.716324+00:00     |
     | uptime                | 752                                  |
     | uuid                  | 63c930c7-2195-4d5a-870c-be610fd6b4fc |
     | vim_progress_status   | None                                 |
@@ -951,7 +956,7 @@ performance of the host machine.
     | config_status         | None                                                                  |
     | config_target         | 9747e0ce-2319-409d-b75c-2475bc5065ac                                  |
     | console               | ttyS0,115200                                                          |
-    | created_at            | 2020-11-22T12:58:11.630526+00:00                                      |
+    | created_at            | 2021-11-22T12:58:11.630526+00:00                                      |
     | hostname              | controller-1                                                          |
     | id                    | 2                                                                     |
     | install_output        | text                                                                  |
@@ -967,14 +972,14 @@ performance of the host machine.
     | reserved              | False                                                                 |
     | rootfs_device         | /dev/sda                                                              |
     | serialid              | None                                                                  |
-    | software_load         | 19.12                                                                 |
+    | software_load         | 21.05                                                                 |
     | subfunction_avail     | available                                                             |
     | subfunction_oper      | enabled                                                               |
     | subfunctions          | controller,worker,lowlatency                                          |
     | task                  |                                                                       |
     | tboot                 | false                                                                 |
     | ttys_dcd              | None                                                                  |
-    | updated_at            | 2020-11-22T23:59:07.787759+00:00                                      |
+    | updated_at            | 2021-11-22T23:59:07.787759+00:00                                      |
     | uptime                | 31008                                                                 |
     | uuid                  | 63c930c7-2195-4d5a-870c-be610fd6b4fc                                  |
     | vim_progress_status   | services-enabled                                                      |
@@ -992,7 +997,7 @@ performance of the host machine.
   [sysadmin@controller-0 ~(keystone_admin)]$ cd /opt
   [sysadmin@controller-0 opt(keystone_admin)]$ sudo wget https://fast.dpdk.org/rel/dpdk-17.11.10.tar.xz
   Password:
-  --2020-06-04 02:35:30--  https://fast.dpdk.org/rel/dpdk-17.11.10.tar.xz
+  --2021-06-04 02:35:30--  https://fast.dpdk.org/rel/dpdk-17.11.10.tar.xz
   Resolving fast.dpdk.org... 151.101.2.49, 151.101.66.49, 151.101.130.49, ...
   Connecting to fast.dpdk.org|151.101.2.49|:443... connected.
   
@@ -1004,7 +1009,7 @@ performance of the host machine.
   [========================================================================================>]   9.78M  
   1.48MB/s    in 6.8s
 
-  2020-06-04 02:35:40 (1.43 MB/s) - ‘dpdk-17.11.10.tar.xz’ saved [10251680/10251680]
+  2021-06-04 02:35:40 (1.43 MB/s) - ‘dpdk-17.11.10.tar.xz’ saved [10251680/10251680]
 
   sudo tar xvf dpdk-17.11.10.tar.xz
 
