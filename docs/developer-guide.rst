@@ -12,7 +12,7 @@ Developer-Guide
 
 This project implements a real time platform to deploy the O-CU and O-DU and it's based on Yocto/OpenEmbedded.
 
-This includes a Yocto/OpenEmbedded compatible layer meta-oran and wrapper scripts
+This includes a Yocto/OpenEmbedded compatible layer meta-stx-oran and wrapper scripts
 to pull all required Yocto/OE layers to build out the reference platform.
 
 To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, please refer to the following docs if you want to learn about how to develop with Yocto/OpenEmbedded:
@@ -76,40 +76,3 @@ The recommended and tested host is Ubuntu 16.04/18.04 and CentOS 7.
 If all go well, you will get the ISO image in:
 ${WORKSPACE}/prj_oran_inf_anaconda/tmp-glibc/deploy/images/intel-corei7-64/inf-image-aio-installer-intel-corei7-64.iso
 
-3. (Optional, will be obsoleted in F release) Use wrapper script build_oran.sh to setup build env and build the lagecy x86 image
---------------------------------------------------------------------------------------------------------------------------------
-
-Note: The lagecy image is the Kubernetes Cluster image as the same one in Amber (1.0) release.
-
-::
-
-  # Get the wrapper script with either curl or wget
-  $ curl -o build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
-  $ wget -O build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
-
-  $ chmod +x build_oran.sh
-  $ WORKSPACE=/path/to/workspace_lagecy
-  $ ./build_oran.sh -w ${WORKSPACE}
-
-If all go well, you will get the ISO image in:
-${WORKSPACE}/prj_oran_inf/tmp-glibc/deploy/images/intel-x86-64/oran-image-inf-host-intel-x86-64.iso
-
-4. (Optional, will be obsoleted in F release) Use wrapper script build_oran.sh to setup build env and build the ARM Kubernetes Cluster image
---------------------------------------------------------------------------------------------------------------------------------------------
-
-Note:
-  * the ARM Kubernetes Cluster image only supports the BSP nxp-lx2xxx and is verified with the board NXP LX2160ARDB
-  * The ISO image is supported yet.
-
-::
-
-  # Get the wrapper script with either curl or wget
-  $ curl -o build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
-  $ wget -O build_oran.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_oran.sh;hb=HEAD'
-
-  $ chmod +x build_oran.sh
-  $ WORKSPACE=/path/to/workspace_arm
-  $ ./build_oran.sh -w ${WORKSPACE} -b nxp-lx2xxx
-
-If all go well, you will get the rootfs image in:
-${WORKSPACE}/prj_oran_inf/tmp-glibc/deploy/images/nxp-lx2xxx/oran-image-inf-host-nxp-lx2xxx.tar.bz2

@@ -1,9 +1,9 @@
 # o-ran repo for Performance Tuned Infrastructure
 
-This includes a Yocto/OpenEmbedded compatible layer meta-oran and wrapper scripts
+This includes a Yocto/OpenEmbedded compatible layer meta-stx-oran and wrapper scripts
 to pull all required Yocto/OE layers to build out the reference platform.
 
-meta-oran layer depends on many Yocto/OE layers with 'thud' branch (Yocto version 2.6),to have a better user experience, meta-oran depends on WRLinux 1018 open source version and uses wrlinux setup tools to create the build environment.
+meta-stx-oran layer depends on many Yocto/OE layers with 'thud' branch (Yocto version 2.6),to have a better user experience, meta-stx-oran depends on WRLinux 1018 open source version and uses wrlinux setup tools to create the build environment.
 
 ## About Yocto and Wind River Linux
 
