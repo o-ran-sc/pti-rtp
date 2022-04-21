@@ -43,7 +43,7 @@ SRC_YP_URL="\
     git://git.yoctoproject.org/meta-selinux;commit=HEAD \
     git://git.yoctoproject.org/meta-dpdk;commit=HEAD \
     git://git.yoctoproject.org/meta-anaconda;commit=HEAD \
-    git://github.com/intel-iot-devkit/meta-iot-cloud;commit=HEAD \
+    https://github.com/intel-iot-devkit/meta-iot-cloud.git;commit=HEAD \
 "
 
 SUB_LAYER_META_OE="\
