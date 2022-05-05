@@ -1,0 +1,13 @@
+diff --git a/pmon/pmonHdlr.cpp b/pmon/pmonHdlr.cpp
+index 7b5977d..c1d01b5 100644
+--- a/pmon/pmonHdlr.cpp
++++ b/pmon/pmonHdlr.cpp
+@@ -1245,7 +1245,7 @@ int respawn_process ( process_config_type * ptr )
+ 
+         ilog ("Service:%s\n", ptr->service ? ptr->service : "unknown");
+ 
+-        #define SYSTEMCTL_CMD "/usr/bin/systemctl"
++        #define SYSTEMCTL_CMD "/bin/systemctl"
+         #define   RESTART_CMD "restart"
+         #define     START_CMD "start"
+         if ( get_ctrl_ptr()->recovery_method == PMOND_RECOVERY_METHOD__SYSTEMD )

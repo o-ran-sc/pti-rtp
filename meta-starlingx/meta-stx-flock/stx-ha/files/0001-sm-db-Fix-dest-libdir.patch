@@ -1,0 +1,47 @@
+From 128062759147c9a903d14ad7edbe6ead04f95812 Mon Sep 17 00:00:00 2001
+From: "Sar Ashki, Babak" <Babak.SarAshki@windriver.com>
+Date: Fri, 24 Jan 2020 13:10:02 -0800
+Subject: [PATCH 1/2] Allow user to define destination libdir
+
+---
+ service-mgmt/sm-db/src/Makefile | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/src/Makefile b/src/Makefile
+index a29b1ac..379ea00 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -33,6 +33,10 @@ EXTRACCFLAGS= -D__STDC_FORMAT_MACROS
+ LDLIBS= -lsqlite3 -lglib-2.0 -luuid -lrt -lsm_common
+ LDFLAGS = -shared -rdynamic
+ 
++LIB_DIR = /usr/lib64
++BIN_DIR = /usr/bin
++INC_DIR = /usr/include
++
+ build: libsm_db.so sm_db_build
+ 
+ .c.o:
+@@ -51,12 +55,13 @@ sm_db_build: ${OBJS}
+ 	$(CXX) $(INCLUDES) $(CCFLAGS) $(EXTRACCFLAGS) $(OBJS) $(LDLIBS) -o sm_db_build
+ 
+ install:
+-	install -d ${DEST_DIR}/usr/lib64
+-	install libsm_db.so.${VER} $(DEST_DIR)/usr/lib64
+-	cp -P libsm_db.so libsm_db.so.$(VER_MJR) $(DEST_DIR)/usr/lib64
+-	install -d ${DEST_DIR}/usr/include
+-	install -m 0644 *.h ${DEST_DIR}/usr/include
+-	install -d 755 ${DEST_DIR}/usr/bin
++	install -d ${DEST_DIR}/${LIB_DIR}
++	install libsm_db.so.${VER} $(DEST_DIR)/${LIB_DIR}
++	cp -P libsm_db.so libsm_db.so.$(VER_MJR) $(DEST_DIR)/${LIB_DIR}
++	install -d ${DEST_DIR}/${INC_DIR}
++	install -m 0644 *.h ${DEST_DIR}/${INC_DIR}
++	install -d 755 ${DEST_DIR}/${BIN_DIR}
++	install -m 0744 sm_db_build ${DEST_DIR}/${BIN_DIR}
+ 
+ clean:
+ 	@rm -f *.o *.a *.so *.so.*
+-- 
+2.23.0
+

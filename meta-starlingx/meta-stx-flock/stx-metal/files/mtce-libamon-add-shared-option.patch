@@ -1,0 +1,30 @@
+From d233ae2930996102bbdd16085b29058a4d01179c Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 9 Jun 2020 22:49:56 +0800
+Subject: [PATCH] libamon: add shared option
+
+The -shared option is set in the parent Makefile, but somehow
+it's lost on CentOS, so add it diretly in the target command.
+
+Upstream-Status: Inappropriate [OE cross-compile specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ public/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/public/Makefile b/public/Makefile
+index 7dd80e4..1967a90 100644
+--- a/public/Makefile
++++ b/public/Makefile
+@@ -37,7 +37,7 @@ ${TARGET_LIB}.${VER_MJR}: ${TARGET_LIB}.${VER}
+ 	ln -sf $^ $@
+
+ ${TARGET_LIB}.${VER}: $(OBJS)
+-	$(CC) ${LDFLAGS} -Wl,-soname,${TARGET_LIB}.${VER_MJR} -o $@ $^
++	$(CC) ${LDFLAGS} -shared -Wl,-soname,${TARGET_LIB}.${VER_MJR} -o $@ $^
+
+ $(SRCS:.c=.d):%.d:%.c
+ 	$(CC) $(CFLAGS) -MM $< >$@
+--
+2.7.4

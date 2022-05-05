@@ -1,0 +1,28 @@
+From 665d2fa1e06e91db0a2a72fcbb2aa823e02b0a3d Mon Sep 17 00:00:00 2001
+From: Saul Wold <sgw@linux.intel.com>
+Date: Mon, 4 May 2020 11:57:46 -0700
+Subject: [PATCH] fm-mgr: Fix install target
+
+Remove hardcoded UNITDIR in favor of variable
+
+Signed-off-by: Saul Wold <sgw@linux.intel.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 0d683c3..9bca4ab 100755
+--- a/Makefile
++++ b/Makefile
+@@ -27,7 +27,7 @@ clean:
+ 	 @rm -f $(OBJS)
+ 
+ install:
+-	mkdir -p $(DESTDIR)/usr/lib/systemd/system
++	mkdir -p $(DESTDIR)/$(UNITDIR)
+ 	install -m 755 -d $(DESTDIR)$(SYSCONFDIR)
+ 	install -m 755 -d $(DESTDIR)$(SYSCONFDIR)/init.d
+ 	install -m 755 -d $(DESTDIR)$(SYSCONFDIR)/logrotate.d
+-- 
+2.17.1
+

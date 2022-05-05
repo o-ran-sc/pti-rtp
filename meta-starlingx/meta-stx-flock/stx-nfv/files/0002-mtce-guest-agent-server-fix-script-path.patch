@@ -1,0 +1,34 @@
+diff --git a/mtce-guest/src/scripts/guestAgent.service b/mtce-guest/src/scripts/guestAgent.service
+index e88a965..5a54ba7 100644
+--- a/mtce-guest/src/scripts/guestAgent.service
++++ b/mtce-guest/src/scripts/guestAgent.service
+@@ -4,9 +4,9 @@ After=network.target syslog.service
+ 
+ [Service]
+ Type=forking
+-ExecStart=/etc/rc.d/init.d/guestAgent start
+-ExecStop=/etc/rc.d/init.d/guestAgent stop
+-ExecReload=/etc/rc.d/init.d/guestAgent reload
++ExecStart=/etc/init.d/guestAgent start
++ExecStop=/etc/init.d/guestAgent stop
++ExecReload=/etc/init.d/guestAgent reload
+ PIDFile=/var/run/guestAgent.pid
+ 
+ Restart=no
+diff --git a/mtce-guest/src/scripts/guestServer.service b/mtce-guest/src/scripts/guestServer.service
+index 6e2dd3a..1feb327 100644
+--- a/mtce-guest/src/scripts/guestServer.service
++++ b/mtce-guest/src/scripts/guestServer.service
+@@ -5,9 +5,9 @@ Before=pmon.service
+ 
+ [Service]
+ Type=forking
+-ExecStart=/etc/rc.d/init.d/guestServer start
+-ExecStop=/etc/rc.d/init.d/guestServer stop
+-ExecReload=/etc/rc.d/init.d/guestServer reload
++ExecStart=/etc/init.d/guestServer start
++ExecStop=/etc/init.d/guestServer stop
++ExecReload=/etc/init.d/guestServer reload
+ PIDFile=/var/run/guestServer.pid
+ 
+ # Failure handling

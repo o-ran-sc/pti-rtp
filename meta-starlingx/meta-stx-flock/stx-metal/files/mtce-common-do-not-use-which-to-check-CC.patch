@@ -1,0 +1,29 @@
+From 840f382ee691596474966f74bd1be37722bbc91c Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 9 Jun 2020 20:52:31 +0800
+Subject: [PATCH] mtce-common: do not use which to check CC
+
+Upstream-Status: Inappropriate [OE cross-compile specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ common/Makefile | 4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
+
+diff --git a/common/Makefile b/common/Makefile
+index e0a5574..d44eef6 100755
+--- a/common/Makefile
++++ b/common/Makefile
+@@ -54,9 +54,7 @@ CCFLAGS = -g -O2 -Wall -Wextra -Werror -std=c++11
+ STATIC_ANALYSIS_TOOL = cppcheck
+ STATIC_ANALYSIS_TOOL_EXISTS = $(shell [[ -e `which $(STATIC_ANALYSIS_TOOL)` ]] && echo 1 || echo 0)
+
+-ifeq (,$(shell which ${CC}))
+-CC=g++
+-endif
++CC ?= g++
+
+ .cpp.o:
+ 	$(CXX) $(CCFLAGS) $(INCLUDES) $(EXTRACCFLAGS) -c $< -o $@
+--
+2.7.4

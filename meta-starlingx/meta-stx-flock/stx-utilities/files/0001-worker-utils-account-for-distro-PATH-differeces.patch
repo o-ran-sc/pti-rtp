@@ -1,0 +1,86 @@
+From ecc947cb8bddde6bbedb426152cb898be71eea32 Mon Sep 17 00:00:00 2001
+From: Babak Sarashki <Babak.SarAshki@windriver.com>
+Date: Sat, 13 Jun 2020 08:06:44 -0700
+Subject: [PATCH] worker-utils: account for distro PATH differeces
+
+The PATH variable in the worker-utils' scripts expect
+system utilities under /usr/sbin. This is not true for
+all distros. Extending PATH to /sbin.
+
+Signed-off-by: Babak Sarashki <Babak.SarAshki@windriver.com>
+---
+ utilities/worker-utils/worker-utils/affine-interrupts.sh       | 2 +-
+ utilities/worker-utils/worker-utils/affine-platform.sh         | 2 +-
+ utilities/worker-utils/worker-utils/affine-tasks.sh            | 2 +-
+ utilities/worker-utils/worker-utils/set-cpu-wakeup-latency.sh  | 2 +-
+ utilities/worker-utils/worker-utils/task_affinity_functions.sh | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/utilities/worker-utils/worker-utils/affine-interrupts.sh b/utilities/worker-utils/worker-utils/affine-interrupts.sh
+index 6a7c228..d3dc4f8 100644
+--- a/utilities/worker-utils/worker-utils/affine-interrupts.sh
++++ b/utilities/worker-utils/worker-utils/affine-interrupts.sh
+@@ -12,7 +12,7 @@
+ # Usage: /usr/bin/affine-interrupts.sh interface cpulist
+ #
+ # Define minimal path
+-PATH=/bin:/usr/bin:/usr/local/bin
++PATH=/bin:/sbin:/usr/bin:/usr/local/bin
+ 
+ # logger setup
+ WHOAMI=`basename $0`
+diff --git a/utilities/worker-utils/worker-utils/affine-platform.sh b/utilities/worker-utils/worker-utils/affine-platform.sh
+index 72a7d63..2bcc2e8 100755
+--- a/utilities/worker-utils/worker-utils/affine-platform.sh
++++ b/utilities/worker-utils/worker-utils/affine-platform.sh
+@@ -16,7 +16,7 @@
+ ### END INIT INFO
+ 
+ # Define minimal path
+-PATH=/bin:/usr/bin:/usr/local/bin
++PATH=/bin:/sbin:/usr/bin:/usr/local/bin
+ 
+ LOG_FUNCTIONS=${LOG_FUNCTIONS:-"/etc/init.d/log_functions.sh"}
+ CPUMAP_FUNCTIONS=${CPUMAP_FUNCTIONS:-"/etc/init.d/cpumap_functions.sh"}
+diff --git a/utilities/worker-utils/worker-utils/affine-tasks.sh b/utilities/worker-utils/worker-utils/affine-tasks.sh
+index 3f6d294..9603804 100644
+--- a/utilities/worker-utils/worker-utils/affine-tasks.sh
++++ b/utilities/worker-utils/worker-utils/affine-tasks.sh
+@@ -44,7 +44,7 @@
+ #
+ ################################################################################
+ # Define minimal path
+-PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin
++PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+ 
+ CPUMAP_FUNCTIONS=${CPUMAP_FUNCTIONS:-"/etc/init.d/cpumap_functions.sh"}
+ [[ -e ${CPUMAP_FUNCTIONS} ]] && source ${CPUMAP_FUNCTIONS}
+diff --git a/utilities/worker-utils/worker-utils/set-cpu-wakeup-latency.sh b/utilities/worker-utils/worker-utils/set-cpu-wakeup-latency.sh
+index 0efa13e..b6fbddf 100644
+--- a/utilities/worker-utils/worker-utils/set-cpu-wakeup-latency.sh
++++ b/utilities/worker-utils/worker-utils/set-cpu-wakeup-latency.sh
+@@ -15,7 +15,7 @@
+ # For example, 0,5,7,9-11.
+ 
+ # Define minimal path
+-PATH=/bin:/usr/bin:/usr/local/bin
++PATH=/bin:/sbin:/usr/bin:/usr/local/bin
+ 
+ LOG_FUNCTIONS=${LOG_FUNCTIONS:-"/etc/init.d/log_functions.sh"}
+ CPUMAP_FUNCTIONS=${CPUMAP_FUNCTIONS:-"/etc/init.d/cpumap_functions.sh"}
+diff --git a/utilities/worker-utils/worker-utils/task_affinity_functions.sh b/utilities/worker-utils/worker-utils/task_affinity_functions.sh
+index 4b18431..0cd6764 100755
+--- a/utilities/worker-utils/worker-utils/task_affinity_functions.sh
++++ b/utilities/worker-utils/worker-utils/task_affinity_functions.sh
+@@ -16,7 +16,7 @@
+ ### END INIT INFO
+ 
+ # Define minimal path
+-PATH=/bin:/usr/bin:/usr/local/bin
++PATH=/bin:/sbin:/usr/bin:/usr/local/bin
+ 
+ . /etc/platform/platform.conf
+ LOG_FUNCTIONS=${LOG_FUNCTIONS:-"/etc/init.d/log_functions.sh"}
+-- 
+2.24.1
+

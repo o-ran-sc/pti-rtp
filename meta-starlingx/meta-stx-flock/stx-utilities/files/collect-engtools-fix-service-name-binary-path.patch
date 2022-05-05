@@ -1,0 +1,40 @@
+diff --git a/tools/engtools/hostdata-collectors/scripts/cleanup-engtools.sh b/tools/engtools/hostdata-collectors/scripts/cleanup-engtools.sh
+index 5d5701b..a81ecab 100644
+--- a/tools/engtools/hostdata-collectors/scripts/cleanup-engtools.sh
++++ b/tools/engtools/hostdata-collectors/scripts/cleanup-engtools.sh
+@@ -31,7 +31,7 @@ LOG "Cleanup engtools:"
+ # Brute force methods (assume trouble with: service collect-engtools.sh stop)
+ # ( be sure not to clobber /etc/init.d/collect-engtools.sh )
+ LOG "kill processes brute force"
+-pids=( $(pidof -x /usr/local/bin/collect-engtools.sh) )
++pids=( $(pidof -x /usr/bin//collect-engtools.sh) )
+ if [ ${#pids[@]} -ne 0 ]; then
+     LOG "killing: ${pids[@]}"
+     for pid in ${pids[@]}; do
+diff --git a/tools/engtools/hostdata-collectors/scripts/collect-engtools.service b/tools/engtools/hostdata-collectors/scripts/collect-engtools.service
+index e00e1cd..6d4ae65 100644
+--- a/tools/engtools/hostdata-collectors/scripts/collect-engtools.service
++++ b/tools/engtools/hostdata-collectors/scripts/collect-engtools.service
+@@ -1,7 +1,7 @@
+ [Unit]
+ Description=Engineering data collection tools to monitor host performance
+-Requires=network.service
+-After=network.service getty.target
++Requires=networking.service
++After=networking.service getty.target
+ 
+ [Service]
+ Type=forking
+diff --git a/tools/engtools/hostdata-collectors/scripts/collect-engtools.sh b/tools/engtools/hostdata-collectors/scripts/collect-engtools.sh
+index e59f382..3140297 100644
+--- a/tools/engtools/hostdata-collectors/scripts/collect-engtools.sh
++++ b/tools/engtools/hostdata-collectors/scripts/collect-engtools.sh
+@@ -263,7 +263,7 @@ OPT_USE_INTERVALS=0
+ # Define parallel engtools configuration
+ # - tool name, filename, and collection interval attributes
+ BINDIR=/usr/bin
+-LBINDIR=/usr/local/bin
++LBINDIR=/usr/bin/
+ 
+ . /etc/engtools/engtools.conf
+ 

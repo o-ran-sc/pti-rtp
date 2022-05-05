@@ -1,0 +1,25 @@
+diff --git a/sysinv/sysinv-agent/sysinv-agent.conf b/sysinv/sysinv-agent/sysinv-agent.conf
+index 46afac67b..aad37576c 100644
+--- a/sysinv/sysinv-agent/sysinv-agent.conf
++++ b/sysinv/sysinv-agent/sysinv-agent.conf
+@@ -1,6 +1,6 @@
+ [process]
+ process  = sysinv-agent
+-pidfile  = /var/run/sysinv-agent.pid
++pidfile  = /run/sysinv-agent.pid
+ script   = /etc/init.d/sysinv-agent
+ style    = lsb            ; ocf or lsb
+ severity = major          ; minor, major, critical
+diff --git a/sysinv/sysinv-agent/sysinv-agent.service b/sysinv/sysinv-agent/sysinv-agent.service
+index cb8663f68..37c2c221e 100644
+--- a/sysinv/sysinv-agent/sysinv-agent.service
++++ b/sysinv/sysinv-agent/sysinv-agent.service
+@@ -9,7 +9,7 @@ Type=forking
+ RemainAfterExit=yes
+ ExecStart=/etc/init.d/sysinv-agent start
+ ExecStop=/etc/init.d/sysinv-agent stop
+-PIDFile=/var/run/sysinv-agent.pid
++PIDFile=/run/sysinv-agent.pid
+ 
+ [Install]
+ WantedBy=multi-user.target

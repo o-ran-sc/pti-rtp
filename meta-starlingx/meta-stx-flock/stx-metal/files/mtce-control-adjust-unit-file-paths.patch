@@ -1,0 +1,17 @@
+diff --git a/mtce-control/src/scripts/hbsAgent.service b/mtce-control/src/scripts/hbsAgent.service
+index de3cb8d..b26690d 100644
+--- a/mtce-control/src/scripts/hbsAgent.service
++++ b/mtce-control/src/scripts/hbsAgent.service
+@@ -5,9 +5,9 @@ Before=pmon.service
+ 
+ [Service]
+ Type=forking
+-ExecStart=/etc/rc.d/init.d/hbsAgent start
+-ExecStop=/etc/rc.d/init.d/hbsAgent start
+-PIDFile=/var/run/hbsAgent.pid
++ExecStart=/etc/init.d/hbsAgent start
++ExecStop=/etc/init.d/hbsAgent start
++PIDFile=/run/hbsAgent.pid
+ KillMode=process
+ SendSIGKILL=no
+ 

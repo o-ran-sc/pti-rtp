@@ -1,0 +1,3 @@
+# OpenLDAP TLSMC runtime directories
+x /tmp/openldap-tlsmc-*
+X /tmp/openldap-tlsmc-*

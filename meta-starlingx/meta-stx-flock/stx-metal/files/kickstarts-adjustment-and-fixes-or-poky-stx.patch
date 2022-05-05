@@ -1,0 +1,309 @@
+From 0b620c4f4936af27d915b0ec809dd2f214f4daa9 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 10 Jun 2020 10:36:18 +0800
+Subject: [PATCH] kickstarts: adjustment fnd fixes or poky-stx
+
+Upstream-Status: Inappropriate [OE specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ bsp-files/kickstarts/post_common.cfg               | 87 +++++++++++++++++-----
+ .../kickstarts/post_kernel_aio_and_worker.cfg      |  4 +-
+ bsp-files/kickstarts/post_kernel_controller.cfg    |  4 +-
+ bsp-files/kickstarts/post_kernel_storage.cfg       |  4 +-
+ bsp-files/kickstarts/post_usb_controller.cfg       |  3 +-
+ bsp-files/kickstarts/pre_common_head.cfg           | 33 +++++++-
+ bsp-files/kickstarts/pre_pkglist.cfg               | 19 +----
+ bsp-files/kickstarts/pre_pkglist_lowlatency.cfg    | 18 +----
+ 8 files changed, 110 insertions(+), 62 deletions(-)
+
+diff --git a/bsp-files/kickstarts/post_common.cfg b/bsp-files/kickstarts/post_common.cfg
+index 48abb74..a166c54 100644
+--- a/bsp-files/kickstarts/post_common.cfg
++++ b/bsp-files/kickstarts/post_common.cfg
+@@ -1,3 +1,55 @@
++######################################
++# workarounds or fixes for poky-stx
++######################################
++%post --erroronfail
++
++# Add extra users and groups
++SYSADMIN_P="4SuW8cnXFyxsk"
++groupadd -f -g 345 sys_protected
++useradd -m -g sys_protected -G root -d /home/sysadmin -p ${SYSADMIN_P} -s /bin/sh sysadmin
++
++groupadd -r -g 128 nscd
++useradd -M -o -r -d / -s /sbin/nologin -c 'NSCD Daemon' -u 28 -g nscd nscd
++
++useradd -p '' patching
++groupadd patching
++usermod -a -G patching patching
++
++useradd -p '' nfv
++groupadd nfv
++usermod -a -G nfv nfv
++
++usermod -a -G sys_protected sysadmin
++usermod -a -G sys_protected sysinv
++usermod -a -G sys_protected www
++usermod -a -G sys_protected nfv
++usermod -a -G sys_protected patching
++usermod -a -G sys_protected haproxy
++usermod -a -G snmpd fm
++usermod -P root root
++
++# Extend path variable for sysadmin
++echo 'PATH=/sbin:/usr/sbin:$PATH' >> /home/sysadmin/.bashrc
++chown sysadmin:sys_protected /home/sysadmin/.bashrc
++
++# Avoid duplicate with systemd-fstab-generator
++sed -i "s|\(^.*/dev/root\)|#\1|" /etc/fstab
++
++%end
++
++%post --nochroot
++# installer images for pxe-network-installer
++mkdir -p /mnt/sysimage/pxeboot/rel-xxxPLATFORM_RELEASExxx
++cp -P /boot/installer-initrd* /mnt/sysimage/pxeboot/rel-xxxPLATFORM_RELEASExxx/
++cp /boot/bzImage /mnt/sysimage/pxeboot/rel-xxxPLATFORM_RELEASExxx/installer-bzImage_1.0
++ln -s installer-bzImage_1.0 /mnt/sysimage/pxeboot/rel-xxxPLATFORM_RELEASExxx/installer-bzImage
++
++if [ -f /media/realroot/efi.img ]; then
++  cp /media/realroot/efi.img /mnt/sysimage/pxeboot/rel-xxxPLATFORM_RELEASExxx/efiboot.img
++fi
++
++%end
++
+ %post --erroronfail
+
+ # Source common functions
+@@ -31,25 +83,26 @@ else
+ fi
+
+ . /etc/platform/platform.conf
+-# Configure smart package manager channels
+-rm -rf /var/lib/smart
+-mkdir /var/lib/smart
+-/usr/bin/smart channel -y \
+-    --add rpmdb type=rpm-sys name="RPM Database"
+-/usr/bin/smart channel -y \
+-    --add base type=rpm-md name="Base" baseurl=http://controller:${http_port:-8080}/feed/rel-xxxPLATFORM_RELEASExxx
+-/usr/bin/smart channel -y \
+-    --add updates type=rpm-md name="Patches" baseurl=http://controller:${http_port:-8080}/updates/rel-xxxPLATFORM_RELEASExxx
+-
+-# Configure smart to use rpm --nolinktos option
+-/usr/bin/smart config --set rpm-nolinktos=true
+-
+-# Configure smart to use rpm --nosignature option
+-/usr/bin/smart config --set rpm-check-signatures=false
+
+ # Delete the CentOS yum repo files
+ rm -f /etc/yum.repos.d/CentOS-*
+
++# Create platform yum repo file
++mkdir -p /etc/yum.repos.d
++cat >/etc/yum.repos.d/platform.repo <<EOF
++[platform-base]
++name=platform-base
++baseurl=http://controller:${http_port:-8080}/feed/rel-xxxPLATFORM_RELEASExxx
++gpgcheck=0
++enabled=1
++
++[platform-updates]
++name=platform-updates
++baseurl=http://controller:${http_port:-8080}/updates/rel-xxxPLATFORM_RELEASExxx
++gpgcheck=0
++enabled=1
++EOF
++
+ # Persist the boot device naming as UDEV rules so that if the network device
+ # order changes post-install that we will still be able to DHCP from the
+ # correct interface to reach the active controller.  For most nodes only the
+@@ -73,7 +126,7 @@ done
+ chage -d 0 sysadmin
+
+ # Lock the root password
+-passwd -l root
++#passwd -l root
+
+ # Enable tmpfs mount for /tmp
+ # delete /var/tmp so that it can similinked in
+@@ -81,7 +134,7 @@ rm -rf /var/tmp
+ systemctl enable tmp.mount
+
+ # Disable automount of /dev/hugepages
+-systemctl mask dev-hugepages.mount
++#systemctl mask dev-hugepages.mount
+
+ # Disable firewall
+ systemctl disable firewalld
+diff --git a/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg b/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
+index f228110..f4037fa 100644
+--- a/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
++++ b/bsp-files/kickstarts/post_kernel_aio_and_worker.cfg
+@@ -95,9 +95,9 @@ fi
+ perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
+
+ if [ -d /sys/firmware/efi ] ; then
+-  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
++  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+ else
+-  grub2-mkconfig -o /boot/grub2/grub.cfg
++  grub-mkconfig -o /boot/grub/grub.cfg
+ fi
+
+ %end
+diff --git a/bsp-files/kickstarts/post_kernel_controller.cfg b/bsp-files/kickstarts/post_kernel_controller.cfg
+index a49f835..c076fdc 100644
+--- a/bsp-files/kickstarts/post_kernel_controller.cfg
++++ b/bsp-files/kickstarts/post_kernel_controller.cfg
+@@ -42,9 +42,9 @@ fi
+ perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
+
+ if [ -d /sys/firmware/efi ] ; then
+-  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
++  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+ else
+-  grub2-mkconfig -o /boot/grub2/grub.cfg
++  grub-mkconfig -o /boot/grub/grub.cfg
+ fi
+
+ %end
+diff --git a/bsp-files/kickstarts/post_kernel_storage.cfg b/bsp-files/kickstarts/post_kernel_storage.cfg
+index 53bff1b..fb8eac4 100644
+--- a/bsp-files/kickstarts/post_kernel_storage.cfg
++++ b/bsp-files/kickstarts/post_kernel_storage.cfg
+@@ -36,9 +36,9 @@ fi
+ perl -pi -e 's/(GRUB_CMDLINE_LINUX=.*)\"/\1'"$KERN_OPTS"'\"/g' /etc/default/grub
+
+ if [ -d /sys/firmware/efi ] ; then
+-  grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
++  grub-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+ else
+-  grub2-mkconfig -o /boot/grub2/grub.cfg
++  grub-mkconfig -o /boot/grub/grub.cfg
+ fi
+
+ %end
+diff --git a/bsp-files/kickstarts/post_usb_controller.cfg b/bsp-files/kickstarts/post_usb_controller.cfg
+index 788aee5..85ac641 100644
+--- a/bsp-files/kickstarts/post_usb_controller.cfg
++++ b/bsp-files/kickstarts/post_usb_controller.cfg
+@@ -61,8 +61,7 @@ fi
+
+ if [ -d $srcdir/Packages ] ; then
+     mkdir -p /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx
+-    cp -r $srcdir/Packages /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/Packages
+-    cp -r $srcdir/repodata /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/repodata
++    cp -r $srcdir/Packages/* /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx/
+     cp $srcdir/*.cfg /mnt/sysimage/www/pages/feed/rel-xxxPLATFORM_RELEASExxx
+ fi
+
+diff --git a/bsp-files/kickstarts/pre_common_head.cfg b/bsp-files/kickstarts/pre_common_head.cfg
+index 88edab4..d3c1ba9 100644
+--- a/bsp-files/kickstarts/pre_common_head.cfg
++++ b/bsp-files/kickstarts/pre_common_head.cfg
+@@ -46,17 +46,46 @@ echo "bootloader --location=mbr $boot_device_arg --timeout=5 --append=\"$append\
+ echo "timezone --nontp --utc UTC" >/tmp/timezone-include
+ %end
+
++##############################################################
++# pre script for poky-stx
++##############################################################
++%pre
++mkdir -p /run/install/repo
++cp installer-config/* /run/install/repo/
++rm -f /run/install/repo/Packages
++ln -sf /Packages /run/install/repo/Packages
++%end
++
++##############################################################
++# Main kickstart
++##############################################################
+ #version=DEVEL
+ install
+ lang en_US.UTF-8
+ keyboard us
+ %include /tmp/timezone-include
+-# set to 'x' so we can use shadow password
+-rootpw  --iscrypted x
++# Root password:
++rootpw --iscrypted $6$ArDcm/wSNLJLT2OP$QdWX6kMUgBVsiibukLBLtLfRDVz0n49BQ1svT7hPEQJASvKnqkEL5zc5kqUMMzXzLrj80z6YX9DmYTD0Ysxn.1
++
+ selinux --disabled
+ authconfig --enableshadow --passalgo=sha512
+ firewall --service=ssh
+
++# Use text mode install
++text
++
++# Use CDROM installation media
++cdrom
++
++# Run the Setup Agent on first boot
++firstboot --enable
++
++# System services
++services --enabled="lvm2-monitor.service"
++
++# Do not configure the X Window System
++skipx
++
+ # The following is the partition information you requested
+ # Note that any partitions you deleted are not expressed
+ # here so unless you clear all partitions first, this is
+diff --git a/bsp-files/kickstarts/pre_pkglist.cfg b/bsp-files/kickstarts/pre_pkglist.cfg
+index 37fe023..16e4dcf 100644
+--- a/bsp-files/kickstarts/pre_pkglist.cfg
++++ b/bsp-files/kickstarts/pre_pkglist.cfg
+@@ -1,21 +1,4 @@
+ %packages
+-@core
+-@base
+--kernel-module-igb-uio-rt
+--kernel-module-wrs-avp-rt
+--kernel-rt
+--kernel-rt-kvm
+--kernel-rt-tools
+--kernel-rt-tools-libs
+--kmod-drbd-rt
+--kmod-e1000e-rt
+--kmod-i40e-rt
+--kmod-ixgbe-rt
+--kmod-tpm-rt
+--mlnx-ofa_kernel
+--mlnx-ofa_kernel-rt
+--mlnx-ofa_kernel-rt-modules
+--qat16-rt
+-xxxPACKAGE_LISTxxx
++#@^stx-image-aio
+ %end
+
+diff --git a/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg b/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
+index 3af6a39..16e4dcf 100644
+--- a/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
++++ b/bsp-files/kickstarts/pre_pkglist_lowlatency.cfg
+@@ -1,20 +1,4 @@
+ %packages
+-@core
+-@base
+--kernel-module-igb-uio
+--kernel-module-wrs-avp
+--kernel
+--kernel-tools
+--kernel-tools-libs
+--kmod-drbd
+--kmod-e1000e
+--kmod-i40e
+--kmod-ixgbe
+--kmod-tpm
+--mlnx-ofa_kernel
+--mlnx-ofa_kernel-rt
+--mlnx-ofa_kernel-modules
+--qat16
+-xxxPACKAGE_LISTxxx
++#@^stx-image-aio
+ %end
+
+--
+2.7.4

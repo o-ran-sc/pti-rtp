@@ -1,0 +1,52 @@
+diff --git a/mtce-guest/src/scripts/guestAgent b/mtce-guest/src/scripts/guestAgent
+index a0a7b0e..41b5559 100644
+--- a/mtce-guest/src/scripts/guestAgent
++++ b/mtce-guest/src/scripts/guestAgent
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="guestAgent"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ PLATFORM_CONF="/etc/platform/platform.conf"
+ 
+diff --git a/mtce-guest/src/scripts/guestAgent.service b/mtce-guest/src/scripts/guestAgent.service
+index 5a54ba7..c447305 100644
+--- a/mtce-guest/src/scripts/guestAgent.service
++++ b/mtce-guest/src/scripts/guestAgent.service
+@@ -7,7 +7,7 @@ Type=forking
+ ExecStart=/etc/init.d/guestAgent start
+ ExecStop=/etc/init.d/guestAgent stop
+ ExecReload=/etc/init.d/guestAgent reload
+-PIDFile=/var/run/guestAgent.pid
++PIDFile=/run/guestAgent.pid
+ 
+ Restart=no
+ 
+diff --git a/mtce-guest/src/scripts/guestServer b/mtce-guest/src/scripts/guestServer
+index ace6a41..1008ad5 100644
+--- a/mtce-guest/src/scripts/guestServer
++++ b/mtce-guest/src/scripts/guestServer
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="guestServer"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ PLATFORM_CONF="/etc/platform/platform.conf"
+ 
+diff --git a/mtce-guest/src/scripts/guestServer.service b/mtce-guest/src/scripts/guestServer.service
+index 1feb327..7a63e6a 100644
+--- a/mtce-guest/src/scripts/guestServer.service
++++ b/mtce-guest/src/scripts/guestServer.service
+@@ -8,7 +8,7 @@ Type=forking
+ ExecStart=/etc/init.d/guestServer start
+ ExecStop=/etc/init.d/guestServer stop
+ ExecReload=/etc/init.d/guestServer reload
+-PIDFile=/var/run/guestServer.pid
++PIDFile=/run/guestServer.pid
+ 
+ # Failure handling
+ TimeoutStartSec=10s

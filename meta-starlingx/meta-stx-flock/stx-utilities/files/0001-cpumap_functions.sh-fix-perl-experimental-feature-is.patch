@@ -1,0 +1,35 @@
+From e2dcf93685e6947540119fd5caff0e440857801c Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 11 Jun 2020 22:41:00 +0800
+Subject: [PATCH] cpumap_functions.sh: fix perl experimental feature issue
+
+An experimental feature added in Perl 5.14 allowed each, keys, push,
+pop, shift, splice, unshift, and values to be called with a scalar
+argument. This experiment is considered unsuccessful, and has been
+removed in 5.23 and later releases. So don't use this feature to
+avoid failure:
+localhost:~# platform_expanded_cpu_list
+Experimental keys on scalar is now forbidden at -e line 13.
+
+Upstream-Status: Submitted [https://review.opendev.org/759783]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ utilities/worker-utils/worker-utils/cpumap_functions.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/utilities/worker-utils/worker-utils/cpumap_functions.sh b/utilities/worker-utils/worker-utils/cpumap_functions.sh
+index ab961f4..ecbbb05 100644
+--- a/utilities/worker-utils/worker-utils/cpumap_functions.sh
++++ b/utilities/worker-utils/worker-utils/cpumap_functions.sh
+@@ -389,7 +389,7 @@ function topology_to_cpulist {
+     }
+ }
+ END {
+-    @cores = sort { $a <=> $b } keys $T{$socket};
++    @cores = sort { $a <=> $b } keys %{ $T{$socket} };
+     @sel_cores = splice @cores, $core_start, $num_cores;
+     @lcpus = ();
+     for $C (@sel_cores) {
+--
+2.7.4

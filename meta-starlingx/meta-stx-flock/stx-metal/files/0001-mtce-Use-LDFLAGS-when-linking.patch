@@ -1,0 +1,199 @@
+From 0db72ac0c57a9f15ae6999e4ccf85a9db1e752fd Mon Sep 17 00:00:00 2001
+From: babak sarashki <babak.sarashki@windriver.com>
+Date: Thu, 27 Jun 2019 22:25:15 -0700
+Subject: [PATCH] Use LDFLAGS when linking and pass flags down to submakes
+
+---
+ Makefile             | 27 +++++++++++++++------------
+ alarm/Makefile       |  2 +-
+ fsmon/Makefile       |  2 +-
+ fsync/Makefile       |  2 +-
+ heartbeat/Makefile   |  7 +++++--
+ hostw/Makefile       |  2 +-
+ hwmon/Makefile       |  2 +-
+ lmon/Makefile        |  2 +-
+ maintenance/Makefile |  4 ++--
+ mtclog/Makefile      |  2 +-
+ pmon/Makefile        |  2 +-
+ 11 files changed, 30 insertions(+), 24 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index a9ec0e2..8c256f1 100755
+--- a/Makefile
++++ b/Makefile
+@@ -8,18 +8,21 @@ VER=1
+ VER_MJR=1
+ 
+ build:
+-	(cd public ; make lib VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd common ; make lib VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd alarm  ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd heartbeat ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd maintenance ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd hwmon  ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd mtclog ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd lmon   ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd pmon   ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd fsmon  ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd hostw  ; make build VER=$(VER) VER_MJR=$(VER_MJR))
+-	(cd fsync  ; make build VER=$(VER) VER_MJR=$(VER_MJR))
++	( \
++	cd public;\
++	make -e CCFLAGS="$(CCFLAGS) -fPIC" LDFLAGS="$(LDFLAGS) -shared" INCLUDES="$(INCLUDES)" lib VER=$(VER) VER_MJR=$(VER_MJR) \
++	)
++	(cd common ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" lib VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd alarm  ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd heartbeat ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd maintenance ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd hwmon  ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd mtclog ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd lmon   ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd pmon   ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd fsmon  ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd hostw  ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
++	(cd fsync  ; make -e LDFLAGS="$(LDFLAGS)" CCFLAGS="$(CCFLAGS)" INCLUDES="$(INCLUDES)" build VER=$(VER) VER_MJR=$(VER_MJR))
+ 
+ clean:
+ 	@( cd common ; make clean )
+diff --git a/alarm/Makefile b/alarm/Makefile
+index a27b0fb..cff233c 100755
+--- a/alarm/Makefile
++++ b/alarm/Makefile
+@@ -43,7 +43,7 @@ library:
+ 	 ar rcs libalarm.a alarm.o $(EXTRAARFLAGS)
+ 
+ process: $(OBJS)
+-	$(CXX) $(CCFLAGS) ${OBJS} -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o mtcalarmd
++	$(CXX) $(CCFLAGS) $(LDFLAGS) ${OBJS} -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o mtcalarmd
+ 
+ clean_bins:
+ 	@rm -v -f $(BINS)
+diff --git a/fsmon/Makefile b/fsmon/Makefile
+index b53cce0..33256ab 100644
+--- a/fsmon/Makefile
++++ b/fsmon/Makefile
+@@ -28,7 +28,7 @@ else
+ endif
+ 
+ build: clean static_analysis $(OBJS)
+-	$(CXX) $(CCFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o fsmond
++	$(CXX) $(CCFLAGS) $(LDFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o fsmond
+ 
+ common:
+ 	( cd ../common ; make clean ; make lib VER=$(VER) VER_MJR=$(VER_MJR))
+diff --git a/fsync/Makefile b/fsync/Makefile
+index b041f15..85c1543 100644
+--- a/fsync/Makefile
++++ b/fsync/Makefile
+@@ -16,7 +16,7 @@ all: build
+ 	$(CC) $(INCLUDES) $(CCFLAGS) $(EXTRACCFLAGS) -c $< -o $@
+ 
+ build: $(OBJS)
+-	$(CC) $(OBJS) $(LDLIBS) -o fsync
++	$(CC) $(CCFLAGS) $(LDFLAGS) $(OBJS) $(LDLIBS) -o fsync
+ 
+ clean: 
+ 	@rm -v -f $(OBJS) fsync
+diff --git a/heartbeat/Makefile b/heartbeat/Makefile
+index a625f20..b8deda7 100755
+--- a/heartbeat/Makefile
++++ b/heartbeat/Makefile
+@@ -33,8 +33,11 @@ endif
+ all: static_analysis common agent client
+ 
+ build: static_analysis $(OBJS)
+-	$(CXX) $(CCFLAGS) hbsAlarm.o hbsAgent.o hbsUtil.o hbsCluster.o hbsStubs.o ../common/nodeClass.o -L../public -L../alarm $(LDLIBS) $(EXTRALDFLAGS) -o hbsAgent
+-	$(CXX) $(CCFLAGS) hbsClient.o hbsPmon.o hbsUtil.o -L../public -L../alarm $(LDLIBS) $(EXTRALDFLAGS) -o hbsClient
++	$(CXX) $(CCFLAGS) $(LDFLAGS) \
++		hbsAlarm.o hbsAgent.o hbsUtil.o hbsCluster.o hbsStubs.o ../common/nodeClass.o -L../public -L../alarm \
++			$(LDLIBS) $(EXTRALDFLAGS) -o hbsAgent
++
++	$(CXX) $(CCFLAGS) $(LDFLAGS) hbsClient.o hbsPmon.o hbsUtil.o -L../public -L../alarm $(LDLIBS) $(EXTRALDFLAGS) -o hbsClient
+ 
+ common:
+ 	( cd ../common ; make clean ; make lib VER=$(VER) VER_MJR=$(VER_MJR))
+diff --git a//hostw/Makefile b/hostw/Makefile
+index d72708c..af18059 100755
+--- a/hostw/Makefile
++++ b/hostw/Makefile
+@@ -28,7 +28,7 @@ else
+ endif
+ 
+ build: clean static_analysis $(OBJS)
+-	$(CXX) $(CCFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o hostwd
++	$(CXX) $(CCFLAGS) $(LDFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o hostwd
+ 
+ common:
+ 	( cd ../common ; make clean ; make -j1 lib VER=$(VER) VER_MJR=$(VER_MJR))
+diff --git a/hwmon/Makefile b/hwmon/Makefile
+index 6d7cee3..c168c43 100644
+--- a/hwmon/Makefile
++++ b/hwmon/Makefile
+@@ -45,7 +45,7 @@ else
+ endif
+ 
+ build: clean static_analysis $(OBJS)
+-	$(CXX) $(CCFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o $(BIN)
++	$(CXX) $(CCFLAGS) $(LDFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o $(BIN)
+ 
+ common:
+ 	( cd ../common ; make lib VER=$(VER) VER_MJR=$(VER_MJR))
+diff --git a/lmon/Makefile b/lmon/Makefile
+index 9e328a4..a1a8519 100755
+--- a/lmon/Makefile
++++ b/lmon/Makefile
+@@ -29,7 +29,7 @@ else
+ endif
+ 
+ build: clean static_analysis $(OBJS)
+-	$(CXX) $(CCFLAGS) $(OBJS) $(LDPATH) $(LDLIBS) $(EXTRALDFLAGS) -o lmond
++	$(CXX) $(CCFLAGS) $(LDFLAGS) $(OBJS) $(LDPATH) $(LDLIBS) $(EXTRALDFLAGS) -o lmond
+ 
+ clean:
+ 	@rm -v -f $(OBJ) lmond *.o *.a
+diff --git a/maintenance/Makefile b/maintenance/Makefile
+index 85c2db6..e6a8892 100755
+--- a/maintenance/Makefile
++++ b/maintenance/Makefile
+@@ -77,10 +77,10 @@ common:
+ 	( cd ../common ; make clean ; make lib VER=$(VER) VER_MJR=$(VER_MJR))
+ 
+ mtcAgent: $(OBJS)
+-	$(CXX) $(CONTROL_OBJS) -L../public -L../alarm $(LDLIBS) $(EXTRALDFLAGS) -o mtcAgent
++	$(CXX) $(CCFLAGS) $(LDFLAGS) $(CONTROL_OBJS) -L../public -L../alarm $(LDLIBS) $(EXTRALDFLAGS) -o mtcAgent
+ 
+ mtcClient: $(OBJS)
+-	$(CXX) $(COMPUTE_OBJS) -L../public -L../alarm $(LDLIBS) $(EXTRALDFLAGS) -o mtcClient
++	$(CXX) $(CCFLAGS) $(LDFLAGS) $(COMPUTE_OBJS) -L../public -L../alarm $(LDLIBS) $(EXTRALDFLAGS) -o mtcClient
+ 
+ remove_bins:
+ 	@rm -v -f $(BINS)
+diff --git a/mtclog/Makefile b/mtclog/Makefile
+index 1d49aa4..fb513d9 100644
+--- a/mtclog/Makefile
++++ b/mtclog/Makefile
+@@ -30,7 +30,7 @@ else
+ endif
+ 
+ build: clean static_analysis $(OBJS)
+-	$(CXX) $(CCFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o mtclogd
++	$(CXX) $(CCFLAGS) $(LDFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o mtclogd
+ 
+ common:
+ 	( cd ../common ; make clean ; make lib VER=$(VER) VER_MJR=$(VER_MJR))
+diff --git a/pmon/Makefile b/pmon/Makefile
+index f75f2be..c34e204 100755
+--- a/pmon/Makefile
++++ b/pmon/Makefile
+@@ -29,7 +29,7 @@ else
+ endif
+ 
+ build: clean static_analysis $(OBJS)
+-	$(CXX) $(CCFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o pmond
++	$(CXX) $(CCFLAGS) $(LDFLAGS) $(OBJS) -L../daemon -L../common $(LDLIBS) $(EXTRALDFLAGS) -o pmond
+ 
+ common:
+ 	( cd ../common ; make clean ; make lib VER=$(VER) VER_MJR=$(VER_MJR))
+-- 
+2.17.1
+

@@ -1,0 +1,29 @@
+From 20359d646c6003b6056aea6cbe81d8b393084de1 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 18 Jun 2020 21:42:03 +0800
+Subject: [PATCH] nfsserver: remove the -f option for rpc.mountd
+
+The -f option is not supported any more on newer version of nfs-utils.
+
+Upstream-Status: Pending
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ nfs-utils-config/files/nfsserver | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/nfs-utils-config/files/nfsserver b/nfs-utils-config/files/nfsserver
+index 6449537..58642f1 100644
+--- a/nfs-utils-config/files/nfsserver
++++ b/nfs-utils-config/files/nfsserver
+@@ -46,7 +46,7 @@ test "$NFS_SERVERS" != "" && test "$NFS_SERVERS" -gt 0 && test "$NFS_SERVERS" -l
+ #mountd
+ start_mountd(){
+ 	echo -n 'starting mountd: '
+-	start-stop-daemon --start --exec "$NFS_MOUNTD" -- "-f /etc/exports $@"
++	start-stop-daemon --start --exec "$NFS_MOUNTD"
+ 	echo done
+ }
+ stop_mountd(){
+--
+2.7.4

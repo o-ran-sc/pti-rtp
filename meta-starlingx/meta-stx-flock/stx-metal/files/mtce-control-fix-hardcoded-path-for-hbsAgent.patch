@@ -1,0 +1,13 @@
+diff --git a/mtce-control/src/scripts/hbsAgent b/mtce-control/src/scripts/hbsAgent
+index d05177d..13443d0 100644
+--- a/mtce-control/src/scripts/hbsAgent
++++ b/mtce-control/src/scripts/hbsAgent
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="hbsAgent"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ 
+ VIRT_TOOL='virt-what'

@@ -1,0 +1,35 @@
+From 0374eb585bc3e47e914c7f523f904923a447d2f7 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Sat, 27 Jun 2020 10:26:58 +0800
+Subject: [PATCH] libsm_watchdog_nfs: add missing dependency on libsm_common.so
+
+Add missing dependency on libsm_common.so in Makefile for libsm_watchdog_nfs
+to avoid race condition issue:
+
+| ../../libexec/x86_64-poky-linux/gcc/x86_64-poky-linux/8.3.0/ld: cannot
+|  find -lsm_common
+| collect2: error: ld returned 1 exit status
+| make: *** [libsm_watchdog_nfs.so.0] Error 1
+
+Upstream-Status: Submitted [https://review.opendev.org/759787]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ service-mgmt/sm-common/src/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/service-mgmt/sm-common/src/Makefile b/service-mgmt/sm-common/src/Makefile
+index 7d138f9..487dfa0 100644
+--- a/service-mgmt/sm-common/src/Makefile
++++ b/service-mgmt/sm-common/src/Makefile
+@@ -53,7 +53,7 @@ libsm_watchdog_nfs.so: libsm_watchdog_nfs.so.$(VER_MJR)
+ libsm_watchdog_nfs.so.$(VER_MJR): libsm_watchdog_nfs.so.$(VER)
+ 	ln -sf $^ $@
+
+-libsm_watchdog_nfs.so.$(VER): libsm_common.so.$(VER)
++libsm_watchdog_nfs.so.$(VER): libsm_common.so.$(VER) libsm_common.so
+ 	$(CXX) $(INCLUDES) $(CCFLAGS) $(EXTRACCFLAGS) sm_watchdog_nfs.c ${LDFLAGS} $(LDLIBS) -L./ -lsm_common -Wl,-soname,libsm_watchdog_nfs.so.$(VER_MJR) -o $@
+
+ sm_watchdog: libsm_common.so
+--
+2.7.4

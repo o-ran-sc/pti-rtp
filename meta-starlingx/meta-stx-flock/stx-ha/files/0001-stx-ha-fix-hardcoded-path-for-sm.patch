@@ -1,0 +1,43 @@
+From 652fda776827b527844bd61864a3b163d5f56a53 Mon Sep 17 00:00:00 2001
+From: Babak Sarashki <Babak.SarAshki@windriver.com>
+Date: Tue, 9 Jun 2020 11:18:24 -0700
+Subject: [PATCH] stx-ha: fix hardcoded path for sm
+
+From commit af44c87f in master branch.
+---
+ service-mgmt/sm-common/src/sm_types.h        | 4 ++--
+ service-mgmt/sm-common/src/sm_watchdog_nfs.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/service-mgmt/sm-common/src/sm_types.h b/service-mgmt/sm-common/src/sm_types.h
+index b71d306..6d85d31 100644
+--- a/service-mgmt/sm-common/src/sm_types.h
++++ b/service-mgmt/sm-common/src/sm_types.h
+@@ -89,9 +89,9 @@ extern "C" {
+ #define SM_DUMP_DATA_FILE                            "/tmp/sm_data_dump.txt"
+ 
+ #define SM_TROUBLESHOOT_LOG_FILE                     "/var/log/sm-troubleshoot.log"
+-#define SM_TROUBLESHOOT_SCRIPT                       "/usr/local/sbin/sm-troubleshoot"
++#define SM_TROUBLESHOOT_SCRIPT                       "/usr/sbin/sm-troubleshoot"
+ 
+-#define SM_NOTIFICATION_SCRIPT                       "/usr/local/sbin/sm-notification"
++#define SM_NOTIFICATION_SCRIPT                       "/usr/sbin/sm-notification"
+ 
+ #define SM_SERVICE_DOMAIN_WEIGHT_MINIMUM              0
+ #define SM_SERVICE_DOMAIN_WEIGHT_UNSELECTABLE_ACTIVE -1
+diff --git a/service-mgmt/sm-common/src/sm_watchdog_nfs.c b/service-mgmt/sm-common/src/sm_watchdog_nfs.c
+index db08599..987d017 100644
+--- a/service-mgmt/sm-common/src/sm_watchdog_nfs.c
++++ b/service-mgmt/sm-common/src/sm_watchdog_nfs.c
+@@ -329,7 +329,7 @@ static void sm_watchdog_nfs_do_reboot( void )
+             open( "/dev/null", O_WRONLY ); // stderr
+         }
+ 
+-        execve( "/usr/local/sbin/collect", argv, env );
++        execve( "/usr/sbin/collect", argv, env );
+ 
+         // Shouldn't get this far, else there was an error.
+         exit(-1);
+-- 
+2.23.0
+

@@ -1,0 +1,49 @@
+From 45298bf5951677433417eb1befc990ba7a70301a Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 18 Jun 2020 09:53:00 +0800
+Subject: [PATCH] kickstarts: add setting for debain style networking
+
+Upstream-Status: Inappropriate [OE specific]
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ bsp-files/kickstarts/post_net_common.cfg         | 6 ++++++
+ bsp-files/kickstarts/post_pxeboot_controller.cfg | 6 ++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/bsp-files/kickstarts/post_net_common.cfg b/bsp-files/kickstarts/post_net_common.cfg
+index 8b854ff..46cdeeb 100755
+--- a/bsp-files/kickstarts/post_net_common.cfg
++++ b/bsp-files/kickstarts/post_net_common.cfg
+@@ -75,6 +75,12 @@ IPV6_AUTOCONF=no
+ LINKDELAY=20
+ EOF
+
++    # For Debian style networking settings
++    cat << EOF >> /etc/network/interfaces
++auto $mgmt_dev
++iface $mgmt_dev inet dhcp
++EOF
++
+ else
+
+     # Check whether to use inet or inet6
+diff --git a/bsp-files/kickstarts/post_pxeboot_controller.cfg b/bsp-files/kickstarts/post_pxeboot_controller.cfg
+index 54f7046..2b29a64 100644
+--- a/bsp-files/kickstarts/post_pxeboot_controller.cfg
++++ b/bsp-files/kickstarts/post_pxeboot_controller.cfg
+@@ -64,6 +64,12 @@ ONBOOT=yes
+ IPV6_AUTOCONF=no
+ EOF
+
++# For Debian style networking settings
++cat << EOF >> /etc/network/interfaces
++auto $mgmt_dev
++iface $mgmt_dev inet dhcp
++EOF
++
+ %end
+
+ %post --erroronfail
+--
+2.7.4

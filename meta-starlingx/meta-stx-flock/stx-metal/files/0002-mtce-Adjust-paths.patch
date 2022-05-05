@@ -1,0 +1,237 @@
+diff --git a/alarm/scripts/mtcalarm.init b/alarm/scripts/mtcalarm.init
+index 57f348f..419da8a 100644
+--- a/alarm/scripts/mtcalarm.init
++++ b/alarm/scripts/mtcalarm.init
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="mtcalarmd"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ PLATFORM_CONF="/etc/platform/platform.conf"
+ 
+diff --git a/fsmon/scripts/fsmon b/fsmon/scripts/fsmon
+index 6d8abcc..de9da01 100644
+--- a/fsmon/scripts/fsmon
++++ b/fsmon/scripts/fsmon
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="fsmond"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ 
+ # Linux Standard Base (LSB) Error Codes
+diff --git a/hostw/scripts/hostw b/hostw/scripts/hostw
+index 82a4aaf..4946092 100644
+--- a/hostw/scripts/hostw
++++ b/hostw/scripts/hostw
+@@ -17,12 +17,12 @@
+ # Short-Description: host watchdog daemon
+ ### END INIT INFO
+ 
+-# echo "7:3:respawn:/usr/local/bin/hostwd" >> /etc/inittab
++# echo "7:3:respawn:/usr/bin/hostwd" >> /etc/inittab
+ 
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="hostwd"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ IFACE=""
+ 
+ if [ ! -e "$DAEMON" ] ; then
+diff --git a/hwmon/scripts/lsb/hwmon b/hwmon/scripts/lsb/hwmon
+index 4596a36..ba459c1 100644
+--- a/hwmon/scripts/lsb/hwmon
++++ b/hwmon/scripts/lsb/hwmon
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="hwmond"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ 
+ # Linux Standard Base (LSB) Error Codes
+diff --git a/hwmon/scripts/ocf/hwmon b/hwmon/scripts/ocf/hwmon
+index 14f52a2..b71a77f 100644
+--- a/hwmon/scripts/ocf/hwmon
++++ b/hwmon/scripts/ocf/hwmon
+@@ -45,7 +45,7 @@ OCF_RESKEY_state_default="standby"
+ : ${OCF_RESKEY_pid=${OCF_RESKEY_pid_default}}
+ : ${OCF_RESKEY_state=${OCF_RESKEY_state_default}}
+ 
+-mydaemon="/usr/local/bin/${OCF_RESKEY_binary}"
++mydaemon="/usr/bin/${OCF_RESKEY_binary}"
+ statusfile="/var/run/${OCF_RESKEY_binary}.info"
+ 
+ #######################################################################
+@@ -157,9 +157,9 @@ hwmond_validate() {
+         ocf_log info "hwmond:validate"
+    fi
+ 
+-    check_binary "/usr/local/bin/${OCF_RESKEY_binary}"
+-    check_binary "/usr/local/bin/mtcAgent"
+-    check_binary "/usr/local/bin/mtcClient"
++    check_binary "/usr/bin/${OCF_RESKEY_binary}"
++    check_binary "/usr/bin/mtcAgent"
++    check_binary "/usr/bin/mtcClient"
+     check_binary sysinv-api
+     check_binary pidof
+ 
+diff --git a/lmon/scripts/lmon b/lmon/scripts/lmon
+index 6024e16..21538ee 100644
+--- a/lmon/scripts/lmon
++++ b/lmon/scripts/lmon
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="lmond"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ IFACE=""
+ 
+ if [ ! -e "$DAEMON" ] ; then
+diff --git a/maintenance/mtcCompMsg.cpp b/maintenance/mtcCompMsg.cpp
+index b5b221e..daaea9b 100755
+--- a/maintenance/mtcCompMsg.cpp
++++ b/maintenance/mtcCompMsg.cpp
+@@ -541,7 +541,7 @@ int mtc_service_command ( mtc_socket_type * sock_ptr, int interface )
+             {
+                 ilog ("Disk wipe in progress (%s)\n", interface_name.c_str());
+                 daemon_log ( NODE_RESET_FILE, "wipedisk command" );
+-                rc = system("/usr/local/bin/wipedisk --force");
++                rc = system("/usr/bin/wipedisk --force");
+                 ilog ("Disk wipe complete - Forcing Reboot ...\n");
+                 rc = system("/usr/bin/systemctl reboot --force");
+                 exit (0);
+diff --git a/pmon/scripts/pmon b/pmon/scripts/pmon
+index bdc3ab7..4cb813e 100644
+--- a/pmon/scripts/pmon
++++ b/pmon/scripts/pmon
+@@ -17,12 +17,12 @@
+ # Short-Description: process Monitor daemon 
+ ### END INIT INFO
+ 
+-# echo "7:3:respawn:/usr/local/bin/pmond" >> /etc/inittab
++# echo "7:3:respawn:/usr/bin/pmond" >> /etc/inittab
+ 
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="pmond"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ IFACE=""
+ 
+ if [ ! -e "$DAEMON" ] ; then
+diff --git a/scripts/hbsAgent b/scripts/hbsAgent
+index d1a2f4f..e8157f0 100755
+--- a/scripts/hbsAgent
++++ b/scripts/hbsAgent
+@@ -43,7 +43,7 @@ OCF_RESKEY_state_default="active"
+ : ${OCF_RESKEY_pid=${OCF_RESKEY_pid_default}}
+ : ${OCF_RESKEY_state=${OCF_RESKEY_state_default}}
+ 
+-mydaemon="/usr/local/bin/${OCF_RESKEY_binary}"
++mydaemon="/usr/bin/${OCF_RESKEY_binary}"
+ statusfile="/var/run/${OCF_RESKEY_binary}.info"
+ virtualhostfile="/var/run/virtual.host"
+ facterexec="/usr/bin/facter"
+@@ -148,8 +148,8 @@ hbsAgent_validate() {
+         ocf_log info "hbsAgent:validate"  
+     fi
+ 
+-    check_binary "/usr/local/bin/${OCF_RESKEY_binary}"
+-    check_binary "/usr/local/bin/mtcAgent"
++    check_binary "/usr/bin/${OCF_RESKEY_binary}"
++    check_binary "/usr/bin/mtcAgent"
+     check_binary pidof
+ 
+     if [ ! -f ${OCF_RESKEY_config} ] ; then
+diff --git a/scripts/hbsClient b/scripts/hbsClient
+index 67d7e84..7c412b1 100644
+--- a/scripts/hbsClient
++++ b/scripts/hbsClient
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="hbsClient"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ IFACE=""
+ 
+diff --git a/scripts/mtcAgent b/scripts/mtcAgent
+index 6e75ace..885bd3d 100755
+--- a/scripts/mtcAgent
++++ b/scripts/mtcAgent
+@@ -45,7 +45,7 @@ OCF_RESKEY_state_default="standby"
+ : ${OCF_RESKEY_pid=${OCF_RESKEY_pid_default}}
+ : ${OCF_RESKEY_state=${OCF_RESKEY_state_default}}
+ 
+-mydaemon="/usr/local/bin/${OCF_RESKEY_binary}"
++mydaemon="/usr/bin/${OCF_RESKEY_binary}"
+ statusfile="/var/run/${OCF_RESKEY_binary}.info"
+ 
+ #######################################################################
+@@ -157,10 +157,10 @@ mtcAgent_validate() {
+         ocf_log info "mtcAgent:validate"
+    fi
+ 
+-    check_binary "/usr/local/bin/${OCF_RESKEY_binary}"
+-    check_binary "/usr/local/bin/hbsAgent"
+-    check_binary "/usr/local/bin/mtcClient"
+-    check_binary "/usr/local/bin/hbsClient"
++    check_binary "/usr/bin/${OCF_RESKEY_binary}"
++    check_binary "/usr/bin/hbsAgent"
++    check_binary "/usr/bin/mtcClient"
++    check_binary "/usr/bin/hbsClient"
+     check_binary sysinv-api
+     check_binary pidof
+ 
+diff --git a/scripts/mtcClient b/scripts/mtcClient
+index 1113689..de4f407 100644
+--- a/scripts/mtcClient
++++ b/scripts/mtcClient
+@@ -20,7 +20,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="mtcClient"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ PLATFORM_CONF="/etc/platform/platform.conf"
+ 
+diff --git a/scripts/mtcinit b/scripts/mtcinit
+index 8ff9bbb..4672e2f 100755
+--- a/scripts/mtcinit
++++ b/scripts/mtcinit
+@@ -9,10 +9,10 @@
+ . /etc/init.d/functions
+ 
+ MTCCLIENT_NAME="mtcClient"
+-MTCCLIENT="/usr/local/bin/${MTCCLIENT_NAME}"
++MTCCLIENT="/usr/bin/${MTCCLIENT_NAME}"
+ 
+ HBSCLIENT_NAME="hbsClient"
+-HBSCLIENT="/usr/local/bin/${HBSCLIENT_NAME}"
++HBSCLIENT="/usr/bin/${HBSCLIENT_NAME}"
+ 
+ IFACE=""
+ 
+diff --git a/scripts/mtclog b/scripts/mtclog
+index 80db22a..f904c4d 100644
+--- a/scripts/mtclog
++++ b/scripts/mtclog
+@@ -22,7 +22,7 @@
+ . /etc/init.d/functions
+ 
+ DAEMON_NAME="mtclogd"
+-DAEMON="/usr/local/bin/${DAEMON_NAME}"
++DAEMON="/usr/bin/${DAEMON_NAME}"
+ PIDFILE="/var/run/${DAEMON_NAME}.pid"
+ PLATFORM_CONF="/etc/platform/platform.conf"
+ 
