@@ -16,6 +16,23 @@
       "message": "jjb-deploy pti-rtp-info-yaml-verify",
       "revId": "c5b671e40770c0277825a525dcd3b070bf8ee910",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd639b48_d32f3c65",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2022-05-16T01:51:52Z",
+      "side": 1,
+      "message": "jjb-deploy pti-rtp-info-yaml-verify",
+      "revId": "c5b671e40770c0277825a525dcd3b070bf8ee910",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
