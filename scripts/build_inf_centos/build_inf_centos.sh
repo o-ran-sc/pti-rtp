@@ -127,8 +127,8 @@ prepare_workspace () {
 
     mkdir -p ${STX_LOCAL_SRC_DIR} ${STX_LOCAL_PRJ_DIR} ${STX_MIRROR_DIR} ${STX_PRJ_OUTPUT}
     rm -f ${STX_SRC_DIR} ${STX_PRJ_DIR}
-    ln -sf ${STX_LOCAL_SRC_DIR} ${STX_SRC_DIR}
-    ln -sf ${STX_LOCAL_PRJ_DIR} ${STX_PRJ_DIR}
+    ln -sf $(realpath --relative-to=${WORKSPACE} ${STX_LOCAL_SRC_DIR}) ${STX_SRC_DIR}
+    ln -sf $(realpath --relative-to=${WORKSPACE} ${STX_LOCAL_PRJ_DIR}) ${STX_PRJ_DIR}
 
     echo_info "The following directories are created in your workspace(${WORKSPACE}):"
     echo_info "For all layers source: ${STX_SRC_DIR}"
