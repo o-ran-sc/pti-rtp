@@ -228,7 +228,7 @@ while getopts "w:b:e:r:unh" OPTION; do
             ;;
         u)
             SKIP_UPDATE="No"
-	    ;;
+            ;;
         r)
             check_yn_rm_work ${OPTARG}
             ;;
@@ -248,6 +248,11 @@ if [ -n "${BSP_VALID}" ]; then
     BSP="${BSP_VALID}"
 fi
 
+IMG_ARCH=${BSP}
+if [ "${BSP}" == "intel-corei7-64"  ]; then
+    IMG_ARCH="x86-64"
+fi
+
 #########################################################################
 # Functions for each step
 #########################################################################
@@ -257,6 +262,7 @@ SRC_STX_DIR=${SRC_LAYER_DIR}/meta-starlingx
 PRJ_BUILD_DIR=${WORKSPACE}/prj_oran_stx
 PRJ_BUILD_DIR_ANACONDA=${WORKSPACE}/prj_oran_inf_anaconda
 PRJ_SHARED_DIR=${WORKSPACE}/prj_shared
+PRJ_OUTPUT_DIR=${WORKSPACE}/prj_output
 PRJ_SHARED_DL_DIR=${WORKSPACE}/prj_shared/downloads
 PRJ_SHARED_SS_DIR=${WORKSPACE}/prj_shared/sstate-cache
 SRC_SCRIPTS=${SRC_ORAN_DIR}/rtp/scripts/build_inf_yocto
@@ -268,12 +274,14 @@ IMG_INF=inf-image-aio-installer
 ISO_STX=${PRJ_BUILD_DIR}/tmp/deploy/images/${BSP}/${IMG_STX}-${BSP}.iso
 ISO_ANACONDA=${PRJ_BUILD_DIR_ANACONDA}/tmp-glibc/deploy/images/${BSP}/${IMG_ANACONDA}-${BSP}.iso
 ISO_INF=${PRJ_BUILD_DIR_ANACONDA}/tmp-glibc/deploy/images/${BSP}/${IMG_INF}-${BSP}.iso
+ISO_INF_ALIAS=${PRJ_OUTPUT_DIR}/inf-image-yocto-aio-${IMG_ARCH}.iso
 
 prepare_workspace () {
     msg_step="Create workspace for the build"
     echo_step_start
 
-    mkdir -p ${PRJ_BUILD_DIR} ${SRC_ORAN_DIR} ${PRJ_BUILD_DIR_ANACONDA} ${PRJ_SHARED_DL_DIR} ${PRJ_SHARED_SS_DIR}
+    mkdir -p ${PRJ_BUILD_DIR} ${SRC_ORAN_DIR} ${PRJ_BUILD_DIR_ANACONDA} \
+             ${PRJ_SHARED_DL_DIR} ${PRJ_SHARED_SS_DIR} ${PRJ_OUTPUT_DIR}
 
     echo_info "The following directories are created in your workspace(${WORKSPACE}):"
     echo_info "For all layers source: ${SRC_LAYER_DIR}"
@@ -522,11 +530,12 @@ build_anaconda_image () {
 
     if [ -z "${DRYRUN}" ]; then
         cp -Pf ${ISO_ANACONDA} ${ISO_INF}
+        cp -Pf ${ISO_ANACONDA} ${ISO_INF_ALIAS}
     fi
 
     echo_step_end
 
-    echo_info "Build succeeded, you can get the image in ${ISO_INF}"
+    echo_info "Build succeeded, you can get the image in ${ISO_INF_ALIAS}"
 }
 
 #########################################################################
