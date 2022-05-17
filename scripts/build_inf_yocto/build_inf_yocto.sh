@@ -77,7 +77,7 @@ SUB_LAYER_META_OE_ANACONDA="\
     meta-gnome \
 "
 
-SCRIPTS_DIR=$(dirname $(readlink -f $0))
+SCRIPTS_DIR=$(dirname $(dirname $(readlink -f $0)))
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 
 #########################################################################
@@ -259,8 +259,9 @@ PRJ_BUILD_DIR_ANACONDA=${WORKSPACE}/prj_oran_inf_anaconda
 PRJ_SHARED_DIR=${WORKSPACE}/prj_shared
 PRJ_SHARED_DL_DIR=${WORKSPACE}/prj_shared/downloads
 PRJ_SHARED_SS_DIR=${WORKSPACE}/prj_shared/sstate-cache
-SRC_META_PATCHES=${SRC_ORAN_DIR}/rtp/scripts/meta-patches/src_stx
-SRC_CONFIGS=${SRC_ORAN_DIR}/rtp/scripts/configs
+SRC_SCRIPTS=${SRC_ORAN_DIR}/rtp/scripts/build_inf_yocto
+SRC_META_PATCHES=${SRC_SCRIPTS}/meta-patches/src_stx
+SRC_CONFIGS=${SRC_SCRIPTS}/configs
 IMG_STX=stx-image-aio
 IMG_ANACONDA=stx-image-aio-installer
 IMG_INF=inf-image-aio-installer

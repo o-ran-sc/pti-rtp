@@ -80,7 +80,7 @@ fi
 SRC_WRL_DIR=${WORKSPACE}/src_wrl1018
 SRC_ORAN_DIR=${WORKSPACE}/src_oran
 PRJ_BUILD_DIR=${WORKSPACE}/prj_oran-inf
-RPM_REPO_LIST=${SRC_ORAN_DIR}/rtp/scripts/rpm_repo_list.txt
+RPM_REPO_LIST=${SRC_ORAN_DIR}/rtp/scripts/build_inf_yocto/rpm_repo_list.txt
 RPM_DEPLOY_DIR=${PRJ_BUILD_DIR}/tmp-glibc/deploy/rpm
 RPM_REPODATA=${RPM_DEPLOY_DIR}/repodata
 
