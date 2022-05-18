@@ -129,9 +129,14 @@ prepare_workspace () {
 
 prepare_workspace
 
-${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
+# debug for CI Jenkins build
+env
+echo "current user: $USER"
+echo "current branch: $GERRIT_BRANCH"
 
 # dry-run is not supported yet for CentOS build
 if [ -z "${DRYRUN}" ]; then
-    ${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN}
+    ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
 fi
+
+${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN}
