@@ -122,16 +122,40 @@ prepare_workspace () {
     echo_step_end
 }
 
+# debug for CI Jenkins build
+get_debug_info () {
+    msg_step="Get debug info for CI Jenkins build"
+    echo_step_start
+
+    echo_info "=== Get env ==="
+    env
+    echo_info "==============="
+
+    set -x
+    df -h
+    groups
+    uname -a
+    cat /etc/*release
+    lscpu
+    free -h
+    set +x
+
+    echo_step_end
+}
+
 
 #########################################################################
 # Main process
 #########################################################################
 
 prepare_workspace
-
-${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
+if [ "$CI" = "true" ]; then
+    get_debug_info
+fi
 
 # dry-run is not supported yet for CentOS build
 if [ -z "${DRYRUN}" ]; then
-    ${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN}
+    ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
 fi
+
+${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN}
