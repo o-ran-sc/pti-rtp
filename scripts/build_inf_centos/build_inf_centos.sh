@@ -290,6 +290,7 @@ build_image () {
     mkdir -p ${STX_PRJ_OUTPUT}
     cd ${STX_PRJ_OUTPUT}
     wget -q ${ISO_UP} -O ${ISO_INF_COS}
+    ls -lh ${STX_PRJ_OUTPUT}/${ISO_INF_COS}
 
     echo_step_end
 

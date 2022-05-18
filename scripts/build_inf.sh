@@ -157,8 +157,8 @@ if [ "$CI" = "true" ]; then
 fi
 
 # dry-run is not supported yet for CentOS build
-if [ -z "${DRYRUN}" ]; then
-    ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
-fi
+#if [ -z "${DRYRUN}" ]; then
+#    ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
+#fi
 
-${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN}
+${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} -s
