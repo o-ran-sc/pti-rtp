@@ -289,7 +289,7 @@ build_image () {
 
     mkdir -p ${STX_PRJ_OUTPUT}
     cd ${STX_PRJ_OUTPUT}
-    wget ${ISO_UP} -O ${ISO_INF_COS}
+    wget -q ${ISO_UP} -O ${ISO_INF_COS}
 
     echo_step_end
 
