@@ -80,6 +80,7 @@ echo_cmd () {
 #########################################################################
 
 DRYRUN=""
+YP_ARGS="-s"
 
 while getopts "w:b:e:r:unh" OPTION; do
     case ${OPTION} in
@@ -88,6 +89,7 @@ while getopts "w:b:e:r:unh" OPTION; do
             ;;
         n)
             DRYRUN="-n"
+            YP_ARGS=""
             ;;
         h)
             help_info
@@ -161,4 +163,4 @@ if [ -z "${DRYRUN}" ]; then
     ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
 fi
 
-${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN}
+${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}

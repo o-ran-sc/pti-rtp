@@ -210,9 +210,10 @@ DRYRUN=""
 EXTRA_CONF=""
 SKIP_UPDATE="Yes"
 RM_WORK="Yes"
+GET_SSTATE="No"
 BSP="intel-corei7-64"
 
-while getopts "w:b:e:r:unh" OPTION; do
+while getopts "w:b:e:r:unsh" OPTION; do
     case ${OPTION} in
         w)
             WORKSPACE=`readlink -f ${OPTARG}`
@@ -232,6 +233,9 @@ while getopts "w:b:e:r:unh" OPTION; do
         r)
             check_yn_rm_work ${OPTARG}
             ;;
+        s)
+            GET_SSTATE="Yes"
+	    ;;
         h)
             help_info
             exit
@@ -276,6 +280,8 @@ ISO_ANACONDA=${PRJ_BUILD_DIR_ANACONDA}/tmp-glibc/deploy/images/${BSP}/${IMG_ANAC
 ISO_INF=${PRJ_BUILD_DIR_ANACONDA}/tmp-glibc/deploy/images/${BSP}/${IMG_INF}-${BSP}.iso
 ISO_INF_ALIAS=${PRJ_OUTPUT_DIR}/inf-image-yocto-aio-${IMG_ARCH}.iso
 
+SSTATE_CONTAINER_IMG=jackiehjm/inf-yocto-sstate:8.3
+
 prepare_workspace () {
     msg_step="Create workspace for the build"
     echo_step_start
@@ -287,6 +293,20 @@ prepare_workspace () {
     echo_info "For all layers source: ${SRC_LAYER_DIR}"
     echo_info "For StarlingX build project: ${PRJ_BUILD_DIR}"
     echo_info "For anaconda (installer) build project: ${PRJ_BUILD_DIR_ANACONDA}"
+
+    echo_step_end
+}
+
+# This is tend to be used for CI Jenkins build only
+get_sstate () {
+    msg_step="Get sstate cache from dockerhub image"
+    echo_step_start
+
+    docker pull ${SSTATE_CONTAINER_IMG}
+    docker create -ti --name inf-yocto-sstate ${SSTATE_CONTAINER_IMG} sh
+    rm -rf ${PRJ_SHARED_SS_DIR}
+    docker cp inf-yocto-sstate:/sstate ${PRJ_SHARED_SS_DIR}
+    docker rm inf-yocto-sstate
 
     echo_step_end
 }
@@ -543,6 +563,9 @@ build_anaconda_image () {
 #########################################################################
 
 prepare_workspace
+if [ "${GET_SSTATE}" == "Yes" ]; then
+    get_sstate
+fi
 prepare_src
 setup_stx_build
 setup_anaconda_build
