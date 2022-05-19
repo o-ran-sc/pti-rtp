@@ -280,7 +280,7 @@ ISO_ANACONDA=${PRJ_BUILD_DIR_ANACONDA}/tmp-glibc/deploy/images/${BSP}/${IMG_ANAC
 ISO_INF=${PRJ_BUILD_DIR_ANACONDA}/tmp-glibc/deploy/images/${BSP}/${IMG_INF}-${BSP}.iso
 ISO_INF_ALIAS=${PRJ_OUTPUT_DIR}/inf-image-yocto-aio-${IMG_ARCH}.iso
 
-SSTATE_CONTAINER_IMG=jackiehjm/inf-yocto-sstate:8.3
+SSTATE_CONTAINER_IMG=infbuilder/inf-yocto-sstate:2022.05
 
 prepare_workspace () {
     msg_step="Create workspace for the build"
@@ -302,11 +302,14 @@ get_sstate () {
     msg_step="Get sstate cache from dockerhub image"
     echo_step_start
 
-    docker pull ${SSTATE_CONTAINER_IMG}
-    docker create -ti --name inf-yocto-sstate ${SSTATE_CONTAINER_IMG} sh
-    rm -rf ${PRJ_SHARED_SS_DIR}
-    docker cp inf-yocto-sstate:/sstate ${PRJ_SHARED_SS_DIR}
-    docker rm inf-yocto-sstate
+    for i in {1..5}; do
+        docker pull ${SSTATE_CONTAINER_IMG}-${i}
+        docker create -ti --name inf-yocto-sstate-${i} ${SSTATE_CONTAINER_IMG}-${i} sh
+        docker cp inf-yocto-sstate:/sstate${i} ${PRJ_SHARED_SS_DIR}/sstate${i}
+        docker rm inf-yocto-sstate-${i}
+    done
+    mv ${PRJ_SHARED_SS_DIR}/sstate*/* ${PRJ_SHARED_SS_DIR}
+    #rm -rf ${PRJ_SHARED_SS_DIR}/sstate*
 
     echo_step_end
 }
