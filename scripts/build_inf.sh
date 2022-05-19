@@ -162,9 +162,9 @@ fi
 # dry-run is not supported yet for CentOS build
 if [ -z "${DRYRUN}" ]; then
     if [ "$CI" = "true" ]; then
-        ${SCRIPT_CENTOS_PRE} -w ${WORKSPACE_CENTOS}
+        ${SCRIPT_CENTOS_PRE} -w ${WORKSPACE_CENTOS} || true
     fi
-    ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
+    ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN} || true
 fi
 
 ${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}

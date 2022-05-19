@@ -24,11 +24,6 @@ set -e -o pipefail
 WORKSPACE=""
 MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.05-stx.6.0
 
-export BUILD_GROUP="jenkins"
-export WGET_OPENDEV="wget --no-check-certificate"
-export LOCALDISK="${WORKSPACE}/localdisk"
-export MIRROR_DIR="${WORKSPACE}/mirror"
-
 #########################################################################
 # Common Functions
 #########################################################################
@@ -90,6 +85,11 @@ get_mirror () {
 #########################################################################
 # Main process
 #########################################################################
+set -x
+export BUILD_GROUP="jenkins"
+export WGET_OPENDEV="wget --no-check-certificate"
+export LOCALDISK="${WORKSPACE}/localdisk"
+export MIRROR_DIR="${WORKSPACE}/mirror"
 
 sudo mkdir -p ${LOCALDISK}/loadbuild/mock-cache
 sudo mkdir -p ${LOCALDISK}/loadbuild/mock
