@@ -93,7 +93,7 @@ while getopts "w:b:e:r:unh" OPTION; do
             ;;
         u)
             SKIP_UPDATE="No"
-	    ;;
+            ;;
         h)
             help_info
             exit
@@ -230,48 +230,17 @@ repo_init_sync () {
     echo_step_end
 }
 
-create_build_docker () {
-    msg_step="Create build environment docker container"
-    echo_step_start
+code_adjust () {
+    echo_step_start "Some codes need to be adjusted for INF project"
 
-    cd ${MY_REPO_ROOT_DIR}/stx-tools/
-    export PATH=$PATH:$PWD
-
-    echo "MYUNAME=${USER}" > localrc
-    echo "PROJECT=${PRJ_NAME}" >> localrc
-    echo "HOST_PREFIX=${WORKSPACE}" >> localrc
-    echo "HOST_MIRROR_DIR=${WORKSPACE}/mirror" >> localrc
-    echo "LAYER=${LAYER}" >> localrc
-    echo "MY_EMAIL=jackie.huang@windriver.com" >> localrc
-
-    # workarounds
-    #git checkout master
-    #sed -i 's/docker /sudo docker /' tb.sh
-
-    #RUN_CMD="tb.sh create"
-    #run_cmd "Create build environment docker image"
-
-    RUN_CMD="tb.sh run"
-    run_cmd "Create build environment docker container"
-
+    sed -i "s|/import/mirrors|${STX_MIRROR_DIR}|" \
+        $MY_REPO/stx/metal/installer/pxe-network-installer/centos/build_srpm.data
     echo_step_end
 }
 
-exec_build_docker () {
-    msg_step="Enter a bash shell within the build environment container"
-    echo_step_start
-
-    cd ${MY_REPO_ROOT_DIR}/stx-tools/
-    export PATH=$PATH:$PWD
-
-    RUN_CMD="tb.sh exec"
-    run_cmd "Enter a bash shell within the build environment container"
-
-    #cd $MY_REPO_ROOT_DIR/stx-tools/centos-mirror-tools/
-    #RUN_CMD="sudo -E ./download_mirror.sh"
-    #run_cmd "Download rpms"
-
-    echo_step_end
+populate_dl () {
+    ${MY_REPO_ROOT_DIR}/stx-tools/toCOPY/generate-centos-repo.sh ${STX_MIRROR_DIR}/stx-6.0
+    ${MY_REPO_ROOT_DIR}/stx-tools/toCOPY/populate_downloads.sh ${STX_MIRROR_DIR}/stx-6.0
 }
 
 # To be removed:
@@ -283,14 +252,31 @@ ISO_UP_VER=6.0.0
 ISO_UP=http://mirror.starlingx.cengn.ca/mirror/starlingx/release/${ISO_UP_VER}/centos/flock/outputs/iso/${ISO_STX_COS}
 ISO_INF_COS=inf-image-centos-all-x86-64.iso
 
-
-build_image () {
-    echo_step_start "Build CentOS images"
+build_image_rm () {
+    echo_step_start "Build CentOS images: To be removed"
 
     mkdir -p ${STX_PRJ_OUTPUT}
     cd ${STX_PRJ_OUTPUT}
     wget -q ${ISO_UP} -O ${ISO_INF_COS}
     ls -lh ${STX_PRJ_OUTPUT}/${ISO_INF_COS}
+
+    echo_step_end
+
+    echo_info "Build succeeded, you can get the image in ${STX_PRJ_OUTPUT}/${ISO_INF_COS}"
+}
+
+build_image () {
+    echo_step_start "Build CentOS images"
+
+    mkdir -p ${STX_PRJ_OUTPUT}
+    cd ${MY_BUILD_DIR}
+    RUN_CMD="build-pkgs --build-avoidance"
+    run_cmd "Build pkgs"
+
+    RUN_CMD="build-iso"
+    run_cmd "Build ISO image"
+
+    cp ${MY_BUILD_DIR}/export/bootimage.iso ${STX_PRJ_OUTPUT}/${ISO_INF_COS}
 
     echo_step_end
 
@@ -304,7 +290,8 @@ build_image () {
 
 prepare_workspace
 create_env
-#repo_init_sync
-#create_build_docker
-#exec_build_docker
-build_image
+repo_init_sync
+code_adjust
+populate_dl
+build_image_rm
+build_image || true
