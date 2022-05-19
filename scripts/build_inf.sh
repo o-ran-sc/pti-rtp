@@ -101,6 +101,9 @@ done
 if [ -z ${WORKSPACE} ]; then
     echo_info "No workspace specified, a directory 'workspace' will be created in current directory as the workspace"
     WORKSPACE=`readlink -f workspace`
+elif [ "$CI" = "true" ]; then
+    # it's /w/workspace/pti-rtp-shell-release-master/workspace
+    WORKSPACE=$(dirname $(dirname ${WORKSPACE}))
 fi
 
 #########################################################################
@@ -110,6 +113,7 @@ WORKSPACE_YP=${WORKSPACE}/workspace_yocto
 WORKSPACE_CENTOS=${WORKSPACE}/workspace_centos
 SCRIPT_YP=${SCRIPTS_DIR}/build_inf_yocto/build_inf_yocto.sh
 SCRIPT_CENTOS=${SCRIPTS_DIR}/build_inf_centos/build_inf_centos.sh
+SCRIPT_CENTOS_PRE=${SCRIPTS_DIR}/build_inf_centos/build_inf_prepare_jenkins.sh
 
 prepare_workspace () {
     msg_step="Create workspace for the multi-os builds"
@@ -161,6 +165,9 @@ fi
 # dry-run is not supported yet for CentOS build
 if [ -z "${DRYRUN}" ]; then
     ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}
+    if [ "$CI" = "true" ]; then
+        ${SCRIPT_CENTOS_PRE} -w ${WORKSPACE_CENTOS}
+    fi
 fi
 
 ${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}
