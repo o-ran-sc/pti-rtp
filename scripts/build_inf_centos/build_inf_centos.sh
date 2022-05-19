@@ -122,7 +122,7 @@ STX_MIRROR_DIR=${WORKSPACE}/mirror
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
 
 prepare_workspace () {
-    msg_step="Create workspace for the build"
+    msg_step="Create workspace for the CentOS build"
     echo_step_start
 
     mkdir -p ${STX_LOCAL_SRC_DIR} ${STX_LOCAL_PRJ_DIR} ${STX_MIRROR_DIR} ${STX_PRJ_OUTPUT}
@@ -139,7 +139,7 @@ prepare_workspace () {
 }
 
 create_env () {
-    msg_step="Create env file for the build"
+    msg_step="Create env file for the CentOS build"
     echo_step_start
 
     ENV_FILENAME=env.${PRJ_NAME}

@@ -85,14 +85,16 @@ get_mirror () {
 #########################################################################
 # Main process
 #########################################################################
+msg_step="Prepare for jenkins build"
+
 set -x
 export BUILD_GROUP="jenkins"
 export WGET_OPENDEV="wget --no-check-certificate"
 export LOCALDISK="${WORKSPACE}/localdisk"
 export MIRROR_DIR="${WORKSPACE}/mirror"
 
-sudo mkdir -p ${LOCALDISK}/loadbuild/mock-cache
-sudo mkdir -p ${LOCALDISK}/loadbuild/mock
+mkdir -p ${LOCALDISK}/loadbuild/mock-cache
+mkdir -p ${LOCALDISK}/loadbuild/mock
 mkdir -p ${LOCALDISK}/designer
 mkdir -p ${LOCALDISK}/loadbuild
 
@@ -295,3 +297,5 @@ sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY*
 
 # Try to continue a yum command even if a StarlingX repo is unavailable.
 sudo yum-config-manager --setopt=StarlingX\*.skip_if_unavailable=1 --save
+
+echo_step_end

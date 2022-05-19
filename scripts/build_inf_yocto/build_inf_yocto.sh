@@ -283,7 +283,7 @@ ISO_INF_ALIAS=${PRJ_OUTPUT_DIR}/inf-image-yocto-aio-${IMG_ARCH}.iso
 SSTATE_CONTAINER_IMG=infbuilder/inf-yocto-sstate:2022.05
 
 prepare_workspace () {
-    msg_step="Create workspace for the build"
+    msg_step="Create workspace for the Yocto build"
     echo_step_start
 
     mkdir -p ${PRJ_BUILD_DIR} ${SRC_ORAN_DIR} ${PRJ_BUILD_DIR_ANACONDA} \
