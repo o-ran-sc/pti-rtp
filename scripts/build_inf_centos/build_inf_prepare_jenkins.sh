@@ -74,7 +74,7 @@ get_mirror () {
     echo_step_start
 
     docker pull ${MIRROR_CONTAINER_IMG}
-    docker create -ti --name inf-centos-mirror-${i} ${MIRROR_CONTAINER_IMG} sh
+    docker create -ti --name inf-centos-mirror ${MIRROR_CONTAINER_IMG} sh
     docker cp inf-centos-mirror:/mirror ${MIRROR_DIR}
     docker rm inf-centos-mirror
 
