@@ -93,6 +93,7 @@ export BUILD_GROUP="jenkins"
 export WGET_OPENDEV="wget --no-check-certificate"
 export LOCALDISK="${WORKSPACE}/localdisk"
 export MIRROR_DIR="${WORKSPACE}/mirror"
+export TOOLS_DIR="${WORKSPACE}/tools"
 
 mkdir -p ${LOCALDISK}/loadbuild/mock-cache
 mkdir -p ${LOCALDISK}/loadbuild/mock
@@ -167,12 +168,13 @@ sudo yum install -y \
     wget
 
 # clone the tools repo
-cd ~
+cd ${WORKSPACE}
 git clone https://opendev.org/starlingx/tools.git
 
 # mock custumizations
 # forcing chroots since a couple of packages naughtily insist on network access and
 # we dont have nspawn and networks happy together.
+sudo groupadd -g 9001 mockbuild
 sudo useradd -s /sbin/nologin -u 9001 -g 9001 mockbuild
 sudo rmdir /var/lib/mock
 sudo ln -s ${LOCALDISK}/loadbuild/mock /var/lib/mock
@@ -205,7 +207,7 @@ curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sudo sh
 # Be careful not to replace modules provided by RPMs as it may break
 # other system packages. Look for warnings similar to "Uninstalling a
 # distutils installed project has been deprecated" from pip.
-sudo pip install -c ~/tools/toCOPY/builder-constraints.txt \
+sudo pip install -c ${TOOLS_DIR}/toCOPY/builder-constraints.txt \
     testrepository \
     fixtures \
     pbr \
@@ -217,7 +219,7 @@ sudo pip install -c ~/tools/toCOPY/builder-constraints.txt \
 # Create a sane py27 virtualenv
 virtualenv /opt/py27 && \
     source /opt/py27/bin/activate && \
-    sudo pip install -c ~/tools/toCOPY/builder-opt-py27-constraints.txt \
+    sudo pip install -c ${TOOLS_DIR}/toCOPY/builder-opt-py27-constraints.txt \
             tox \
         && \
     for prog in tox ; do \
@@ -227,7 +229,7 @@ virtualenv /opt/py27 && \
 # Inherited  tools for mock stuff
 # we at least need the mock_cache_unlock tool
 # they install into /usr/bin
-sudo cp -rf ~/tools/toCOPY/mock_overlay /opt/mock_overlay
+sudo cp -rf ${TOOLS_DIR}/toCOPY/mock_overlay /opt/mock_overlay
 cd /opt/mock_overlay
 make
 sudo make install
@@ -235,11 +237,11 @@ sudo make install
 # This image requires a set of scripts and helpers
 # for working correctly, in this section they are
 # copied inside the image.
-sudo cp ~/tools/toCOPY/finishSetup.sh /usr/local/bin
-sudo cp ~/tools/toCOPY/populate_downloads.sh /usr/local/bin
-sudo cp ~/tools/toCOPY/generate-local-repo.sh /usr/local/bin
-sudo cp ~/tools/toCOPY/generate-centos-repo.sh /usr/local/bin
-sudo cp ~/tools/toCOPY/lst_utils.sh /usr/local/bin
+sudo cp ${TOOLS_DIR}/toCOPY/finishSetup.sh /usr/local/bin
+sudo cp ${TOOLS_DIR}/toCOPY/populate_downloads.sh /usr/local/bin
+sudo cp ${TOOLS_DIR}/toCOPY/generate-local-repo.sh /usr/local/bin
+sudo cp ${TOOLS_DIR}/toCOPY/generate-centos-repo.sh /usr/local/bin
+sudo cp ${TOOLS_DIR}/toCOPY/lst_utils.sh /usr/local/bin
 
 # centos locales are broken. this needs to be run after the last yum install/update
 sudo localedef -i en_US -f UTF-8 en_US.UTF-8
@@ -288,8 +290,8 @@ sudo chmod a+x /usr/local/bin/*
 
 # Customizations for mirror creation
 sudo rm -f /etc/yum.repos.d/*
-sudo cp -f ~/tools/centos-mirror-tools/yum.repos.d/* /etc/yum.repos.d/
-sudo cp -f ~/tools/centos-mirror-tools/rpm-gpg-keys/* /etc/pki/rpm-gpg/
+sudo cp -f ${TOOLS_DIR}/centos-mirror-tools/yum.repos.d/* /etc/yum.repos.d/
+sudo cp -f ${TOOLS_DIR}/centos-mirror-tools/rpm-gpg-keys/* /etc/pki/rpm-gpg/
 
 # Import GPG keys
 sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY*
