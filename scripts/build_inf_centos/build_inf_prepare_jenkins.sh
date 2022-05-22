@@ -178,6 +178,7 @@ sudo groupadd -g 9001 mockbuild
 sudo useradd -s /sbin/nologin -u 9001 -g 9001 mockbuild
 sudo rmdir /var/lib/mock
 sudo ln -s ${LOCALDISK}/loadbuild/mock /var/lib/mock
+sudo mv /var/cache/mock/* ${LOCALDISK}/loadbuild/mock-cache/
 sudo rmdir /var/cache/mock
 sudo ln -s ${LOCALDISK}/loadbuild/mock-cache /var/cache/mock
 echo "config_opts['use_nspawn'] = False" | sudo tee -a /etc/mock/site-defaults.cfg
