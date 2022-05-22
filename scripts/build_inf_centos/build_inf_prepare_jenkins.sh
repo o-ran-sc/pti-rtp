@@ -122,7 +122,6 @@ sudo yum install -y \
     createrepo \
     createrepo_c \
     deltarpm \
-    docker-client \
     expat-devel \
     flex \
     isomd5sum \
