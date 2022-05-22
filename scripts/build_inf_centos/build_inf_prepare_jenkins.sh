@@ -128,7 +128,6 @@ sudo yum install -y \
     isomd5sum \
     gcc \
     gettext \
-    git \
     libguestfs-tools \
     libtool \
     libxml2 \
