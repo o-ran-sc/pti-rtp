@@ -22,7 +22,8 @@ set -e -o pipefail
 # Variables
 #########################################################################
 WORKSPACE=""
-MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.05-stx.6.0
+MIRROR_VER=stx-6.0
+MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.05-${MIRROR_VER}
 
 #########################################################################
 # Common Functions
@@ -75,7 +76,7 @@ get_mirror () {
 
     docker pull ${MIRROR_CONTAINER_IMG}
     docker create -ti --name inf-centos-mirror ${MIRROR_CONTAINER_IMG} sh
-    docker cp inf-centos-mirror:/mirror ${MIRROR_DIR}
+    docker cp inf-centos-mirror:/mirror_${MIRROR_VER} ${MIRROR_DIR}
     docker rm inf-centos-mirror
 
     echo_step_end
