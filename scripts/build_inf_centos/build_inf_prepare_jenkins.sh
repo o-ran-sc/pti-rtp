@@ -240,16 +240,16 @@ sudo cp ${TOOLS_DIR}/toCOPY/lst_utils.sh /usr/local/bin
 # centos locales are broken. this needs to be run after the last yum install/update
 sudo localedef -i en_US -f UTF-8 en_US.UTF-8
 
-# setup
-sudo mkdir -p /www/run
-sudo mkdir -p /www/logs
-sudo mkdir -p /www/home
-sudo mkdir -p /www/root/htdocs/localdisk
-sudo mkdir -p /www/root/htdocs/$(dirname ${WORKSPACE})
-sudo ln -s ${LOCALDISK}/loadbuild /www/root/htdocs/localdisk/loadbuild
-sudo ln -s ${LOCALDISK}/designer /www/root/htdocs/localdisk/designer
-sudo ln -s ${MIRROR_DIR}/CentOS /www/root/htdocs/CentOS
-sudo ln -s ${WORKSPACE} /www/root/htdocs/${WORKSPACE}
+# setup for lighttpd
+mkdir -p /www/run
+mkdir -p /www/logs
+mkdir -p /www/home
+mkdir -p /www/root/htdocs/localdisk
+mkdir -p /www/root/htdocs/$(dirname ${WORKSPACE})
+ln -s ${LOCALDISK}/loadbuild /www/root/htdocs/localdisk/loadbuild
+ln -s ${LOCALDISK}/designer /www/root/htdocs/localdisk/designer
+ln -s ${MIRROR_DIR}/CentOS /www/root/htdocs/CentOS
+ln -s ${WORKSPACE} /www/root/htdocs/${WORKSPACE}
 
 # lighthttpd setup
 # chmod for /var/log/lighttpd fixes a centos issue
