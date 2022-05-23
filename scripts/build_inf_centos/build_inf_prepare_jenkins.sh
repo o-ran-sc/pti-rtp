@@ -268,7 +268,6 @@ sudo sed -i -e 's%^var\.log_root.*$%var.log_root = "/www/logs"%g' \
     -e "s/server.bind/#server.bind/g" \
     -e "s/server.document-root/#server.document-root/g" \
     -e "s/server.dirlisting/#server.dirlisting/g" \
-    -e "s/dir-listing.activate/#dir-listing.activate/g" \
     /etc/lighttpd/lighttpd.conf
 
 echo "server.port = 8088" | sudo tee -a /etc/lighttpd/lighttpd.conf 
@@ -277,6 +276,10 @@ echo "server.username = \"$USER\"" | sudo tee -a /etc/lighttpd/lighttpd.conf
 echo "server.groupname = \"$BUILD_GROUP\"" | sudo tee -a /etc/lighttpd/lighttpd.conf 
 echo "server.bind = \"localhost\"" | sudo tee -a /etc/lighttpd/lighttpd.conf 
 echo "server.document-root   = \"/www/root/htdocs\"" | sudo tee -a /etc/lighttpd/lighttpd.conf 
+
+sudo sed -i "s/dir-listing.activate/#dir-listing.activate/g" \
+    /etc/lighttpd/conf.d/dirlisting.conf
+
 echo "dir-listing.activate = \"enable\"" | sudo tee -a /etc/lighttpd/conf.d/dirlisting.conf
 
 sudo /usr/sbin/lighttpd  -f /etc/lighttpd/lighttpd.conf
