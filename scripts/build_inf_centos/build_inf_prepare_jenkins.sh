@@ -245,9 +245,10 @@ sudo mkdir -p /www/run
 sudo mkdir -p /www/logs
 sudo mkdir -p /www/home
 sudo mkdir -p /www/root/htdocs/localdisk
+sudo mkdir -p /www/root/htdocs/$(dirname ${WORKSPACE})
 sudo ln -s ${LOCALDISK}/loadbuild /www/root/htdocs/localdisk/loadbuild
-sudo ln -s ${MIRROR_DIR}/CentOS /www/root/htdocs/CentOS
 sudo ln -s ${LOCALDISK}/designer /www/root/htdocs/localdisk/designer
+sudo ln -s ${MIRROR_DIR}/CentOS /www/root/htdocs/CentOS
 sudo ln -s ${WORKSPACE} /www/root/htdocs/${WORKSPACE}
 
 # lighthttpd setup
