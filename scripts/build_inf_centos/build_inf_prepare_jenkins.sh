@@ -201,7 +201,7 @@ export GOPATH="/usr/local/go"
 export PATH="${GOPATH}/bin:${PATH}"
 sudo yum install -y golang
 sudo mkdir -p ${GOPATH}/bin
-curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sudo sh
+curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sudo -E sh
 
 # pip installs
 # Install required python modules globally; versions are in the constraints file.
