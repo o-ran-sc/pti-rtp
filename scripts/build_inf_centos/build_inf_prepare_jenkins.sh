@@ -217,21 +217,14 @@ sudo pip install -c ${TOOLS_DIR}/toCOPY/builder-constraints.txt \
     junitxml \
     testtools
 
-# Create a sane py27 virtualenv
-virtualenv /opt/py27 && \
-    source /opt/py27/bin/activate && \
-    sudo pip install -c ${TOOLS_DIR}/toCOPY/builder-opt-py27-constraints.txt \
-            tox \
-        && \
-    for prog in tox ; do \
-        ln -s /opt/py27/bin/$prog /usr/bin ; \
-    done
+
 
 # Inherited  tools for mock stuff
 # we at least need the mock_cache_unlock tool
 # they install into /usr/bin
-sudo cp -rf ${TOOLS_DIR}/toCOPY/mock_overlay /opt/mock_overlay
-cd /opt/mock_overlay
+mkdir -p ${WORKSPACE}/opt
+cp -rf ${TOOLS_DIR}/toCOPY/mock_overlay ${WORKSPACE}/opt/mock_overlay
+cd ${WORKSPACE}/opt/mock_overlay
 make
 sudo make install
 
@@ -302,5 +295,11 @@ sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY*
 
 # Try to continue a yum command even if a StarlingX repo is unavailable.
 sudo yum-config-manager --setopt=StarlingX\*.skip_if_unavailable=1 --save
+
+# Create a sane py27 virtualenv
+virtualenv ${WORKSPACE}/opt/py27
+source ${WORKSPACE}/opt/py27/bin/activate
+pip install -c ${TOOLS_DIR}/toCOPY/builder-opt-py27-constraints.txt tox
+sudo ln -s ${WORKSPACE}/opt/py27/bin/tox /usr/bin
 
 echo_step_end
