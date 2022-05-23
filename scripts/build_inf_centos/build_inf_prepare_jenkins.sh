@@ -242,7 +242,7 @@ sudo localedef -i en_US -f UTF-8 en_US.UTF-8
 
 # setup for lighttpd
 sudo mkdir -p /www
-sudo ${USER}:${BUILD_GROUP} /www
+sudo chown ${USER}:${BUILD_GROUP} /www
 mkdir -p /www/run
 mkdir -p /www/logs
 mkdir -p /www/home
