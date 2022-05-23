@@ -255,7 +255,7 @@ sudo mkdir -p /www/root/htdocs/localdisk
 sudo ln -s ${LOCALDISK}/loadbuild /www/root/htdocs/localdisk/loadbuild
 sudo ln -s ${MIRROR_DIR}/CentOS /www/root/htdocs/CentOS
 sudo ln -s ${LOCALDISK}/designer /www/root/htdocs/localdisk/designer
-sudo ln -s ${WORKSPACE} /www/root/htdocs/workspace
+sudo ln -s ${WORKSPACE} /www/root/htdocs/${WORKSPACE}
 
 # lighthttpd setup
 # chmod for /var/log/lighttpd fixes a centos issue
@@ -286,6 +286,9 @@ echo "server.document-root   = \"/www/root/htdocs\"" | sudo tee -a /etc/lighttpd
 echo "dir-listing.activate = \"enable\"" | sudo tee -a /etc/lighttpd/conf.d/dirlisting.conf
 
 sudo /usr/sbin/lighttpd  -f /etc/lighttpd/lighttpd.conf
+
+ps -ef|grep lighttpd || true
+curl 127.0.0.1:8088${WORKSPACE} || true
 
 sudo chmod a+x /usr/local/bin/*
 
