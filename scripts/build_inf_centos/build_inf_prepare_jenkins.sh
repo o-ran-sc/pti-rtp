@@ -25,6 +25,8 @@ WORKSPACE=""
 MIRROR_VER=stx-6.0
 MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.05-${MIRROR_VER}
 
+SCRIPTS_NAME=$(basename $0)
+
 #########################################################################
 # Common Functions
 #########################################################################
@@ -32,7 +34,7 @@ MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.05-${MIRROR_VER}
 help_info () {
 cat << ENDHELP
 Usage:
-$(basename $0) [-w WORKSPACE_DIR] [-h]
+${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-h]
 where:
     -w WORKSPACE_DIR is the path for the builds
     -h this help info
@@ -45,18 +47,21 @@ ENDHELP
 echo_step_start() {
     [ -n "$1" ] && msg_step=$1
     echo "#########################################################################################"
-    echo "## STEP START: ${msg_step}"
+    echo "## ${SCRIPTS_NAME} - STEP START: ${msg_step}"
     echo "#########################################################################################"
 }
 
 echo_step_end() {
     [ -n "$1" ] && msg_step=$1
     echo "#########################################################################################"
-    echo "## STEP END: ${msg_step}"
+    echo "## ${SCRIPTS_NAME} - STEP END: ${msg_step}"
     echo "#########################################################################################"
     echo
 }
 
+echo_info () {
+    echo "INFO: $1"
+}
 
 while getopts "w:h" OPTION; do
     case ${OPTION} in
@@ -86,7 +91,8 @@ get_mirror () {
 #########################################################################
 # Main process
 #########################################################################
-msg_step="Prepare for jenkins build"
+msg_step="Prepare build directories"
+echo_step_start
 
 set -x
 export BUILD_GROUP="jenkins"
@@ -100,15 +106,20 @@ mkdir -p ${LOCALDISK}/loadbuild/mock
 mkdir -p ${LOCALDISK}/designer
 mkdir -p ${LOCALDISK}/loadbuild
 
-#sudo mkdir -p ${MIRROR_DIR}/CentOS
-get_mirror
-
 sudo chmod 775 ${LOCALDISK}/loadbuild/mock
 sudo chown root:mock ${LOCALDISK}/loadbuild/mock
 sudo chmod 775 ${LOCALDISK}/loadbuild/mock-cache
 sudo chown root:mock ${LOCALDISK}/loadbuild/mock-cache
 
-# Download required dependencies by mirror/build processes.
+set +x
+echo_step_end
+
+get_mirror
+
+msg_step="Install/downlaod/config required dependencies by mirror/build processes."
+echo_step_start
+
+echo_info "Install required packages"
 sudo yum install -y \
     anaconda \
     anaconda-runtime \
@@ -167,13 +178,16 @@ sudo yum install -y \
     vim-enhanced \
     wget
 
-# clone the tools repo
+
+
+echo_info "Clone the tools repo"
 cd ${WORKSPACE}
 git clone https://opendev.org/starlingx/tools.git
 
-# mock custumizations
+echo_info "mock custumizations"
 # forcing chroots since a couple of packages naughtily insist on network access and
 # we dont have nspawn and networks happy together.
+set -x
 sudo groupadd -g 9001 mockbuild
 sudo useradd -s /sbin/nologin -u 9001 -g 9001 mockbuild
 sudo rmdir /var/lib/mock
@@ -184,7 +198,9 @@ sudo ln -s ${LOCALDISK}/loadbuild/mock-cache /var/cache/mock
 echo "config_opts['use_nspawn'] = False" | sudo tee -a /etc/mock/site-defaults.cfg
 echo "config_opts['rpmbuild_networking'] = True" | sudo tee -a /etc/mock/site-defaults.cfg
 echo | sudo tee -a /etc/mock/site-defaults.cfg
+set +x
 
+echo_info "Install required cpan modules"
 # cpan modules, installing with cpanminus to avoid stupid questions since cpan is whack
 sudo cpanm --notest Fatal
 sudo cpanm --notest XML::SAX
@@ -192,18 +208,18 @@ sudo cpanm --notest XML::SAX::Expat
 sudo cpanm --notest XML::Parser
 sudo cpanm --notest XML::Simple
 
-# Install repo tool
+echo_info "Install repo tool"
 sudo wget https://storage.googleapis.com/git-repo-downloads/repo -O /usr/local/bin/repo
 sudo chmod a+x /usr/local/bin/repo
 
-# installing go and setting paths
+echo_info "Install go and setting paths"
 export GOPATH="/usr/local/go"
 export PATH="${GOPATH}/bin:${PATH}"
 sudo yum install -y golang
 sudo mkdir -p ${GOPATH}/bin
 curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sudo -E sh
 
-# pip installs
+echo_info "Install pip packages"
 # Install required python modules globally; versions are in the constraints file.
 # Be careful not to replace modules provided by RPMs as it may break
 # other system packages. Look for warnings similar to "Uninstalling a
@@ -218,10 +234,10 @@ sudo pip install -c ${TOOLS_DIR}/toCOPY/builder-constraints.txt \
     testtools
 
 
-
-# Inherited  tools for mock stuff
+echo_info "Inherited  tools for mock stuff"
 # we at least need the mock_cache_unlock tool
 # they install into /usr/bin
+set -x
 mkdir -p ${WORKSPACE}/opt
 cp -rf ${TOOLS_DIR}/toCOPY/mock_overlay ${WORKSPACE}/opt/mock_overlay
 cd ${WORKSPACE}/opt/mock_overlay
@@ -240,7 +256,7 @@ sudo cp ${TOOLS_DIR}/toCOPY/lst_utils.sh /usr/local/bin
 # centos locales are broken. this needs to be run after the last yum install/update
 sudo localedef -i en_US -f UTF-8 en_US.UTF-8
 
-# setup for lighttpd
+echo_info "Setup for lighttpd"
 sudo mkdir -p /www
 sudo chown ${USER}:${BUILD_GROUP} /www
 mkdir -p /www/run
@@ -285,9 +301,6 @@ sudo sed -i "s/dir-listing.activate/#dir-listing.activate/g" \
 echo "dir-listing.activate = \"enable\"" | sudo tee -a /etc/lighttpd/conf.d/dirlisting.conf
 
 sudo /usr/sbin/lighttpd  -f /etc/lighttpd/lighttpd.conf
-
-ps -ef|grep lighttpd || true
-curl 127.0.0.1:8088${WORKSPACE} || true
 
 sudo chmod a+x /usr/local/bin/*
 

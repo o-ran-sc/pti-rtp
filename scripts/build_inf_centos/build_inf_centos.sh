@@ -26,6 +26,7 @@ SRC_ORAN_BRANCH="master"
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
 SCRIPTS_DIR=$(dirname $(readlink -f $0))
+SCRIPTS_NAME=$(basename $0)
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 
 #########################################################################
@@ -35,7 +36,7 @@ TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 help_info () {
 cat << ENDHELP
 Usage:
-$(basename $0) [-w WORKSPACE_DIR] [-n] [-u] [-h]
+${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-n] [-u] [-h]
 where:
     -w WORKSPACE_DIR is the path for the project
     -n dry-run only for bitbake
@@ -50,14 +51,14 @@ ENDHELP
 echo_step_start() {
     [ -n "$1" ] && msg_step=$1
     echo "#########################################################################################"
-    echo "## STEP START: ${msg_step}"
+    echo "## ${SCRIPTS_NAME} - STEP START: ${msg_step}"
     echo "#########################################################################################"
 }
 
 echo_step_end() {
     [ -n "$1" ] && msg_step=$1
     echo "#########################################################################################"
-    echo "## STEP END: ${msg_step}"
+    echo "## ${SCRIPTS_NAME} - STEP END: ${msg_step}"
     echo "#########################################################################################"
     echo
 }
@@ -300,13 +301,12 @@ build_image () {
     RUN_CMD="build-iso"
     run_cmd "Build ISO image"
 
-    cp ${MY_BUILD_DIR}/export/bootimage.iso ${STX_PRJ_OUTPUT}/${ISO_INF_COS}
+    cp -f ${MY_BUILD_DIR}/export/bootimage.iso ${STX_PRJ_OUTPUT}/${ISO_INF_COS}
 
     echo_step_end
 
     echo_info "Build succeeded, you can get the image in ${STX_PRJ_OUTPUT}/${ISO_INF_COS}"
 }
-
 
 #########################################################################
 # Main process

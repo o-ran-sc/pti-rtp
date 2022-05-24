@@ -22,6 +22,7 @@ set -e -o pipefail
 #########################################################################
 
 SCRIPTS_DIR=$(dirname $(readlink -f $0))
+SCRIPTS_NAME=$(basename $0)
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 
 #########################################################################
@@ -34,7 +35,7 @@ Note:
 This is a wrapper script to build both Yocto based and CentOS based images
 with default options, and tend to be used by ORAN CI build only.
 Usage:
-$(basename $0) [-w WORKSPACE_DIR] [-n] [-h]
+${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-n] [-h]
 where:
     -w WORKSPACE_DIR is the path for the project
     -n dry-run only for bitbake
@@ -48,14 +49,14 @@ ENDHELP
 echo_step_start() {
     [ -n "$1" ] && msg_step=$1
     echo "#########################################################################################"
-    echo "## STEP START: ${msg_step}"
+    echo "## ${SCRIPTS_NAME} - STEP START: ${msg_step}"
     echo "#########################################################################################"
 }
 
 echo_step_end() {
     [ -n "$1" ] && msg_step=$1
     echo "#########################################################################################"
-    echo "## STEP END: ${msg_step}"
+    echo "## ${SCRIPTS_NAME} - STEP END: ${msg_step}"
     echo "#########################################################################################"
     echo
 }
@@ -68,12 +69,12 @@ echo_error () {
     echo "ERROR: $1"
 }
 
-echo_cmd () {
+run_cmd () {
     echo
     echo_info "$1"
     echo "CMD: ${RUN_CMD}"
+    ${RUN_CMD}
 }
-
 
 #########################################################################
 # Parse cmd options
@@ -161,10 +162,23 @@ fi
 
 # dry-run is not supported yet for CentOS build
 if [ -z "${DRYRUN}" ]; then
+    msg_step="CentOS builds"
+    echo_step_start
+
     if [ "$CI" = "true" ]; then
-        ${SCRIPT_CENTOS_PRE} -w ${WORKSPACE_CENTOS} || true
+        RUN_CMD="${SCRIPT_CENTOS_PRE} -w ${WORKSPACE_CENTOS}"
+        run_cmd "Prepare for CentOS builds"
     fi
-    ${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN} || true
+    RUN_CMD="${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}"
+    run_cmd "Start CentOS builds"
+
+    echo_step_end
 fi
 
-${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}
+msg_step="CentOS builds"
+echo_step_start
+
+RUN_CMD="${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}"
+run_cmd "Start Yocto builds"
+
+echo_step_end

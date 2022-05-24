@@ -78,6 +78,7 @@ SUB_LAYER_META_OE_ANACONDA="\
 "
 
 SCRIPTS_DIR=$(dirname $(dirname $(readlink -f $0)))
+SCRIPTS_NAME=$(basename $0)
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 
 #########################################################################
@@ -87,7 +88,7 @@ TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 help_info () {
 cat << ENDHELP
 Usage:
-$(basename $0) [-w WORKSPACE_DIR] [-b BSP] [-n] [-u] [-h] [-r Yes|No] [-e EXTRA_CONF]
+${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-b BSP] [-n] [-u] [-h] [-r Yes|No] [-e EXTRA_CONF]
 where:
     -w WORKSPACE_DIR is the path for the project
     -b BPS is one of supported BSP: "${SUPPORTED_BSP}"
@@ -106,14 +107,14 @@ ENDHELP
 echo_step_start() {
     [ -n "$1" ] && msg_step=$1
     echo "#########################################################################################"
-    echo "## STEP START: ${msg_step}"
+    echo "## ${SCRIPTS_NAME} - STEP START: ${msg_step}"
     echo "#########################################################################################"
 }
 
 echo_step_end() {
     [ -n "$1" ] && msg_step=$1
     echo "#########################################################################################"
-    echo "## STEP END: ${msg_step}"
+    echo "## ${SCRIPTS_NAME} - STEP END: ${msg_step}"
     echo "#########################################################################################"
     echo
 }
