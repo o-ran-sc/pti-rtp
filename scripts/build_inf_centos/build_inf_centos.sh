@@ -298,6 +298,9 @@ build_image () {
     RUN_CMD="build-pkgs --build-avoidance"
     run_cmd "Build pkgs"
 
+    # The first run always fail
+    build-iso || true
+
     RUN_CMD="build-iso"
     run_cmd "Build ISO image"
 
