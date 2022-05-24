@@ -121,6 +121,8 @@ STX_PRJ_OUTPUT=${WORKSPACE}/prj_output
 STX_MIRROR_DIR=${WORKSPACE}/mirror
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
 
+SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
+
 prepare_workspace () {
     msg_step="Create workspace for the CentOS build"
     echo_step_start
@@ -230,11 +232,33 @@ repo_init_sync () {
     echo_step_end
 }
 
-code_adjust () {
-    echo_step_start "Some codes need to be adjusted for INF project"
+patch_src () {
+    echo_step_start "Some source codes need to be patched for INF project"
 
     sed -i "s|/import/mirrors|${STX_MIRROR_DIR}|" \
         $MY_REPO/stx/metal/installer/pxe-network-installer/centos/build_srpm.data
+
+    # Apply meta patches
+    cd ${SRC_META_PATCHES}
+    src_dirs=$(find . -type f -printf "%h\n"|uniq)
+    for d in ${src_dirs}; do
+        cd ${MY_REPO_ROOT_DIR}/${d}
+
+        # backup current branch
+        local_branch=$(git rev-parse --abbrev-ref HEAD)
+        if [ "${local_branch}" = "HEAD" ]; then
+            git checkout ${STX_SRC_BRANCH}
+            local_branch=$(git rev-parse --abbrev-ref HEAD)
+        fi
+        git branch -m "${local_branch}_${TIMESTAMP}"
+        git checkout ${STX_SRC_BRANCH}
+
+        for p in $(ls -1 ${SRC_META_PATCHES}/${d}); do
+            echo_info "Apllying patch: ${SRC_META_PATCHES}/${d}/${p}"
+            git am ${SRC_META_PATCHES}/${d}/${p}
+        done
+    done
+
     echo_step_end
 }
 
@@ -291,7 +315,7 @@ build_image () {
 prepare_workspace
 create_env
 repo_init_sync
-code_adjust
+patch_src
 populate_dl
-build_image_rm
-build_image || true
+#build_image_rm
+build_image

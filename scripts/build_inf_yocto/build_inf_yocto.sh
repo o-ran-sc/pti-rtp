@@ -348,7 +348,7 @@ prepare_src () {
 
     echo_step_end
 
-# Not andy meta-patch is needed for the time being, but new ones may be needed and added
+# Not any meta-patch is needed for the time being, but new ones may be needed and added
 # sometime in the future, so just leave these code commented out here.
 #    # Apply meta patches
 #    for l in $(ls -1 ${SRC_META_PATCHES}); do

@@ -1,0 +1,96 @@
+From 75ace02a50caa1f9a9c9a58a7407bdd969dcf1cc Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 11 May 2022 18:33:38 +0800
+Subject: [PATCH] python-kubernetes: fix MANIFEST
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../0002-MANIFEST.in-ignore-symlinks.patch         | 34 ++++++++++++++++++++++
+ .../centos/meta_patches/PATCH_ORDER                |  1 +
+ .../patches/0014-MANIFEST.in-ignore-symlinks.patch | 26 +++++++++++++++++
+ 3 files changed, 61 insertions(+)
+ create mode 100644 python/python-kubernetes/centos/meta_patches/0002-MANIFEST.in-ignore-symlinks.patch
+ create mode 100644 python/python-kubernetes/centos/patches/0014-MANIFEST.in-ignore-symlinks.patch
+
+diff --git a/python/python-kubernetes/centos/meta_patches/0002-MANIFEST.in-ignore-symlinks.patch b/python/python-kubernetes/centos/meta_patches/0002-MANIFEST.in-ignore-symlinks.patch
+new file mode 100644
+index 0000000..0a8c6e2
+--- /dev/null
++++ b/python/python-kubernetes/centos/meta_patches/0002-MANIFEST.in-ignore-symlinks.patch
+@@ -0,0 +1,34 @@
++From ed97b779c1ea6d0c2ea434ef8db9a5bf5f0d8ed7 Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Wed, 11 May 2022 18:29:47 +0800
++Subject: [PATCH] MANIFEST.in: ignore symlinks
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ SPECS/python-kubernetes.spec | 3 +++
++ 1 file changed, 3 insertions(+)
++
++diff --git a/SPECS/python-kubernetes.spec b/SPECS/python-kubernetes.spec
++index 9426462..0d672e0 100644
++--- a/SPECS/python-kubernetes.spec
+++++ b/SPECS/python-kubernetes.spec
++@@ -43,6 +43,7 @@ Source12: 0010-Fixes-codestyle-failures.patch
++ Source13: 0011-Fix-Watch-retries-with-410-errors.patch
++ Source14: 0012-Fixes-kubernetes-client-python-issue-1047-ResponseNo.patch
++ Source15: 0013-quick-fix-of-decoding-error-for-BOOKMARK-event.patch
+++Source16: 0014-MANIFEST.in-ignore-symlinks.patch
++ 
++ %if 0%{?with_python2}
++ %package -n python2-%{library}
++@@ -170,6 +171,8 @@ patch -p1 < %{SOURCE15}
++ popd
++ popd
++ 
+++patch -p1 < %{SOURCE16}
+++
++ %build
++ %if 0%{?with_python2}
++ # NOTE: py2_build macro is called py_build in our loadbuild servers
++-- 
++2.29.2
++
+diff --git a/python/python-kubernetes/centos/meta_patches/PATCH_ORDER b/python/python-kubernetes/centos/meta_patches/PATCH_ORDER
+index 926ba15..669982c 100644
+--- a/python/python-kubernetes/centos/meta_patches/PATCH_ORDER
++++ b/python/python-kubernetes/centos/meta_patches/PATCH_ORDER
+@@ -1 +1,2 @@
+ 0001-Include-watch.py-bug-fixes.patch
++0002-MANIFEST.in-ignore-symlinks.patch
+diff --git a/python/python-kubernetes/centos/patches/0014-MANIFEST.in-ignore-symlinks.patch b/python/python-kubernetes/centos/patches/0014-MANIFEST.in-ignore-symlinks.patch
+new file mode 100644
+index 0000000..02f7cc2
+--- /dev/null
++++ b/python/python-kubernetes/centos/patches/0014-MANIFEST.in-ignore-symlinks.patch
+@@ -0,0 +1,26 @@
++From a6aee74ecc35b46d1852a70640c2776df579c533 Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Wed, 11 May 2022 18:17:44 +0800
++Subject: [PATCH] MANIFEST.in: ignore symlinks
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ MANIFEST.in | 3 +++
++ 1 file changed, 3 insertions(+)
++
++diff --git a/MANIFEST.in b/MANIFEST.in
++index f16bc61..f184a7a 100644
++--- a/MANIFEST.in
+++++ b/MANIFEST.in
++@@ -5,5 +5,8 @@ include *.txt
++ include *.ini
++ exclude .gitignore
++ exclude .gitreview
+++exclude */config
+++exclude */stream
+++exclude */watch
++ 
++ global-exclude *.pyc
++-- 
++2.29.2
++
+-- 
+2.7.4
+
