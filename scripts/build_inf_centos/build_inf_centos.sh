@@ -124,6 +124,8 @@ STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
 
 SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
 
+ISO_INF_COS=inf-image-centos-all-x86-64.iso
+
 prepare_workspace () {
     msg_step="Create workspace for the CentOS build"
     echo_step_start
@@ -268,28 +270,6 @@ populate_dl () {
     ${MY_REPO_ROOT_DIR}/stx-tools/toCOPY/populate_downloads.sh ${STX_MIRROR_DIR}/stx-6.0
 }
 
-# To be removed:
-# This build script can not successfully build out the image yet,
-# get the upstream image temporary so we can still test the CI job to
-# upload the image to nexus
-ISO_STX_COS=bootimage.iso
-ISO_UP_VER=6.0.0
-ISO_UP=http://mirror.starlingx.cengn.ca/mirror/starlingx/release/${ISO_UP_VER}/centos/flock/outputs/iso/${ISO_STX_COS}
-ISO_INF_COS=inf-image-centos-all-x86-64.iso
-
-build_image_rm () {
-    echo_step_start "Build CentOS images: To be removed"
-
-    mkdir -p ${STX_PRJ_OUTPUT}
-    cd ${STX_PRJ_OUTPUT}
-    wget -q ${ISO_UP} -O ${ISO_INF_COS}
-    ls -lh ${STX_PRJ_OUTPUT}/${ISO_INF_COS}
-
-    echo_step_end
-
-    echo_info "Build succeeded, you can get the image in ${STX_PRJ_OUTPUT}/${ISO_INF_COS}"
-}
-
 build_image () {
     echo_step_start "Build CentOS images"
 
@@ -320,5 +300,4 @@ create_env
 repo_init_sync
 patch_src
 populate_dl
-#build_image_rm
 build_image
