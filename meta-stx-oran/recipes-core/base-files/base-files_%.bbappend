@@ -14,5 +14,5 @@
 #  limitations under the License.
 
 do_install_append() {
-    sed -i -e 's/${STX_REL}/${ORAN_REL}/' ${D}${sysconfdir}/issue*
+    sed -i -e 's/\(${STX_REL}\)/\1 - ${ORAN_REL}/' ${D}${sysconfdir}/issue*
 }
