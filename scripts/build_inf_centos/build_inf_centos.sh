@@ -25,6 +25,8 @@ SRC_ORAN_BRANCH="master"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
+ORAN_REL="ORAN F-Release (6.0)"
+
 SCRIPTS_DIR=$(dirname $(readlink -f $0))
 SCRIPTS_NAME=$(basename $0)
 TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
@@ -239,7 +241,12 @@ patch_src () {
     echo_step_start "Some source codes need to be patched for INF project"
 
     sed -i "s|/import/mirrors|${STX_MIRROR_DIR}|" \
-        $MY_REPO/stx/metal/installer/pxe-network-installer/centos/build_srpm.data
+        ${MY_REPO}/stx/metal/installer/pxe-network-installer/centos/build_srpm.data
+
+    grep -q "${ORAN_REL}" \
+        ${MY_REPO}/stx/config-files/centos-release-config/files/issue* \
+        || sed -i "s/\(@PLATFORM_RELEASE@\)/\1 - ${ORAN_REL}/" \
+        ${MY_REPO}/stx/config-files/centos-release-config/files/issue*
 
     # Apply meta patches
     cd ${SRC_META_PATCHES}
