@@ -7,7 +7,7 @@ Release-notes
 =============
 
 
-This document provides the release notes for 5.0.0 of RTP.
+This document provides the release notes for 6.0.0 of RTP.
 
 .. contents::
    :depth: 3
@@ -36,6 +36,33 @@ Version history
 | 2021-12-15         | 5.0.0              | Jackie Huang       | E Release          |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2022-06-15         | 6.0.0              | Jackie Huang       | F Release          |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
+
+Version 6.0.0, 2022-06-15
+-------------------------
+- Sixth version (F release)
+- INF MultiOS support:
+
+  - Add support for CentOS as the base OS
+  - Two images will be provided:
+
+    - Yocto based image
+    - CentOS based image
+
+- Enable three deployment modes on Yocto based image:
+
+  - AIO simplex mode
+  - AIO duplex mode (2 servers with High Availabity)
+  - AIO duplex mode (2 servers with High Availabity) with additional worker node
+
+- Enable four deployment modes on CentOS based image:
+
+  - AIO simplex mode
+  - AIO duplex mode (2 servers with High Availabity)
+  - AIO duplex mode (2 servers with High Availabity) with additional worker node
+  - Distributed Cloud
 
 Version 5.0.0, 2021-12-15
 -------------------------
