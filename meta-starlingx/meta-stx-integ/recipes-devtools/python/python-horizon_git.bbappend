@@ -1,4 +1,0 @@
-
-DEPENDS += "\
-	python-pbr-native \
-	"

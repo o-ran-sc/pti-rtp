@@ -1,2 +1,0 @@
-
-inherit python-backports-init
