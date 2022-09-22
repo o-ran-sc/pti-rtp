@@ -134,10 +134,10 @@ NOTE: These features leverage the StarlingX (www.starlingx.io). And in current r
 Multi OS and Deployment Configurations
 --------------------------------------
 
-The INF project supports Multi OS and currently the following OS are supported:
+* The INF project supports Multi OS and currently the following OS are supported:
 
- - CentOS 7
- - Yocto 2.6
+   - CentOS 7
+   - Yocto 2.7 (warrior)
 
 A variety of deployment configuration options are supported:
 
