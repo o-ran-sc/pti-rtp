@@ -5,36 +5,35 @@
 Infrastructure Overview (INF)
 =============================
 
-This project implements a real time platform (rtp) to deploy the O-CU and O-DU.
+This project is a reference implementation of O-Cloud infrastructure and it implements a real time platform (rtp) to deploy the O-CU and O-DU.
 
 In O-RAN architecture, the O-DU and O-CU could have different deployed scenarios.
-The could be container based or VM based, in this release, we only cover the container one. 
+The could be container based or VM based, which will be both supported in the release.
 In general the performance sensitive parts of the 5G stack require real time platform,
 especially for O-DU, the L1 and L2 are requiring the real time feature,
 the platform should support the Preemptive Scheduling feature. 
  
 Following requirements are going to address the container based solution:
 
-1.Support the real time kernel
+1. Support the real time kernel
 
-2.Support Node Feature Discovery
+2. Support Node Feature Discovery
 
-3.Support CPU Affinity and Isolation
+3. Support CPU Affinity and Isolation
 
-4.Support Dynamic HugePages Allocation
+4. Support Dynamic HugePages Allocation
 
 
 And for the network requirements, the following should be supported:
 
-1.Multiple Networking Interface
+1. Multiple Networking Interface
 
+2. High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
 
-2.High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
+O-Cloud Components
+------------------
 
-In the Cherry release, besides the Bronze release features, it has the 2 server mode supported. And these 2 servers will be active and standby mode to provide the high availability (HA) capability.
-The controller functionality and storage functionality will be deployed at the 2 servers with standby-active mode managed by "service management". If one server or one service in one server has error, it will be switched from active to standby one to maintain the service availability.
-
-In the Bronze release, the following components and services are enabled:
+In this project, the following O-Cloud components and services are enabled:
 
 1. Fault Management
 
@@ -165,10 +164,46 @@ In the Bronze release, the following components and services are enabled:
 
 Enable the ansible configuration functions for infrastructure itself including the image installation and service configuration.
 
+NOTE: These features leverage the StarlingX (www.starlingx.io). And in current release, these features are only avalaible for IA platform.
 
-NOTE: These features leverage the StarlingX (www.starlingx.io). And in Bronze release, these features are only avalaible for IA platform.
+Multi OS and Deployment Configurations
+--------------------------------------
 
-NOTE: In Bronze release single server solution is supported only. All the functionalities include controller functions, storage functions and compute functions are integrated in the single server.  
+The INF project supports Multi OS and currently the following OS are supported:
+
+* CentOS 7
+* Yocto 2.6
+
+A variety of deployment configuration options are supported:
+
+1. **All-in-one Simplex**
+
+  A single physical server providing all three cloud functions (controller, worker and storage).
+
+2. **All-in-one Duplex**
+
+  Two HA-protected physical servers, both running all three cloud functions (controller, worker and storage), optionally with up to 50 worker nodes added to the cluster.
+
+3. **All-in-one Duplex + up to 50 worker nodes**
+
+  Two HA-protected physical servers, both running all three cloud functions (controller, worker and storage), plus with up to 50 worker nodes added to the cluster.
+
+4. **Standard with Storage Cluster on Controller Nodes**
+
+  A two node HA controller + storage node cluster, managing up to 200 worker nodes.
+
+5. **Standard with Storage Cluster on dedicated Storage Nodes**
+
+  A two node HA controller node cluster with a 2-9 node Ceph storage cluster, managing up to 200 worker nodes.
+
+6. **Distributed Cloud**
+
+  Distributed Cloud configuration supports an edge computing solution by providing central management and orchestration for a geographically distributed network of StarlingX systems.
+
+**NOTE:**
+
+* For CentOS based image, all the above deployment configuration are supported
+* For Yocto Based image, only deployment 1 - 3 are supported, and only container based solution is supported, VM based is not supprted yet.
 
 About Yocto and OpenEmbedded
 ----------------------------
@@ -193,5 +228,3 @@ Contact info
 If you need support or add new features/components, please feel free to contact the following:
 
 - Jackie Huang <jackie.huang@windriver.com>
-
-- Xiaohua Zhang <xiaohua.zhang@windriver.com> 
