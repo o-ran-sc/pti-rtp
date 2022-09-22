@@ -16,18 +16,13 @@ the platform should support the Preemptive Scheduling feature.
 Following requirements are going to address the container based solution:
 
 1. Support the real time kernel
-
 2. Support Node Feature Discovery
-
 3. Support CPU Affinity and Isolation
-
 4. Support Dynamic HugePages Allocation
-
 
 And for the network requirements, the following should be supported:
 
 1. Multiple Networking Interface
-
 2. High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
 
 O-Cloud Components
@@ -40,27 +35,20 @@ In this project, the following O-Cloud components and services are enabled:
    - Framework for infrastructure services to raise and persist alarm and event data.
    
      - Set, clear and query customer alarms
-
      - Generate customer logs for significant events
 
    - Maintains an Active Alarm List
-
    - Provides REST API to query alarms and events, also available through SNMP traps
-
    - Support for alarm suppression
-
    - Operator alarms
 
      - On platform nodes and resources
-
      - On hosted virtual resources
 
    - Operator logs - Event List
 
      - Logging of sets/clears of alarms
-
      - Related to platform nodes and resources
-    
      - Related to hosted virtual resources
 
 2. Configuration Management
@@ -68,25 +56,19 @@ In this project, the following O-Cloud components and services are enabled:
    - Manages Installation and Commissioning
    
      - Auto-discover of new nodes
-
      - Full Infrastructure management
-
      - Manage installation parameters (i.e. console, root disks)
 
    - Nodal Configuration
 
      - Node role, role profiles
-
      - Core, memory (including huge page) assignments
-
      - Network Interfaces and storage assignments
 
    - Hardware Discovery
 
      - CPU/cores, SMT, processors, memory, huge pages
-
      - Storage, ports
-
      - GPUs, storage, Crypto/compression H/W
 
 3. Software Management
@@ -94,72 +76,55 @@ In this project, the following O-Cloud components and services are enabled:
    - Manages Installation and Commissioning
 
      - Auto-discover of new nodes
-
      - Full Infrastructure management
-
      - Manage installation parameters (i.e. console, root disks)
 
    - Nodal Configuration
 
      - Node role, role profiles
-
      - Core, memory (including huge page) assignments
-
      - Network Interfaces and storage assignments
 
    - Hardware Discovery
 
      - CPU/cores, SMT, processors, memory, huge pages
-
      - Storage, ports
-
      - GPUs, storage, Crypto/compression H/W
+
 4. Host Management
 
    - Full life-cycle and availability management of the physical hosts
-
    - Detects and automatically handles host failures and initiates recovery
-
    - Monitoring and fault reporting for:
 
      - Cluster connectivity
-
      - Critical process failures
-
      - Resource utilization thresholds, interface states
-
      - H/W fault / sensors, host watchdog
-
      - Activity progress reporting
 
    - Interfaces with board management (BMC)
 
      - For out of band reset
-
      - Power-on/off
-
      - H/W sensor monitoring
+
 5. Service Management
 
    - Manages high availability of critical infrastructure and cluster services
 
      - Supports many redundancy models: N, or N+M
-
      - Active or passive monitoring of services
-
      - Allows for specifying the impact of a service failure and escalation policy
-
      - Automatically recovers failed services
 
    - Uses multiple messaging paths to avoid split-brain communication failures
 
      - Up to 3 independent communication paths
-
      - LAG can also be configured for multi-link protection of each path
-
      - Messages are authenticated using HMAC
-
      - SHA-512 if configured / enabled on an interface by-interface basis
+
 6. Support the ansible bootstrap to implement the zero touch provisioning
 
 Enable the ansible configuration functions for infrastructure itself including the image installation and service configuration.
@@ -171,8 +136,8 @@ Multi OS and Deployment Configurations
 
 The INF project supports Multi OS and currently the following OS are supported:
 
-* CentOS 7
-* Yocto 2.6
+- CentOS 7
+- Yocto 2.6
 
 A variety of deployment configuration options are supported:
 
@@ -202,8 +167,8 @@ A variety of deployment configuration options are supported:
 
 **NOTE:**
 
-* For CentOS based image, all the above deployment configuration are supported
-* For Yocto Based image, only deployment 1 - 3 are supported, and only container based solution is supported, VM based is not supprted yet.
+- For CentOS based image, all the above deployment configuration are supported
+- For Yocto Based image, only deployment 1 - 3 are supported, and only container based solution is supported, VM based is not supprted yet.
 
 About Yocto and OpenEmbedded
 ----------------------------
