@@ -3,8 +3,8 @@
 .. Copyright (C) 2019 Wind River Systems, Inc.
 .. rtp documentation master
 
-Welcome to RTP ducomentation
-============================
+Welcome to Infrastructure(INF) ducomentation
+============================================
 
 
 .. toctree::
