@@ -136,8 +136,8 @@ Multi OS and Deployment Configurations
 
 The INF project supports Multi OS and currently the following OS are supported:
 
-- CentOS 7
-- Yocto 2.6
+ - CentOS 7
+ - Yocto 2.6
 
 A variety of deployment configuration options are supported:
 
@@ -167,8 +167,8 @@ A variety of deployment configuration options are supported:
 
 **NOTE:**
 
-- For CentOS based image, all the above deployment configuration are supported
-- For Yocto Based image, only deployment 1 - 3 are supported, and only container based solution is supported, VM based is not supprted yet.
+ - For CentOS based image, all the above deployment configuration are supported
+ - For Yocto Based image, only deployment 1 - 3 are supported, and only container based solution is supported, VM based is not supprted yet.
 
 About Yocto and OpenEmbedded
 ----------------------------
@@ -192,4 +192,4 @@ Contact info
 ------------
 If you need support or add new features/components, please feel free to contact the following:
 
-- Jackie Huang <jackie.huang@windriver.com>
+ - Jackie Huang <jackie.huang@windriver.com>
