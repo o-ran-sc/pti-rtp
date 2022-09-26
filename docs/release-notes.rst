@@ -9,11 +9,9 @@ INF Release Notes
 
 This document provides the release notes for 6.0.0 of INF RTP.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   release-notes.rst
+.. contents::
+   :depth: 3
+   :local:
 
 Version history
 ---------------
@@ -45,8 +43,10 @@ Version 6.0.0, 2022-06-15
 -------------------------
 #. Sixth version (F release)
 #. INF MultiOS support:
+
    * Add support for CentOS as the base OS
    * Two images will be provided:
+
      * Yocto based image
      * CentOS based image
 
@@ -66,6 +66,7 @@ Version 5.0.0, 2021-12-15
 #. Fifth version (E release)
 #. Upgrade most components to align with StarlingX 5.0
 #. Enable three deployment modes:
+
    * AIO simplex mode
    * AIO duplex mode (2 servers with High Availabity)
    * AIO duplex mode (2 servers with High Availabity) with additional worker node
@@ -93,7 +94,6 @@ Version 2.0.0, 2020-06-14
 #. Support the Kubernetes Cluster for ARM platform (verified by NXP LX2160A)
 #. With the ansbile bootstrap supported for IA platform
 
-
 Version 1.0.0, 2019-11-02
 -------------------------
 #. Initial Version
@@ -101,6 +101,7 @@ Version 1.0.0, 2019-11-02
 #. Linux kernel 4.18.41 with preempt-rt patches
 #. Add Docker-18.09.0, kubernetes-1.15.2
 #. Add kubernetes plugins:
+
    * kubernetes-dashboard-1.8.3
    * flannel-0.11.0
    * multus-cni-3.3
