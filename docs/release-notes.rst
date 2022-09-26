@@ -9,11 +9,9 @@ INF Release Notes
 
 This document provides the release notes for 6.0.0 of INF RTP.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   release-notes.rst
+.. contents::
+   :depth: 3
+   :local:
 
 Version history
 ---------------
@@ -92,7 +90,6 @@ Version 2.0.0, 2020-06-14
 #. With Software Management, Configuration Management, Host Management, Service Management, and Service Management enabled for IA platform
 #. Support the Kubernetes Cluster for ARM platform (verified by NXP LX2160A)
 #. With the ansbile bootstrap supported for IA platform
-
 
 Version 1.0.0, 2019-11-02
 -------------------------
