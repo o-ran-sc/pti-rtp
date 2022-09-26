@@ -1,13 +1,13 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. SPDX-License-Identifier: CC-BY-4.0
-.. Copyright (C) 2019 Wind River Systems, Inc.
+.. Copyright (C) 2019 - 2022 Wind River Systems, Inc.
 
 
-Release-notes
-=============
+INF Release Notes
+=================
 
 
-This document provides the release notes for 6.0.0 of RTP.
+This document provides the release notes for 6.0.0 of INF RTP.
 
 .. contents::
    :depth: 3
@@ -42,27 +42,27 @@ Version history
 
 Version 6.0.0, 2022-06-15
 -------------------------
-- Sixth version (F release)
-- INF MultiOS support:
+#. Sixth version (F release)
+#. INF MultiOS support:
 
-  - Add support for CentOS as the base OS
-  - Two images will be provided:
+   * Add support for CentOS as the base OS
+   * Two images will be provided:
 
-    - Yocto based image
-    - CentOS based image
+     * Yocto based image
+     * CentOS based image
 
-- Enable three deployment modes on Yocto based image:
+#. Enable three deployment modes on Yocto based image:
 
-  - AIO simplex mode
-  - AIO duplex mode (2 servers with High Availabity)
-  - AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
 
-- Enable four deployment modes on CentOS based image:
+#. Enable four deployment modes on CentOS based image:
 
-  - AIO simplex mode
-  - AIO duplex mode (2 servers with High Availabity)
-  - AIO duplex mode (2 servers with High Availabity) with additional worker node
-  - Distributed Cloud
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
 
 Version 5.0.0, 2021-12-15
 -------------------------
