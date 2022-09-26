@@ -11,7 +11,7 @@ Installation Guide
    :local:
 
 Abstract
---------
+********
 
 This document describes how to install O-RAN INF image, example configuration (All-in-one Duplex)
 for better real time performance, and example deployment of Kubernetes cluster and plugins.
@@ -21,13 +21,13 @@ and container technology.
 
 
 Preface
--------
+*******
 
 Before starting the installation and deployment of O-RAN INF, you need to download the ISO image or build from source as described in developer-guide.
 
 
 Hardware Requirements
----------------------
+*********************
 
 Following minimum hardware requirements must be met for installation of O-RAN INF image with AIO-DX:
 
@@ -58,8 +58,8 @@ Following minimum hardware requirements must be met for installation of O-RAN IN
 |                   | * Plug & play BMC detection disabled                                       |
 +-------------------+----------------------------------------------------------------------------+
 
-ORAN INF E Release tested on HP ProLiant DL380p Gen8
-****************************************************
+Installation example (All-in-one Duplex) on HP ProLiant DL380p Gen8
+*******************************************************************
 
 1. Installation for the first server from the O-RAN INF ISO image
 -----------------------------------------------------------------
@@ -69,7 +69,7 @@ ORAN INF E Release tested on HP ProLiant DL380p Gen8
    inf-image-aio-installer-intel-corei7-64.iso
 
 1.1 Burn the image to the USB device
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++
 
 -  Assume the the usb device is /dev/sdX here
 
@@ -78,7 +78,7 @@ ORAN INF E Release tested on HP ProLiant DL380p Gen8
     $ sudo dd if=/path/to/inf-image-aio-installer-intel-corei7-64.iso of=/dev/sdX bs=1M
 
 1.2 Install the first server (controller-0)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++++++++++++++++
 
 -  Reboot the target from the USB device.
 
@@ -93,10 +93,10 @@ ORAN INF E Release tested on HP ProLiant DL380p Gen8
 ---------------------------------------------
 
 2.1 First Login with sysadmin/sysadmin and change password
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 2.2 Set OAM network before bootstrap
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++
 
 ::
 
@@ -108,10 +108,10 @@ ORAN INF E Release tested on HP ProLiant DL380p Gen8
     sudo ip route add default via $DEFAULT_OAM_GATEWAY dev $OAM_DEV
 
 2.3 Login the server through SSH with sysadmin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++++++++++++
 
 2.4 Prepare the localhost.yml for bootstrap
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++++++++++++++++
 
 ::
 
@@ -129,7 +129,7 @@ ORAN INF E Release tested on HP ProLiant DL380p Gen8
     EOF
 
 2.5 Run the ansible bootstrap
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++
 
 ::
 
@@ -143,7 +143,7 @@ After the bootstrap successfully finish, it will show as following:
     localhost                  : ok=257  changed=151  unreachable=0    failed=0    skipped=214  rescued=0    ignored=0
 
 2.6 Congiure controller-0
-~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++
 
 Acquire admin credentials:
 
@@ -509,7 +509,7 @@ Output
     +--------------------------------------+----------+-------+-----------------------+--------------------------------------+-------------------------------------------------------+--------------+------------------+-----------+
 
 2.7 Unlock controller-0
-~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++
 
 ::
 
@@ -581,17 +581,17 @@ Once the controller comes back up, check the status of controller-0
     | 1  | controller-0 | controller  | unlocked       | enabled     | available    |
     +----+--------------+-------------+----------------+-------------+--------------+
 
-2. Installation for the second server (controller-1)
+3. Installation for the second server (controller-1)
 ----------------------------------------------------
 
-2.1 Power on the controller-1 server and force it to network boot
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.1 Power on the controller-1 server and force it to network boot
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-2.2 As controller-1 boots, a message appears on its console instructing you to configure the personality of the node
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.2 As controller-1 boots, a message appears on its console instructing you to configure the personality of the node
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-2.3 On the console of controller-0, list hosts to see newly discovered controller-1 host (hostname=None)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.3 On the console of controller-0, list hosts to see newly discovered controller-1 host (hostname=None)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ::
 
@@ -603,8 +603,8 @@ Once the controller comes back up, check the status of controller-0
     | 2  | None         | None        | locked         | disabled    | offline      |
     +----+--------------+-------------+----------------+-------------+--------------+
 
-2.4 Using the host id, set the personality of this host to 'controller’:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.4 Using the host id, set the personality of this host to 'controller':
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ::
 
@@ -654,8 +654,8 @@ Once the controller comes back up, check the status of controller-0
     | vim_progress_status   | None                                 |
     +-----------------------+--------------------------------------+
 
-2.5 Wait for the software installation on controller-1 to complete, for controller-1 to reboot, and for controller-1 to show as locked/disabled/online in 'system host-list'.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.5 Wait for the software installation on controller-1 to complete, for controller-1 to reboot, and for controller-1 to show as locked/disabled/online in 'system host-list'.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 This can take 5-10 minutes, depending on the performance of the host
 machine.
@@ -670,8 +670,8 @@ machine.
     | 2  | controller-1 | controller  | locked         | disabled    | online       |
     +----+--------------+-------------+----------------+-------------+--------------+
 
-2.6 Configure controller-1
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+3.6 Configure controller-1
+++++++++++++++++++++++++++
 
 ::
 
@@ -872,8 +872,8 @@ Output:
     | 5be88c7a-3a94-4b97-9da5-b247bb89406c | osd      | 3     | configuring-on-unlock | eddd732f-2cea-49b3-86db-b722c0b1a1ae | /dev/disk/by-path/pci-0000:86:00.0-scsi-0:2:2:0-part2 | /dev/sdc2    | 1                | storage   |
     +--------------------------------------+----------+-------+-----------------------+--------------------------------------+-------------------------------------------------------+--------------+------------------+-----------+
 
-2.7 Unlock controller-1
-~~~~~~~~~~~~~~~~~~~~~~~
+3.7 Unlock controller-1
++++++++++++++++++++++++
 
 Unlock controller-1 in order to bring it into service:
 
@@ -986,11 +986,11 @@ performance of the host machine.
     +-----------------------+-----------------------------------------------------------------------+
 
   
-3. Simple use case for sriov
-````````````````````````````
+4. Simple use case for sriov
+----------------------------
 
-3.1 After controller-0 is rebooted and up running, download the DPDK
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+4.1 After controller-0 is rebooted and up running, download the DPDK
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ::
 
@@ -1015,8 +1015,8 @@ performance of the host machine.
 
   sudo ln -s dpdk-stable-17.11.10 dpdk-stable
 
-3.2 Prepare the yaml file for the network assignment container
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+4.2 Prepare the yaml file for the network assignment container
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 The following the exmaple of the yaml file:
 
@@ -1049,8 +1049,8 @@ The following the exmaple of the yaml file:
   > }'
   > EOF
 
-3.3 Run the network assignent container for the 2 VFs
-'''''''''''''''''''''''''''''''''''''''''''''''''''''
+4.3 Run the network assignent container for the 2 VFs
++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ::
 
@@ -1058,8 +1058,8 @@ The following the exmaple of the yaml file:
   networkattachmentdefinition.k8s.cni.cncf.io/sriov-data-dpdk-0 created
   networkattachmentdefinition.k8s.cni.cncf.io/sriov-data-dpdk-1 created
 
-3.4 Prepare the VF container yaml file
-''''''''''''''''''''''''''''''''''''''
+4.4 Prepare the VF container yaml file
+++++++++++++++++++++++++++++++++++++++
 
 ::
 
@@ -1129,8 +1129,8 @@ The following the exmaple of the yaml file:
   >       path: /usr/src/
   > EOF
 
-3.5 Run the VF container
-''''''''''''''''''''''''
+4.5 Run the VF container
+++++++++++++++++++++++++
 
 Start the VF container.
 
@@ -1394,7 +1394,7 @@ Get back to pod and run the test_pmd
   
   
 References
-----------
+**********
   
 - `StarlingX`_
 
