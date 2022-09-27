@@ -2,18 +2,33 @@
 .. SPDX-License-Identifier: CC-BY-4.0
 .. Copyright (C) 2019 Wind River Systems, Inc.
 
-Developer-Guide
-===============
+INF Developer Guide
+===================
 
 .. contents::
    :depth: 3
    :local:
 
+1. About the INF project
+************************
 
-This project implements a real time platform to deploy the O-CU and O-DU and it's based on Yocto/OpenEmbedded.
+This project is a reference implementation of O-Cloud infrastructure which is based on StarlingX, and it supports multi-OS.
 
-This includes a Yocto/OpenEmbedded compatible layer meta-stx-oran and wrapper scripts
-to pull all required Yocto/OE layers to build out the reference platform.
+* Currently the following OS are supported:
+
+  * CentOS 7
+  * Yocto 2.7 (warrior)
+
+1.1 About the CentOS based implementaion
+----------------------------------------
+The project provde wrapper scripts to automate all the steps of `StarlingX Build Guide`_ to build out the reference platform as an installable ISO image.
+
+.. _`StarlingX Build Guide`: https://docs.starlingx.io/developer_resources/build_guide.html
+
+1.2 About the Yocto based implementation
+----------------------------------------
+
+The project provde wrapper scripts to pull all required Yocto/OE layers to build out the reference platform as an installable ISO image.
 
 To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, please refer to the following docs if you want to learn about how to develop with Yocto/OpenEmbedded:
 
@@ -24,9 +39,38 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
 .. _`OpenEmbedded wiki`: http://www.openembedded.org/wiki/Main_Page
 
 
+2. How to build the INF project
+*******************************
 
-1. Prerequisite for build environment
--------------------------------------
+2.1 How to build the CentOS based image
+---------------------------------------
+
+2.1.1 Prerequisite for CentOS build environment
++++++++++++++++++++++++++++++++++++++++++++++++
+TBD
+
+2.1.2 Use wrapper script build_inf_centos.sh to setup build the CentOS based image
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+::
+
+  # Get the wrapper script with either curl or wget
+  $ curl -o build_inf_centos.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf_centos/build_inf_centos.sh;hb=HEAD'
+  $ wget -O build_inf_centos.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf_centos/build_inf_centos.sh;hb=HEAD'
+
+  $ chmod +x build_inf_centos.sh
+  $ WORKSPACE=/path/to/workspace
+  $ ./build_inf_centos.sh -w ${WORKSPACE}
+
+If all go well, you will get the ISO image in:
+${WORKSPACE}/prj_output/inf-image-centos-all-x86-64.iso
+
+
+2.2 How to build the Yocto based image
+--------------------------------------
+
+2.2.1 Prerequisite for Yocto build environment
+++++++++++++++++++++++++++++++++++++++++++++++
 
 * Your host need to meet the requirements for Yocto, please refer to:
 
@@ -38,9 +82,9 @@ The recommended and tested host is Ubuntu 16.04/18.04 and CentOS 7.
 
 * To install the required packages for Ubuntu 16.04/18.04:
 
-.. _`Compatible Linux Distribution`: https://www.yoctoproject.org/docs/2.6.3/brief-yoctoprojectqs/brief-yoctoprojectqs.html#brief-compatible-distro
-.. _`Supported Linux Distributions`: https://www.yoctoproject.org/docs/2.6.3/ref-manual/ref-manual.html#detailed-supported-distros
-.. _`Required Packages for the Build Host`: https://www.yoctoproject.org/docs/2.6.3/ref-manual/ref-manual.html#required-packages-for-the-build-host
+.. _`Compatible Linux Distribution`: https://www.yoctoproject.org/docs/2.7.3/brief-yoctoprojectqs/brief-yoctoprojectqs.html#brief-compatible-distro
+.. _`Supported Linux Distributions`: https://www.yoctoproject.org/docs/2.7.3/ref-manual/ref-manual.html#detailed-supported-distros
+.. _`Required Packages for the Build Host`: https://www.yoctoproject.org/docs/2.7.3/ref-manual/ref-manual.html#required-packages-for-the-build-host
 
 ::
 
@@ -60,19 +104,19 @@ The recommended and tested host is Ubuntu 16.04/18.04 and CentOS 7.
     perl-Data-Dumper perl-Text-ParseWords perl-Thread-Queue perl-Digest-SHA \
     python34-pip xz which SDL-devel xterm
 
-2. Use wrapper script build_inf.sh to setup build env and build the INF AIO x86 image
--------------------------------------------------------------------------------------
+2.2.2 Use wrapper script build_inf_yocto.sh to setup build the Yocto based image
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ::
 
   # Get the wrapper script with either curl or wget
-  $ curl -o build_inf.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf.sh;hb=HEAD'
-  $ wget -O build_inf.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf.sh;hb=HEAD'
+  $ curl -o build_inf_yocto.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf_yocto/build_inf_yocto.sh;hb=HEAD'
+  $ wget -O build_inf_yocto.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf_yocto/build_inf_yocto.sh;hb=HEAD'
 
-  $ chmod +x build_inf.sh
+  $ chmod +x build_inf_yocto.sh
   $ WORKSPACE=/path/to/workspace
-  $ ./build_inf.sh -w ${WORKSPACE}
+  $ ./build_inf_yocto.sh -w ${WORKSPACE}
 
 If all go well, you will get the ISO image in:
-${WORKSPACE}/prj_oran_inf_anaconda/tmp-glibc/deploy/images/intel-corei7-64/inf-image-aio-installer-intel-corei7-64.iso
+${WORKSPACE}/prj_output/inf-image-yocto-aio-x86-64.iso
 
