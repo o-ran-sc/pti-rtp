@@ -59,7 +59,7 @@ Following minimum hardware requirements must be met for installation of O-RAN IN
 +-------------------+----------------------------------------------------------------------------+
 
 ORAN INF E Release tested on HP ProLiant DL380p Gen8
-====================================================
+****************************************************
 
 1. Installation for the first server from the O-RAN INF ISO image
 -----------------------------------------------------------------
