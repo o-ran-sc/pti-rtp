@@ -51,11 +51,13 @@ Version 6.0.0, 2022-06-15
      * CentOS based image
 
 #. Enable three deployment modes on Yocto based image:
+
    * AIO simplex mode
    * AIO duplex mode (2 servers with High Availabity)
    * AIO duplex mode (2 servers with High Availabity) with additional worker node
 
 #. Enable four deployment modes on CentOS based image:
+
    * AIO simplex mode
    * AIO duplex mode (2 servers with High Availabity)
    * AIO duplex mode (2 servers with High Availabity) with additional worker node
