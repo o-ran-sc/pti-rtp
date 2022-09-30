@@ -12,8 +12,8 @@ Welcome to Infrastructure(INF) ducomentation
    :caption: Contents:
 
    overview.rst
-   developer-guide.rst
    release-notes.rst
+   developer-guide.rst
    installation-guide.rst
 
 * :ref:`search`
