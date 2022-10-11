@@ -227,6 +227,9 @@ repo_init_sync () {
     msg_step="Init the repo and sync"
     echo_step_start
 
+    # Avoid the colorization prompt
+    git config --global color.ui false
+
     cd ${MY_REPO_ROOT_DIR}
     STX_MANIFEST="default.xml"
     if [ "$LAYER" != "" ]; then
@@ -246,15 +249,19 @@ get_mirror_src () {
     msg_step="Get src mirror from dockerhub image"
     echo_step_start
 
-    docker pull ${MIRROR_SRC_STX}
-    docker create -ti --name inf-src-stx ${MIRROR_SRC_STX} sh
-    docker cp inf-src-stx:/stx-${STX_VER}.tar.bz2 ${MY_REPO_ROOT_DIR}
-    docker rm inf-src-stx
+    if [ -d ${MY_REPO_ROOT_DIR}/.repo ]; then
+        echo_info "The src repos already exists, skipping"
+    else
+        docker pull ${MIRROR_SRC_STX}
+        docker create -ti --name inf-src-stx ${MIRROR_SRC_STX} sh
+        docker cp inf-src-stx:/stx-${STX_VER}.tar.bz2 ${MY_REPO_ROOT_DIR}
+        docker rm inf-src-stx
 
-    cd ${MY_REPO_ROOT_DIR}
-    tar xf stx-${STX_VER}.tar.bz2
-    mv stx-${STX_VER}/* stx-${STX_VER}/.repo .
-    rm -rf stx-${STX_VER} stx-${STX_VER}.tar.bz2
+        cd ${MY_REPO_ROOT_DIR}
+        tar xf stx-${STX_VER}.tar.bz2
+        mv stx-${STX_VER}/* stx-${STX_VER}/.repo .
+        rm -rf stx-${STX_VER} stx-${STX_VER}.tar.bz2
+    fi
 
     echo_step_end
 }
@@ -265,7 +272,7 @@ get_mirror_pkg () {
 
     docker pull ${MIRROR_CONTAINER_IMG}
     docker create -ti --name inf-centos-mirror ${MIRROR_CONTAINER_IMG} sh
-    docker cp inf-centos-mirror:/mirror_stx-${STX_VER} ${STX_MIRROR_DIR}
+    docker cp inf-centos-mirror:/mirror_stx-${STX_VER}/. ${STX_MIRROR_DIR}
     docker rm inf-centos-mirror
 
     echo_step_end
