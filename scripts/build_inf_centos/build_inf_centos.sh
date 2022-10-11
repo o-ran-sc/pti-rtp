@@ -25,7 +25,8 @@ SRC_ORAN_BRANCH="master"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
-ORAN_REL="ORAN G-Release (6.0)"
+STX_VER="6.0"
+ORAN_REL="ORAN G-Release (${STX_VER})"
 
 SCRIPTS_DIR=$(dirname $(readlink -f $0))
 SCRIPTS_NAME=$(basename $0)
@@ -38,11 +39,11 @@ TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 help_info () {
 cat << ENDHELP
 Usage:
-${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-n] [-u] [-h]
+${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-m] [-n] [-u] [-h]
 where:
     -w WORKSPACE_DIR is the path for the project
+    -m use mirror for src and rpm pkgs
     -n dry-run only for bitbake
-    -u update the repo if it exists
     -h this help info
 examples:
 $0
@@ -85,8 +86,9 @@ run_cmd () {
 #########################################################################
 
 DRYRUN=""
+USE_MIRROR="No"
 
-while getopts "w:b:e:r:unh" OPTION; do
+while getopts "w:mnh" OPTION; do
     case ${OPTION} in
         w)
             WORKSPACE=`readlink -f ${OPTARG}`
@@ -94,8 +96,8 @@ while getopts "w:b:e:r:unh" OPTION; do
         n)
             DRYRUN="-n"
             ;;
-        u)
-            SKIP_UPDATE="No"
+        m)
+            USE_MIRROR="Yes"
             ;;
         h)
             help_info
@@ -114,7 +116,7 @@ fi
 #########################################################################
 PRJ_NAME=prj_oran_stx_centos
 
-STX_SRC_BRANCH="r/stx.6.0"
+STX_SRC_BRANCH="r/stx.${STX_VER}"
 STX_LOCAL_DIR=${WORKSPACE}/localdisk
 STX_LOCAL_SRC_DIR=${STX_LOCAL_DIR}/designer/${USER}/${PRJ_NAME}
 STX_LOCAL_PRJ_DIR=${STX_LOCAL_DIR}/loadbuild/${USER}/${PRJ_NAME}
@@ -123,6 +125,9 @@ STX_PRJ_DIR=${WORKSPACE}/${PRJ_NAME}
 STX_PRJ_OUTPUT=${WORKSPACE}/prj_output
 STX_MIRROR_DIR=${WORKSPACE}/mirror
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
+
+MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_VER}
+MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.05-stx-${STX_VER}
 
 SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
 
@@ -237,6 +242,35 @@ repo_init_sync () {
     echo_step_end
 }
 
+get_mirror_src () {
+    msg_step="Get src mirror from dockerhub image"
+    echo_step_start
+
+    docker pull ${MIRROR_SRC_STX}
+    docker create -ti --name inf-src-stx ${MIRROR_SRC_STX} sh
+    docker cp inf-src-stx:/stx-${STX_VER}.tar.bz2 ${MY_REPO_ROOT_DIR}
+    docker rm inf-src-stx
+
+    cd ${MY_REPO_ROOT_DIR}
+    tar xf stx-${STX_VER}.tar.bz2
+    mv stx-${STX_VER}/* stx-${STX_VER}/.repo .
+    rm -rf stx-${STX_VER} stx-${STX_VER}.tar.bz2
+
+    echo_step_end
+}
+
+get_mirror_pkg () {
+    msg_step="Get rpm mirror from dockerhub image"
+    echo_step_start
+
+    docker pull ${MIRROR_CONTAINER_IMG}
+    docker create -ti --name inf-centos-mirror ${MIRROR_CONTAINER_IMG} sh
+    docker cp inf-centos-mirror:/mirror_stx-${STX_VER} ${STX_MIRROR_DIR}
+    docker rm inf-centos-mirror
+
+    echo_step_end
+}
+
 patch_src () {
     echo_step_start "Some source codes need to be patched for INF project"
 
@@ -273,8 +307,8 @@ patch_src () {
 }
 
 populate_dl () {
-    ${MY_REPO_ROOT_DIR}/stx-tools/toCOPY/generate-centos-repo.sh ${STX_MIRROR_DIR}/stx-6.0
-    ${MY_REPO_ROOT_DIR}/stx-tools/toCOPY/populate_downloads.sh ${STX_MIRROR_DIR}/stx-6.0
+    ${MY_REPO_ROOT_DIR}/stx-tools/toCOPY/generate-centos-repo.sh ${STX_MIRROR_DIR}/stx-${STX_VER}
+    ${MY_REPO_ROOT_DIR}/stx-tools/toCOPY/populate_downloads.sh ${STX_MIRROR_DIR}/stx-${STX_VER}
 }
 
 build_image () {
@@ -304,7 +338,12 @@ build_image () {
 
 prepare_workspace
 create_env
-repo_init_sync
+if [ "${USE_MIRROR}" == "Yes" ]; then
+    get_mirror_src
+    get_mirror_pkg
+else
+    repo_init_sync
+fi
 patch_src
 populate_dl
 build_image
