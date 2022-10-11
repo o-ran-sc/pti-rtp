@@ -186,7 +186,7 @@ build_centos () {
             RUN_CMD="${SCRIPT_CENTOS_PRE} -w ${WORKSPACE_CENTOS}"
             run_cmd "Prepare for CentOS builds"
         fi
-        RUN_CMD="${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}"
+        RUN_CMD="${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} -m ${DRYRUN}"
         run_cmd "Start CentOS builds"
 
         echo_step_end
@@ -231,4 +231,3 @@ else
     build_yocto
     build_debian
 fi
-

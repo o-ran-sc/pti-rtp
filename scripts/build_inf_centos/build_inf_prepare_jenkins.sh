@@ -94,7 +94,6 @@ get_mirror () {
 msg_step="Prepare build directories"
 echo_step_start
 
-set -x
 export BUILD_GROUP="jenkins"
 export WGET_OPENDEV="wget --no-check-certificate"
 export LOCALDISK="${WORKSPACE}/localdisk"
@@ -111,10 +110,7 @@ sudo chown root:mock ${LOCALDISK}/loadbuild/mock
 sudo chmod 775 ${LOCALDISK}/loadbuild/mock-cache
 sudo chown root:mock ${LOCALDISK}/loadbuild/mock-cache
 
-set +x
 echo_step_end
-
-get_mirror
 
 msg_step="Install/downlaod/config required dependencies by mirror/build processes."
 echo_step_start
