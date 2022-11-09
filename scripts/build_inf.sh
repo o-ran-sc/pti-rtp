@@ -160,6 +160,14 @@ if [ "$CI" = "true" ]; then
     get_debug_info
 fi
 
+msg_step="Yocto builds"
+echo_step_start
+
+RUN_CMD="${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}"
+run_cmd "Start Yocto builds"
+
+echo_step_end
+
 # dry-run is not supported yet for CentOS build
 if [ -z "${DRYRUN}" ]; then
     msg_step="CentOS builds"
@@ -174,11 +182,3 @@ if [ -z "${DRYRUN}" ]; then
 
     echo_step_end
 fi
-
-msg_step="CentOS builds"
-echo_step_start
-
-RUN_CMD="${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}"
-run_cmd "Start Yocto builds"
-
-echo_step_end
