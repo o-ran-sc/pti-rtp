@@ -466,7 +466,7 @@ build_stx_image () {
 
     RUN_CMD="bitbake ${DRYRUN} ${IMG_STX}"
     echo_cmd "Build the ${IMG_STX} image"
-    bitbake ${DRYRUN} ${IMG_STX} 2>&1|tee logs/bitbake_${IMG_STX}_${TIMESTAMP}.log
+    bitbake -k ${DRYRUN} ${IMG_STX} 2>&1|tee logs/bitbake_${IMG_STX}_${TIMESTAMP}.log
 
     echo_step_end
 
@@ -550,7 +550,7 @@ build_anaconda_image () {
     fi
     RUN_CMD="bitbake ${DRYRUN} ${IMG_ANACONDA}"
     echo_cmd "Build the ${IMG_ANACONDA} image"
-    bitbake ${DRYRUN} ${IMG_ANACONDA} 2>&1|tee logs/bitbake_${IMG_ANACONDA}_${TIMESTAMP}.log
+    bitbake -k ${DRYRUN} ${IMG_ANACONDA} 2>&1|tee logs/bitbake_${IMG_ANACONDA}_${TIMESTAMP}.log
 
     if [ -z "${DRYRUN}" ]; then
         cp -Pf ${ISO_ANACONDA} ${ISO_INF}
