@@ -109,9 +109,12 @@ fi
 #########################################################################
 WORKSPACE_YP=${WORKSPACE}/workspace_yocto
 WORKSPACE_CENTOS=${WORKSPACE}/workspace_centos
+WORKSPACE_DEB=${WORKSPACE}/workspace_debian
 SCRIPT_YP=${SCRIPTS_DIR}/build_inf_yocto/build_inf_yocto.sh
 SCRIPT_CENTOS=${SCRIPTS_DIR}/build_inf_centos/build_inf_centos.sh
 SCRIPT_CENTOS_PRE=${SCRIPTS_DIR}/build_inf_centos/build_inf_prepare_jenkins.sh
+SCRIPT_DEB=${SCRIPTS_DIR}/build_inf_debian/build_inf_debian.sh
+SCRIPT_DEB_PRE=${SCRIPTS_DIR}/build_inf_debian/build_inf_prepare_jenkins.sh
 
 prepare_workspace () {
     msg_step="Create workspace for the multi-os builds"
@@ -150,6 +153,50 @@ get_debug_info () {
     echo_step_end
 }
 
+build_yocto () {
+    msg_step="Yocto builds"
+    echo_step_start
+
+    RUN_CMD="${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}"
+    run_cmd "Start Yocto builds"
+
+    echo_step_end
+}
+
+build_centos () {
+    # dry-run is not supported yet for CentOS build
+    if [ -z "${DRYRUN}" ]; then
+        msg_step="CentOS builds"
+        echo_step_start
+
+        if [ "$CI" = "true" ]; then
+            RUN_CMD="${SCRIPT_CENTOS_PRE} -w ${WORKSPACE_CENTOS}"
+            run_cmd "Prepare for CentOS builds"
+        fi
+        RUN_CMD="${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}"
+        run_cmd "Start CentOS builds"
+
+        echo_step_end
+    fi
+}
+
+build_debian () {
+    if [ -z "${DRYRUN}" ]; then
+        msg_step="Debian builds"
+        echo_step_start
+
+        if [ "$CI" = "true" ]; then
+            RUN_CMD="${SCRIPT_DEB_PRE} -w ${WORKSPACE_DEB}"
+            run_cmd "Prepare for Debian builds"
+        fi
+
+        RUN_CMD="${SCRIPT_DEB} -w ${WORKSPACE_DEB} ${DRYRUN}"
+        run_cmd "Start Yocto builds"
+
+        echo_step_end
+    fi
+}
+
 
 #########################################################################
 # Main process
@@ -160,25 +207,7 @@ if [ "$CI" = "true" ]; then
     get_debug_info
 fi
 
-msg_step="Yocto builds"
-echo_step_start
+#build_yocto
+#build_centos
+build_debian
 
-RUN_CMD="${SCRIPT_YP} -w ${WORKSPACE_YP} ${DRYRUN} ${YP_ARGS}"
-run_cmd "Start Yocto builds"
-
-echo_step_end
-
-# dry-run is not supported yet for CentOS build
-if [ -z "${DRYRUN}" ]; then
-    msg_step="CentOS builds"
-    echo_step_start
-
-    if [ "$CI" = "true" ]; then
-        RUN_CMD="${SCRIPT_CENTOS_PRE} -w ${WORKSPACE_CENTOS}"
-        run_cmd "Prepare for CentOS builds"
-    fi
-    RUN_CMD="${SCRIPT_CENTOS} -w ${WORKSPACE_CENTOS} ${DRYRUN}"
-    run_cmd "Start CentOS builds"
-
-    echo_step_end
-fi
