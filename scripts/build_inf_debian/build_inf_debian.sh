@@ -339,6 +339,10 @@ build_image () {
 
     stx control status
 
+    # wait for all the pods running
+    sleep 600
+    stx control status
+
     RUN_CMD="stx build prepare"
     run_cmd "Build prepare"
 
