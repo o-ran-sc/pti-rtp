@@ -180,12 +180,6 @@ build_centos () {
     fi
 }
 
-build_centos_dl () {
-    # Temp for testing the lftools deploy
-    mkdir -p ${WORKSPACE_CENTOS}/prj_output/
-    wget http://mirror.starlingx.cengn.ca/mirror/starlingx/release/7.0.0/centos/flock/outputs/iso/bootimage.iso -O ${WORKSPACE_CENTOS}/prj_output/inf-image-centos-all-x86-64.iso
-}
-
 build_debian () {
     if [ -z "${DRYRUN}" ]; then
         msg_step="Debian builds"
@@ -214,7 +208,6 @@ if [ "$CI" = "true" ]; then
 fi
 
 build_yocto
-#build_centos
-build_centos_dl
+build_centos
 #build_debian
 
