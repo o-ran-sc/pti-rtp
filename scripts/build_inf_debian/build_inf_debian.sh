@@ -351,10 +351,12 @@ build_image () {
     RUN_CMD="stx repomgr list"
     run_cmd "repomgr list"
 
-    RUN_CMD="stx shell -c 'build-pkgs -a --parallel 10'"
+    #RUN_CMD="stx shell -c 'build-pkgs -a --parallel 10'"
+    RUN_CMD="stx build world"
     run_cmd "Build-pkgs"
 
-    RUN_CMD="stx shell -c 'build-image'"
+    #RUN_CMD="stx shell -c 'build-image'"
+    RUN_CMD="stx build image"
     run_cmd "Build ISO image"
 
     cp -f ${STX_LOCAL_DIR}/deploy/starlingx-intel-x86-64-cd.iso ${STX_PRJ_OUTPUT}/${ISO_INF_DEB}
