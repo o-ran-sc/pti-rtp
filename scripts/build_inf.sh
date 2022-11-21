@@ -82,8 +82,11 @@ run_cmd () {
 
 DRYRUN=""
 YP_ARGS="-s"
+YOCTO_ONLY="No"
+CENTOS_ONLY="No"
+DEBIAN_ONLY="No"
 
-while getopts "w:b:e:r:unh" OPTION; do
+while getopts "w:ycdnh" OPTION; do
     case ${OPTION} in
         w)
             WORKSPACE=`readlink -f ${OPTARG}`
@@ -91,6 +94,15 @@ while getopts "w:b:e:r:unh" OPTION; do
         n)
             DRYRUN="-n"
             YP_ARGS=""
+            ;;
+        y)
+            YOCTO_ONLY="Yes"
+            ;;
+        c)
+            CENTOS_ONLY="Yes"
+            ;;
+        d)
+            DEBIAN_ONLY="Yes"
             ;;
         h)
             help_info
@@ -207,7 +219,15 @@ if [ "$CI" = "true" ]; then
     get_debug_info
 fi
 
-build_yocto
-build_centos
-#build_debian
+if [ "${YOCTO_ONLY}" == "Yes" ]; then
+    build_yocto
+elif [ "${CENTOS_ONLY}" == "Yes" ]; then
+    build_centos
+elif [ "${DEBIAN_ONLY}" == "Yes" ]; then
+    build_debian
+else
+    build_centos
+    build_yocto
+    build_debian
+fi
 
