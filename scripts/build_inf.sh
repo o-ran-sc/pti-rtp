@@ -84,7 +84,7 @@ DRYRUN=""
 YP_ARGS="-s"
 YOCTO_ONLY="No"
 CENTOS_ONLY="No"
-DEBIAN_ONLY="No"
+DEBIAN_ONLY="Yes"
 
 while getopts "w:ycdnh" OPTION; do
     case ${OPTION} in
