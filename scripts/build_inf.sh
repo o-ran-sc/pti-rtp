@@ -132,11 +132,12 @@ prepare_workspace () {
     msg_step="Create workspace for the multi-os builds"
     echo_step_start
 
-    mkdir -p ${WORKSPACE_YP} ${WORKSPACE_CENTOS}
+    mkdir -p ${WORKSPACE_YP} ${WORKSPACE_CENTOS} ${WORKSPACE_DEB}
 
     echo_info "The following directories are created in your workspace(${WORKSPACE}):"
     echo_info "For Yocto buid: ${WORKSPACE_YP}"
     echo_info "For CentOS buid: ${WORKSPACE_CENTOS}"
+    echo_info "For Debian buid: ${WORKSPACE_DEB}"
 
     echo_step_end
 }
@@ -203,7 +204,7 @@ build_debian () {
         fi
 
         RUN_CMD="${SCRIPT_DEB} -w ${WORKSPACE_DEB} -m ${DRYRUN}"
-        run_cmd "Start Yocto builds"
+        run_cmd "Start Debian builds"
 
         echo_step_end
     fi
