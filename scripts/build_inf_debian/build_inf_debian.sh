@@ -42,7 +42,7 @@ Usage:
 ${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-m] [-n] [-u] [-h]
 where:
     -w WORKSPACE_DIR is the path for the project
-    -m use mirror for src and rpm pkgs
+    -m use mirror for src and deb pkgs
     -n dry-run only for bitbake
     -h this help info
 examples:
@@ -136,9 +136,8 @@ STX_MINIKUBE_HOME=${WORKSPACE}/minikube_home
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
 
 #MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_VER}
-#MIRROR_CONTAINER_IMG=infbuilder/inf-debian-mirror:2022.11-stx-${STX_VER}
 MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_TAG}
-MIRROR_CONTAINER_IMG=infbuilder/inf-debian-mirror:2022.11-stx-${STX_TAG}
+MIRROR_CONTAINER_IMG=infbuilder/inf-debian-mirror:2022.11-stx-${STX_VER}
 
 SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
 
@@ -244,6 +243,7 @@ get_mirror_src () {
         tar xf stx-${STX_TAG}.tar.bz2
         mv stx-${STX_SRC_BRANCH}/* stx-${STX_SRC_BRANCH}/.repo .
         rm -rf stx-${STX_SRC_BRANCH} stx-${STX_TAG}.tar.bz2
+        touch .repo-init-done
 
     fi
 
@@ -259,8 +259,7 @@ get_mirror_pkg () {
     else
         docker pull ${MIRROR_CONTAINER_IMG}
         docker create -ti --name inf-debian-mirror ${MIRROR_CONTAINER_IMG} sh
-        #docker cp inf-debian-mirror:/mirror_stx-${STX_VER}/. ${STX_MIRROR_DIR}
-        docker cp inf-debian-mirror:/mirror_stx-${STX_TAG}/. ${STX_MIRROR_DIR}
+        docker cp inf-debian-mirror:/mirror-stx-${STX_VER}/. ${STX_MIRROR_DIR}
         docker rm inf-debian-mirror
     fi
 
@@ -373,7 +372,7 @@ prepare_workspace
 create_env
 if [ "${USE_MIRROR}" == "Yes" ]; then
     get_mirror_src
-    #get_mirror_pkg
+    get_mirror_pkg
 else
     repo_init_sync
 fi

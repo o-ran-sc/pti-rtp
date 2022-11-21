@@ -202,7 +202,7 @@ build_debian () {
             run_cmd "Prepare for Debian builds"
         fi
 
-        RUN_CMD="${SCRIPT_DEB} -w ${WORKSPACE_DEB} ${DRYRUN}"
+        RUN_CMD="${SCRIPT_DEB} -w ${WORKSPACE_DEB} -m ${DRYRUN}"
         run_cmd "Start Yocto builds"
 
         echo_step_end
