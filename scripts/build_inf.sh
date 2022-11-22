@@ -80,7 +80,7 @@ run_cmd () {
 # Parse cmd options
 #########################################################################
 
-DRYRUN=""
+DRYRUN="-n"
 YP_ARGS="-s"
 
 while getopts "w:b:e:r:unh" OPTION; do
@@ -182,8 +182,8 @@ build_centos () {
 
 build_centos_dl () {
     # Temp for testing the lftools deploy
-    mkdir -p ${WORKSPACE_CENTOS}/prj_output/
-    wget http://mirror.starlingx.cengn.ca/mirror/starlingx/release/7.0.0/centos/flock/outputs/iso/bootimage.iso -O ${WORKSPACE_CENTOS}/prj_output/inf-image-centos-all-x86-64.iso
+    mkdir -p ${WORKSPACE_DEB}/prj_output/
+    wget http://mirror.starlingx.cengn.ca/mirror/starlingx/master/debian/monolithic/latest_build/outputs/iso/starlingx-intel-x86-64-cd.iso -O ${WORKSPACE_DEB}/prj_output/inf-image-debian-all-x86-64.iso
 }
 
 build_debian () {
