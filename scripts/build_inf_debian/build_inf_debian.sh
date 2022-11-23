@@ -122,7 +122,7 @@ PRJ_NAME=prj-oran-stx-deb
 #STX_SRC_BRANCH="r/stx.${STX_VER}"
 
 # Temporary for master
-STX_TAG="master-3a9d121"
+STX_TAG="master-1ba0db8"
 STX_SRC_BRANCH="master"
 
 STX_LOCAL_DIR=${WORKSPACE}/localdisk
@@ -132,12 +132,14 @@ STX_SRC_DIR=${WORKSPACE}/src
 STX_PRJ_DIR=${WORKSPACE}/${PRJ_NAME}
 STX_PRJ_OUTPUT=${WORKSPACE}/prj_output
 STX_MIRROR_DIR=${WORKSPACE}/mirrors
+STX_APTLY_DIR=${WORKSPACE}/aptly
 STX_MINIKUBE_HOME=${WORKSPACE}/minikube_home
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
 
 #MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_VER}
 MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_TAG}
 MIRROR_CONTAINER_IMG=infbuilder/inf-debian-mirror:2022.11-stx-${STX_VER}
+MIRROR_APTLY_IMG=infbuilder/inf-debian-aptly:2022.11-stx-${STX_VER}
 
 SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
 
@@ -147,7 +149,8 @@ prepare_workspace () {
     msg_step="Create workspace for the Debian build"
     echo_step_start
 
-    mkdir -p ${STX_LOCAL_SRC_DIR} ${STX_LOCAL_PRJ_DIR} ${STX_MIRROR_DIR} ${STX_PRJ_OUTPUT} ${STX_MINIKUBE_HOME}
+    mkdir -p ${STX_LOCAL_SRC_DIR} ${STX_LOCAL_PRJ_DIR} ${STX_MIRROR_DIR} \
+        ${STX_APTLY_DIR} ${STX_PRJ_OUTPUT} ${STX_MINIKUBE_HOME}
     rm -f ${STX_SRC_DIR} ${STX_PRJ_DIR}
     ln -sf $(realpath --relative-to=${WORKSPACE} ${STX_LOCAL_SRC_DIR}) ${STX_SRC_DIR}
     ln -sf $(realpath --relative-to=${WORKSPACE} ${STX_LOCAL_PRJ_DIR}) ${STX_PRJ_DIR}
@@ -218,6 +221,8 @@ repo_init_sync () {
 
         RUN_CMD="repo sync --force-sync"
         run_cmd "repo sync"
+
+        touch .repo-init-done
     fi
 
     echo_step_end
@@ -254,7 +259,7 @@ get_mirror_pkg () {
     msg_step="Get deb mirror from dockerhub image"
     echo_step_start
 
-    if [ -d ${MIRROR_CONTAINER_IMG}/starlingx ]; then
+    if [ -d ${STX_MIRROR_DIR}/starlingx ]; then
         echo_info "The deb mirror already exists, skipping"
     else
         docker pull ${MIRROR_CONTAINER_IMG}
@@ -266,12 +271,32 @@ get_mirror_pkg () {
     echo_step_end
 }
 
+get_mirror_aptly () {
+    msg_step="Get deb mirror aptly from dockerhub image"
+    echo_step_start
+
+    if [ -f ${STX_APTLY_DIR}/aptly.conf ]; then
+        echo_info "The deb aptly already exists, skipping"
+    else
+        docker pull ${MIRROR_APTLY_IMG}
+        docker create -ti --name inf-debian-aptly ${MIRROR_APTLY_IMG} sh
+        docker cp inf-debian-aptly:/aptly-stx-${STX_VER}/. ${STX_APTLY_DIR}
+        docker rm inf-debian-aptly
+    fi
+
+    echo_step_end
+}
+
 patch_src () {
     echo_step_start "Some source codes need to be patched for INF project"
 
     STX_ISSUE_DIR="${STX_REPO_ROOT}/cgcs-root/stx/config-files/debian-release-config/files"
     grep -q "${ORAN_REL}" ${STX_ISSUE_DIR}/issue* \
         || sed -i "s/\(@PLATFORM_RELEASE@\)/\1 - ${ORAN_REL}/" ${STX_ISSUE_DIR}/issue*
+
+    grep -q "\-\-parallel" ${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py \
+        || sed -i 's/\(build-pkgs -a \)/\1 --parallel 2/' \
+        ${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py
 
     # Apply meta patches
 
@@ -375,6 +400,7 @@ create_env
 if [ "${USE_MIRROR}" == "Yes" ]; then
     get_mirror_src
     get_mirror_pkg
+    get_mirror_aptly
 else
     repo_init_sync
 fi
