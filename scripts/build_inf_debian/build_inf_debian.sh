@@ -141,6 +141,10 @@ MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_TAG}
 MIRROR_CONTAINER_IMG=infbuilder/inf-debian-mirror:2022.11-stx-${STX_VER}
 MIRROR_APTLY_IMG=infbuilder/inf-debian-aptly:2022.11-stx-${STX_VER}
 
+STX_SHARED_REPO=http://mirror.starlingx.cengn.ca/mirror/starlingx/master/debian/monolithic/20221123T070000Z/outputs/aptly/deb-local-build/
+STX_SHARED_SOURCE=http://mirror.starlingx.cengn.ca/mirror/starlingx/master/debian/monolithic/20221123T070000Z/outputs/aptly/deb-local-source/
+
+
 SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
 
 ISO_INF_DEB=inf-image-debian-all-x86-64.iso
@@ -295,8 +299,12 @@ patch_src () {
         || sed -i "s/\(@PLATFORM_RELEASE@\)/\1 - ${ORAN_REL}/" ${STX_ISSUE_DIR}/issue*
 
     grep -q "\-\-parallel" ${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py \
-        || sed -i 's/\(build-pkgs -a \)/\1 --parallel 2/' \
+        || sed -i 's/\(build-pkgs -a \)/\1 --parallel 2 --reuse /' \
         ${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py
+
+    STX_LOCALRC="${STX_REPO_ROOT}/stx-tools/stx/stx-build-tools-chart/stx-builder/configmap/localrc.sample"
+    echo "export STX_SHARED_REPO=${STX_SHARED_REPO}" >> ${STX_LOCALRC}
+    echo "export STX_SHARED_SOURCE=${STX_SHARED_SOURCE}" >> ${STX_LOCALRC}
 
     # Apply meta patches
 
