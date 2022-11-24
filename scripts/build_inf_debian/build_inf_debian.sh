@@ -39,9 +39,10 @@ TIMESTAMP=`date +"%Y%m%d_%H%M%S"`
 help_info () {
 cat << ENDHELP
 Usage:
-${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-m] [-n] [-u] [-h]
+${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-p PARALLEL_BUILD] [-m] [-n] [-u] [-h]
 where:
     -w WORKSPACE_DIR is the path for the project
+    -p PARALLEL_BUILD is the num of paralle build, default is 2
     -m use mirror for src and deb pkgs
     -n dry-run only for bitbake
     -h this help info
@@ -87,17 +88,23 @@ run_cmd () {
 
 DRYRUN=""
 USE_MIRROR="No"
+REUSE_APTLY=""
+STX_PARALLEL="2"
 
-while getopts "w:mnh" OPTION; do
+while getopts "w:p:mnh" OPTION; do
     case ${OPTION} in
         w)
             WORKSPACE=`readlink -f ${OPTARG}`
+            ;;
+        p)
+            STX_PARALLEL="${OPTARG}"
             ;;
         n)
             DRYRUN="-n"
             ;;
         m)
             USE_MIRROR="Yes"
+            REUSE_APTLY="--reuse"
             ;;
         h)
             help_info
@@ -144,8 +151,8 @@ MIRROR_APTLY_IMG=infbuilder/inf-debian-aptly:2022.11-stx-${STX_VER}
 STX_SHARED_REPO=http://mirror.starlingx.cengn.ca/mirror/starlingx/master/debian/monolithic/20221123T070000Z/outputs/aptly/deb-local-build/
 STX_SHARED_SOURCE=http://mirror.starlingx.cengn.ca/mirror/starlingx/master/debian/monolithic/20221123T070000Z/outputs/aptly/deb-local-source/
 
-
-SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
+SRC_ORAN_DIR=${STX_SRC_DIR}/rtp
+SRC_META_PATCHES=${SRC_ORAN_DIR}/scripts/build_inf_debian/meta-patches
 
 ISO_INF_DEB=inf-image-debian-all-x86-64.iso
 
@@ -291,23 +298,88 @@ get_mirror_aptly () {
     echo_step_end
 }
 
+clone_update_repo () {
+    REPO_BRANCH=$1
+    REPO_URL=$2
+    REPO_NAME=$3
+    REPO_COMMIT=$4
+
+    if [ -d ${REPO_NAME}/.git ]; then
+        if [ "${SKIP_UPDATE}" == "Yes" ]; then
+            echo_info "The repo ${REPO_NAME} exists, skip updating for the branch ${REPO_BRANCH}"
+        else
+            echo_info "The repo ${REPO_NAME} exists, updating for the branch ${REPO_BRANCH}"
+            cd ${REPO_NAME}
+            git checkout ${REPO_BRANCH}
+            git pull
+            cd -
+        fi
+    else
+        RUN_CMD="git clone --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_NAME}"
+        run_cmd "Cloning the source of repo '${REPO_NAME}':"
+
+        if [ -n "${REPO_COMMIT}" ]; then
+            cd ${REPO_NAME}
+            RUN_CMD="git checkout -b ${REPO_BRANCH}-${REPO_COMMIT} ${REPO_COMMIT}"
+            run_cmd "Checkout the repo ${REPO_NAME} to specific commit: ${REPO_COMMIT}"
+            cd -
+        fi
+    fi
+}
+
+
+prepare_src () {
+    msg_step="Get the source code repos"
+    echo_step_start
+
+    # Clone the oran inf source if it's not already cloned
+    # Check if the script is inside the repo
+    if cd ${SCRIPTS_DIR} && git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+        CLONED_ORAN_REPO=`git rev-parse --show-toplevel`
+        echo_info "Use the cloned oran repo: ${CLONED_ORAN_REPO}"
+        mkdir -p ${SRC_ORAN_DIR}
+        cd ${SRC_ORAN_DIR}
+        rm -rf scripts
+        ln -sf ${CLONED_ORAN_REPO}/scripts scripts
+    else
+        echo_info "Cloning oran layer:"
+        cd ${STX_SRC_DIR}
+        clone_update_repo ${SRC_ORAN_BRANCH} ${SRC_ORAN_URL} rtp
+    fi
+
+    if [ "${USE_MIRROR}" == "Yes" ]; then
+        get_mirror_src
+        get_mirror_pkg
+        get_mirror_aptly
+    else
+        repo_init_sync
+    fi
+    patch_src
+
+    echo_step_end
+}
+
+
 patch_src () {
-    echo_step_start "Some source codes need to be patched for INF project"
+    echo_step_start "Patching source codes for INF project"
 
     STX_ISSUE_DIR="${STX_REPO_ROOT}/cgcs-root/stx/config-files/debian-release-config/files"
+    echo_info "Patching for the ${STX_ISSUE_DIR}"
     grep -q "${ORAN_REL}" ${STX_ISSUE_DIR}/issue* \
         || sed -i "s/\(@PLATFORM_RELEASE@\)/\1 - ${ORAN_REL}/" ${STX_ISSUE_DIR}/issue*
 
-    grep -q "\-\-parallel" ${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py \
-        || sed -i 's/\(build-pkgs -a \)/\1 --parallel 2 --reuse /' \
-        ${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py
+    STX_BUILDER="${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py"
+    echo_info "Patching for the ${STX_BUILDER}"
+    grep -q "\-\-parallel" ${STX_BUILDER} \
+        || sed -i "s/\(build-pkgs -a \)/\1 --parallel ${STX_PARALLEL} ${REUSE_APTLY}/" \
+        ${STX_BUILDER}
 
     STX_LOCALRC="${STX_REPO_ROOT}/stx-tools/stx/stx-build-tools-chart/stx-builder/configmap/localrc.sample"
+    echo_info "Patching for the localrc file"
     echo "export STX_SHARED_REPO=${STX_SHARED_REPO}" >> ${STX_LOCALRC}
     echo "export STX_SHARED_SOURCE=${STX_SHARED_SOURCE}" >> ${STX_LOCALRC}
 
     # Apply meta patches
-
     if [ -d ${SRC_META_PATCHES} ]; then
         cd ${SRC_META_PATCHES}
         src_dirs=$(find . -type f -printf "%h\n"|uniq)
@@ -384,11 +456,9 @@ build_image () {
     RUN_CMD="stx repomgr list"
     run_cmd "repomgr list"
 
-    #RUN_CMD="stx shell -c 'build-pkgs -a --parallel 10'"
     RUN_CMD="stx build world"
     run_cmd "Build-pkgs"
 
-    #RUN_CMD="stx shell -c 'build-image'"
     RUN_CMD="stx build image"
     run_cmd "Build ISO image"
 
@@ -405,13 +475,6 @@ build_image () {
 
 prepare_workspace
 create_env
-if [ "${USE_MIRROR}" == "Yes" ]; then
-    get_mirror_src
-    get_mirror_pkg
-    get_mirror_aptly
-else
-    repo_init_sync
-fi
-patch_src
+prepare_src
 init_stx_tool
 build_image
