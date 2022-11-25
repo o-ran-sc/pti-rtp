@@ -24,8 +24,8 @@ set -e -o pipefail
 # Only one bsp is supported now, there will be more in the future
 SUPPORTED_BSP="intel-corei7-64 "
 
-SRC_ORAN_BRANCH="master"
-SRC_STX_BRANCH="master"
+SRC_ORAN_BRANCH="g-release"
+SRC_STX_BRANCH="stx-5.0"
 SRC_YP_BRANCH="warrior"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
