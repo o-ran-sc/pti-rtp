@@ -21,7 +21,7 @@ set -e -o pipefail
 # Variables
 #########################################################################
 
-SRC_ORAN_BRANCH="master"
+SRC_ORAN_BRANCH="g-release"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
