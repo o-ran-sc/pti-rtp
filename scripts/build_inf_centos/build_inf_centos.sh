@@ -25,7 +25,7 @@ SRC_ORAN_BRANCH="master"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
-STX_VER="6.0"
+STX_VER="7.0"
 ORAN_REL="ORAN G-Release (${STX_VER})"
 
 SCRIPTS_DIR=$(dirname $(readlink -f $0))
@@ -127,7 +127,7 @@ STX_MIRROR_DIR=${WORKSPACE}/mirror
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
 
 MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_VER}
-MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.05-stx-${STX_VER}
+MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.11-stx-${STX_VER}
 
 SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
 
@@ -350,6 +350,7 @@ if [ "${USE_MIRROR}" == "Yes" ]; then
     get_mirror_pkg
 else
     repo_init_sync
+    get_mirror_pkg
 fi
 patch_src
 populate_dl
