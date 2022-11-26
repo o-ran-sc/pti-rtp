@@ -83,8 +83,8 @@ run_cmd () {
 DRYRUN=""
 YP_ARGS="-s"
 YOCTO_ONLY="No"
-CENTOS_ONLY="No"
-DEBIAN_ONLY="Yes"
+CENTOS_ONLY="Yes"
+DEBIAN_ONLY="No"
 
 while getopts "w:ycdnh" OPTION; do
     case ${OPTION} in
