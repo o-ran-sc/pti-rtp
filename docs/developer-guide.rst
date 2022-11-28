@@ -16,16 +16,26 @@ This project is a reference implementation of O-Cloud infrastructure which is ba
 
 * Currently the following OS are supported:
 
+  * Debian 11 (bullseye)
   * CentOS 7
   * Yocto 2.7 (warrior)
 
-1.1 About the CentOS based implementaion
+Notes:
+  * Debian based is the recommended platfrom.
+
+1.1 About the Debian based implementaion
+----------------------------------------
+The project provde wrapper scripts to automate all the steps of `StarlingX Debian Build Guide`_ to build out the reference platform as an installable ISO image.
+
+.. _`StarlingX Debian Build Guide`: https://wiki.openstack.org/wiki/StarlingX/DebianBuildEnvironment
+
+1.2 About the CentOS based implementaion
 ----------------------------------------
 The project provde wrapper scripts to automate all the steps of `StarlingX Build Guide`_ to build out the reference platform as an installable ISO image.
 
 .. _`StarlingX Build Guide`: https://docs.starlingx.io/developer_resources/build_guide.html
 
-1.2 About the Yocto based implementation
+1.3 About the Yocto based implementation
 ----------------------------------------
 
 The project provde wrapper scripts to pull all required Yocto/OE layers to build out the reference platform as an installable ISO image.
@@ -42,20 +52,61 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
 2. How to build the INF project
 *******************************
 
-2.1 How to build the CentOS based image
+2.1 How to build the Debian based image
 ---------------------------------------
 
-2.1.1 Prerequisite for CentOS build environment
+2.1.1 Prerequisite for Debian build environment
 +++++++++++++++++++++++++++++++++++++++++++++++
-TBD
 
-2.1.2 Use wrapper script build_inf_centos.sh to setup build the CentOS based image
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+NOTE: The build system for Debian requires a Linux system with Docker and python 3.x installed. The the following steps have been tested on CentOS 7 and Ubuntu 20.04.
+
+* Refer to `Install docker on ubuntu`_ or `Install docker on centos`_ to install docker.
+* Refer to `Configure_Debian_build_environment`_ to install prerequisite packges and configure for Debian build environment.
+
+.. _`Install docker on ubuntu`: https://docs.docker.com/engine/install/ubuntu/
+.. _`Install docker on centos`: https://docs.docker.com/engine/install/centos/
+.. _`Configure_Debian_build_environment`: https://wiki.openstack.org/wiki/StarlingX/DebianBuildEnvironment#Configure_build_environment
+
+2.1.2 Use wrapper script build_inf_debian.sh to build the Debian based image
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ::
 
-  # Get the wrapper script with either curl or wget
-  $ curl -o build_inf_centos.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf_centos/build_inf_centos.sh;hb=HEAD'
+  # Get the wrapper script to build the debian image
+  $ wget -O build_inf_debian.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf_debian/build_inf_debian.sh;hb=HEAD'
+
+  $ chmod +x build_inf_debian.sh
+  $ WORKSPACE=/path/to/workspace
+  $ ./build_inf_debian.sh -w ${WORKSPACE}
+
+If all go well, you will get the ISO image in:
+${WORKSPACE}/prj_output/inf-image-debian-all-x86-64.iso
+
+2.2 How to build the CentOS based image
+---------------------------------------
+
+NOTE: This only supports build on CentOS 7 which will be EOL 30 Jun 2024.
+
+2.2.1 Prerequisite for CentOS build environment
++++++++++++++++++++++++++++++++++++++++++++++++
+
+NOTE: This step needs the user has sudo permission.
+
+::
+
+  # Get the wrapper script for preparing the build environment
+  $ wget -O build_inf_prepare.sh https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf_centos/build_inf_prepare_jenkins.sh;hb=HEAD
+
+  $ chmod +x build_inf_prepare.sh
+  $ WORKSPACE=/path/to/workspace
+  $ ./build_inf_prepare.sh -w ${WORKSPACE}
+
+2.2.2 Use wrapper script build_inf_centos.sh to build the CentOS based image
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+::
+
+  # Get the wrapper script to build the centos image
   $ wget -O build_inf_centos.sh 'https://gerrit.o-ran-sc.org/r/gitweb?p=pti/rtp.git;a=blob_plain;f=scripts/build_inf_centos/build_inf_centos.sh;hb=HEAD'
 
   $ chmod +x build_inf_centos.sh
@@ -66,10 +117,10 @@ If all go well, you will get the ISO image in:
 ${WORKSPACE}/prj_output/inf-image-centos-all-x86-64.iso
 
 
-2.2 How to build the Yocto based image
+2.3 How to build the Yocto based image
 --------------------------------------
 
-2.2.1 Prerequisite for Yocto build environment
+2.3.1 Prerequisite for Yocto build environment
 ++++++++++++++++++++++++++++++++++++++++++++++
 
 * Your host need to meet the requirements for Yocto, please refer to:
@@ -104,7 +155,7 @@ The recommended and tested host is Ubuntu 16.04/18.04 and CentOS 7.
     perl-Data-Dumper perl-Text-ParseWords perl-Thread-Queue perl-Digest-SHA \
     python34-pip xz which SDL-devel xterm
 
-2.2.2 Use wrapper script build_inf_yocto.sh to setup build the Yocto based image
+2.3.2 Use wrapper script build_inf_yocto.sh to setup build the Yocto based image
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ::
