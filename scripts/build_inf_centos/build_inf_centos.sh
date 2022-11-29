@@ -22,8 +22,10 @@ set -e -o pipefail
 #########################################################################
 
 SRC_ORAN_BRANCH="g-release"
+SRC_O2_BRANCH="master"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
+SRC_O2_URL="https://opendev.org/starlingx/app-oran-o2"
 
 STX_VER="7.0"
 ORAN_REL="ORAN G-Release (${STX_VER})"
@@ -129,7 +131,8 @@ STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
 MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_VER}
 MIRROR_CONTAINER_IMG=infbuilder/inf-centos-mirror:2022.11-stx-${STX_VER}
 
-SRC_META_PATCHES=${SCRIPTS_DIR}/meta-patches
+SRC_ORAN_DIR=${STX_SRC_DIR}/rtp
+SRC_META_PATCHES=${SRC_ORAN_DIR}/scripts/build_inf_centos/meta-patches
 
 ISO_INF_COS=inf-image-centos-all-x86-64.iso
 
@@ -278,16 +281,81 @@ get_mirror_pkg () {
     echo_step_end
 }
 
+clone_update_repo () {
+    REPO_BRANCH=$1
+    REPO_URL=$2
+    REPO_NAME=$3
+    REPO_COMMIT=$4
+
+    if [ -d ${REPO_NAME}/.git ]; then
+        if [ "${SKIP_UPDATE}" == "Yes" ]; then
+            echo_info "The repo ${REPO_NAME} exists, skip updating for the branch ${REPO_BRANCH}"
+        else
+            echo_info "The repo ${REPO_NAME} exists, updating for the branch ${REPO_BRANCH}"
+            cd ${REPO_NAME}
+            git checkout ${REPO_BRANCH}
+            git pull
+            cd -
+        fi
+    else
+        RUN_CMD="git clone --branch ${REPO_BRANCH} ${REPO_URL} ${REPO_NAME}"
+        run_cmd "Cloning the source of repo '${REPO_NAME}':"
+
+        if [ -n "${REPO_COMMIT}" ]; then
+            cd ${REPO_NAME}
+            RUN_CMD="git checkout -b ${REPO_BRANCH}-${REPO_COMMIT} ${REPO_COMMIT}"
+            run_cmd "Checkout the repo ${REPO_NAME} to specific commit: ${REPO_COMMIT}"
+            cd -
+        fi
+    fi
+}
+
+
+prepare_src () {
+    msg_step="Get the source code repos"
+    echo_step_start
+
+    # Clone the oran inf source if it's not already cloned
+    # Check if the script is inside the repo
+    if cd ${SCRIPTS_DIR} && git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+        CLONED_ORAN_REPO=`git rev-parse --show-toplevel`
+        echo_info "Use the cloned oran repo: ${CLONED_ORAN_REPO}"
+        mkdir -p ${SRC_ORAN_DIR}
+        cd ${SRC_ORAN_DIR}
+        rm -rf scripts
+        ln -sf ${CLONED_ORAN_REPO}/scripts scripts
+    else
+        echo_info "Cloning oran layer:"
+        cd ${STX_SRC_DIR}
+        clone_update_repo ${SRC_ORAN_BRANCH} ${SRC_ORAN_URL} rtp
+    fi
+
+    if [ "${USE_MIRROR}" == "Yes" ]; then
+        get_mirror_src
+        get_mirror_pkg
+    else
+        repo_init_sync
+        get_mirror_pkg
+    fi
+    patch_src
+
+    cd ${STX_SRC_DIR}/cgcs-root/stx/
+    clone_update_repo ${SRC_O2_BRANCH} ${SRC_O2_URL} app-oran-o2
+
+    echo_step_end
+}
+
 patch_src () {
-    echo_step_start "Some source codes need to be patched for INF project"
+    echo_step_start "Patching source codes for INF project"
 
-    sed -i "s|/import/mirrors|${STX_MIRROR_DIR}|" \
-        ${MY_REPO}/stx/metal/installer/pxe-network-installer/centos/build_srpm.data
+    STX_PXE_DATA="${MY_REPO}/stx/metal/installer/pxe-network-installer/centos/build_srpm.data"
+    echo_info "Patching for the ${STX_PXE_DATA}"
+    sed -i "s|/import/mirrors|${STX_MIRROR_DIR}|" ${STX_PXE_DATA}
 
-    grep -q "${ORAN_REL}" \
-        ${MY_REPO}/stx/config-files/centos-release-config/files/issue* \
-        || sed -i "s/\(@PLATFORM_RELEASE@\)/\1 - ${ORAN_REL}/" \
-        ${MY_REPO}/stx/config-files/centos-release-config/files/issue*
+    STX_ISSUE_DIR="${MY_REPO}/stx/config-files/centos-release-config/files"
+    echo_info "Patching for the ${STX_ISSUE_DIR}"
+    grep -q "${ORAN_REL}" ${STX_ISSUE_DIR}/issue* \
+        || sed -i "s/\(@PLATFORM_RELEASE@\)/\1 - ${ORAN_REL}/" ${STX_ISSUE_DIR}/issue*
 
     # Apply meta patches
     cd ${SRC_META_PATCHES}
@@ -345,13 +413,6 @@ build_image () {
 
 prepare_workspace
 create_env
-if [ "${USE_MIRROR}" == "Yes" ]; then
-    get_mirror_src
-    get_mirror_pkg
-else
-    repo_init_sync
-    get_mirror_pkg
-fi
-patch_src
+prepare_src
 populate_dl
 build_image
