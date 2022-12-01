@@ -62,6 +62,7 @@ Applications Installation
 -------------------------
 
 Here are the example applications installations:
+
 * `Install O-RAN O2`_
 * `Install FlexRAN`_
 
