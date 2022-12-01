@@ -22,6 +22,9 @@ This project is a reference implementation of O-Cloud infrastructure which is ba
 
 Notes:
   * Debian based is the recommended platfrom.
+  * The intended audiences of this guide are the developers who want to develop/integrate apps in INF platform, if you just want to install and deploy INF platform, you can ignore this guide and read the `INF Installation Guide`_
+
+.. _`INF Installation Guide`: https://docs.o-ran-sc.org/projects/o-ran-sc-pti-rtp/en/latest/installation-guide.html
 
 1.1 About the Debian based implementaion
 ----------------------------------------

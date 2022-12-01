@@ -13,7 +13,7 @@ Welcome to Infrastructure(INF) ducomentation
 
    overview.rst
    release-notes.rst
-   developer-guide.rst
    installation-guide.rst
+   developer-guide.rst
 
 * :ref:`search`
