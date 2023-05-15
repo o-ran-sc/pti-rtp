@@ -28,7 +28,7 @@ SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 SRC_O2_URL="https://opendev.org/starlingx/app-oran-o2"
 
 STX_VER="7.0"
-ORAN_REL="ORAN G-Release (${STX_VER})"
+ORAN_REL="ORAN H-Release (${STX_VER})"
 
 SCRIPTS_DIR=$(dirname $(readlink -f $0))
 SCRIPTS_NAME=$(basename $0)
