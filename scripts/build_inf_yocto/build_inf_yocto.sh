@@ -351,23 +351,23 @@ prepare_src () {
 
 # Not any meta-patch is needed for the time being, but new ones may be needed and added
 # sometime in the future, so just leave these code commented out here.
-#    # Apply meta patches
-#    for l in $(ls -1 ${SRC_META_PATCHES}); do
-#        msg_step="Apply meta patches for ${l}"
-#        echo_step_start
-#        cd ${SRC_LAYER_DIR}/${l}
-#
-#        # backup current branch
-#        local_branch=$(git rev-parse --abbrev-ref HEAD)
-#        git branch -m "${local_branch}_${TIMESTAMP}"
-#        git checkout -b ${local_branch} ${local_branch##*-}
-#
-#        for p in $(ls -1 ${SRC_META_PATCHES}/${l}); do
-#            echo_info "Apllying patch: ${SRC_META_PATCHES}/${l}/${p}"
-#            git am ${SRC_META_PATCHES}/${l}/${p}
-#        done
-#        echo_step_end
-#    done
+    # Apply meta patches
+    for l in $(ls -1 ${SRC_META_PATCHES}); do
+        msg_step="Apply meta patches for ${l}"
+        echo_step_start
+        cd ${SRC_LAYER_DIR}/${l}
+
+        # backup current branch
+        local_branch=$(git rev-parse --abbrev-ref HEAD)
+        git branch -m "${local_branch}_${TIMESTAMP}"
+        git checkout -b ${local_branch} ${local_branch##*-}
+
+        for p in $(ls -1 ${SRC_META_PATCHES}/${l}); do
+            echo_info "Apllying patch: ${SRC_META_PATCHES}/${l}/${p}"
+            git am ${SRC_META_PATCHES}/${l}/${p}
+        done
+        echo_step_end
+    done
 }
 
 add_layer_stx_build () {
