@@ -40,6 +40,46 @@ Version history
 | 2022-12-15         | 7.0.0              | Jackie Huang       | G Release          |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2023-06-15         | 8.0.0              | Jackie Huang       | H Release          |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
+
+Version 8.0.0, 2023-06-15
+-------------------------
+#. Eighth version (H release)
+#. INF MultiOS support:
+
+   * Three images will be provided:
+
+     * Yocto based image
+     * CentOS based image
+     * Debian based image
+
+#. INF MultiArch support:
+
+   * Add support for ARM64 arch (POC)
+   * See developer-guide for how to build image for ARM64.
+   * No image will be provided.
+
+#. Enable three deployment modes on Yocto based image:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+
+#. Enable four deployment modes on CentOS based image:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
+
+#. Enable four deployment modes on Debian based image:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
 
 Version 7.0.0, 2022-12-15
 -------------------------
