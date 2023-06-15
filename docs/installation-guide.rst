@@ -55,7 +55,7 @@ Platform Installation
 
 INF uses the same installation and deployment methods of StarlingX, please refer to `StarlingX Installation`_ for the detail installation steps.
 
-.. _`StarlingX Installation`: https://docs.starlingx.io/r/stx.7.0/deploy_install_guides/r7_release/index-install-r7-8966076f0e81.html
+.. _`StarlingX Installation`: https://docs.starlingx.io/r/stx.7.0/deploy_install_guides/index-install-e083ca818006.html 
 
 
 Applications Installation
