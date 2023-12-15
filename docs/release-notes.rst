@@ -6,7 +6,7 @@
 INF Release Notes
 =================
 
-This document provides the release notes for G-Release (7.0.0) of INF RTP.
+This document provides the release notes for I-Release (9.0.0) of INF RTP.
 
 .. contents::
    :depth: 3
@@ -43,6 +43,46 @@ Version history
 | 2023-06-15         | 8.0.0              | Jackie Huang       | H Release          |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2023-12-15         | 9.0.0              | Jackie Huang       | I Release          |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
+
+Version 9.0.0, 2023-12-15
+-------------------------
+#. Nineth version (I release)
+#. INF MultiOS support:
+
+   * Three images will be provided:
+
+     * Yocto based image
+     * CentOS based image
+     * Debian based image
+
+#. INF MultiArch support:
+
+   * Add support for ARM64 arch.
+   * See developer-guide for how to build image for ARM64.
+   * No image will be provided.
+
+#. Enable three deployment modes on Yocto based image:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+
+#. Enable four deployment modes on CentOS based image:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
+
+#. Enable four deployment modes on Debian based image:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
 
 Version 8.0.0, 2023-06-15
 -------------------------
