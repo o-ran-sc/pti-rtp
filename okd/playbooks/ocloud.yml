@@ -1,0 +1,6 @@
+---
+- name: Deploy O-Cloud
+  hosts: ocloud
+  gather_facts: false
+  roles:
+    - ocloud

@@ -1,0 +1,50 @@
+---
+- name: Define virtual network - {{ ocloud_net_name }}
+  community.libvirt.virt_net:
+    command: define
+    name: "{{ ocloud_net_name }}"
+    xml: '{{ lookup("template", "virt_net.xml.j2") }}'
+  run_once: true
+  become: true
+
+- name: Activate virtual network - {{ ocloud_net_name }}
+  community.libvirt.virt_net:
+    name: "{{ ocloud_net_name }}"
+    state: active
+  run_once: true
+  become: true
+
+- name: Configure virtual network to auto-start - {{ ocloud_net_name }}
+  community.libvirt.virt_net:
+    name: "{{ ocloud_net_name }}"
+    autostart: true
+  run_once: true
+  become: true
+
+- name: Create virtual machine - {{ inventory_hostname }}
+  community.libvirt.virt:
+    command: define
+    xml: '{{ lookup("template", "virt.xml.j2") }}'
+  register: ocloud_infra_vm_definition
+  become: true
+
+- name: Create VM disk
+  ansible.builtin.command:
+    cmd: "qemu-img create -f qcow2 {{ ocloud_infra_vm_disk_path }} {{ ocloud_infra_vm_disk_gb }}G"
+  when: ocloud_infra_vm_definition.changed
+  become: true
+
+- name: Copy platform boot image
+  ansible.builtin.copy:
+    src: "{{ ocloud_platform_image }}"
+    dest: "{{ ocloud_infra_vm_image }}"
+    remote_src: true
+  when: ocloud_infra_vm_definition.changed
+  become: true
+
+- name: Activate virtual machine - {{ inventory_hostname }}
+  community.libvirt.virt:
+    name: "{{ inventory_hostname }}"
+    state: running
+  notify: monitor_platform_deployment
+  become: true

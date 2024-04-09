@@ -1,0 +1,18 @@
+<network>
+  <name>{{ ocloud_net_name }}</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='{{ ocloud_net_bridge }}' stp='on' delay='0'/>
+  <mac address='{{ ocloud_net_mac_prefix }}:01'/>
+  <ip address='{{ ocloud_net_cidr | ansible.utils.ipmath(1) }}' netmask='{{ ocloud_net_cidr | ansible.utils.ipaddr('netmask') }}'>
+    <dhcp>
+      <range start='{{ ocloud_net_cidr | ansible.utils.ipmath(100) }}' end='{{ ocloud_net_cidr | ansible.utils.ipmath(250) }}'/>
+{% for ocloud_host in groups['ocloud'] %}
+      <host mac='{{ ocloud_net_mac_prefix }}:{{ loop.index + 10 }}' name='{{ ocloud_host }}' ip='{{ ocloud_net_cidr | ansible.utils.ipmath(loop.index + 10) }}'/>
+{% endfor %}
+    </dhcp>
+  </ip>
+</network>
