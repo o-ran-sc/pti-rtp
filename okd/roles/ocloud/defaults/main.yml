@@ -1,0 +1,6 @@
+---
+ocloud_infra: "vm"
+ocloud_platform: "okd"
+ocloud_topology: "aio"
+ocloud_cluster_name: "ocloud-{{ ocloud_infra }}-{{ ocloud_platform }}-{{ ocloud_topology }}"
+ocloud_net_cidr: "192.168.123.0/24"

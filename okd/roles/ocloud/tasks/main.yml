@@ -1,0 +1,12 @@
+---
+- name: Include platform role - {{ ocloud_platform }}
+  ansible.builtin.import_role:
+    name: "ocloud_platform_okd"
+  delegate_to: "{{ groups['deployer'][0] }}"
+  when: ocloud_platform == "okd"
+
+- name: Include infra role - {{ ocloud_infra }}
+  ansible.builtin.import_role:
+    name: "ocloud_infra_vm"
+  delegate_to: "{{ groups['kvm'][0] }}"
+  when: ocloud_infra == "vm"

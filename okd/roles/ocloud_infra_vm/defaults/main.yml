@@ -1,0 +1,10 @@
+---
+ocloud_infra_vm_cpus: 8
+ocloud_infra_vm_mem_gb: 24
+ocloud_infra_vm_disk_gb: 120
+ocloud_infra_vm_disk_dir: "/var/lib/libvirt/images"
+ocloud_infra_vm_disk_path: "{{ ocloud_infra_vm_disk_dir }}/{{ inventory_hostname }}.qcow2"
+ocloud_infra_vm_image: "{{ ocloud_infra_vm_disk_dir }}/{{ inventory_hostname }}-image.iso"
+ocloud_net_name: "ocloud"
+ocloud_net_bridge: "ocloud-br"
+ocloud_net_mac_prefix: "52:54:00:01:23"
