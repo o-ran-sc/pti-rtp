@@ -1,0 +1,3 @@
+ocloud_infra: vm
+ocloud_platform: okd
+ocloud_topology: aio

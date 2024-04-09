@@ -1,0 +1,3 @@
+# Encrypt with `ansible-vault encrypt vault.yml` before adding secrets
+
+#ocloud_platform_okd_pull_secret: ~

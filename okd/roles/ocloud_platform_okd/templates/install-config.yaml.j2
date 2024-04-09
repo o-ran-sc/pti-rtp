@@ -1,0 +1,26 @@
+apiVersion: v1
+baseDomain: example.com
+compute:
+- name: worker
+  replicas: 0
+controlPlane:
+  name: master
+  replicas: 1
+metadata:
+  name: {{ ocloud_cluster_name }}
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  networkType: OVNKubernetes
+  machineNetwork:
+  - cidr: {{ ocloud_net_cidr }}
+  serviceNetwork:
+  - 172.30.0.0/16
+platform:
+  none: {}
+bootstrapInPlace:
+  installationDisk: /dev/vda
+fips: false
+pullSecret: '{{ ocloud_platform_okd_pull_secret }}'
+sshKey: '{{ ocloud_platform_okd_ssh_pubkey }}'

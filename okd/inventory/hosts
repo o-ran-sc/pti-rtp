@@ -1,0 +1,8 @@
+[deployer]
+localhost ansible_connection=local
+
+[kvm]
+localhost ansible_connection=local
+
+[ocloud]
+master-0

@@ -1,0 +1,4 @@
+galaxy_info:
+  author: Chris Wheeler <chwheele@redhat.com>
+  description: VM infrastructure target for ORAN-SC O-Cloud deployment
+  company: Red Hat, Inc.

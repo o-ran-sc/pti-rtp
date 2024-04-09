@@ -1,0 +1,5 @@
+apiVersion: v1beta1
+kind: AgentConfig
+metadata:
+  name: {{ ocloud_cluster_name }}
+rendezvousIP: {{ ocloud_net_cidr | ansible.utils.ipmath(11) }}

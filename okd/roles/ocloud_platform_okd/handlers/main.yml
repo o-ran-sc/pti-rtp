@@ -1,0 +1,7 @@
+---
+- name: Monitor OKD platform bootstrap
+  ansible.builtin.command:
+    cmd: "openshift-install agent wait-for bootstrap-complete --log-level=info --dir {{ ocloud_platform_okd_staging_dir['path'] }}/cfg"
+  environment:
+    PATH: "{{ ocloud_platform_okd_staging_dir['path'] }}/bin:{{ ansible_env.PATH }}"
+  listen: monitor_platform_deployment
