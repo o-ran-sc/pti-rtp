@@ -1,0 +1,350 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "edc6d4f6_9ca9ca8c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Some suggestions for changes but nothing blocking.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24070b05_69fd43cf",
+        "filename": "okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "NB: one sentence per/line",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6d013b1_600fd9b4",
+        "filename": "okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "NB: The prefered method these days is to install all modules through yum if available.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57483abb_3d4b38ae",
+        "filename": "okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "NB: One sentence per line, I apologize if it seems nit-picky.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58a69582_76f0ef63",
+        "filename": "okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Orphaned tab at end of line. The same goes for the entire table.",
+      "range": {
+        "startLine": 114,
+        "startChar": 121,
+        "endLine": 114,
+        "endChar": 124
+      },
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a6df8f35_69488bdc",
+        "filename": "okd/ansible.cfg",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "There are some additional settings you might want to consider adding here.\n\n```\nhost_key_checking \u003d False\nremote_tmp \u003d /tmp\n```",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "861c3fd0_e3e06a38",
+        "filename": "okd/inventory/group_vars/all/vars.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Missing --- at top of file.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c8cb28a_c5f819e2",
+        "filename": "okd/inventory/group_vars/all/vault.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "If this is not in use it should be deleted.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca153321_c3a7a0d9",
+        "filename": "okd/inventory/host_vars/master-0/vars.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Missing --- at top of file.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cfb48bc0_fcad3d65",
+        "filename": "okd/inventory/host_vars/master-0/vars.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "NB: Missing `---` at top of file.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f49c97ec_6b76516f",
+        "filename": "okd/inventory/hosts",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "This inventory should be converted to yaml like the other var files.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88038826_b7882cca",
+        "filename": "okd/playbooks/ocloud.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Missing --- at top of file.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68bc3988_066a9fcc",
+        "filename": "okd/playbooks/ocloud.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "blanket becomes shouldn\u0027t be used. For security purposes become: should be discreet per task and at the top of the block.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "995ebcee_4910f408",
+        "filename": "okd/requirements.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "you are going to want to add community.general and ansible posix here as well. Surprised you haven\u0027t received warnings about this.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9349056b_dc16461c",
+        "filename": "okd/roles/ocloud/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Boilerplate, please delete.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1faba18_d87342ee",
+        "filename": "okd/roles/ocloud/meta/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "NB: Only needed for publishing to galaxy.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db42a383_5d40c833",
+        "filename": "okd/roles/ocloud_infra_vm/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Boilerplate, please delete this file.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1373220_f2014cc4",
+        "filename": "okd/roles/ocloud_infra_vm/meta/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Is this going to be published on ansible galaxy? If not this meta section is not needed.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82af84b5_f1c3716b",
+        "filename": "okd/roles/ocloud_platform_okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "Boilerplate, please delete.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0fc4c86_3a3de826",
+        "filename": "okd/roles/ocloud_platform_okd/meta/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-02T14:12:16Z",
+      "side": 1,
+      "message": "NB: Only needed for publishing to galaxy.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
