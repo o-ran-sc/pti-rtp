@@ -18,6 +18,23 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "bd36d2ce_83f83f74",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-07T22:06:08Z",
+      "side": 1,
+      "message": "I can\u0027t believe I missed this security nightmare earlier. Each of the inventory files need to be removed from this PR and moved to a private repo. Only sample inventory files should be in an upstream public repo.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "24070b05_69fd43cf",
