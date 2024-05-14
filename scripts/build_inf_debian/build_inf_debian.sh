@@ -25,8 +25,8 @@ SRC_ORAN_BRANCH="master"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
-STX_VER="8.0"
-ORAN_REL="ORAN H-Release (${STX_VER})"
+STX_VER="9.0"
+ORAN_REL="ORAN J-Release (${STX_VER})"
 
 SCRIPTS_DIR=$(dirname $(readlink -f $0))
 SCRIPTS_NAME=$(basename $0)
@@ -125,12 +125,11 @@ fi
 # "_" can't be used in project name
 PRJ_NAME=prj-oran-stx-deb
 
-# stx 8.0 is not released yet
-#STX_SRC_BRANCH="r/stx.${STX_VER}"
+STX_SRC_BRANCH="r/stx.${STX_VER}"
 
 # Temporary for master
-STX_TAG="master-1ba0db8"
-STX_SRC_BRANCH="master"
+#STX_TAG="master-1ba0db8"
+#STX_SRC_BRANCH="master"
 
 STX_LOCAL_DIR=${WORKSPACE}/localdisk
 STX_LOCAL_SRC_DIR=${STX_LOCAL_DIR}/designer/${USER}/${PRJ_NAME}
@@ -143,8 +142,8 @@ STX_APTLY_DIR=${WORKSPACE}/aptly
 STX_MINIKUBE_HOME=${WORKSPACE}/minikube_home
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
 
-#MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_VER}
-MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_TAG}
+MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_VER}
+#MIRROR_SRC_STX=infbuilder/inf-src-stx:${STX_TAG}
 MIRROR_CONTAINER_IMG=infbuilder/inf-debian-mirror:2022.11-stx-${STX_VER}
 MIRROR_APTLY_IMG=infbuilder/inf-debian-aptly:2022.11-stx-${STX_VER}
 
