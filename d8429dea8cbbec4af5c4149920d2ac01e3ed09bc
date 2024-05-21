@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "d74da489_f11ad54f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dd9e7eee_10dc9dd2",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "edc6d4f6_9ca9ca8c",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 1
@@ -69,6 +87,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c96a9f3f_fbfdebb3",
+        "filename": "okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24070b05_69fd43cf",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a6d013b1_600fd9b4",
@@ -86,6 +122,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "95dc4bc8_2c66707a",
+        "filename": "okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "I know this is the case on Fedora variants, but not necessarily on all Linux distros. I added a comment to install via package manager if applicable.",
+      "parentUuid": "a6d013b1_600fd9b4",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "57483abb_3d4b38ae",
@@ -99,6 +153,24 @@
       "writtenOn": "2024-05-02T14:12:16Z",
       "side": 1,
       "message": "NB: One sentence per line, I apologize if it seems nit-picky.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "793db01e_bf62e54e",
+        "filename": "okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "57483abb_3d4b38ae",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -126,6 +198,30 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "acc80198_cc1a4a16",
+        "filename": "okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "58a69582_76f0ef63",
+      "range": {
+        "startLine": 114,
+        "startChar": 121,
+        "endLine": 114,
+        "endChar": 124
+      },
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a6df8f35_69488bdc",
@@ -139,6 +235,24 @@
       "writtenOn": "2024-05-02T14:12:16Z",
       "side": 1,
       "message": "There are some additional settings you might want to consider adding here.\n\n```\nhost_key_checking \u003d False\nremote_tmp \u003d /tmp\n```",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46ef4578_ab1fd241",
+        "filename": "okd/ansible.cfg",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "I added remote_tmp but disabling host key checking is not the best security practice so I left it enabled.",
+      "parentUuid": "a6df8f35_69488bdc",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -160,6 +274,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9a4b7116_878b96c3",
+        "filename": "okd/inventory/group_vars/all/vars.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "861c3fd0_e3e06a38",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9c8cb28a_c5f819e2",
@@ -173,6 +305,24 @@
       "writtenOn": "2024-05-02T14:12:16Z",
       "side": 1,
       "message": "If this is not in use it should be deleted.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2f0cb261_65955afc",
+        "filename": "okd/inventory/group_vars/all/vault.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "This setting is consumed by the ocloud_platform_okd role, but is optional and only needed if the cluster is to be configured to consume images from non-public registries. It is present in this file to serve as an example for how to override the default setting, and I added a comment clarifying that intent.",
+      "parentUuid": "9c8cb28a_c5f819e2",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -211,6 +361,42 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8db0604f_369856b2",
+        "filename": "okd/inventory/host_vars/master-0/vars.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cfb48bc0_fcad3d65",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3a76ac7_99df2435",
+        "filename": "okd/inventory/host_vars/master-0/vars.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca153321_c3a7a0d9",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f49c97ec_6b76516f",
@@ -224,6 +410,24 @@
       "writtenOn": "2024-05-02T14:12:16Z",
       "side": 1,
       "message": "This inventory should be converted to yaml like the other var files.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6508a274_9b53fedc",
+        "filename": "okd/inventory/hosts",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f49c97ec_6b76516f",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -245,6 +449,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7254679a_20e3d180",
+        "filename": "okd/playbooks/ocloud.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "88038826_b7882cca",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "68bc3988_066a9fcc",
@@ -258,6 +480,24 @@
       "writtenOn": "2024-05-02T14:12:16Z",
       "side": 1,
       "message": "blanket becomes shouldn\u0027t be used. For security purposes become: should be discreet per task and at the top of the block.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "40ce5e1a_21ae5fb7",
+        "filename": "okd/playbooks/ocloud.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "68bc3988_066a9fcc",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -279,6 +519,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "296540bd_bef0fbe3",
+        "filename": "okd/requirements.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "995ebcee_4910f408",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9349056b_dc16461c",
@@ -292,6 +550,24 @@
       "writtenOn": "2024-05-02T14:12:16Z",
       "side": 1,
       "message": "Boilerplate, please delete.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cfc7e83_0a298cdc",
+        "filename": "okd/roles/ocloud/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9349056b_dc16461c",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -313,6 +589,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "095ced21_fd12a6f1",
+        "filename": "okd/roles/ocloud/meta/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d1faba18_d87342ee",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "db42a383_5d40c833",
@@ -326,6 +620,24 @@
       "writtenOn": "2024-05-02T14:12:16Z",
       "side": 1,
       "message": "Boilerplate, please delete this file.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "298f2d1e_1a6e76c0",
+        "filename": "okd/roles/ocloud_infra_vm/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db42a383_5d40c833",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -347,6 +659,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e74125ad_194cf4c5",
+        "filename": "okd/roles/ocloud_infra_vm/meta/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d1373220_f2014cc4",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "82af84b5_f1c3716b",
@@ -364,6 +694,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "65d2c0fe_1ab01e83",
+        "filename": "okd/roles/ocloud_platform_okd/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "82af84b5_f1c3716b",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c0fc4c86_3a3de826",
@@ -377,6 +725,24 @@
       "writtenOn": "2024-05-02T14:12:16Z",
       "side": 1,
       "message": "NB: Only needed for publishing to galaxy.",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "54f2d113_dc1d5a6a",
+        "filename": "okd/roles/ocloud_platform_okd/meta/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-05-21T00:36:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c0fc4c86_3a3de826",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
