@@ -70,6 +70,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cdeef91_836fb17a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-22T14:20:16Z",
+      "side": 1,
+      "message": "Please disregard the previous comments. It was made in error.",
+      "parentUuid": "bd36d2ce_83f83f74",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "24070b05_69fd43cf",
@@ -257,6 +275,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "071b5d59_93387984",
+        "filename": "okd/ansible.cfg",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-22T14:20:16Z",
+      "side": 1,
+      "message": "Good catch here. Thanks for reviewing my work. (:",
+      "parentUuid": "46ef4578_ab1fd241",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "861c3fd0_e3e06a38",
@@ -323,6 +359,24 @@
       "side": 1,
       "message": "This setting is consumed by the ocloud_platform_okd role, but is optional and only needed if the cluster is to be configured to consume images from non-public registries. It is present in this file to serve as an example for how to override the default setting, and I added a comment clarifying that intent.",
       "parentUuid": "9c8cb28a_c5f819e2",
+      "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d865be67_bc5de52a",
+        "filename": "okd/inventory/group_vars/all/vault.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2024-05-22T14:20:16Z",
+      "side": 1,
+      "message": "👍",
+      "parentUuid": "2f0cb261_65955afc",
       "revId": "d8429dea8cbbec4af5c4149920d2ac01e3ed09bc",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
