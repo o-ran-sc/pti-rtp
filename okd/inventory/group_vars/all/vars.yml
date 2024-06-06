@@ -1,4 +1,7 @@
+<<<<<<< Updated upstream
 ---
+=======
+>>>>>>> Stashed changes
 ocloud_platform_okd_ssh_pubkey: ~
 # Uncomment to override default release from ocloud_platform_okd role:
 #ocloud_platform_okd_release: ~

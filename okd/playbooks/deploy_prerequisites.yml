@@ -1,0 +1,36 @@
+---
+# - name: Prereq fact checks
+#   ansible.builtin.import_playbook: prereq_facts_check.yml
+
+# - name: Play to populate image_hashes for relevant images
+#   hosts: localhost
+#   roles:
+#     - redhatci.ocp.get_image_hash
+
+- name: Deploy NTP
+  ansible.builtin.import_playbook: deploy_ntp.yml
+
+- name: Deploy DNS
+  ansible.builtin.import_playbook: deploy_dns.yml
+
+- name: Deploy HTTP Store
+  ansible.builtin.import_playbook: deploy_http_store.yml
+
+# - name: Create VMs
+#   ansible.builtin.import_playbook: create_vms.yml
+#   vars:
+#     nodes_to_process: "{{ groups['masters'] + groups['workers'] | default([]) }}"
+
+# - name: Deploy TFTP
+#   ansible.builtin.import_playbook: deploy_tftp.yml
+
+
+- name: Deploy Registry
+  ansible.builtin.import_playbook: deploy_registry.yml
+
+# - name: Deploy assisted installer on prem
+#   ansible.builtin.import_playbook: deploy_assisted_installer_onprem.yml
+#   when: not ((use_agent_based_installer | default(true)) | bool)
+
+- name: Deploy Sushy Tools
+  ansible.builtin.import_playbook: deploy_sushy_tools.yml
