@@ -1,6 +1,10 @@
+---
 collections:
   - ansible.posix
   - ansible.utils
+  - containers.podman
+  - community.crypto
   - community.general
   - community.libvirt
   - kubernetes.core
+  - redhatci.ocp
