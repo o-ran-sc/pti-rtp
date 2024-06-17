@@ -21,6 +21,19 @@
   run_once: true
   become: true
 
+- name: Locate qemu-kvm emulator
+  stat:
+    path: "{{ item }}"
+  register: ocloud_infra_vm_emulator_stat
+  loop:
+    - /usr/bin/qemu-kvm
+    - /usr/libexec/qemu-kvm
+
+- set_fact:
+    ocloud_infra_vm_emulator_path: "{{ item.stat.path }}"
+  when: item.stat.exists
+  loop: "{{ ocloud_infra_vm_emulator_stat.results }}"
+
 - name: Create virtual machine - {{ inventory_hostname }}
   community.libvirt.virt:
     command: define
