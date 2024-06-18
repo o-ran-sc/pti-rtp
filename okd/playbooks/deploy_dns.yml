@@ -1,0 +1,16 @@
+---
+# - name: Validate Inventory
+#   ansible.builtin.import_playbook: validate_inventory.yml
+- name: Setup DNS Records
+  hosts: dns_host
+  gather_facts: false
+  vars:
+    SETUP_DNS_SERVICE: "{{ setup_dns_service | default(false) }}"
+  pre_tasks:
+    - name: Setup facts
+      ansible.builtin.setup:
+      when: SETUP_DNS_SERVICE | bool
+  roles:
+    - role: redhatci.ocp.insert_dns_records
+      when: SETUP_DNS_SERVICE | bool
+    - role: redhatci.ocp.validate_dns_records

@@ -1,0 +1,16 @@
+---
+# - name: Validate Inventory
+#   ansible.builtin.import_playbook: validate_inventory.yml
+
+- name: Deploy sushy tools
+  hosts: vm_hosts
+  gather_facts: false
+  vars:
+    SETUP_SUSHY_TOOLS: "{{ setup_sushy_tools | default(setup_vms | default(true)) }}"
+  pre_tasks:
+    - name: Setup facts
+      ansible.builtin.set_fact:
+      when: SETUP_SUSHY_TOOLS | bool
+  roles:
+    - role: redhatci.ocp.setup_sushy_tools
+      when: SETUP_SUSHY_TOOLS | bool
