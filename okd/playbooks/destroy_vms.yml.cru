@@ -1,0 +1,13 @@
+---
+- name: Validate Inventory
+  ansible.builtin.import_playbook: validate_inventory.yml
+
+- name: Process KVM nodes
+  hosts: bastion
+  roles:
+    - redhatci.ocp.process_kvm_nodes
+
+- name: Destroy VMs
+  hosts: vm_hosts
+  roles:
+    - redhatci.ocp.destroy_vms

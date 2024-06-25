@@ -1,0 +1,76 @@
+
+    bastion_host:
+      ip: 192.168.38.13
+      fqdn: cars2-crucible.infra.cars2.lab
+
+    #openshift_full_version: 4.12.33
+    #root_fs_ocp_version: 4.12.30
+    #rhcos_version: 412.86.202308300700-0 
+
+all:
+  vars:
+    cluster_name: <CHANGE ME>
+    base_dns_domain: <CHANGE ME>
+    setup_ntp_service: # true or false
+    setup_dns_service: # true or false
+    setup_http_store_service: # true or false
+    setup_registry_service: # true or false
+    use_local_mirror_registry: # true or false
+
+
+    openshift_full_version: 4.16.0-rc.4
+    root_fs_ocp_version: 4.16.0-rc.1
+    rhcos_version: 416.94.202406052309-0 
+    
+    api_vip: 192.168.38.50 
+    ingress_vip: 192.168.38.51
+    vip_dhcp_allocation: false
+    machine_network_cidr: 192.168.38.0/26
+    service_network_cidr: 172.30.0.0/16
+    cluster_network_cidr: 10.128.0.0/14
+    cluster_network_host_prefix: 23
+
+    network_type: OVNKubernetes
+
+
+    # NTP Service
+    # ntp_server is the address at which the NTP service is (or will be) available
+    ntp_server: 192.168.14.39
+    # ntp_server_allow is the range of IPs the NTP service will respond to.
+    # ntp_server_allow: 10.40.0.0/24 # not required if setup_ntp_service is false
+  children:
+    bastions:
+      hosts:
+        bastion:
+          ansible_host:  192.168.14.39
+          ansible_connection: local
+    # jumphost:
+    #   children:
+    #     bastions:
+    # deployers:
+    #   children:
+    #     bastions:
+    # kvms:
+    #   children:
+    #     bastions:
+    # ocloud:
+    #   hosts:
+    #     master-0:
+    services:
+      hosts:
+        ntp_host:
+          ansible_host: "{{ hostvars['bastions']['bastion']['ansible_host'] }}"
+          ansible_connection: "{{ hostvars['bastions']['bastion']['ansible_connection'] }}"
+        dns_host:
+          ansible_host: "{{ hostvars['bastions']['bastion']['ansible_host'] }}"
+          ansible_connection: "{{ hostvars['bastions']['bastion']['ansible_connection'] }}"
+          upstream_dns: 8.8.8.8 # an optional upstream dns server
+          # The following are required for DHCP setup
+          use_dhcp: false
+          # dhcp_range_first: 10.60.0.101
+          # dhcp_range_last:  10.60.0.105
+          # prefix: 24
+          # gateway: 10.60.0.1
+        http_store:
+          ansible_host: "{{ hostvars['bastions']['bastion']['ansible_host'] }}"
+          ansible_connection: "{{ hostvars['bastions']['bastion']['ansible_connection'] }}"

@@ -1,0 +1,28 @@
+[localhost]
+localhost ansible_host=127.0.0.1, ansible_connection=local
+
+[bastion]
+bastion ansible_host=127.0.0.1, ansible_connection=local
+
+[jumphost]
+jumphost ansible_host=127.0.0.1, ansible_connection=local
+
+[deployers]
+deployer ansible_host=127.0.0.1, ansible_connection=local
+
+[kvms]
+kvms ansible_host=127.0.0.1, ansible_connection=local
+
+[ntp_hosts]
+ntp_host ansible_host=127.0.0.1, ansible_connection=local
+
+[dns_hosts]
+dns_host ansible_host=127.0.0.1, ansible_connection=local
+
+[http_store]
+http_store ansible_host=127.0.0.1, ansible_connection=local
+
+[ocloud]
+master-0
+
+

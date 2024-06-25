@@ -1,0 +1,18 @@
+---
+# - name: Validate Inventory
+#   ansible.builtin.import_playbook: validate_inventory.yml
+- name: Install and http_store service
+  hosts: http_store
+  gather_facts: false
+  vars:
+    SETUP_HTTP_STORE_SERVICE: "{{ (setup_http_store_service | default(false)) }}"
+  pre_tasks:
+    - name: Setup facts
+      ansible.builtin.setup:
+      when: SETUP_HTTP_STORE_SERVICE | bool
+  roles:
+    # - role: redhatci.ocp.setup_http_store
+    - role: setup_http_store
+      when: SETUP_HTTP_STORE_SERVICE | bool
+    # - role: redhatci.ocp.validate_http_store
+    - role: validate_http_store

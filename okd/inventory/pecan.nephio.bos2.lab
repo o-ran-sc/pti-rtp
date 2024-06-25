@@ -1,0 +1,153 @@
+---
+all:
+  vars:
+    cluster_name: pecan
+    base_dns_domain: test.lab
+    setup_ntp_service: true
+    setup_dns_service: true
+    setup_http_store_service: true
+
+    ntp_server: 192.168.14.39 # The address where your cluster will look for time.
+    http_server: 192.168.14.39 # The address where your cluster will look for the http store.
+    # Virtual IP addresses used to access the resulting OpenShift cluster
+    api_vip: 192.168.14.50 # the IP address to be used for api.clustername.example.lab and api-int.clustername.example.lab
+    ingress_vip: 192.168.14.50 # the IP address to be used for *.apps.clustername.example.lab
+
+
+  children:
+    bastions:
+      hosts:
+        bastion:
+          ansible_host:  192.168.14.39
+          ansible_connection: local
+    # jumphost:
+    #   children:
+    #     bastions:
+    # deployers:
+    #   children:
+    #     bastions:
+    # kvms:
+    #   children:
+    #     bastions:
+    # ocloud:
+    #   hosts:
+    #     master-0:
+    services:
+      hosts:
+        ntp_host:
+          ansible_host: "{{ hostvars.bastion.ansible_host }}"
+          ansible_connection: "{{ hostvars.bastion.ansible_connection }}"
+          ntp_server_allow: 192.168.14.0/24 # not required if setup_ntp_service is false
+        dns_host:
+          ansible_host: "{{ hostvars['bastion']['ansible_host'] }}"
+          ansible_connection: "{{ hostvars['bastion']['ansible_connection'] }}"
+          upstream_dns: 8.8.8.8 # an optional upstream dns server
+          # The following are required for DHCP setup
+          use_dhcp: false
+          # dhcp_range_first: 10.60.0.101
+          # dhcp_range_last:  10.60.0.105
+          # prefix: 24
+          # gateway: 10.60.0.1
+        http_store:
+          ansible_host: "{{ http_server }}"
+          # ansible_host: "{{ hostvars['bastion']['ansible_host'] }}"
+          ansible_connection: "{{ hostvars['bastion']['ansible_connection'] }}"
+    nodes:
+      # A minimum of three master nodes are required. More are supported.
+      # Worker nodes are not required, but if present there must be two or more.
+      #
+      # Node Required Vars:
+      # - role
+      #     - Must be either "master" or "worker", and must match the group
+      #
+      # - mac
+      #     - The MAC address of the node, used as a hardware identifier by Assisted Installer.
+      #     - The value set here will be used when creating VMs and must be unique within the network.
+      #
+      # - vendor
+      #     - One of "Dell", "HPE", "Lenovo", "SuperMicro", "KVM", "PXE" as the supported BMC APIs.
+      #     - "KVM" identifies a node as a VM to be created. If a "KVM" node is present,
+      #       then a "vm_host" must be defined in the node and a host with that name must exist
+      #       inside the "vm_hosts" group.
+      #     - "PXE" identifies a node as a baremetal that needs to boot from PXE.
+      #
+      # - bmc_address
+      # - bmc_user
+      # - bmc_password
+      #     - details for the BMC that controls the node.
+      #     - Must be set to the vm_host for "KVM" nodes.
+      #
+      # Static IP Vars:
+      #   See docs/inventory.md: Network configuration section
+      #
+      # Optional Vars:
+      # - vm_spec
+      #     - Specifications for the node:
+      #          - cpu_cores
+      #          - ram_mib
+      #          - disk_size_gb
+      #
+      # - installation_disk_path
+      #     - The value set here will be used by Assisted Installer as the installation disk device
+      #       for a given host.
+      #     - The value must be a path to the disk device, e.g. /dev/sda
+      #     - If not specified, Assisted Installer will pick the first enumerated disk device for a
+      #       given host.
+      vars:
+        # Set the login information for any BMCs. Note that these will be SET on the vm_host virtual BMC.
+        bmc_user: "{{ VAULT_NODES_BMC_USER | mandatory }}"
+        bmc_password: "{{ VAULT_NODES_BMC_PASSWORD | mandatory }}"
+      children:
+        masters:
+          vars:
+            role: master
+            vendor: KVM # this example is a virtual control plane
+            bmc_address: "vm_host.clustername.example.lab:8082" # port can be changed using sushy_tools_port on the vm_host
+            vm_host: vm_host1
+            vm_spec:
+              cpu_cores: 4
+              ram_mib: 16384
+              disk_size_gb: 50
+          hosts:
+            super1:
+              ansible_host: 192.168.14.51
+              mac: "DE:AD:BE:EF:C0:51"
+
+              # # Uncomment to set custom BMC credentials for the node
+              # # These variables must be set in the inventory.vault.yml file
+              # bmc_user: "{{ VAULT_NODES_SUPER1_BMC_USER | mandatory }}"
+              # bmc_password: "{{ VAULT_NODES_SUPER1_BMC_PASSWORD | mandatory }}"
+
+            # super2:
+            #   ansible_host: 192.168.14.52
+            #   mac: "DE:AD:BE:EF:C0:52"
+
+            # super3:
+            #   ansible_host: 192.168.14.53
+            #   mac: "DE:AD:BE:EF:C0:53"
+
+        # workers:
+        #   vars:
+        #     role: worker
+        #     vendor: Dell # This example uses baremetal worker nodes
+        #   hosts:
+        #     worker1:
+        #       ansible_host: 10.60.0.104
+        #       bmc_address: 172.28.11.25
+        #       mac: 3C:FD:FE:78:AB:03
+
+              # # Uncomment to set custom BMC credentials for the node
+              # # These variables must be set in the inventory.vault.yml file
+              # bmc_user: "{{ VAULT_NODES_WORKER1_BMC_USER | mandatory }}"
+              # bmc_password: "{{ VAULT_NODES_WORKER1_BMC_PASSWORD | mandatory }}"
+
+              # # Uncomment to set an alternate installation disk device for the node
+              # installation_disk_path: /dev/sdb
+
+            # worker2:
+            #   ansible_host: 10.60.0.105
+            #   bmc_address: 172.28.11.26
+            #   mac: 3C:FD:FE:78:AB:04
+
+              # # Uncomment to set an alternate installation disk device for the node
+              # installation_disk_path: /dev/sdb

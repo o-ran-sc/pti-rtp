@@ -1,0 +1,35 @@
+---
+- name: Validate Inventory
+  ansible.builtin.import_playbook: validate_inventory.yml
+
+- name: Process KVM nodes
+  hosts: bastion
+  roles:
+    - role: redhatci.ocp.process_kvm_nodes
+      when: (setup_vms | default(true))
+
+- name: Provision VMS
+  hosts: vm_hosts
+  gather_facts: false
+  vars:
+    SETUP_VMS: "{{ setup_vms | default((kvm_nodes | default([])) | length | int >= 1) }}"
+  pre_tasks:
+    - name: Setup facts
+      ansible.builtin.setup:
+      when: SETUP_VMS | bool
+  roles:
+    # - role: redhatci.ocp.destroy_vms
+    - role: destroy_vms
+      when: SETUP_VMS | bool
+      tags:
+        - destroy_vms
+
+    # - role: redhatci.ocp.setup_vm_host_network
+    - role: setup_vm_host_network
+      when: (SETUP_VM_BRIDGE | default(SETUP_VMS)) | bool
+
+    # - role: redhatci.ocp.create_vms
+    - role: create_vms
+      when: SETUP_VMS | bool
+      tags:
+        - setup_vms
