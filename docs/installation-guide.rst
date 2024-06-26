@@ -13,7 +13,7 @@ INF Installation Guide
 Overview
 ********
 
-O-RAN INF is a downstream project of `StarlingX`_, and use the same installation and deployment methods.
+O-RAN INF is a downstream project of `StarlingX`_ and `OKD`_, and use the installation and deployment methods of those platforms.
 
 Please see the detail of all the supported `Deployment Configurations`_.
 
@@ -35,6 +35,10 @@ The INF project supports Multi OS and the latest released images for each based 
 .. _`inf-image-centos-all-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/g-release/inf-image-centos-all-x86-64.iso
 .. _`inf-image-yocto-aio-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/g-release/inf-image-yocto-aio-x86-64.iso
 
+Deployment automation and documentation for OKD / Fedora CoreOS 38 can be found under the 'okd' directory in the `pti/rtp`_ repository.
+
+.. _`pti/rtp`: https://gerrit.o-ran-sc.org/r/admin/repos/pti/rtp
+
 Hardware Requirements
 *********************
 
@@ -53,10 +57,9 @@ Installation
 Platform Installation
 ---------------------
 
-INF uses the same installation and deployment methods of StarlingX, please refer to `StarlingX Installation`_ for the detail installation steps.
+INF uses the same installation and deployment methods of StarlingX or OKD, please refer to `StarlingX Installation`_ or 'okd/README.md' in the `pti/rtp`_ repository for the detail installation steps.
 
 .. _`StarlingX Installation`: https://docs.starlingx.io/r/stx.7.0/deploy_install_guides/index-install-e083ca818006.html 
-
 
 Applications Installation
 -------------------------
@@ -73,6 +76,7 @@ References
 **********
   
 - `StarlingX`_
+- `OKD`_
 
 .. _`StarlingX`: https://docs.starlingx.io/
-          
+.. _`OKD`: https://www.okd.io/

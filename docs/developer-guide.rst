@@ -12,13 +12,19 @@ INF Developer Guide
 1. About the INF project
 ************************
 
-This project is a reference implementation of O-Cloud infrastructure which is based on StarlingX, and it supports multi-OS.
+This project is a reference implementation of O-Cloud infrastructure which is based on StarlingX and OKD, and it supports multi-OS.
 
 * Currently the following OS are supported:
 
-  * Debian 11 (bullseye)
-  * CentOS 7
-  * Yocto 2.7 (warrior)
+  * StarlingX
+
+    * Debian 11 (bullseye)
+    * CentOS 7
+    * Yocto 2.7 (warrior)
+
+  * OKD
+
+    * Fedora CoreOS 38
 
 Notes:
   * Debian based is the recommended platfrom.
@@ -58,6 +64,11 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
 .. _`Yocto dev manual`: https://www.yoctoproject.org/docs/2.6.3/dev-manual/dev-manual.html
 .. _`OpenEmbedded wiki`: http://www.openembedded.org/wiki/Main_Page
 
+1.4 About the Fedora CoreOS / OKD based implementation
+------------------------------------------------------
+Deployment automation and documentation for OKD / Fedora CoreOS 38 can be found under the 'okd' directory in the `pti/rtp`_ repository.
+
+.. _`pti/rtp`: https://gerrit.o-ran-sc.org/r/admin/repos/pti/rtp
 
 2. How to build the INF project
 *******************************
