@@ -136,9 +136,15 @@ Multi OS and Deployment Configurations
 
 * The INF project supports Multi OS and currently the following OS are supported:
 
-   - Debian 11 (bullseye)
-   - CentOS 7
-   - Yocto 2.7 (warrior)
+  * StarlingX
+
+    * Debian 11 (bullseye)
+    * CentOS 7
+    * Yocto 2.7 (warrior)
+
+  * OKD
+
+    * Fedora CoreOS 38
 
 A variety of deployment configuration options are supported:
 
@@ -188,6 +194,10 @@ systems for embedded products.
 About StarlingX
 ---------------
 StarlingX is a complete cloud infrastructure software stack for the edge used by the most demanding applications in industrial IOT, telecom, video delivery and other ultra-low latency use cases. With deterministic low latency required by edge applications, and tools that make distributed edge manageable, StarlingX provides a container-based infrastructure for edge implementations in scalable solutions that is ready for production now.
+
+About OKD
+---------------
+OKD is a complete open source container application platform and the community Kubernetes distribution that powers Red Hat OpenShift.
 
 Contact info
 ------------
