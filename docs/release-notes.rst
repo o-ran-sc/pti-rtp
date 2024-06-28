@@ -1,12 +1,12 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. SPDX-License-Identifier: CC-BY-4.0
-.. Copyright (C) 2019 - 2022 Wind River Systems, Inc.
+.. Copyright (C) 2019 - 2024 Wind River Systems, Inc.
 
 
 INF Release Notes
 =================
 
-This document provides the release notes for I-Release (9.0.0) of INF RTP.
+This document provides the release notes for J-Release (10.0.0) of INF RTP.
 
 .. contents::
    :depth: 3
@@ -46,6 +46,56 @@ Version history
 | 2023-12-15         | 9.0.0              | Jackie Huang       | I Release          |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2024-06-28         | 10.0.0             | Jackie Huang       | J Release          |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
+
+Version 10.0.0, 2024-06-28
+--------------------------
+#. 10th version (J release)
+#. INF Multi O-Cloud and Multi OS support:
+
+   * StarlingX 9.0
+
+     * Supported OS:
+
+       * Debian 11 (bulllseye)
+       * CentOS 7
+       * Yocto 2.7 (warrior)
+
+   * OKD
+
+     * Supported OS:
+
+       * Fedora CoreOS 38
+
+#. INF MultiArch support for StarlingX O-Cloud:
+
+   * Add support for ARM64 arch.
+   * See developer-guide for how to build image for ARM64.
+   * No image will be provided.
+
+#. Support four deployment modes on Debian based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
+
+#. Support four deployment modes on CentOS based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
+
+#. Support three deployment modes on Yocto based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+
+#. Support VM automated deployment for OKD O-Cloud.
 
 Version 9.0.0, 2023-12-15
 -------------------------
