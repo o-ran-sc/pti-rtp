@@ -25,7 +25,7 @@
     <suspend-to-disk enabled='no'/>
   </pm>
   <devices>
-    <emulator>/usr/libexec/qemu-kvm</emulator>
+    <emulator>{{ ocloud_infra_vm_emulator_path }}</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
       <source file='{{ ocloud_infra_vm_disk_path }}'/>
