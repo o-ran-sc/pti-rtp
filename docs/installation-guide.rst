@@ -1,6 +1,6 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. SPDX-License-Identifier: CC-BY-4.0
-.. Copyright (C) 2019 Wind River Systems, Inc.
+.. Copyright (C) 2019-2024 Wind River Systems, Inc.
 
 
 INF Installation Guide
@@ -31,9 +31,9 @@ The INF project supports Multi OS and the latest released images for each based 
   - Debian 11 (bullseye): `inf-image-debian-all-x86-64.iso`_
   - Yocto 2.7 (warrior): `inf-image-yocto-aio-x86-64.iso`_
 
-.. _`inf-image-debian-all-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/g-release/inf-image-debian-all-x86-64.iso
-.. _`inf-image-centos-all-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/g-release/inf-image-centos-all-x86-64.iso
-.. _`inf-image-yocto-aio-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/g-release/inf-image-yocto-aio-x86-64.iso
+.. _`inf-image-debian-all-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/latest/inf-image-debian-all-x86-64.iso
+.. _`inf-image-centos-all-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/latest/inf-image-centos-all-x86-64.iso
+.. _`inf-image-yocto-aio-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/latest/inf-image-yocto-aio-x86-64.iso
 
 Deployment automation and documentation for OKD / Fedora CoreOS 38 can be found under the 'okd' directory in the `pti/rtp`_ repository.
 
