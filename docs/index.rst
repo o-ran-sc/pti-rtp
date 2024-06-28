@@ -1,6 +1,6 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. SPDX-License-Identifier: CC-BY-4.0
-.. Copyright (C) 2019 Wind River Systems, Inc.
+.. Copyright (C) 2019-2024 Wind River Systems, Inc.
 .. rtp documentation master
 
 Welcome to Infrastructure(INF) ducomentation
