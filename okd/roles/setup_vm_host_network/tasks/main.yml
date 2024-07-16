@@ -1,0 +1,11 @@
+- name: Create network_config
+  ansible.builtin.include_tasks: make_network_config.yml
+  when: network_config is not defined
+
+- name: process network_config
+  ansible.builtin.import_role:
+    name: redhatci.ocp.process_nmstate
+
+- name: apply nmstate config
+  ansible.builtin.import_role:
+    name: redhatci.ocp.apply_nmstate
