@@ -1,0 +1,93 @@
+---
+- name: Gathering facts
+  ansible.builtin.setup:
+    gather_subset: all
+
+- name: Install block
+  become: true
+  block:
+    - name: Installing packages on rhel9
+      ansible.builtin.package:
+        name: "{{ sushy_packages_rhel9 }}"
+        state: present
+      when: is_rhel9
+    - name: Installing packages on rhel8
+      ansible.builtin.package:
+        name: "{{ sushy_packages_rhel8 }}"
+        state: present
+      when: is_rhel8
+    - name: Installing packages on other platforms
+      ansible.builtin.package:
+        name: "{{ sushy_packages_rhel8 }}"
+        state: present
+      when: ! is_rhel
+
+- name: "Create sushy-tools directory {{ item }}"
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: "0755"
+  loop:
+    - "{{ sushy_dir }}"
+    - "{{ sushy_auth_dir }}"
+    - "{{ sushy_cert_dir }}"
+    - "{{ sushy_data_dir }}"
+
+- name: Install sushy-tools via pip in a virtual environment
+  become: true
+  ansible.builtin.pip:
+    name: "{{ sushy_pip_packages }}"
+    virtualenv_command: "{{ (is_rhel9 | bool) | ternary('python3 -m venv', omit) }}"
+    virtualenv: "{{ sushy_dir }}"
+
+- name: Configure firewalld
+  ansible.builtin.include_tasks: firewall.yml
+
+- name: Configure secure sushy tools
+  ansible.builtin.include_tasks: secure_sushy.yml
+  when: secure_sushy_tools | bool
+
+- name: Set X86_64 OVMF code path
+  ansible.builtin.set_fact:
+    sushy_x86_64_ovmf_code_path: "/usr/share/edk2/ovmf/OVMF_CODE.secboot.fd"
+
+- name: Check x86_64 OVMF code path # noqa: var-naming[pattern]
+  ansible.builtin.stat:
+    path: "/usr/share/OVMF/OVMF_CODE.secboot.fd"
+  register: OVMF_X86_64_CODE_STAT
+
+- name: Set x86_64 OVMF code path (legacy)
+  ansible.builtin.set_fact:
+    sushy_x86_64_ovmf_code_path: "/usr/share/OVMF/OVMF_CODE.secboot.fd"
+  when:
+    - OVMF_X86_64_CODE_STAT.stat.exists
+    - not OVMF_X86_64_CODE_STAT.stat.islnk
+
+- name: Create sushy-tools conf
+  ansible.builtin.template:
+    src: sushy-emulator.conf.j2
+    dest: "{{ sushy_dir }}/sushy-emulator.conf"
+    mode: "0664"
+
+- name: Create sushy-tools service
+  become: true
+  ansible.builtin.template:
+    src: sushy-tools.service.j2
+    dest: /etc/systemd/system/sushy-tools.service
+    mode: "0664"
+
+- name: Starting and Enabling the sushy-tools.service
+  become: true
+  ansible.builtin.systemd:
+    name: sushy-tools.service
+    enabled: true
+    state: started
+    scope: system
+    daemon_reexec: true
+    daemon_reload: true
+
+- name: Validate sushy-tools
+  ansible.builtin.include_tasks: validate.yml
