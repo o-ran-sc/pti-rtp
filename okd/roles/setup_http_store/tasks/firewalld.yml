@@ -1,0 +1,34 @@
+---
+- name: Install firewalld  #noqa: literal-compare
+  become: true
+  block:
+    - name: Collect service facts
+      ansible.builtin.service_facts:
+    - name: Is firewalld installed
+      ansible.builtin.assert:
+        that:  '"firewalld.service" in ansible_facts.services'
+        quiet: true
+  rescue:
+    - name: Installing firewalld
+      ansible.builtin.package:
+        name: firewalld
+        state: present
+
+- name: Start firewalld
+  become: true
+  ansible.builtin.service:
+    name: firewalld.service
+    state: started
+    enabled: true
+
+- name: Firewalld open tcp port http peristent immidiate enabled zones internal, and public
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ http_port }}/tcp"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ item }}"
+  loop:
+    - internal
+    - public
