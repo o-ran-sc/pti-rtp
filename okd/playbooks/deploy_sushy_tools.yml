@@ -1,0 +1,13 @@
+---
+- name: Deploy sushy tools
+  hosts: vm_hosts
+  gather_facts: false
+  vars:
+    SETUP_SUSHY_TOOLS: "{{ setup_sushy_tools | default(setup_vms | default(true)) }}"
+  pre_tasks:
+    - name: Setup facts
+      ansible.builtin.setup:
+      when: SETUP_SUSHY_TOOLS | bool
+  roles:
+    - role: setup_sushy_tools
+      when: SETUP_SUSHY_TOOLS | bool
