@@ -1,0 +1,62 @@
+---
+- name: Check if podman is installed
+  ansible.builtin.stat:
+    path: /usr/bin/podman
+  register: result
+
+- name: Install podman
+  become: true
+  ansible.builtin.package:
+    name: podman
+    state: present
+  when: result.stat.exists == false
+
+- name: Create directory to hold the registry files
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: "0775"
+    recurse: true
+  loop:
+    - "{{ http_dir }}"
+    - "{{ http_data_dir }}"
+
+- name: Create httpd container
+  become: true
+  containers.podman.podman_pod:
+    name: "{{ http_store_pod_name }}"
+    publish:
+      - "{{ http_port }}:8080"
+  register: pod_info
+
+- ansible.builtin.debug: # noqa unnamed-task
+    var: pod_info
+    verbosity: 1
+
+- name: Create httpd container
+  become: true
+  containers.podman.podman_container:
+    name: "{{ http_store_container_name }}"
+    image: "{{ container_image }}"
+    pod: "{{ http_store_pod_name }}"
+    state: stopped
+    volumes:
+      - "{{ http_data_dir }}:/var/www/html:z"
+  register: container_info
+
+- name: Setting facts about container
+  ansible.builtin.set_fact:
+    http_store_name: "{{ container_info.container.Name }}"
+    http_store_pidfile: "{{ container_info.container.ConmonPidFile }}"
+
+- name: Copy the systemd service file
+  become: true
+  ansible.builtin.template:
+    src: http_store.service.j2
+    dest: "/etc/systemd/system/http_store.service"
+    owner: root
+    group: root
+    mode: "0644"

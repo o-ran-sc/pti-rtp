@@ -1,0 +1,6 @@
+---
+- name: Install and http_store service
+  hosts: http_store
+  roles:
+    - role: setup_http_store
+      when: setup_http_store_service | bool

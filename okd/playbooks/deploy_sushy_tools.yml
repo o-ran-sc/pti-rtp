@@ -1,0 +1,8 @@
+---
+- name: Deploy sushy tools
+  hosts: vm_hosts
+  roles:
+    - role: setup_sushy_tools
+      when: setup_sushy_tools_service | bool
+
+

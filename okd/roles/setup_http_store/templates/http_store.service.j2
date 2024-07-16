@@ -1,0 +1,11 @@
+[Unit]
+Description=Podman http_store.service
+[Service]
+Restart=on-failure
+ExecStart=/usr/bin/podman pod start {{ http_store_pod_name }}
+ExecStop=/usr/bin/podman pod stop -t 10 {{ http_store_pod_name }}
+KillMode=none
+Type=forking
+PIDFile={{ http_store_pidfile }}
+[Install]
+WantedBy=default.target

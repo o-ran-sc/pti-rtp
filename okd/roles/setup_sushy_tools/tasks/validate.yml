@@ -1,0 +1,17 @@
+---
+- name: Validating sushy-tools
+  become: true
+  block:
+    - name: Test if sushy-tools is active and enabled # noqa: var-naming[pattern]
+      ansible.builtin.systemd:
+        name: sushy-tools
+        state: started
+        enabled: true
+      register: result
+      until: "'active' in result.status.ActiveState"
+      retries: 10
+      delay: 5
+  rescue:
+    - name: Validation FAILED
+      ansible.builtin.fail:
+        msg: "sushy-tools.service status is {{ result.status.ActiveState }}"

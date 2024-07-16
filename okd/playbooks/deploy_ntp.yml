@@ -1,0 +1,7 @@
+---
+- name: Setup NTP
+  hosts: ntp_host
+  roles:
+    - role: setup_ntp
+      when: setup_ntp_service | bool
+
