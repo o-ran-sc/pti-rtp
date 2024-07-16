@@ -1,0 +1,51 @@
+---
+- name: Chrony block
+  become: true
+  block:
+    - name: Check if chrony is installed
+      ansible.builtin.service:
+        name: chronyd.service
+        enabled: true
+  rescue:
+    - name: Installing chrony
+      become: true
+      ansible.builtin.package:
+        name: chrony
+        state: present
+
+- name: Configure chrony
+  become: true
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart chronyd
+
+- name: Start and enable chrony
+  become: true
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true
+
+- name: Allow incoming tcp traffic for service ntp permanent and immidiate for public zone
+  become: true
+  ansible.posix.firewalld:
+    zone: public
+    service: ntp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Collecting chrony validation
+  become: true
+  command: chronyc ntpdata
+  register: result
+  tags: validate_ntp
+
+- name: Test validation
+  ansible.builtin.fail:
+    msg: "{{ result }}"
+  when: result.failed == true

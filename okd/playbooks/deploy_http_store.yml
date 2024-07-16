@@ -1,0 +1,6 @@
+---
+- name: Install and http_store service
+  hosts: http_store
+  gather_facts: true
+  roles:
+    - role: setup_http_store
