@@ -1,0 +1,20 @@
+---
+- name: Configure firewall
+  ansible.builtin.include_tasks: firewalld.yml
+
+- name: Configure http container
+  ansible.builtin.include_tasks: container.yml
+
+- name: Starting and Enabling the http_store.service
+  become: true
+  ansible.builtin.systemd:
+    name: http_store
+    enabled: true
+    state: started
+    scope: system
+    daemon_reexec: true
+    daemon_reload: true
+
+- name: Validate http deployment
+  ansible.builtin.include_tasks: validate.yml
+
