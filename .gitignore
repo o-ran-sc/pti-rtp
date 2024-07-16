@@ -3,6 +3,7 @@
 /logs
 /rtp/
 /wrlinux-x/
+venv/
 
 # documentation
 .tox
@@ -10,3 +11,4 @@ docs/_build/*
 
 # editor
 .vscode
+rtp.code-workspace
