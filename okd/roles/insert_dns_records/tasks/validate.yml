@@ -1,0 +1,49 @@
+- name: Check if the required binary for testing exists
+  ansible.builtin.shell:
+    cmd: "which {{ required_binary }}"
+  register: required_binary_check
+  ignore_errors: true
+  changed_when: false
+
+- name: (if binary is missing) Install the package providing the required binary
+  become: true
+  ansible.builtin.package:
+    name: "{{ required_binary_provided_in_package }}"
+    state: present
+  when: required_binary_check.rc != 0
+
+- name: Set inital failed_domains
+  ansible.builtin.set_fact:
+    failed_domains: {}
+
+- name: Check required domain {item} exists
+  ansible.builtin.shell:
+    cmd: "{{ required_binary }} {{ item.value }} A {{ item.value }} AAAA +short"
+  register: res
+  changed_when: false
+
+- name: Check stdout for expected IP address
+  ansible.builtin.set_fact:
+    failed_domains: "{{ (failed_domains | default({})) | combine(
+        {item.value: {
+          'stdout': res.stdout,
+          'stderr': res.stderr,
+          'expected': expected_answers[item.key],
+        }}
+      ) }}"
+  when: expected_answers[item.key] not in res.stdout
+
+- name: List failed_domains
+  ansible.builtin.fail:
+    msg: |
+      Failed domains:
+        {% for failed in (failed_domains | dict2items) %}
+        {{ failed.key }}:
+            expected:
+              {{ failed.value.expected | indent(14) }}
+            stdout:
+              {{ failed.value.stdout | indent(14)}}
+            stderr:
+              {{ failed.value.stderr | indent(14) }}
+        {% endfor %}
+  when: failed_domains | length > 0
