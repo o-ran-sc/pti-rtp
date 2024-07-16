@@ -3,6 +3,13 @@
 /logs
 /rtp/
 /wrlinux-x/
+/okd/fetched
+
+# ignored anywhere
+fetched/
+tmp/
+temp/
+venv/
 
 # documentation
 .tox
@@ -10,3 +17,5 @@ docs/_build/*
 
 # editor
 .vscode
+rtp.code-workspace
+
