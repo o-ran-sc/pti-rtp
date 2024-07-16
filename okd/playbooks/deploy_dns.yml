@@ -1,0 +1,7 @@
+---
+- name: Setup DNS Records
+  hosts: dns_host
+  gather_facts: false
+  roles:
+    - role: insert_dns_records
+      when: setup_dns_service | bool

@@ -1,0 +1,15 @@
+---
+- name: Create dnsmasq domain config file
+  become: true
+  ansible.builtin.template:
+    src: openshift-cluster.conf.j2
+    dest: "/etc/dnsmasq.d/{{ dns_entries_file_name }}"
+    mode: "0644"
+  notify: restart_dns
+
+- name: Start dnsmasq
+  become: true
+  ansible.builtin.service:
+    name: dnsmasq
+    state: started
+    enabled: true
