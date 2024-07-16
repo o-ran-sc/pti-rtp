@@ -1,0 +1,10 @@
+---
+- name: Firewalld - Add TCP rules sushy_tools_port to BM bridge zones public and internal permanent and immediate
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ item.0 }}/tcp"
+    state: enabled
+    zone: "{{ item.1 }}" # noqa:
+    permanent: true
+    immediate: true
+  loop: "{{ [sushy_tools_port] | product(['internal', 'public']) | list }}"

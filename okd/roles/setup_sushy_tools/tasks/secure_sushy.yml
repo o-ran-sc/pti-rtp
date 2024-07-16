@@ -1,0 +1,39 @@
+---
+- name: Collect KVM BMC username password combinations
+  vars:
+    user_password_combinations: {}
+  ansible.builtin.set_fact:
+    user_password_combinations: "{{
+      user_password_combinations | combine({hostvars[item]['bmc_user']: hostvars[item]['bmc_password']})
+      }}"
+  when: hostvars[item]['vendor'] | lower == 'kvm'
+  loop: "{{ groups['nodes'] }}"
+  no_log: true
+
+- name: Generate htpasswd entry
+  ansible.builtin.command: htpasswd -bBn {{ item.user }} {{ item.password }}
+  register: htpass_entries
+  changed_when: false
+  loop: "{{ user_password_combinations | dict2items(key_name='user', value_name='password') }}"
+
+- name: Write htpasswd file
+  become: true
+  ansible.builtin.copy:
+    content: "{{ htpass_entries.results | map(attribute='stdout') | join('\n') }}"
+    dest: "{{ sushy_auth_file }}"
+    owner: "{{ file_owner }}"
+    group: "{{ file_group }}"
+    mode: "0660"
+    backup: true
+    force: true
+
+- name: Generate self signed cert for sushy tools.
+  ansible.builtin.include_role:
+    name: setup_selfsigned_cert
+  vars:
+    cert_dir: "{{ sushy_cert_dir }}" # noqa: var-naming[no-role-prefix]
+    host_var_key: "{{ cert_vars_host_var_key }}"
+    cert_file_prefix: sushy_tools
+    cert_path: "{{ sushy_cert_dir }}/sushy_tools_{{ inventory_hostname }}.crt"
+    privatekey_path: "{{ sushy_cert_dir }}/sushy_tools.key"
+    cert_common_name: "{{ sushy_fqdn }}"
