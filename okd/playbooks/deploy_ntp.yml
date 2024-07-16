@@ -1,0 +1,9 @@
+---
+- name: Setup NTP
+  hosts: ntp_host
+  gather_facts: false
+  vars:
+    SETUP_NTP_SERVICE: "{{setup_ntp_service | default(false) | bool }}"
+  roles:
+    - role: redhatci.ocp.setup_ntp
+      when: SETUP_NTP_SERVICE | bool
