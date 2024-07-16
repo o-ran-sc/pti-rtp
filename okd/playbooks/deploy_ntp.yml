@@ -1,0 +1,5 @@
+---
+- name: Setup NTP
+  hosts: ntp_host
+  roles:
+    - role: setup_ntp

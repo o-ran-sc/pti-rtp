@@ -1,0 +1,36 @@
+---
+- name: Collect service facts
+  ansible.builtin.service_facts:
+
+- name: Install chrony
+  become: true
+  ansible.builtin.package:
+    name: chrony
+    state: present
+  when: ansible_facts.services.chronyd.service is false
+
+- name: Configure chrony
+  become: true
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart chronyd
+
+- name: Start chrony
+  become: true
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true
+
+- name: Allow incoming tcp traffic for service ntp permanent and immidiate for public zone
+  become: true
+  ansible.posix.firewalld:
+    zone: public
+    service: ntp
+    permanent: true
+    state: enabled
+    immediate: true

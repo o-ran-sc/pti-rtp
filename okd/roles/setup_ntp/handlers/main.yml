@@ -1,0 +1,15 @@
+---
+- name: Restart chronyd
+  become: true
+  listen: restart_ntp
+  ansible.builtin.service:
+    name: chronyd
+    state: restarted
+
+- name: Start chronyd
+  become: true
+  listen: start_ntp
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true
