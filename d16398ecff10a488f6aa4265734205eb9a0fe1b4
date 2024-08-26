@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "223174ed_6b0c80c2",
+        "filename": "okd/playbooks/deploy_ntp.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-26T18:41:57Z",
+      "side": 1,
+      "message": "No need to set uppercase variable, use existing var.",
+      "revId": "d16398ecff10a488f6aa4265734205eb9a0fe1b4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c097cdb5_bd1b15f5",
+        "filename": "okd/roles/setup_ntp/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-26T18:41:57Z",
+      "side": 1,
+      "message": "Add newline",
+      "revId": "d16398ecff10a488f6aa4265734205eb9a0fe1b4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0bd9888_f35f102e",
+        "filename": "okd/roles/setup_ntp/defaults/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-26T18:41:57Z",
+      "side": 1,
+      "message": "Set to empty list (ntp_server_allows: [])",
+      "revId": "d16398ecff10a488f6aa4265734205eb9a0fe1b4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "acb81c9d_955da90f",
+        "filename": "okd/roles/setup_ntp/handlers/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-26T18:41:57Z",
+      "side": 1,
+      "message": "Add \"enabled: true\"",
+      "revId": "d16398ecff10a488f6aa4265734205eb9a0fe1b4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbb1c48a_33251acd",
+        "filename": "okd/roles/setup_ntp/tasks/main.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-26T18:41:57Z",
+      "side": 1,
+      "message": "Not needed since the \"Restart chronyd\" handler is invoked by task above.",
+      "revId": "d16398ecff10a488f6aa4265734205eb9a0fe1b4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
