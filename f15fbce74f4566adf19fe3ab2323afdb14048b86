@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8dc86d4c_a2e6cd47",
+        "filename": "okd/playbooks/deploy_http_store.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-29T00:00:31Z",
+      "side": 1,
+      "message": "Missing \"when\" clause",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a29b0479_5d6a1c2a",
+        "filename": "okd/playbooks/deploy_ntp.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-29T00:00:31Z",
+      "side": 1,
+      "message": "\"gather_facts: false\" was removed, which will change playbook behavior",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "befb8eb4_299d36fd",
+        "filename": "okd/playbooks/deploy_ntp.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-29T00:00:31Z",
+      "side": 1,
+      "message": "Missing when clause",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33b44acd_726dec85",
+        "filename": "okd/roles/insert_dns_records/tasks/main.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-29T00:00:31Z",
+      "side": 1,
+      "message": "This task appears to duplicate another in dnsmasq.yml / network-manager.yml",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "66fa7ecf_24dffffd",
+        "filename": "okd/roles/insert_dns_records/tasks/main.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-29T00:00:31Z",
+      "side": 1,
+      "message": "Remove commented tasks",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
