@@ -18,6 +18,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "771a5667_0265092a",
+        "filename": "okd/playbooks/deploy_ntp.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-08-29T00:02:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "223174ed_6b0c80c2",
+      "revId": "d16398ecff10a488f6aa4265734205eb9a0fe1b4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c097cdb5_bd1b15f5",
