@@ -16,6 +16,24 @@
       "message": "Remove uppercase var",
       "revId": "030c42e228038aefa808231279295570a8efb5a8",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "04f019d9_bd4acb8a",
+        "filename": "okd/playbooks/deploy_sushy_tools.yml",
+        "patchSetId": 8
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-06T17:59:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "15ecedb0_2f135b77",
+      "revId": "030c42e228038aefa808231279295570a8efb5a8",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

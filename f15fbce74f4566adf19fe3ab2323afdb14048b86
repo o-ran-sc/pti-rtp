@@ -18,6 +18,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6f3918bc_bd5fb9ce",
+        "filename": "okd/playbooks/deploy_http_store.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-06T17:59:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8dc86d4c_a2e6cd47",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a29b0479_5d6a1c2a",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-08-29T00:00:31Z",
       "side": 1,
       "message": "\"gather_facts: false\" was removed, which will change playbook behavior",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d54a1b91_a869b244",
+        "filename": "okd/playbooks/deploy_ntp.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-06T17:59:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a29b0479_5d6a1c2a",
       "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -52,6 +88,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "649c6721_138ea303",
+        "filename": "okd/playbooks/deploy_ntp.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-06T17:59:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "befb8eb4_299d36fd",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "33b44acd_726dec85",
@@ -69,6 +123,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0cf4d68f_85da2d30",
+        "filename": "okd/roles/insert_dns_records/tasks/main.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-06T17:59:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "33b44acd_726dec85",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "66fa7ecf_24dffffd",
@@ -82,6 +154,24 @@
       "writtenOn": "2024-08-29T00:00:31Z",
       "side": 1,
       "message": "Remove commented tasks",
+      "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9859908f_ba252323",
+        "filename": "okd/roles/insert_dns_records/tasks/main.yml",
+        "patchSetId": 13
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-06T17:59:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "66fa7ecf_24dffffd",
       "revId": "f15fbce74f4566adf19fe3ab2323afdb14048b86",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
