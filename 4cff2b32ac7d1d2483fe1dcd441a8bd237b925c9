@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0bf81ed_9922f83c",
+        "filename": "okd/playbooks/create_vms.yml",
+        "patchSetId": 21
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-10T19:48:35Z",
+      "side": 1,
+      "message": "Remove playbook",
+      "revId": "4cff2b32ac7d1d2483fe1dcd441a8bd237b925c9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca01f570_b7ec9bcb",
+        "filename": "okd/playbooks/deploy_sushy_tools.yml",
+        "patchSetId": 21
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-10T19:48:35Z",
+      "side": 1,
+      "message": "Remove playbook",
+      "revId": "4cff2b32ac7d1d2483fe1dcd441a8bd237b925c9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e3804bf_ed8088a7",
+        "filename": "okd/playbooks/destroy_vms.yml",
+        "patchSetId": 21
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-10T19:48:35Z",
+      "side": 1,
+      "message": "Remove playbook",
+      "revId": "4cff2b32ac7d1d2483fe1dcd441a8bd237b925c9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "296f7a81_be05cb9b",
+        "filename": "okd/roles/apply_nmstate/README.md",
+        "patchSetId": 21
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-10T19:48:35Z",
+      "side": 1,
+      "message": "Remove role",
+      "revId": "4cff2b32ac7d1d2483fe1dcd441a8bd237b925c9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7835b6e6_97a7626a",
+        "filename": "okd/roles/process_nmstate/defaults/main.yml",
+        "patchSetId": 21
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-10T19:48:35Z",
+      "side": 1,
+      "message": "Remove role",
+      "revId": "4cff2b32ac7d1d2483fe1dcd441a8bd237b925c9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aac2dec9_706c08ac",
+        "filename": "okd/roles/setup_vm_host_network/defaults/main.yml",
+        "patchSetId": 21
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-10T19:48:35Z",
+      "side": 1,
+      "message": "Remove role",
+      "revId": "4cff2b32ac7d1d2483fe1dcd441a8bd237b925c9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
