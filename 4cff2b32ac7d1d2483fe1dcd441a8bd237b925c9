@@ -88,6 +88,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "636c014f_0ad14b3d",
+        "filename": "okd/roles/setup_selfsigned_cert/defaults/main.yml",
+        "patchSetId": 21
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-09-10T19:49:44Z",
+      "side": 1,
+      "message": "Remove role",
+      "revId": "4cff2b32ac7d1d2483fe1dcd441a8bd237b925c9",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "aac2dec9_706c08ac",
         "filename": "okd/roles/setup_vm_host_network/defaults/main.yml",
         "patchSetId": 21
