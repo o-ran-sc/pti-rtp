@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae7aa06d_33be2d92",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 24
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-09-11T02:36:42Z",
+      "side": 1,
+      "message": "I think the correct issue id should be: INF-476",
+      "revId": "50f2dd7e9fd486d7106f6aeb19cad071a9475e10",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
