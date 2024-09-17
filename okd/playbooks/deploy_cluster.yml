@@ -1,0 +1,53 @@
+---
+- name: Deploy OKD Cluster
+  hosts: bastion
+  vars:
+  pre_tasks:
+    - name: Set pull_secret facts
+      ansible.builtin.set_fact:
+        ocloud_platform_okd_pull_secret: '{"auths":{"fake":{"auth":"aWQ6cGFzcwo="}}}'
+    - name: Set system facts
+      ansible.builtin.set_fact:
+        extract_installer: false
+        generate_ssh_keys: true
+        generate_manifests: true
+        generate_iso: false
+        boot_iso: false
+        monitor_install: false
+    - name: Create staging dir for OKD installation
+      ansible.builtin.tempfile:
+        state: directory
+      register: ocloud_platform_okd_staging_dir
+
+- name: Extract Agent based installer
+  ansible.builtin.import_playbook: extract_installer.yml
+  when: (extract_installer | default(true)) | bool
+
+- name: Generate SSH Key for node access
+  ansible.builtin.import_playbook: generate_ssh_key_pair.yml
+  when: (generate_ssh_keys | default(true)) | bool
+
+- name: Generate ABI input manfiests
+  ansible.builtin.import_playbook: generate_manifests.yml
+  when: (generate_manifests | default(true)) | bool
+
+# - name: Generate boot iso
+#   ansible.builtin.import_playbook: generate_iso.yml
+#   when: (generate_iso | default(true)) | bool
+
+# - name: Boot ISO
+#   ansible.builtin.import_playbook: boot_iso.yml
+#   vars:
+#     boot_iso_hosts: masters,workers
+#   when: (boot_iso | default(true)) | bool
+
+# - name: Monitior installation
+#   ansible.builtin.import_playbook: monitor_install.yml
+#   when: (monitor_install | default(true)) | bool
+
+- name: Display ocloud_platform_okd_staging_dir
+  hosts: bastion
+  tasks:
+    - name: Print the ocloud_platform_okd_staging_dir
+      debug:
+        msg: "You can find all the files created by this playbook in:\n  {{ ocloud_platform_okd_staging_dir['path'] }}"

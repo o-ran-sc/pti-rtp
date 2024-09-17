@@ -1,0 +1,94 @@
+---
+- name: "Checking for working dir {{ working_dir['path'] }}"
+  ansible.builtin.stat:
+    path: "{{ working_dir['path'] }}"
+  register: result
+
+- name: Fail if working_dir doesn't exist
+  ansible.builtin.fail:
+    msg: "{{ result }}"
+  when: result['failed'] | bool
+
+- name: Check for sshkeys dir
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ sshkeys_dir }}"
+    - "{{ sshkeys_dir }}/{{ sshkeys_public }}"
+    - "{{ sshkeys_dir }}/{{ sshkeys_private }}"
+  register: result
+
+- name: Failed sshkeys check
+  ansible.builtin.fail:
+    msg: "{{ item.stat.exists }}"
+  when: not item.stat.exists
+  loop: "{{ result.results }}"
+
+- name: Make gen dir
+  ansible.builtin.file:
+    path: "{{ generated_dir }}"
+    mode: "0775"
+    state: directory
+  delegate_to: bastion
+
+- name: Make cluster-manifests dir
+  ansible.builtin.file:
+    path: "{{ cluster_manifest_dir }}"
+    mode: "0775"
+    state: directory
+    recurse: true
+  delegate_to: bastion
+
+- name: Process static nmstate
+  ansible.builtin.include_tasks: static.yml
+  loop: "{{ groups['nodes'] }}"
+
+# - name: Update pull_secret variable
+#   ansible.builtin.set_fact:
+#     local_pull_secret: |
+#       "{{ pull_secret | combine({
+#         'auths': pull_secret['auths'] | combine({
+#           'registry.ci.openshift.org': {
+#             'auth': pull_secret['auths'][mirror_registry]['auth'],
+#           }
+#         })
+#       }) }}"
+#   when: use_local_mirror_registry  | bool
+
+- name: Render agent-config templates
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ manifests_dir }}/{{ item.rsplit('.', 1)[0] }}"
+    mode: "0644"
+    trim_blocks: true
+    lstrip_blocks: true
+  loop:
+    - agent-config.yaml.j2
+    - install-config.yaml.j2
+
+# The agent-config files are eventually deleted after its usage, just
+# save them in a safe place in case of needing to check them
+- name: Save a backup of agent-config files
+  ansible.builtin.fetch:
+    src: "{{ manifests_dir }}/{{ item }}"
+    dest: "{{ fetched_dest }}/{{ item }}"
+    flat: true
+  loop:
+    - agent-config.yaml
+    - install-config.yaml
+
+- name: Create extra_manifest_dir dir
+  ansible.builtin.file:
+    name: "{{ extra_manifest_dir }}"
+    mode: "0775"
+    recurse: true
+    state: directory
+  when:
+    - manifests | bool
+    - manifest_templates is defined
+    - manifest_templates | length >= 0
+
+- name: Render extra_manifests
+  ansible.builtin.include_tasks: manifest.yml
+  loop: "{{ manifest_templates }}"
+  when: manifests | bool

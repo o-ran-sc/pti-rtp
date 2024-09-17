@@ -1,0 +1,6 @@
+---
+
+working_dir: "{{ ocloud_platform_okd_staging_dir }}"
+sshkeys_dir: "{{ working_dir['path'] }}/sshkeys"
+public_key: "{{ cluster_name }}.pub"
+private_key: "{{ cluster_name }}"
