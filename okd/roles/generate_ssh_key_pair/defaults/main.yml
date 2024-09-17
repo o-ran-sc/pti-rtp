@@ -1,0 +1,8 @@
+---
+path_base_dir: "{{ ocloud_platform_okd_staging_dir['path'] }}"
+key_pair_dir: "{{ path_base_dir }}/ssh_key_pair"
+ssh_key_dest_base_dir: "{{ path_base_dir }}"
+ssh_key_dest_dir: "{{ ssh_key_dest_base_dir }}/ssh_keys"
+public_key_name: "{{ cluster_name }}.pub"
+private_key_name: "{{ cluster_name }}"
+fetched_dest: "{{ ocloud_platform_okd_staging_dir }}/fetched"

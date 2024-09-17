@@ -1,0 +1,27 @@
+---
+# - name: Create staging dir for OKD installation
+#   ansible.builtin.tempfile:
+#     state: directory
+#   register: ocloud_platform_okd_staging_dir
+
+- name: Creating bin dir
+  ansible.builtin.file:
+    path: "{{ ocloud_platform_okd_staging_dir['path'] }}/bin"
+    state: directory
+    mode: "0755"
+  register: result
+
+- name: Download OKD binaries
+  ansible.builtin.get_url:
+    url: "{{ ocloud_platform_okd_base_url }}/{{ ocloud_platform_okd_release }}/{{ item }}-{{ ocloud_platform_okd_release }}.tar.gz"
+    dest: "{{ ocloud_platform_okd_staging_dir['path'] }}"
+    mode: "0777"
+    use_proxy: "{{ use_proxy }}"
+  loop: "{{ openshift_clients }}"
+
+- name: Extract OKD binaries
+  ansible.builtin.unarchive:
+    src: "{{ ocloud_platform_okd_staging_dir['path'] }}/{{ item }}-{{ ocloud_platform_okd_release }}.tar.gz"
+    dest: "{{ ocloud_platform_okd_staging_dir['path'] }}/bin"
+    remote_src: true
+  loop: "{{ openshift_clients }}"
