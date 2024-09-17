@@ -1,0 +1,70 @@
+---
+- name: "Checking for working dir {{ working_dir['path'] }}"
+  ansible.builtin.stat:
+    path: "{{ working_dir['path'] }}"
+  register: result
+
+- name: Fail if staging_dir doesn't exist
+  ansible.builtin.fail:
+    msg: "{{ result }}"
+  when: result['failed'] | bool
+
+# - name: Create Fetched dir
+#   ansible.builtin.file:
+#     path: "{{ fetched_dir }}"
+#     mode: "0775"
+#     state: directory
+#   delegate_to: bastion
+
+- name: Keys dir
+  ansible.builtin.file:
+    path: "{{ sshkeys_dir }}"
+    mode: "0775"
+    state: directory
+  delegate_to: bastion
+
+- name: Generate an OpenSSH rsa keypair
+  community.crypto.openssh_keypair:
+    path: "{{ sshkeys_dir }}/{{ private_key }}"
+    mode: "0600"
+    state: present
+  args: "{{ openssh_keypair_args | default({}) }}"
+  delegate_to: bastion
+
+# - name: Fetch SSH Key
+#   ansible.builtin.fetch:
+#     src: "{{ item }}"
+#     dest: "{{ fetched_dir }}/ssh_keys/"
+#     flat: true
+#   loop:
+#     - "{{ key_pair_dir }}/{{ private_key_name }}"
+#     - "{{ key_pair_dir }}/{{ public_key_name }}"
+
+# - name: Copy SSH Key to bastion
+#   delegate_to: bastion
+#   block:
+#     - name: Make SSH Key folder
+#       ansible.builtin.file:
+#         path: "{{ ssh_key_dest_dir }}"
+#         mode: "0775"
+#         state: directory
+#     - name: Copy SSH Key files to bastion
+#       ansible.builtin.copy:
+#         src: "{{ fetched_dir }}/ssh_keys/{{ item }}"
+#         dest: "{{ ssh_key_dest_dir }}/{{ item }}"
+#         mode: preserve
+#       loop:
+#         - "{{ private_key_name }}"
+#         - "{{ public_key_name }}"
+
+# - name: "Remove temporary ssh_keys folder {{ key_pair_dir }}"
+#   ansible.builtin.file:
+#     path: "{{ key_pair_dir }}"
+#     state: absent
+
+- name: Distribute public key to all hosts
+  ansible.builtin.set_fact:
+    ssh_public_key: "{{ lookup('file', sshkeys_dir + '/' + public_key) }}"
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  loop: "{{ groups['all'] }}"

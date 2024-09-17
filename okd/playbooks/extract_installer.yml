@@ -1,0 +1,6 @@
+---
+- name: Extract openshift installer
+  hosts: bastion
+  gather_facts: false
+  roles:
+    - role: extract_installer
