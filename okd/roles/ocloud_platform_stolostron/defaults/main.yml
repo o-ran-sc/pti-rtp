@@ -1,0 +1,5 @@
+---
+ocloud_platform_stolostron_pull_secret: "{{ ocloud_platform_okd_pull_secret }}"
+ocloud_platform_stolostron_kubeconfig: "{{ ocloud_platform_okd_kubeconfig }}"
+ocloud_platform_stolostron_snapshot: "2.11.2-SNAPSHOT-2024-08-27-14-52-55"
+ocloud_platform_stolostron_repo_url: "https://github.com/stolostron/deploy.git"

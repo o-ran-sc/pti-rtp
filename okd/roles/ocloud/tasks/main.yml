@@ -10,3 +10,11 @@
     name: "ocloud_infra_vm"
   delegate_to: "{{ groups['kvm'][0] }}"
   when: ocloud_infra == "vm"
+
+- meta: flush_handlers
+
+- name: Include platform role - Stolostron
+  ansible.builtin.import_role:
+    name: "ocloud_platform_stolostron"
+  delegate_to: "{{ groups['deployer'][0] }}"
+  when: ocloud_platform == "okd"

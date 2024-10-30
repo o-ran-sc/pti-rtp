@@ -1,0 +1,11 @@
+---
+- name: Get OKD cluster info
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: ClusterVersion
+    kubeconfig: "{{ ocloud_platform_okd_kubeconfig }}"
+  register: ocloud_platform_okd_cluster_info
+
+- name: Set OKD installed release
+  set_fact:
+    ocloud_platform_okd_installed_release: "{{ ocloud_platform_okd_cluster_info['resources'][0]['status']['desired']['version'] }}"
