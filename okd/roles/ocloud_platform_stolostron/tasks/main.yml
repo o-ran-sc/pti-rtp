@@ -1,0 +1,79 @@
+---
+- name: Gather facts
+  ansible.builtin.setup:
+    gather_subset: all
+
+- name: Disable default catalog sources
+  kubernetes.core.k8s:
+    api_version: config.openshift.io/v1
+    kind: OperatorHub
+    name: cluster
+    namespace: default
+    state: patched
+    definition:
+      spec:
+        disableAllDefaultSources: true
+    kubeconfig: "{{ ocloud_platform_stolostron_kubeconfig }}"
+
+- name: Create staging dir for Stolostron installation
+  ansible.builtin.tempfile:
+    state: directory
+  register: ocloud_platform_stolostron_staging_dir
+
+- name: Create staging subdirs
+  ansible.builtin.file:
+    path: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/{{ item }}"
+    state: directory
+  loop:
+    - bin
+    - git
+
+- name: Download OKD CLI
+  ansible.builtin.get_url:
+    url: "{{ ocloud_platform_okd_cli_url }}/stable-{{ ocloud_platform_okd_release | regex_search('^[0-9]*\\.[0-9]*') }}/openshift-client-linux.tar.gz"
+    dest: "{{ ocloud_platform_stolostron_staging_dir['path'] }}"
+
+- name: Extract OKD CLI
+  ansible.builtin.unarchive:
+    src: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/openshift-client-linux.tar.gz"
+    dest: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/bin"
+    remote_src: true
+
+- name: Clone stolostron/deploy repo
+  ansible.builtin.git:
+    repo: "{{ ocloud_platform_stolostron_repo_url }}"
+    dest: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/git"
+
+- name: Template pull secret
+  ansible.builtin.template:
+    src: "pull-secret.yaml.j2"
+    dest: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/git/prereqs/pull-secret.yaml"
+
+- name: Template snapshot version
+  ansible.builtin.template:
+    src: "snapshot.ver.j2"
+    dest: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/git/snapshot.ver"
+
+- name: Install stolostron
+  ansible.builtin.shell:
+    chdir: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/git"
+    cmd: "./start.sh --silent --watch --search"
+  environment:
+    PATH: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "{{ ocloud_platform_stolostron_kubeconfig }}"
+
+- name: Create search-api route
+  kubernetes.core.k8s:
+    api_version: route.openshift.io/v1
+    kind: Route
+    name: search-api
+    namespace: open-cluster-management
+    state: present
+    definition:
+      spec:
+        tls:
+          termination: reencrypt
+        to:
+          kind: Service
+          name: search-search-api
+    kubeconfig: "{{ ocloud_platform_stolostron_kubeconfig }}"
