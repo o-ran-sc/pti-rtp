@@ -1,0 +1,9 @@
+---
+- name: Get OKD cluster info
+  kubernetes.core.k8s_cluster_info:
+    kubeconfig: "{{ ocloud_platform_okd_kubeconfig }}"
+  register: ocloud_platform_okd_cluster_info
+
+- name: Set OKD installed release
+  set_fact:
+    ocloud_platform_okd_installed_release: "{{ ocloud_platform_okd_cluster_info['version']['server'] }}"

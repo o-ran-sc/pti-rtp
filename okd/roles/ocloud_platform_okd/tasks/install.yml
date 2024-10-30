@@ -1,0 +1,56 @@
+---
+- name: Create staging dir for OKD installation
+  ansible.builtin.tempfile:
+    state: directory
+  register: ocloud_platform_okd_staging_dir
+
+- name: Create staging subdirs
+  ansible.builtin.file:
+    path: "{{ ocloud_platform_okd_staging_dir['path'] }}/{{ item }}"
+    state: directory
+  loop:
+    - bin
+    - cfg
+
+- name: Download OKD CLI
+  ansible.builtin.get_url:
+    url: "{{ ocloud_platform_okd_cli_url }}/stable-{{ ocloud_platform_okd_release | regex_search('^[0-9]*\\.[0-9]*') }}/openshift-client-linux.tar.gz"
+    dest: "{{ ocloud_platform_okd_staging_dir['path'] }}"
+
+- name: Extract OKD CLI
+  ansible.builtin.unarchive:
+    src: "{{ ocloud_platform_okd_staging_dir['path'] }}/openshift-client-linux.tar.gz"
+    dest: "{{ ocloud_platform_okd_staging_dir['path'] }}/bin"
+    remote_src: true
+
+- name: Extract OKD installer
+  ansible.builtin.shell:
+    cmd: "oc adm release extract --command=openshift-install {{ ocloud_platform_okd_base_url }}:{{ ocloud_platform_okd_release }} --to {{ ocloud_platform_okd_staging_dir['path'] }}/bin"
+  environment:
+    PATH: "{{ ocloud_platform_okd_staging_dir['path'] }}/bin:{{ ansible_env.PATH }}"
+
+- name: Template OKD configs
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ ocloud_platform_okd_staging_dir['path'] }}/cfg/{{ item }}"
+  loop:
+    - agent-config.yaml
+    - install-config.yaml
+
+- name: Generate OKD agent-based installer image
+  ansible.builtin.shell:
+    cmd: "openshift-install agent create image --dir {{ ocloud_platform_okd_staging_dir['path'] }}/cfg"
+  environment:
+    PATH: "{{ ocloud_platform_okd_staging_dir['path'] }}/bin:{{ ansible_env.PATH }}"
+    OPENSHIFT_INSTALL_OS_IMAGE_OVERRIDE: "{{ ocloud_platform_okd_image_url }}"
+
+- debug:
+    msg: |
+       OKD agent-based installer image has been created as {{ ocloud_platform_okd_staging_dir['path'] }}/cfg/agent.x86_64.iso
+       kubeconfig and kubeadmin-password can be found under {{ ocloud_platform_okd_staging_dir['path'] }}/cfg/auth/
+
+- ansible.builtin.set_fact:
+    ocloud_platform_okd_kubeconfig: "{{ ocloud_platform_okd_staging_dir['path'] }}/cfg/auth/kubeconfig"
+
+- ansible.builtin.set_fact:
+    ocloud_platform_image: "{{ ocloud_platform_okd_staging_dir['path'] }}/cfg/agent.x86_64.iso"
