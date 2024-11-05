@@ -1,0 +1,25 @@
+apiVersion: o2ims.oran.openshift.io/v1alpha1
+kind: Inventory
+metadata:
+  labels:
+    app.kubernetes.io/name: inventory
+    app.kubernetes.io/instance: inventory-sample
+    app.kubernetes.io/part-of: oran-o2ims
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: oran-o2ims
+  name: default
+  namespace: oran-o2ims
+spec:
+  cloudID: {{ ocloud_platform_o2ims_ingress_host | to_uuid }}
+  ingressHost: {{ ocloud_platform_o2ims_ingress_host }}
+  alarmSubscriptionServerConfig:
+    enabled: false
+  metadataServerConfig:
+    enabled: true
+  deploymentManagerServerConfig:
+    enabled: true
+    backendURL: "{{ ocloud_platform_o2ims_api_url }}"
+    backendType: regular-hub
+  resourceServerConfig:
+    enabled: true
+    backendURL: "{{ocloud_platform_o2ims_search_api_url }}"
