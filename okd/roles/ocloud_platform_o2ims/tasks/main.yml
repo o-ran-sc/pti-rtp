@@ -1,0 +1,86 @@
+---
+- name: Gather facts
+  ansible.builtin.setup:
+    gather_subset: all
+
+- name: Create staging dir for orano2ims installation
+  ansible.builtin.tempfile:
+    state: directory
+  register: ocloud_platform_o2ims_staging_dir
+
+- name: Create staging subdirs
+  ansible.builtin.file:
+    path: "{{ ocloud_platform_o2ims_staging_dir['path'] }}/{{ item }}"
+    state: directory
+  loop:
+    - go
+    - git
+
+- name: Download golang
+  ansible.builtin.get_url:
+    url: "{{ ocloud_platform_o2ims_golang_url }}"
+    dest: "{{ ocloud_platform_o2ims_staging_dir['path'] }}/go.linux-amd64.tar.gz"
+
+- name: Extract golang
+  ansible.builtin.unarchive:
+    src: "{{ ocloud_platform_o2ims_staging_dir['path'] }}/go.linux-amd64.tar.gz"
+    dest: "{{ ocloud_platform_o2ims_staging_dir['path'] }}"
+    remote_src: true
+
+- name: Clone oran-o2ims repo
+  ansible.builtin.git:
+    repo: "{{ ocloud_platform_o2ims_repo_url }}"
+    dest: "{{ ocloud_platform_o2ims_staging_dir['path'] }}/git"
+
+- name: Deploy oran-o2ims operator
+  ansible.builtin.shell:
+    chdir: "{{ ocloud_platform_o2ims_staging_dir['path'] }}/git"
+    cmd: "make deploy"
+  environment:
+    PATH: "{{ ocloud_platform_o2ims_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "{{ ocloud_platform_o2ims_kubeconfig }}"
+
+- name: Install oran-o2ims custom resource definitions
+  ansible.builtin.shell:
+    chdir: "{{ ocloud_platform_o2ims_staging_dir['path'] }}/git"
+    cmd: "make install"
+  environment:
+    PATH: "{{ ocloud_platform_o2ims_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "{{ ocloud_platform_o2ims_kubeconfig }}"
+
+- name: Get Infrastructure config
+  kubernetes.core.k8s_info:
+    api_version: config.openshift.io/v1
+    kind: Infrastructure
+    name: cluster
+    kubeconfig: "{{ ocloud_platform_o2ims_kubeconfig }}"
+  register: ocloud_platform_o2ims_infrastructure_info
+
+- name: Get IngressController config
+  kubernetes.core.k8s_info:
+    api_version: operator.openshift.io/v1
+    kind: IngressController
+    name: default
+    namespace: openshift-ingress-operator
+    kubeconfig: "{{ ocloud_platform_o2ims_kubeconfig }}"
+  register: ocloud_platform_o2ims_ingresscontroller_info
+
+- name: Get search-api Route config
+  kubernetes.core.k8s_info:
+    api_version: route.openshift.io/v1
+    kind: Route
+    name: search-api
+    namespace: open-cluster-management
+    kubeconfig: "{{ ocloud_platform_o2ims_kubeconfig }}"
+  register: ocloud_platform_o2ims_search_api_route_info
+
+- set_fact:
+    ocloud_platform_o2ims_api_url: "{{ ocloud_platform_o2ims_infrastructure_info['resources'][0]['status']['apiServerURL'] }}"
+    ocloud_platform_o2ims_ingress_host: "{{ ocloud_platform_o2ims_service }}.{{ ocloud_platform_o2ims_ingresscontroller_info['resources'][0]['status']['domain'] }}"
+    ocloud_platform_o2ims_search_api_url: "https://{{ ocloud_platform_o2ims_search_api_route_info['resources'][0]['spec']['host'] }}"
+
+- name: Create Inventory resource
+  kubernetes.core.k8s:
+    template: v1alpha1_inventory.yaml.j2
+    state: present
+    kubeconfig: "{{ ocloud_platform_o2ims_kubeconfig }}"

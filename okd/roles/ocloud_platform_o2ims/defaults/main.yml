@@ -1,0 +1,5 @@
+---
+ocloud_platform_o2ims_golang_url: "https://go.dev/dl/go1.23.2.linux-amd64.tar.gz"
+ocloud_platform_o2ims_kubeconfig: "{{ ocloud_platform_okd_kubeconfig }}"
+ocloud_platform_o2ims_repo_url: "https://github.com/openshift-kni/oran-o2ims.git"
+ocloud_platform_o2ims_service: "o2ims"
