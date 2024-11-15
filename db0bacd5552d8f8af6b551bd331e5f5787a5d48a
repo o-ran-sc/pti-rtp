@@ -16,6 +16,24 @@
       "message": "Could you add some explanation of what Stolostron is?",
       "revId": "db0bacd5552d8f8af6b551bd331e5f5787a5d48a",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83981d45_e68eec3f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-11-15T22:06:48Z",
+      "side": 1,
+      "message": "I updated the commit message with more descriptive information about Stolostron. Let me know if that is sufficient. I also plan to update documentation with more comprehensive information as we get closer to cutting the K release.",
+      "parentUuid": "ed803211_1d76d51c",
+      "revId": "db0bacd5552d8f8af6b551bd331e5f5787a5d48a",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
