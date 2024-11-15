@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed803211_1d76d51c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-11-15T07:49:28Z",
+      "side": 1,
+      "message": "Could you add some explanation of what Stolostron is?",
+      "revId": "db0bacd5552d8f8af6b551bd331e5f5787a5d48a",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
