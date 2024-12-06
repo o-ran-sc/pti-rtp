@@ -1,0 +1,28 @@
+From 3c8b68f7df132ee1de4a06290a29d12bc29d8051 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 17 Oct 2023 14:45:02 +0800
+Subject: [PATCH 6/9] WA - Workaround for missing README file
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+Change-Id: I5bab62ddcc00c6ae3e32000668309b1e7543233b
+---
+ stx/dockerfiles/stx-lat-tool_arm64.Dockerfile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile b/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
+index 6b249c2..9a8b3f8 100644
+--- a/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
++++ b/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
+@@ -72,6 +72,9 @@ RUN sed -i 's/linux-image-arm64/linux-image-stx-arm64/g' /opt/LAT/SDK/sysroots/a
+ 
+ RUN sed -i 's/Wind River Linux Graphics development .* ostree/StarlingX ostree/g' /opt/LAT/SDK/sysroots/cortexa57-wrs-linux/boot/efi/EFI/BOOT/grub.cfg
+ 
++# Workaround for missing README file
++RUN cp /opt/LAT/SDK/sysroots/aarch64-wrlinuxsdk-linux/usr/share/genimage/doc/target_intel-socfpga-64.README.md.in /opt/LAT/SDK/sysroots/aarch64-wrlinuxsdk-linux/usr/share/genimage/doc/target_qemuarm64.README.md.in 
++
+ # Add vimrc
+ COPY stx/toCOPY/common/vimrc.local /etc/vim/vimrc.local
+ RUN chmod 0644 /etc/vim/vimrc.local
+-- 
+2.30.2
+

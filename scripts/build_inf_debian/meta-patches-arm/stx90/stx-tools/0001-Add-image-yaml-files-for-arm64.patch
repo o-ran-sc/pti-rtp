@@ -1,0 +1,613 @@
+From c9949f83c08bc6a686068a9a90883cda3fa4bc1c Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 1 Aug 2023 13:49:38 +0800
+Subject: [PATCH 1/9] Add image yaml files for arm64
+
+Add base-bullseye_arm64.yaml from base-bullseye.yaml,
+and base-initramfs-bullseye_arm64.yaml from
+base-initramfs-bullseye.yaml and made the following
+ajustment for arm64:
+* amd64 -> arm64
+* x64 -> aa64
+* x86_64 -> aarch64
+* bzImage -> vmlinux
+* intel-x86-64 -> qemuarm64
+* ttyS0 -> ttyAMA0
+* remove package grub2 since only grub-efi
+  is needed for arm64
+* disable secure boot
+
+Test Plan:
+PASS: downloader -s -b on x86-64 host
+PASS: downloader -s -b on arm64 host
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on x86-64 target
+PASS: Deploy AIO-DX on arm64 target
+
+Story: 2010739
+Task: 48002
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889682
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+Change-Id: I7be98f75405eb61ece65f9202e73ad8d1a51ee1d
+---
+ .../debian/common/base-bullseye_arm64.yaml    | 421 ++++++++++++++++++
+ .../common/base-initramfs-bullseye_arm64.yaml | 132 ++++++
+ 2 files changed, 553 insertions(+)
+ create mode 100644 debian-mirror-tools/config/debian/common/base-bullseye_arm64.yaml
+ create mode 100644 debian-mirror-tools/config/debian/common/base-initramfs-bullseye_arm64.yaml
+
+diff --git a/debian-mirror-tools/config/debian/common/base-bullseye_arm64.yaml b/debian-mirror-tools/config/debian/common/base-bullseye_arm64.yaml
+new file mode 100644
+index 0000000..c41ac96
+--- /dev/null
++++ b/debian-mirror-tools/config/debian/common/base-bullseye_arm64.yaml
+@@ -0,0 +1,421 @@
++---
++name: starlingx
++machine: qemuarm64
++image_type:
++- iso
++- ostree-repo
++debootstrap-mirror: deb-merge-all
++package_feeds: []
++package_type: external-debian
++wic:
++  OSTREE_WKS_BOOT_SIZE: ''
++  OSTREE_WKS_EFI_SIZE: --size=32M
++  OSTREE_WKS_ROOT_SIZE: ''
++  OSTREE_WKS_FLUX_SIZE: ''
++  OSTREE_FLUX_PART: fluxdata
++gpg:
++  gpg_path: /tmp/.lat_gnupg_root
++  ostree:
++    gpgid: Wind-River-Linux-Sample
++    gpgkey: $OECORE_NATIVE_SYSROOT/usr/share/genimage/rpm_keys/RPM-GPG-PRIVKEY-Wind-River-Linux-Sample
++    gpg_password: windriver
++  grub:
++    BOOT_GPG_NAME: SecureBootCore
++    BOOT_GPG_PASSPHRASE: SecureCore
++    BOOT_KEYS_DIR: $OECORE_NATIVE_SYSROOT/usr/share/bootfs/boot_keys
++    BOOT_GPG_KEY: $OECORE_NATIVE_SYSROOT/usr/share/bootfs/boot_keys/BOOT-GPG-PRIVKEY-SecureBootCore
++    BOOT_SINGED_SHIM: $IMAGE_ROOTFS/usr/lib/shim/bootaa64.efi
++    BOOT_SINGED_SHIMTOOL: $IMAGE_ROOTFS/usr/lib/shim/mmaa64.efi
++    BOOT_SINGED_GRUB: $IMAGE_ROOTFS/boot/efi/EFI/BOOT/grubaa64.efi
++    BOOT_EFITOOL: $IMAGE_ROOTFS/usr/lib/efitools/aarch64-linux-gnu/LockDown.efi
++    BOOT_GRUB_CFG: $OECORE_TARGET_SYSROOT/boot/efi/EFI/BOOT/grub.cfg
++    BOOT_NOSIG_GRUB: $OECORE_TARGET_SYSROOT/boot/efi/EFI/BOOT/bootaa64-nosig.efi
++    EFI_SECURE_BOOT: disable
++packages: []
++external-packages: []
++include-default-packages: '0'
++rootfs-pre-scripts:
++- |
++  # The StarlingX customize pacakges includes:
++  # - ostree 2019.1
++  export PATH=/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
++  chroot $IMAGE_ROOTFS bash << SCRIPT_ENDOF
++  set -e
++  # Speed up apt/dpkg used for running build-image
++  echo force-unsafe-io > /etc/dpkg/dpkg.cfg.d/unsafe-io
++  apt update
++  apt install -y --no-install-recommends linux-image-stx-arm64 linux-rt-image-stx-arm64 grub-common
++  apt install -y --allow-downgrades --allow-unauthenticated --no-install-recommends ostree ostree-boot libostree-1-1 ostree-upgrade-mgr
++  apt install --no-install-recommends -y ifupdown
++  apt install -y bc vim uuid-runtime iputils-ping
++  # Move dpkg database to /usr so it's accessible after the OS /var is
++  # mounted, but make a symlink so it works without modifications to
++  # dpkg or apt
++  mv /var/lib/dpkg /usr/share/dpkg/database
++  ln -sr /usr/share/dpkg/database /var/lib/dpkg
++  SCRIPT_ENDOF
++rootfs-post-scripts:
++- |-
++  # Set bash as default shell
++  ln -snf --relative $IMAGE_ROOTFS/bin/bash $IMAGE_ROOTFS/bin/sh
++- |-
++  # Allow root ssh login
++  export PATH=/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
++  chroot $IMAGE_ROOTFS sed -i 's/^[#[:space:]]*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
++- |-
++  # FIXME: OSTree will not set up a link to scratch automagically. Need to
++  # relocate scratch to a more ostree friendly locale
++  mkdir $IMAGE_ROOTFS/var/rootdirs/scratch
++  ln -snf --relative $IMAGE_ROOTFS/var/rootdirs/scratch $IMAGE_ROOTFS/scratch
++- |-
++  # Make /opt/branding to writable (To make end-user enable to place their branding archive)
++  mkdir $IMAGE_ROOTFS/var/branding
++  mkdir -p $IMAGE_ROOTFS/var/rootdirs/opt
++  ln -snf --relative $IMAGE_ROOTFS/var/branding $IMAGE_ROOTFS/var/rootdirs/opt/branding
++- |-
++  cat /dev/null > $IMAGE_ROOTFS/etc/resolv.conf
++- |-
++  cat /dev/null > $IMAGE_ROOTFS/etc/apt/sources.list
++- |-
++  # Only used for running build-image
++  rm -f etc/dpkg/dpkg.cfg.d/unsafe-io
++- |-
++  # There is ${IMAGE_ROOTFS}/var/pxeboot/grubaa64.efi from parent linux installed
++  # For secure boot feature, it should be replaced with the right one
++  if [ "$EFI_SECURE_BOOT" = enable ]; then
++    install -m 0644 ${IMAGE_ROOTFS}/boot/efi/EFI/BOOT/grubaa64.efi ${IMAGE_ROOTFS}/var/pxeboot/grubaa64.efi
++  fi
++environments:
++- NO_RECOMMENDATIONS="1"
++- DEBIAN_FRONTEND=noninteractive
++- KERNEL_PARAMS=crashkernel=2048M apparmor=0 security=apparmor
++ostree:
++  ostree_use_ab: '0'
++  ostree_osname: debian
++  ostree_skip_boot_diff: '2'
++  ostree_remote_url: ''
++  ostree_install_device: '/dev/sda'
++  OSTREE_GRUB_USER: root
++  OSTREE_GRUB_PW_FILE: $OECORE_NATIVE_SYSROOT/usr/share/bootfs/boot_keys/ostree_grub_pw
++  OSTREE_FDISK_BLM: 2506
++  OSTREE_FDISK_BSZ: 512
++  OSTREE_FDISK_RSZ: 20480
++  OSTREE_FDISK_VSZ: 20480
++  OSTREE_FDISK_FSZ: 32
++  OSTREE_CONSOLE: console=ttyAMA0,115200
++debootstrap-key: ''
++apt-keys:
++- /opt/LAT/pubkey.rsa
++iso-grub-entry: |
++  submenu 'UEFI Debian Controller Install' --unrestricted --id=standard {
++    menuentry 'Serial Console' --unrestricted --id=serial {
++      set fallback=1
++      efi-watchdog enable 0 180
++      linux /vmlinux-std %BOOT_PARAMS% traits=controller defaultkernel=vmlinuz-*[!t]-arm64
++      initrd @INITRD@
++    }
++    menuentry 'Graphical Console' --unrestricted --id=graphical {
++      set fallback=1
++      efi-watchdog enable 0 180
++      linux /vmlinux-std %BOOT_PARAMS% traits=controller defaultkernel=vmlinuz-*[!t]-arm64 console=tty1
++      initrd @INITRD@
++    }
++  }
++
++  submenu 'UEFI Debian All-in-one Install' --unrestricted --id=aio {
++    menuentry 'Serial Console' --unrestricted --id=serial {
++      set fallback=1
++      efi-watchdog enable 0 180
++      linux /vmlinux-std %BOOT_PARAMS% traits=controller,worker defaultkernel=vmlinuz-*[!t]-arm64
++      initrd @INITRD@
++    }
++    menuentry 'Graphical Console' --unrestricted --id=graphical {
++      set fallback=1
++      efi-watchdog enable 0 180
++      linux /vmlinux-std %BOOT_PARAMS% traits=controller,worker defaultkernel=vmlinuz-*[!t]-arm64 console=tty1
++      initrd @INITRD@
++    }
++  }
++
++  submenu 'UEFI Debian All-in-one (lowlatency) Install' --unrestricted --id=aio-lowlat {
++    menuentry 'Serial Console' --unrestricted --id=serial {
++      set fallback=1
++      efi-watchdog enable 0 180
++      linux /vmlinux-rt %BOOT_PARAMS% traits=controller,worker,lowlatency defaultkernel=vmlinuz-*-rt-arm64 efi=runtime
++      initrd @INITRD@
++    }
++    menuentry 'Graphical Console' --unrestricted --id=graphical {
++      set fallback=1
++      efi-watchdog enable 0 180
++      linux /vmlinux-rt %BOOT_PARAMS% traits=controller,worker,lowlatency defaultkernel=vmlinuz-*-rt-arm64 efi=runtime console=tty1
++      initrd @INITRD@
++    }
++  }
++
++iso-syslinux-entry: |
++  menu start
++  ontimeout 1
++
++  menu begin
++    menu title Debian Controller Install
++    menu default
++
++    label 1
++      menu label Serial Console
++      kernel /vmlinux-std
++      ipappend 2
++      append initrd=@INITRD@ %BOOT_PARAMS% traits=controller defaultkernel=vmlinuz-*[!t]-arm64
++
++    label 2
++      menu label Graphical Console
++      kernel /vmlinux-std
++      ipappend 2
++      append initrd=@INITRD@ %BOOT_PARAMS% traits=controller defaultkernel=vmlinuz-*[!t]-arm64 console=tty1
++  menu end
++
++  menu begin
++    menu title Debian All-in-one Install
++
++    label 3
++      menu label Serial Console
++      kernel /vmlinux-std
++      ipappend 2
++      append initrd=@INITRD@ %BOOT_PARAMS% traits=controller,worker defaultkernel=vmlinuz-*[!t]-arm64
++
++    label 4
++      menu label Graphical Console
++      kernel /vmlinux-std
++      ipappend 2
++      append initrd=@INITRD@ %BOOT_PARAMS% traits=controller,worker defaultkernel=vmlinuz-*[!t]-arm64 console=tty1
++  menu end
++
++  menu begin
++    menu title Debian All-in-one (lowlatency) Install
++
++    label 5
++      menu label Serial Console
++      kernel /vmlinux-rt
++      ipappend 2
++      append initrd=@INITRD@ %BOOT_PARAMS% traits=controller,worker,lowlatency defaultkernel=vmlinuz-*-rt-arm64
++
++    label 6
++      menu label Graphical Console
++      kernel /vmlinux-rt
++      ipappend 2
++      append initrd=@INITRD@ %BOOT_PARAMS% traits=controller,worker,lowlatency defaultkernel=vmlinuz-*-rt-arm64 console=tty1
++  menu end
++
++iso-post-script: |
++  cd ${ISO_DIR}
++
++  # 0. Prepare
++  # According to `multiple-kernels' in lat yaml, install std
++  # or rt kernel to ISO
++  for k in ${OSTREE_MULTIPLE_KERNELS}; do
++    if [ "${k%%-rt-arm64}" != "${k}" ]; then
++      cp ${DEPLOY_DIR_IMAGE}/${k} vmlinux-rt
++      if [ -e ${DEPLOY_DIR_IMAGE}/${k}.sig ]; then
++        cp ${DEPLOY_DIR_IMAGE}/${k}.sig vmlinux-rt.sig
++      fi
++    else
++      cp ${DEPLOY_DIR_IMAGE}/${k} vmlinux-std
++      if [ -e ${DEPLOY_DIR_IMAGE}/${k}.sig ]; then
++        cp ${DEPLOY_DIR_IMAGE}/${k}.sig vmlinux-std.sig
++      fi
++    fi
++  done
++
++  # 1. Kickstart
++  mkdir -p kickstart
++  # 1.1 Kickstart example for PXE
++  cat << ENDOF > kickstart/pxe-ks.cfg
++  lat-disk --install-device=/dev/disk/by-path/pci-0000:af:00.0-scsi-0:2:0:0
++  ENDOF
++
++  # 1.2 Kickstart example for ISO
++  cat << ENDOF > kickstart/iso-ks.cfg
++  lat-disk --install-device=/dev/sda
++  ENDOF
++
++  # 1.3 Kickstart from image rootfs (provided by package platform-kickstarts)
++  if [ -e $IMAGE_ROOTFS/var/www/pages/feed/rel-*/kickstart/kickstart.cfg ]; then
++    cp $IMAGE_ROOTFS/var/www/pages/feed/rel-*/kickstart/kickstart.cfg kickstart/
++  fi
++
++  if [ -e $IMAGE_ROOTFS/var/www/pages/feed/rel-*/kickstart/miniboot.cfg ]; then
++    cp $IMAGE_ROOTFS/var/www/pages/feed/rel-*/kickstart/miniboot.cfg kickstart/
++  fi
++
++  if [ -d $IMAGE_ROOTFS/var/www/pages/feed/rel-*/kickstart/centos ]; then
++    cp -r $IMAGE_ROOTFS/var/www/pages/feed/rel-*/kickstart/centos kickstart/
++  fi
++
++  # 2. PXE
++  mkdir -p pxeboot/pxelinux.cfg
++
++  # 2.1 Kernel and initramfs
++  install -m 644 vmlinux* pxeboot
++  install -m 644 initrd* pxeboot
++
++  # 2.2 Bootloader
++  # 2.2.1 Legacy BIOS PXE
++  cp $OECORE_TARGET_SYSROOT/usr/share/syslinux/pxelinux.0 pxeboot/
++  cp isolinux/isolinux.cfg pxeboot/pxelinux.cfg/default
++  for f in libcom32.c32 ldlinux.c32 libutil.c32 vesamenu.c32; do
++    cp isolinux/$f pxeboot/
++  done
++
++  # 2.2.2 EFI PXE
++  cp -a EFI pxeboot
++  if [ -e ${IMAGE_ROOTFS}/boot/efi/EFI/BOOT/bootaa64-nosig.efi ]; then
++    cp ${IMAGE_ROOTFS}/boot/efi/EFI/BOOT/bootaa64-nosig.efi pxeboot/EFI/BOOT/
++  fi
++
++  # 2.3 Edit grub.cfg and pxelinux.cfg/default
++  # 2.3.1 Drop to install from local ostree repo
++  sed -i "s#instl=/ostree_repo#@BOOTPARAMS@#g" \
++    pxeboot/EFI/BOOT/grub.cfg \
++    pxeboot/pxelinux.cfg/default
++
++  # 2.3.2 Install from remote ostree repo
++  sed -i "s#insturl=file://NOT_SET#insturl=http://pxecontroller:8080/feed/debian/ostree_repo#g" \
++    pxeboot/EFI/BOOT/grub.cfg \
++    pxeboot/pxelinux.cfg/default
++
++  # 2.3.3 Configure kickstart url
++  BOOT_PARAMS="ks=http://pxecontroller:8080/feed/debian/kickstart/pxe-ks.cfg"
++
++  # 2.3.4 Verbose installation
++  #BOOT_PARAMS="${BOOT_PARAMS} instsh=2"
++
++  # 2.3.5 Update boot params
++  sed -i "s#@BOOTPARAMS@#${BOOT_PARAMS}#g" \
++    pxeboot/EFI/BOOT/grub.cfg \
++    pxeboot/pxelinux.cfg/default
++
++  # 2.3.6 Add `Boot from hard drive' entry to grub.cfg
++  cat <<ENDOF>> pxeboot/EFI/BOOT/grub.cfg
++
++  export skip_check_cfg
++  menuentry 'UEFI Boot from hard drive' {
++      search --set=root --label otaefi
++      configfile /efi/boot/grub.cfg
++  }
++  ENDOF
++
++  # 2.4 Tweak PXE if EFI secure boot enabled
++  if [ "$EFI_SECURE_BOOT" = enable ]; then
++    # On some host, PXE make bootaa64.efi search grubaa64.efi
++    # from tftp/ dir other than tftp/EFI/BOOT/
++    install -m 0644 EFI/BOOT/grubaa64.efi pxeboot/
++
++    # Resign grub.cfg
++    rm pxeboot/EFI/BOOT/grub.cfg.sig
++    echo 'SecureCore' | gpg  --pinentry-mode loopback \
++                             --batch \
++                             --homedir /tmp/.lat_gnupg_root \
++                             -u SecureBootCore \
++                             --detach-sign \
++                             --passphrase-fd 0 \
++                             pxeboot/EFI/BOOT/grub.cfg
++  fi
++
++  # 2.5 copy pxeboot config template files to pxeboot/pxelinux.cfg
++  mkdir -p pxeboot/pxelinux.cfg.files
++  cp ${IMAGE_ROOTFS}/var/pxeboot/pxelinux.cfg.files/efi-pxe-* pxeboot/pxelinux.cfg.files/
++  cp ${IMAGE_ROOTFS}/var/pxeboot/pxelinux.cfg.files/pxe-* pxeboot/pxelinux.cfg.files/
++
++  # 2.6 upgrades directory and upgrade meta files
++  RELEASE_VER=$(cat ${IMAGE_ROOTFS}/etc/build.info | grep SW_VERSION | cut -f2 -d'=' | tr -d '"')
++  mkdir -p upgrades
++  cp ${IMAGE_ROOTFS}/etc/pxeboot-update-${RELEASE_VER}.sh upgrades/
++  cp ${IMAGE_ROOTFS}/usr/sbin/deploy-precheck upgrades/
++  cp ${IMAGE_ROOTFS}/usr/sbin/upgrade_utils.py upgrades/
++  cp ${IMAGE_ROOTFS}/opt/upgrades/import.sh upgrades/
++  cp ${IMAGE_ROOTFS}/opt/upgrades/metadata.xml upgrades/
++  cp ${IMAGE_ROOTFS}/usr/sbin/usm_load_import upgrades/
++  sed -i "s/xxxSW_VERSIONxxx/${RELEASE_VER}/g" upgrades/metadata.xml
++  mkdir -p patches
++  cp ${IMAGE_ROOTFS}/etc/software/*-metadata.xml upgrades/
++  cp ${IMAGE_ROOTFS}/etc/software/*-metadata.xml patches/
++  echo -n "VERSION=${RELEASE_VER}" > upgrades/version
++  mkdir -p upgrades/software-deploy
++  # Copy all software-deploy scripts to upgrades/software-deploy in ISO
++  cp ${IMAGE_ROOTFS}/usr/sbin/software-deploy/* upgrades/software-deploy/
++
++  # 3. ISO
++  # 3.1 Edit grub.cfg and isolinux.cfg
++  # 3.1.1 Configure local kickstart url and LVM root and fluxdata device
++  BOOT_PARAMS="ks=file:///kickstart/kickstart.cfg"
++  BOOT_PARAMS="${BOOT_PARAMS} inst_ostree_root=/dev/mapper/cgts--vg-root--lv"
++  BOOT_PARAMS="${BOOT_PARAMS} inst_ostree_var=/dev/mapper/cgts--vg-var--lv"
++
++  # 3.1.2 Verbose installation
++  #BOOT_PARAMS="${BOOT_PARAMS} instsh=2"
++
++  # 3.1.3 Update boot params
++  sed -i "s#instl=/ostree_repo#& ${BOOT_PARAMS}#g" \
++    EFI/BOOT/grub.cfg \
++    isolinux/isolinux.cfg
++
++  # According to `default-kernel' in lat yaml, set which
++  # bootloader menu entry to boot
++  sed -i "s/^DEFAULT .*//g" \
++    isolinux/isolinux.cfg
++
++  if [ "${OSTREE_DEFAULT_KERNEL%%-rt-arm64}" != "${OSTREE_DEFAULT_KERNEL}" ]; then
++    # Boot rt kernel by default
++    sed -i "s/ set default=.*/ set default=2/g" \
++      EFI/BOOT/grub.cfg
++  else
++    # Boot std kernel by default
++    sed -i "s/ set default=.*/ set default=0/g" \
++      EFI/BOOT/grub.cfg
++  fi
++
++  # 3.2 Resign grub.cfg if EFI secure boot enabled
++  if [ "$EFI_SECURE_BOOT" = enable ]; then
++    rm EFI/BOOT/grub.cfg.sig
++    echo 'SecureCore' | gpg  --pinentry-mode loopback \
++                             --batch \
++                             --homedir /tmp/.lat_gnupg_root \
++                             -u SecureBootCore \
++                             --detach-sign \
++                             --passphrase-fd 0 \
++                             EFI/BOOT/grub.cfg
++  fi
++
++  # Update the grub.cfg in efi.img according to above setting.
++  # Don't update grub.cfg.sig because the grub.cfg signature checking
++  # has been omitted.
++  mdel -i efi.img ::/EFI/BOOT/grub.cfg
++  mcopy -i efi.img EFI/BOOT/grub.cfg ::/EFI/BOOT/
++
++  # Put the controller-0 pxeboot install grub menu samples and
++  # setup script into a new the ISO's pxeboot/samples directory.
++  install -v -d -m 0755 pxeboot/samples
++  install -m 0555 ${IMAGE_ROOTFS}/usr/sbin/pxeboot_setup.sh pxeboot/samples
++  echo "See pxeboot_setup.sh --help for usage details" > pxeboot/samples/README
++  install -m 0664 ${IMAGE_ROOTFS}/var/pxeboot/pxelinux.cfg.files/pxeboot.cfg.debian pxeboot/samples
++  install -m 0664 ${IMAGE_ROOTFS}/var/pxeboot/pxelinux.cfg.files/efi-pxeboot.cfg.debian pxeboot/samples
++
++  # Added CERTS into efi.img
++  if [ "$EFI_SECURE_BOOT" = enable ]; then
++      mmd -i efi.img ::/CERTS
++      mcopy -i efi.img -s /localdisk/CERTS/* ::/CERTS/
++      mkdir images
++      ln -snf ../efi.img images/efiboot.img
++  fi
++
++  # Generate package list file in the iso root
++  echo "Verifying package list for ${IMAGE_NAME}"
++  if [ -f "/localdisk/workdir/${IMAGE_NAME}/packages.yaml" ]; then
++      echo "Copying ISO package list"
++      cp /localdisk/workdir/${IMAGE_NAME}/packages.yaml sw_package_list.yaml
++  fi
++
++multiple-kernels: vmlinuz-*[!t]-arm64 vmlinuz-*-rt-arm64
++default-kernel: vmlinuz-*[!t]-arm64
++system:
++- contains:
++  - /localdisk/deploy/lat-initramfs.yaml
+diff --git a/debian-mirror-tools/config/debian/common/base-initramfs-bullseye_arm64.yaml b/debian-mirror-tools/config/debian/common/base-initramfs-bullseye_arm64.yaml
+new file mode 100644
+index 0000000..590f5f4
+--- /dev/null
++++ b/debian-mirror-tools/config/debian/common/base-initramfs-bullseye_arm64.yaml
+@@ -0,0 +1,132 @@
++---
++name: starlingx-initramfs-ostree-image
++machine: qemuarm64
++image_type:
++- initramfs
++debootstrap-mirror: deb-merge-all
++package_feeds: []
++package_type: external-debian
++gpg:
++  gpg_path: /tmp/.lat_gnupg_root
++  ostree:
++    gpgid: Wind-River-Linux-Sample
++    gpgkey: $OECORE_NATIVE_SYSROOT/usr/share/genimage/rpm_keys/RPM-GPG-PRIVKEY-Wind-River-Linux-Sample
++    gpg_password: windriver
++  grub:
++    BOOT_GPG_NAME: SecureBootCore
++    BOOT_GPG_PASSPHRASE: SecureCore
++    BOOT_KEYS_DIR: $OECORE_NATIVE_SYSROOT/usr/share/bootfs/boot_keys
++    BOOT_GPG_KEY: $OECORE_NATIVE_SYSROOT/usr/share/bootfs/boot_keys/BOOT-GPG-PRIVKEY-SecureBootCore
++packages:
++- apt-utils
++- base-passwd
++- bash
++- bc
++- bind9-dnsutils
++- bnxt-en
++- bnxt-en-rt
++- busybox
++- bzip2
++- ca-certificates
++- curl
++- dosfstools
++- e2fsprogs
++- efibootmgr
++- eject
++- fdisk
++- findutils
++- firmware-qlogic
++- gawk
++- glib-networking
++- gnupg
++- grep
++- gzip
++- iavf
++- iavf-rt
++- iavf-cvl-2.54
++- iavf-cvl-2.54-rt
++- iavf-cvl-4.10
++- iavf-cvl-4.10-rt
++- ice
++- ice-rt
++- ice-cvl-2.54
++- ice-cvl-2.54-rt
++- ice-cvl-4.10
++- ice-cvl-4.10-rt
++- i40e
++- i40e-rt
++- i40e-cvl-2.54
++- i40e-cvl-2.54-rt
++- i40e-cvl-4.10
++- i40e-cvl-4.10-rt
++- ifupdown
++- initramfs-ostree
++- iproute2
++- isc-dhcp-client
++- isc-dhcp-common
++- kbd
++- kmod
++- libostree-1-1
++- linux-image-stx-arm64
++- linux-rt-image-stx-arm64
++- mdadm
++- mlnx-ofed-kernel-modules
++- mlnx-ofed-kernel-modules-rt
++- mount
++- mttyexec
++- multipath-config
++- multipath-tools
++- multipath-tools-boot
++- open-iscsi
++- ostree-boot
++- ostree
++- parted
++- procps
++- psmisc
++- pv
++- iputils-ping
++- rng-tools
++- rpm2cpio
++- rsync
++- sed
++- tar
++- udev
++- udhcpc
++- util-linux
++- uuid-runtime
++- vim
++- watchdog
++- wget
++external-packages: []
++include-default-packages: '0'
++rootfs-pre-scripts:
++- echo "run script before do_rootfs in $IMAGE_ROOTFS"
++rootfs-post-scripts:
++- |-
++  # Reduce rootfs size AMAP
++  export PATH=/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
++  chroot $IMAGE_ROOTFS bash << SCRIPT_ENDOF
++  # Each time modify this file, change the version number below.
++  echo "Initramfs bullseye yaml file V-1.0.0" > /var/log/rootfs_install.log
++  dpkg-query -l >> /var/log/rootfs_install.log
++  set -x
++  rm -rf /boot/*
++  rm -rf /var/lib/* /var/cache/*
++  rm -rf /usr/share/man /usr/share/doc /usr/share/zoneinfo /usr/share/vim
++  SCRIPT_ENDOF
++- |-
++  # Set bash as default shell
++  ln -snf --relative $IMAGE_ROOTFS/bin/bash $IMAGE_ROOTFS/bin/sh
++- |-
++  # Update the installer script with partition size parameters
++  # so they don't have to be specified on the grub command line
++  sed -i "s/^FSZ=.*/FSZ=32/g" ${IMAGE_ROOTFS}/install
++  sed -i "s/^BSZ=.*/BSZ=512/g" ${IMAGE_ROOTFS}/install
++  sed -i "s/^RSZ=.*/RSZ=20480/g" ${IMAGE_ROOTFS}/install
++  sed -i "s/^VSZ=.*/VSZ=20480/g" ${IMAGE_ROOTFS}/install
++environments:
++- NO_RECOMMENDATIONS="1"
++- DEBIAN_FRONTEND=noninteractive
++debootstrap-key: ''
++apt-keys:
++- /opt/LAT/pubkey.rsa
+-- 
+2.30.2
+

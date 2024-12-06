@@ -1,0 +1,38 @@
+From 8410a1ac80e2f40057583c10d287016afaed5f0f Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 28 Feb 2024 22:22:55 +0800
+Subject: [PATCH 8/9] WA - builder: remove STX_MIRROR_UTL
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+Change-Id: I454ba05b3231550b45f2ce12309237dc0ad6daa0
+---
+ stx/toCOPY/builder/finishSetup.sh | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/stx/toCOPY/builder/finishSetup.sh b/stx/toCOPY/builder/finishSetup.sh
+index 7127f43..2347442 100755
+--- a/stx/toCOPY/builder/finishSetup.sh
++++ b/stx/toCOPY/builder/finishSetup.sh
+@@ -4,7 +4,6 @@
+ 
+ REPOMGR=aptly
+ if [ "$REPOMGR" == "aptly" ]; then
+-    STX_MIRROR="${STX_MIRROR_URL}/debian/debian/deb.debian.org/debian/${DEBIAN_DISTRIBUTION}-${DEBIAN_VERSION} ${DEBIAN_DISTRIBUTION} main"
+     REPO_SNAPSHOT="[check-valid-until=no] ${DEBIAN_SNAPSHOT} ${DEBIAN_DISTRIBUTION} main"
+     REPO_BIN="deb [trusted=yes] ${REPOMGR_DEPLOY_URL}deb-local-binary ${DEBIAN_DISTRIBUTION} main"
+     REPO_SRC="deb-src [trusted=yes] ${REPOMGR_DEPLOY_URL}deb-local-source ${DEBIAN_DISTRIBUTION} main"
+@@ -21,11 +20,6 @@ if [ "$REPOMGR" == "aptly" ]; then
+         sed -i "1i\\deb ${REPO_SNAPSHOT}" /etc/apt/sources.list
+         sed -i "1i\\deb-src ${REPO_SNAPSHOT}" /etc/apt/sources.list
+     fi
+-    ret=`grep ${STX_MIRROR_URL} /etc/apt/sources.list`
+-    if [ "x$ret" == "x" ]; then
+-        sed -i "1i\\deb ${STX_MIRROR}" /etc/apt/sources.list
+-        sed -i "1i\\deb-src ${STX_MIRROR}" /etc/apt/sources.list
+-    fi
+ fi
+ 
+ addgroup -gid 751 cgts > /dev/null 2>&1
+-- 
+2.30.2
+

@@ -1,0 +1,28 @@
+From 5d8dca4341f166498af2c314d9fd89564ae5fa35 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 17 Oct 2023 15:11:34 +0800
+Subject: [PATCH 7/9] WA - lat: update the LAT path
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+Change-Id: I4dee0d6142a6d69386562a90b735cc7a9bab8b91
+---
+ stx/dockerfiles/stx-lat-tool_arm64.Dockerfile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile b/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
+index 9a8b3f8..a1521f6 100644
+--- a/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
++++ b/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
+@@ -17,7 +17,8 @@ FROM debian:bullseye
+ MAINTAINER Jackie Huang <jackie.huang@windriver.com>
+ 
+ ARG STX_MIRROR_URL=https://mirror.starlingx.windriver.com/mirror
+-ARG LAT_BINARY_RESOURCE_PATH=${STX_MIRROR_URL}/lat-sdk/lat-sdk-20231206
++#ARG LAT_BINARY_RESOURCE_PATH=${STX_MIRROR_URL}/lat-sdk/lat-sdk-20231206
++ARG LAT_BINARY_RESOURCE_PATH=http://147.11.105.121:5088/3_open_source/stx/images-arm64/lat-sdk/lat-sdk-build_20230525
+ 
+ # Update certificates
+ RUN apt-get -y update && apt-get -y install --no-install-recommends ca-certificates && update-ca-certificates
+-- 
+2.30.2
+

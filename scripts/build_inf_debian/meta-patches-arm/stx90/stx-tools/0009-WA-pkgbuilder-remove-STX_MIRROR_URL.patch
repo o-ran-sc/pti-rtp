@@ -1,0 +1,27 @@
+From 5f29e7ac97eeb0cfe3930a3e0b9f0955aad1c40e Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 17 Oct 2023 14:50:47 +0800
+Subject: [PATCH 9/9] WA - pkgbuilder: remove STX_MIRROR_URL
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+Change-Id: Ibb1d5e66998434fb0617feb8835bb49f11ec87a1
+---
+ stx/toCOPY/pkgbuilder/debbuilder.conf | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/stx/toCOPY/pkgbuilder/debbuilder.conf b/stx/toCOPY/pkgbuilder/debbuilder.conf
+index 2dcfe6f..f94b69b 100644
+--- a/stx/toCOPY/pkgbuilder/debbuilder.conf
++++ b/stx/toCOPY/pkgbuilder/debbuilder.conf
+@@ -36,8 +36,6 @@ $external_commands = {
+         'cp /etc/apt/sources.list tmp.list',
+         'cat tmp.list',
+         'sed -i "1 i\deb [trusted=yes] http://stx-stx-repomgr:80/deb-local-binary @DEBIAN_DISTRIBUTION@ main" tmp.list',
+-        'echo "deb @STX_MIRROR_URL@/debian/debian/deb.debian.org/debian/@DEBIAN_DISTRIBUTION@-@DEBIAN_VERSION@ @DEBIAN_DISTRIBUTION@ main" >> tmp.list',
+-        'echo "deb-src @STX_MIRROR_URL@/debian/debian/deb.debian.org/debian/@DEBIAN_DISTRIBUTION@-@DEBIAN_VERSION@ @DEBIAN_DISTRIBUTION@ main" >> tmp.list',
+         'awk \'!a[$0]++\' tmp.list > new.list && mv -f new.list /etc/apt/sources.list',
+         'cat /etc/apt/sources.list',
+         'echo "Package: *" > /etc/apt/preferences.d/local_repos',
+-- 
+2.30.2
+
