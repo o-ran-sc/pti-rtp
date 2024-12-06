@@ -35,18 +35,9 @@ STX_SRC_BRANCH_SUPPORTED="\
     master \
     r/stx.8.0 \
     r/stx.9.0 \
-    TC_DEV_0008 \
-    WRCP_22.12 \
-    WRCP_22.12_PATCHING \
-    WRCP_22.12_PRESTAGING \
-    WRCP_22.12_V2_PATCHING \
-    WRCP_22.12_MR2_PATCHING \
-    WRCP_22.12_MR2PLUS_PATCHING \
-    WRCP_22.12_MR2PLUS_PRESTAGING \
 "
 STX_SRC_BRANCH="master"
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
-STX_MANIFEST_URL_WRCP="ssh://git@vxgit.wrs.com:7999/cgcs/github.com.stx-staging.stx-manifest.git"
 
 STX_ARCH_SUPPORTED="\
     x86-64 \
@@ -76,7 +67,6 @@ SRC_FIX_REPOS="\
 
 SDK_URL="http://ala-lpggp5:5088/3_open_source/stx/images-arm64/lat-sdk/lat-sdk-build_20230525/AppSDK.sh"
 
-PEK_REPO_URL="https://mirrors.tuna.tsinghua.edu.cn/git/git-repo"
 SETUP_ONLY=false
 REBUILD_IMG=false
 
@@ -233,15 +223,10 @@ if [ -z ${WORKSPACE} ]; then
     WORKSPACE=`readlink -f workspace`
 fi
 
-if [[ ${STX_SRC_BRANCH} =~ "WRCP" || ${STX_SRC_BRANCH} =~ "TC_DEV" ]]; then
-    STX_MANIFEST_URL=${STX_MANIFEST_URL_WRCP}
-fi
-
 echo "workspace: ${WORKSPACE}"
 echo "branch: ${STX_SRC_BRANCH}"
 echo "arch: ${STX_ARCH}"
 echo "parallel: ${STX_PARALLEL}"
-#exit 0
 
 #########################################################################
 # Functions for each step
@@ -328,16 +313,6 @@ export STX_MANIFEST="default.xml"
 EOF
 
 
-    if [[ ${HOST} =~ "pek-" ]]; then
-        cat << EOF >> ${WORKSPACE}/${ENV_FILENAME}
-
-export http_proxy=http://147.11.252.42:9090
-export https_proxy=http://147.11.252.42:9090
-export no_proxy=localhost,127.0.0.1,10.96.0.0/12,192.168.0.0/16
-
-EOF
-    fi
-
     if [ ${STX_ARCH} = "arm64" ]; then
     	cat << EOF >> ${WORKSPACE}/${ENV_FILENAME}
 
@@ -371,9 +346,6 @@ repo_init_sync () {
         echo_info "the src repos already exists, skipping"
     else
         cd ${STX_REPO_ROOT}
-        if [[ ${HOST} =~ "pek-" ]]; then
-            export REPO_URL=${PEK_REPO_URL}
-        fi
 
         RUN_CMD="repo init -u ${STX_MANIFEST_URL} -b ${STX_SRC_BRANCH} -m ${STX_MANIFEST}"
         run_cmd "Init the repo from manifest"
@@ -473,12 +445,6 @@ patch_src () {
 
     if [ ${STX_ARCH} = "arm64" ]; then
         patch_src_arm
-    fi
-
-    if [[ ${HOST} =~ "pek-" ]]; then
-    	sed -i '/^FROM/a \
-    	    \n# Proxy configuration\nENV https_proxy "http://147.11.252.42:9090"\n' \
-    	    ${STX_REPO_ROOT}/stx-tools/stx/dockerfiles/stx*Dockerfile
     fi
 
     STX_BUILDER="${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py"
