@@ -34,9 +34,15 @@ STX_PARALLEL="2"
 STX_SRC_BRANCH_SUPPORTED="\
     master \
     r/stx.8.0 \
+    r/stx.9.0 \
+    TC_DEV_0008 \
     WRCP_22.12 \
     WRCP_22.12_PATCHING \
     WRCP_22.12_PRESTAGING \
+    WRCP_22.12_V2_PATCHING \
+    WRCP_22.12_MR2_PATCHING \
+    WRCP_22.12_MR2PLUS_PATCHING \
+    WRCP_22.12_MR2PLUS_PRESTAGING \
 "
 STX_SRC_BRANCH="master"
 STX_MANIFEST_URL="https://opendev.org/starlingx/manifest"
@@ -50,23 +56,29 @@ STX_ARCH="x86-64"
 
 # Source code fixes for ARM64
 SRC_FIX_URL="https://github.com/jackiehjm"
-SRC_FIX_BRANCH="arm64/20230515-stx80-native"
+SRC_FIX_BRANCH="arm64/20240305-stx90-native"
 SRC_FIX_REPOS="\
     cgcs-root \
     stx-tools \
+    stx/stx-puppet \
     stx/integ \
     stx/utilities \
     stx/fault \
     stx/containers \
-    stx/ha \
     stx/kernel \
     stx/metal \
     stx/ansible-playbooks \
     stx/config \
-    stx/stx-puppet \
+    stx/nginx-ingress-controller-armada-app \
+    stx/app-istio \
+    stx/virt \
 "
 
 SDK_URL="http://ala-lpggp5:5088/3_open_source/stx/images-arm64/lat-sdk/lat-sdk-build_20230525/AppSDK.sh"
+
+PEK_REPO_URL="https://mirrors.tuna.tsinghua.edu.cn/git/git-repo"
+SETUP_ONLY=false
+REBUILD_IMG=false
 
 #########################################################################
 # Common Functions
@@ -74,15 +86,19 @@ SDK_URL="http://ala-lpggp5:5088/3_open_source/stx/images-arm64/lat-sdk/lat-sdk-b
 
 help_info () {
 cat << ENDHELP
-Usage:
-${SCRIPTS_NAME} [-w WORKSPACE_DIR] [-p PARALLEL_BUILD] [-a arch] [-b STX_SRC_BRANCH] [-h]
-where:
-    -w WORKSPACE_DIR is the path for the project
-    -p PARALLEL_BUILD is the num of paralle build, default is 2
-    -a STX_ARCH is the build arch, default is x86-64, only supports: 'x86-64' and 'arm64'
-    -b STX_SRC_BRANCH is the branch for stx repos, default is master
-    -h this help info
-examples:
+Usage: ${SCRIPTS_NAME} [options]
+
+Options:
+  -w, --workspace WORKSPACE_DIR    Set the path of workspace for the project.
+  -p, --parallel  PARALLEL_BUILD   Set the num of paralle build, default is 2.
+  -a, --arch      STX_ARCH         Set the build arch, default is x86-64,
+                                   only supports: 'x86-64' and 'arm64'.
+  -b, --branch    STX_SRC_BRANCH   Set the branch for stx repos, default is master.
+  -r, --rebuild                    Rebuild all the builder images if set.
+  -s, --setup-only                 Only setup the build env, don't actually build.
+  -h, --help                       Display this help message.
+
+Examples:
 $0
 $0 -w workspace_1234
 ENDHELP
@@ -127,7 +143,10 @@ check_valid_branch () {
         fi
     done
     if [ -z "${BRANCH_VALID}" ]; then
-        echo_error "${branch} is not a supported BRANCH, the supported BRANCHs are: ${STX_SRC_BRANCH_SUPPORTED}"
+        echo_error "'${branch}' is not a supported BRANCH, the supported BRANCHs are:"
+        for b in ${STX_SRC_BRANCH_SUPPORTED}; do
+            echo " - ${b}"
+        done
         exit 1
     else
         STX_SRC_BRANCH=${BRANCH_VALID}
@@ -143,7 +162,10 @@ check_valid_arch () {
         fi
     done
     if [ -z "${ARCH_VALID}" ]; then
-        echo_error "${arch} is not a supported ARCH, the supported ARCHs are: ${STX_ARCH_SUPPORTED}"
+        echo_error "'${arch}' is not a supported ARCH, the supported ARCHs are:"
+        for a in ${STX_ARCH_SUPPORTED}; do
+            echo " - ${a}"
+        done
         exit 1
     else
         STX_ARCH=${ARCH_VALID}
@@ -155,24 +177,53 @@ check_valid_arch () {
 # Parse cmd options
 #########################################################################
 
+# Use getopt to handle options
+OPTIONS=$(getopt -o w:p:a:b:rsh --long workspace:,parallel:,arch:,branch:,rebuild,setup-only,help -- "$@")
+if [ $? -ne 0 ]; then
+    help_info 
+    exit 1
+fi
 
-while getopts "w:p:a:b:h" OPTION; do
-    case ${OPTION} in
-        w)
-            WORKSPACE=`readlink -f ${OPTARG}`
+# Parse options
+eval set -- "$OPTIONS"
+
+while true; do
+    case "$1" in
+        -w | --workspace)
+            WORKSPACE=$(readlink -f "$2")
+            shift 2
             ;;
-        p)
-            STX_PARALLEL="${OPTARG}"
+        -p | --parallel)
+            STX_PARALLEL="$2"
+            shift 2
             ;;
-        a)
-            check_valid_arch ${OPTARG}
+        -a | --arch)
+            check_valid_arch "$2"
+            shift 2
             ;;
-        b)
-            check_valid_branch ${OPTARG}
+        -b | --branch)
+            check_valid_branch "$2"
+            shift 2
             ;;
-        h)
+        -r | --rebuild)
+            REBUILD_IMG=true
+            shift
+	    ;;
+        -s | --setup-only)
+            SETUP_ONLY=true
+            shift
+	    ;;
+        -h | --help)
             help_info
-            exit
+            exit 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            usage
+            exit 1
             ;;
     esac
 done
@@ -182,9 +233,15 @@ if [ -z ${WORKSPACE} ]; then
     WORKSPACE=`readlink -f workspace`
 fi
 
-if [[ ${STX_SRC_BRANCH} =~ "WRCP" ]]; then
+if [[ ${STX_SRC_BRANCH} =~ "WRCP" || ${STX_SRC_BRANCH} =~ "TC_DEV" ]]; then
     STX_MANIFEST_URL=${STX_MANIFEST_URL_WRCP}
 fi
+
+echo "workspace: ${WORKSPACE}"
+echo "branch: ${STX_SRC_BRANCH}"
+echo "arch: ${STX_ARCH}"
+echo "parallel: ${STX_PARALLEL}"
+#exit 0
 
 #########################################################################
 # Functions for each step
@@ -270,6 +327,29 @@ export STX_MANIFEST="default.xml"
 
 EOF
 
+
+    if [[ ${HOST} =~ "pek-" ]]; then
+        cat << EOF >> ${WORKSPACE}/${ENV_FILENAME}
+
+export http_proxy=http://147.11.252.42:9090
+export https_proxy=http://147.11.252.42:9090
+export no_proxy=localhost,127.0.0.1,10.96.0.0/12,192.168.0.0/16
+
+EOF
+    fi
+
+    if [ ${STX_ARCH} = "arm64" ]; then
+    	cat << EOF >> ${WORKSPACE}/${ENV_FILENAME}
+
+export STX_PREBUILT_BUILDER_IMAGE_PREFIX=stx4arm/
+export STX_PREBUILT_BUILDER_IMAGE_TAG=master-20240229
+
+EOF
+
+    else
+    	echo "export STX_PREBUILT_BUILDER_IMAGE_TAG=master-debian-latest" >> ${WORKSPACE}/${ENV_FILENAME}
+    fi
+
     echo_info "Env file created at ${WORKSPACE}/$ENV_FILENAME"
     cat ${WORKSPACE}/$ENV_FILENAME
 
@@ -291,6 +371,9 @@ repo_init_sync () {
         echo_info "the src repos already exists, skipping"
     else
         cd ${STX_REPO_ROOT}
+        if [[ ${HOST} =~ "pek-" ]]; then
+            export REPO_URL=${PEK_REPO_URL}
+        fi
 
         RUN_CMD="repo init -u ${STX_MANIFEST_URL} -b ${STX_SRC_BRANCH} -m ${STX_MANIFEST}"
         run_cmd "Init the repo from manifest"
@@ -361,6 +444,8 @@ patch_src_arm () {
     for repo in ${SRC_FIX_REPOS}; do
         if [ $repo = "cgcs-root" ]; then
             fix_repo="stx-cgcs-root"
+        elif [ $repo = "stx/stx-puppet" ]; then
+	    fix_repo="stx-puppet"
         else
             fix_repo="${repo/\//-}"
         fi
@@ -376,8 +461,11 @@ patch_src_arm () {
 
         git remote add hjm-github ${SRC_FIX_URL}/${fix_repo}
         git fetch hjm-github
-        git checkout -b ${SRC_FIX_BRANCH} hjm-github/${SRC_FIX_BRANCH}
+        git checkout -b ${SRC_FIX_BRANCH} hjm-github/${SRC_FIX_BRANCH} || true 
     done
+
+    PKG_BUILDER="${STX_REPO_ROOT}/stx-tools/stx/toCOPY/pkgbuilder/debbuilder.conf"
+    sed -i '/@STX_MIRROR_URL@/ d' ${PKG_BUILDER}
 }
 
 patch_src () {
@@ -385,6 +473,12 @@ patch_src () {
 
     if [ ${STX_ARCH} = "arm64" ]; then
         patch_src_arm
+    fi
+
+    if [[ ${HOST} =~ "pek-" ]]; then
+    	sed -i '/^FROM/a \
+    	    \n# Proxy configuration\nENV https_proxy "http://147.11.252.42:9090"\n' \
+    	    ${STX_REPO_ROOT}/stx-tools/stx/dockerfiles/stx*Dockerfile
     fi
 
     STX_BUILDER="${STX_REPO_ROOT}/stx-tools/stx/lib/stx/stx_build.py"
@@ -419,19 +513,6 @@ patch_src () {
     echo_step_end
 }
 
-prepare_lat_sdk () {
-    # This is only needed for ARM64
-    echo_step_start "Prepare LAT-SDK"
-
-    SDK_DIR=${STX_REPO_ROOT}/stx-tools/stx/toCOPY/lat-sdk/
-    mkdir -p ${SDK_DIR}
-    cd ${SDK_DIR}
-    RUN_CMD="wget ${SDK_URL} -O ${SDK_DIR}/AppSDK.sh"
-    run_cmd "Download the ${SDK_URL} to ${SDK_DIR}"
-
-    echo_step_end
-}
-
 init_stx_tool () {
     echo_step_start "Init stx tool"
 
@@ -452,9 +533,15 @@ init_stx_tool () {
     # This will be included in the name of your build container and the basename for $STX_REPO_ROOT
     stx config --add project.name ${PRJ_NAME}
 
-    #stx config --add project.proxy true
-    #stx config --add project.proxyserver 147.11.252.42
-    #stx config --add project.proxyport 9090
+    if [ ${STX_ARCH} = "arm64" ]; then
+        stx config --add project.debian_snapshot_base http://snapshot.debian.org/archive/debian
+        stx config --add project.debian_security_snapshot_base http://snapshot.debian.org/archive/debian-security
+
+	# options: cengn_first(default), cengn, upstream_first, upstream
+	# For now, there is no any packages for ARM on cengn, so only opiton
+	# can be used is "upstream"
+        stx config --add repomgr.cengnstrategy upstream
+    fi
 
     stx config --show
 
@@ -465,12 +552,15 @@ build_image () {
     echo_step_start "Build Debian images"
 
     cd ${STX_REPO_ROOT}/stx-tools
-    if [ ${STX_ARCH} = "arm64" ]; then
+    RUN_CMD="./stx-init-env -D"
+    run_cmd "Run 'stx-init-env -D' to delete existing minikube profile."
+
+    if [ "$REBUILD_IMG" = true ]; then
         RUN_CMD="./stx-init-env --rebuild"
     else
         RUN_CMD="./stx-init-env"
     fi
-    run_cmd "Run stx-init-env script"
+    run_cmd "Run stx-init-env script to initialize build environment & (re-)start builder pods."
 
     stx control status
 
@@ -480,6 +570,11 @@ build_image () {
 
     RUN_CMD="stx build prepare"
     run_cmd "Build prepare"
+
+    if [ "$SETUP_ONLY" = true ]; then
+        echo "The build env is setup successfully."
+        exit 0
+    fi
 
     RUN_CMD="stx build download"
     run_cmd "Download packges"
@@ -512,7 +607,4 @@ prepare_workspace
 create_env
 prepare_src
 init_stx_tool
-if [ ${STX_ARCH} = "arm64" ]; then
-    prepare_lat_sdk
-fi
 build_image
