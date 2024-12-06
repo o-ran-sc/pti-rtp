@@ -1,0 +1,305 @@
+From 7518b647ea0085c231a903c7a3e4351b2b2966c4 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 26 Jul 2023 17:23:55 +0800
+Subject: [PATCH 1/4] debrepack: add arm64 support for meta data
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add set_build_arch (similar to set_build_type) so
+@BUILD_ARCH@ can be used as placeholder in meta data
+files to avoid hardcoded arch names.
+
+The items in dl_path/dl_files in meta_data.yaml may
+have different values and the patches in the patches
+or deb_patches directory may be different for arm64
+arch, this change will allow multiple dl_path/dl_files
+items exist in meta_data.yaml, and multiple series files
+in patches or deb_patches directories exist, and the
+arch specific ones will be used as first priority if
+it exists.
+
+The arch specific ones will have sufix like _arm64,
+e.g. in meta_data.yaml
+
+dl_files:
+  pkg-file-amd64.tar.gz:
+    topdir: pkg-amd64
+    url: https://path/to/pkg-file-amd64.tar.gz
+    sha256sum: <sha256sum value>
+dl_files_arm64:
+  pkg-file-arm64.tar.gz:
+    topdir: pkg-arm64
+    url: https://path/to/pkg-file-arm64.tar.gz
+    sha256sum: <sha256sum value>
+
+dl_path:
+  name: pkg-name-amd64.tar.gz
+  url: https://path/to/pkg-name-amd64.tar.gz
+  sha256sum: <sha256sum value>
+dl_path_arm64:
+  name: pkg-name-arm64.tar.gz
+  url: https://path/to/pkg-name-arm64.tar.gz
+  sha256sum: <sha256sum value>
+
+e.g. for patches/deb_patches
+
+deb_patches
+├── 0001-deb-patch1.patch
+├── 0002-deb-patch2.patch
+├── 0003-arm64-deb-patch1.patch
+├── series
+└── series_arm64
+
+patches
+├── 0001-patch1.patch
+├── 0002-patch2.patch
+├── 0002-arm64-patch1.patch
+├── series
+└── series_arm64
+
+Test Plan:
+PASS: update meta data for packages in repos:
+      - starlingx/integ
+      - starlingx/kernel
+PASS: downloader -s on x86-64 host
+PASS: downloader -s on arm64 host
+PASS: build-pkgs -p <pkg> on x86-64 host
+PASS: build-pkgs -p <pkg> on arm64 host
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+
+Story: 2010739
+Task: 48013
+
+Change-Id: I42063364c416e40794d85af41e7a22366a84faa1
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ build-tools/stx/debrepack.py | 114 ++++++++++++++++++++++++++++-------
+ 1 file changed, 93 insertions(+), 21 deletions(-)
+
+diff --git a/build-tools/stx/debrepack.py b/build-tools/stx/debrepack.py
+index 524b38d..85f593b 100755
+--- a/build-tools/stx/debrepack.py
++++ b/build-tools/stx/debrepack.py
+@@ -28,6 +28,7 @@ import sys
+ import utils
+ from utils import run_shell_cmd, get_download_url
+ import yaml
++import platform
+ 
+ 
+ RELEASENOTES = " ".join([os.environ.get('PROJECT'), os.environ.get('MY_RELEASE'), "distribution"])
+@@ -58,7 +59,21 @@ if STX_MIRROR_STRATEGY is None:
+         STX_MIRROR_STRATEGY = "stx_mirror_first"
+ 
+ BTYPE = "@KERNEL_TYPE@"
++BARCH = "@BUILD_ARCH@"
+ 
++STX_ARCH = "amd64"
++host_arch = platform.machine()
++if host_arch == 'aarch64':
++    STX_ARCH = "arm64"
++
++DL_FILES_DEFAULT = "dl_files"
++DL_FILES_ARCH = DL_FILES_DEFAULT + "_" + STX_ARCH
++
++DL_PATH_DEFAULT = "dl_path"
++DL_PATH_ARCH = DL_PATH_DEFAULT + "_" + STX_ARCH
++
++SERIES_DEFAULT = "series"
++SERIES_ARCH = SERIES_DEFAULT + "_" + STX_ARCH
+ 
+ class DownloadProgress():
+     def __init__(self):
+@@ -296,6 +311,16 @@ class Parser():
+ 
+         self.pkginfo["debfolder"] = os.path.join(local_debian)
+ 
++    def set_build_arch(self):
++
++        local_debian = os.path.join(self.pkginfo["packdir"], "local_debian")
++
++        # clean @BUILD_ARCH@
++        sed_cmd = 'sed -i s#%s#%s#g %s'
++        for root, _, files in os.walk(local_debian):
++            for name in files:
++                run_shell_cmd(sed_cmd % (BARCH, STX_ARCH, os.path.join(root, name)), self.logger)
++
+     def get_gitrevcount_srcdir(self, gitrevcount_obj):
+         src_dir = str(gitrevcount_obj.get("SRC_DIR", ""))
+         if src_dir:
+@@ -463,8 +488,14 @@ class Parser():
+         self.logger.info("Overwrite the debian folder by %s", metadata)
+         run_shell_cmd('cp -r %s/* %s' % (metadata, deb_folder), self.logger)
+ 
+-        series = os.path.join(metadata, "patches/series")
+-        if not os.path.isfile(series):
++        series_default = os.path.join(metadata, "patches", SERIES_DEFAULT)
++        series_arch = os.path.join(metadata, "patches", SERIES_ARCH)
++
++        if os.path.isfile(series_arch):
++            series = series_arch
++        elif os.path.isfile(series_default):
++            series = series_default
++        else:
+             return True
+ 
+         format_ver, format_type = self.set_deb_format()
+@@ -497,11 +528,16 @@ class Parser():
+                 run_shell_cmd('cp -rL %s %s' % (src_file, self.pkginfo["srcdir"]),
+                               self.logger)
+ 
+-        if "dl_files" in self.meta_data:
++        dl_files = DL_FILES_DEFAULT
++        # Arch specific dl_files have higher priority
++        if DL_FILES_ARCH in self.meta_data:
++            dl_files = DL_FILES_ARCH
++
++        if dl_files in self.meta_data:
+             pwd = os.getcwd()
+             os.chdir(self.pkginfo["packdir"])
+-            for dl_file in self.meta_data['dl_files']:
+-                dir_name = self.meta_data['dl_files'][dl_file]['topdir']
++            for dl_file in self.meta_data[dl_files]:
++                dir_name = self.meta_data[dl_files][dl_file]['topdir']
+                 dl_path = os.path.join(self.pkginfo["packdir"], dl_file)
+                 if not os.path.exists(dl_path):
+                     self.logger.error("No such file %s in local mirror", dl_file)
+@@ -537,8 +573,15 @@ class Parser():
+     def apply_src_patches(self):
+ 
+         format_ver, format_type = self.set_deb_format()
+-        series = os.path.join(self.pkginfo["debfolder"], "patches/series")
+-        if not os.path.isfile(series):
++
++        series_default = os.path.join(self.pkginfo["debfolder"], "patches", SERIES_DEFAULT)
++        series_arch = os.path.join(self.pkginfo["debfolder"], "patches", SERIES_ARCH)
++
++        if os.path.isfile(series_arch):
++            series = series_arch
++        elif os.path.isfile(series_default):
++            series = series_default
++        else:
+             return True
+ 
+         f = open(series)
+@@ -547,7 +590,13 @@ class Parser():
+         f.close()
+ 
+         patches_folder = os.path.join(self.pkginfo["srcdir"], "debian/patches")
+-        series_file = os.path.join(self.pkginfo["srcdir"], "debian/patches/series")
++        series_file_default = os.path.join(patches_folder, SERIES_DEFAULT)
++        series_file_arch = os.path.join(patches_folder, SERIES_ARCH)
++
++        series_file = series_file_default
++        if os.path.isfile(series_file_arch):
++            series_file = series_file_arch
++
+         if not os.path.isdir(patches_folder):
+             os.mkdir(patches_folder)
+             os.mknod(series_file)
+@@ -587,9 +636,16 @@ class Parser():
+ 
+     def apply_deb_patches(self):
+ 
+-        series = os.path.join(self.pkginfo["debfolder"], "deb_patches/series")
+-        if not os.path.isfile(series):
++        series_default = os.path.join(self.pkginfo["debfolder"], "deb_patches", SERIES_DEFAULT)
++        series_arch = os.path.join(self.pkginfo["debfolder"], "deb_patches", SERIES_ARCH)
++
++        if os.path.isfile(series_arch):
++            series = series_arch
++        elif os.path.isfile(series_default):
++            series = series_default
++        else:
+             return True
++
+         f = open(series)
+         patches = f.readlines()
+         patches_src = os.path.dirname(series)
+@@ -609,8 +665,12 @@ class Parser():
+         return True
+ 
+     def extract_tarball(self):
++        # Arch specific dl_path have higher priority
++        dl_path = DL_PATH_DEFAULT
++        if DL_PATH_ARCH in self.meta_data:
++            dl_path = DL_PATH_ARCH
+ 
+-        tarball_name = self.meta_data["dl_path"]["name"]
++        tarball_name = self.meta_data[dl_path]["name"]
+         tarball_file = os.path.join(self.pkginfo["packdir"], tarball_name)
+ 
+         cmd, _, _ = tar_cmd(tarball_name, self.logger)
+@@ -715,9 +775,15 @@ class Parser():
+ 
+         pwd = os.getcwd()
+         os.chdir(saveto)
+-        if "dl_files" in self.meta_data:
+-            for dl_file in self.meta_data['dl_files']:
+-                dl_file_info = self.meta_data['dl_files'][dl_file]
++
++        dl_files = DL_FILES_DEFAULT
++        # Arch specific dl_files have higher priority
++        if DL_FILES_ARCH in self.meta_data:
++            dl_files = DL_FILES_ARCH
++
++        if dl_files in self.meta_data:
++            for dl_file in self.meta_data[dl_files]:
++                dl_file_info = self.meta_data[dl_files][dl_file]
+                 url = dl_file_info['url']
+                 if "sha256sum" in dl_file_info:
+                     check_cmd = "sha256sum"
+@@ -739,16 +805,21 @@ class Parser():
+                     if not checksum(dl_file, check_sum, check_cmd, self.logger):
+                         raise Exception(f'Fail to download {dl_file}')
+ 
+-        if "dl_path" in self.meta_data:
+-            dl_file = self.meta_data["dl_path"]["name"]
+-            url = self.meta_data["dl_path"]["url"]
+-            if "sha256sum" in self.meta_data["dl_path"]:
++        dl_path = DL_PATH_DEFAULT
++        # Arch specific dl_path have higher priority
++        if DL_PATH_ARCH in self.meta_data:
++            dl_path = DL_PATH_ARCH
++
++        if dl_path in self.meta_data:
++            dl_file = self.meta_data[dl_path]["name"]
++            url = self.meta_data[dl_path]["url"]
++            if "sha256sum" in self.meta_data[dl_path]:
+                 check_cmd = "sha256sum"
+-                check_sum = self.meta_data["dl_path"]['sha256sum']
++                check_sum = self.meta_data[dl_path]['sha256sum']
+             else:
+                 self.logger.warning(f"{dl_file} missing sha256sum")
+                 check_cmd = "md5sum"
+-                check_sum = self.meta_data["dl_path"]['md5sum']
++                check_sum = self.meta_data[dl_path]['md5sum']
+             if not checksum(dl_file, check_sum, check_cmd, self.logger):
+                 (dl_url, alt_dl_url) = get_download_url(url, self.strategy)
+                 if alt_dl_url:
+@@ -813,6 +884,7 @@ class Parser():
+         os.mkdir(self.pkginfo["packdir"])
+ 
+         self.set_build_type()
++        self.set_build_arch()
+ 
+         logfile = os.path.join(self.pkginfo["packdir"], self.pkginfo["pkgname"] + ".log")
+         if os.path.exists(logfile):
+@@ -832,7 +904,7 @@ class Parser():
+ 
+         if "dl_hook" in self.meta_data:
+             self.run_dl_hook()
+-        elif "dl_path" in self.meta_data:
++        elif (DL_PATH_DEFAULT or DL_PATH_ARCH) in self.meta_data:
+             self.extract_tarball()
+         elif "src_path" in self.meta_data:
+             self.create_src_package()
+-- 
+2.30.2
+
