@@ -1,0 +1,77 @@
+From 5ea4c7ef61e071e82d771c8d1f457f950a736eea Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 8 Feb 2023 01:19:56 -0500
+Subject: [PATCH 05/12] helm: add dl_files_arm64 and fix the rules
+
+The dl_files for arm64 are different whith the ones for x86,
+so add dl_files_arm64 for arm64.
+
+Use DEB_HOST_ARCH to replace the hardcoded arch name in the
+rules file.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: Ie71073e590fdde8ecf8d10d08c31e07904d89964
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ kubernetes/helm/debian/deb_folder/rules | 7 ++++---
+ kubernetes/helm/debian/meta_data.yaml   | 9 +++++++++
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/kubernetes/helm/debian/deb_folder/rules b/kubernetes/helm/debian/deb_folder/rules
+index 6bac58e6..343a59b9 100755
+--- a/kubernetes/helm/debian/deb_folder/rules
++++ b/kubernetes/helm/debian/deb_folder/rules
+@@ -6,12 +6,13 @@ export ROOT = debian/tmp
+ export SBINDIR = $(ROOT)/usr/sbin
+ export SUDOERDIR = $(ROOT)/etc/sudoers.d
+ 
++export DEB_HOST_ARCH = $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+ export HELM_VERSION = 3.12.2
+-export HELM_EXECUTABLE = linux-amd64/helm
+-export HELM_PKG = helm-v$(HELM_VERSION)-linux-amd64.tar.gz
++export HELM_EXECUTABLE = linux-$(DEB_HOST_ARCH)/helm
++export HELM_PKG = helm-v$(HELM_VERSION)-linux-$(DEB_HOST_ARCH).tar.gz
+ 
+ export HELM_MAPKUBEAPIS_VERSION =  0.4.1
+-export HELM_MAPKUBEAPIS_PKG = helm-mapkubeapis_$(HELM_MAPKUBEAPIS_VERSION)_linux_amd64.tar.gz
++export HELM_MAPKUBEAPIS_PKG = helm-mapkubeapis_$(HELM_MAPKUBEAPIS_VERSION)_linux_$(DEB_HOST_ARCH).tar.gz
+ 
+ %:
+ 	dh $@
+diff --git a/kubernetes/helm/debian/meta_data.yaml b/kubernetes/helm/debian/meta_data.yaml
+index 915e3e4b..c210350d 100644
+--- a/kubernetes/helm/debian/meta_data.yaml
++++ b/kubernetes/helm/debian/meta_data.yaml
+@@ -11,6 +11,15 @@ dl_files:
+     topdir: mapkubeapis
+     url: https://github.com/helm/helm-mapkubeapis/releases/download/v0.4.1/helm-mapkubeapis_0.4.1_linux_amd64.tar.gz
+     sha256sum: e90a22c4acee76774589042f6a5901e136ee33c10630790d6cff37d169905a78
++dl_files_arm64:
++  helm-v3.12.2-linux-arm64.tar.gz:
++    topdir: linux-arm64
++    url: https://get.helm.sh/helm-v3.12.2-linux-arm64.tar.gz
++    sha256sum: cfafbae85c31afde88c69f0e5053610c8c455826081c1b2d665d9b44c31b3759
++  helm-mapkubeapis_0.4.1_linux_arm64.tar.gz:
++    topdir: mapkubeapis
++    url: https://github.com/helm/helm-mapkubeapis/releases/download/v0.4.1/helm-mapkubeapis_0.4.1_linux_arm64.tar.gz
++    sha256sum: 893ccab831d0d868768ba1bd63c0186f83ffda89cd95c0bc86cb12add9fe0d05
+ 
+ revision:
+   dist: $STX_DIST
+-- 
+2.30.2
+

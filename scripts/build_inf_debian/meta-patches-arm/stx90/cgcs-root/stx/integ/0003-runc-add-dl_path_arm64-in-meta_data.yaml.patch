@@ -1,0 +1,73 @@
+From bcbd1156399106a4baf156ed144759579d7176d3 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 28 Jun 2023 10:23:00 +0800
+Subject: [PATCH 03/12] runc: add dl_path_arm64 in meta_data.yaml
+
+The dl_path for arm64 is different whith the one for x86,
+so add dl_path_arm64 for arm64.
+
+Use @BUILD_ARCH@ to avoid hardcoded arch names in deb files.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: Ib72861e266dcb08fe3609eba9a98d5c7d0676aa2
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ kubernetes/runc/debian/deb_folder/copyright    | 2 +-
+ kubernetes/runc/debian/deb_folder/runc.install | 2 +-
+ kubernetes/runc/debian/meta_data.yaml          | 5 +++++
+ 3 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/kubernetes/runc/debian/deb_folder/copyright b/kubernetes/runc/debian/deb_folder/copyright
+index 737e4ed7..e33b7616 100644
+--- a/kubernetes/runc/debian/deb_folder/copyright
++++ b/kubernetes/runc/debian/deb_folder/copyright
+@@ -7,7 +7,7 @@ License: Apache-2
+ 
+ Other files are included from the upstream runc
+ binary package at
+-https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.amd64
++https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.@BUILD_ARCH@
+ 
+ 
+ License: Apache-2.0
+diff --git a/kubernetes/runc/debian/deb_folder/runc.install b/kubernetes/runc/debian/deb_folder/runc.install
+index 430dc94d..1b9a3d51 100755
+--- a/kubernetes/runc/debian/deb_folder/runc.install
++++ b/kubernetes/runc/debian/deb_folder/runc.install
+@@ -1,2 +1,2 @@
+ #!/usr/bin/dh-exec --with=install
+-runc.amd64 => usr/bin/runc
++runc.@BUILD_ARCH@ => usr/bin/runc
+diff --git a/kubernetes/runc/debian/meta_data.yaml b/kubernetes/runc/debian/meta_data.yaml
+index cc813a2f..14c6735f 100644
+--- a/kubernetes/runc/debian/meta_data.yaml
++++ b/kubernetes/runc/debian/meta_data.yaml
+@@ -7,6 +7,11 @@ dl_files:
+     topdir: null
+     url: https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.amd64
+     sha256sum: c3aadb419e5872af49504b6de894055251d2e685fddddb981a79703e7f895cbd
++dl_files_arm64:
++  runc.arm64:
++    topdir: null
++    url: https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.arm64
++    sha256sum: 1b309c4d5aa4cc7b888b2f79c385ecee26ca3d55dae0852e7c4a692196d5faab
+ revision:
+   dist: $STX_DIST
+   GITREVCOUNT:
+-- 
+2.30.2
+

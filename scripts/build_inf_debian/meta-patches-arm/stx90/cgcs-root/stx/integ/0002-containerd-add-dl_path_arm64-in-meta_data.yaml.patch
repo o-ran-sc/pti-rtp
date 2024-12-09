@@ -1,0 +1,47 @@
+From 48534868e120b89468d1f7805603f717e45bbb75 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 28 Jun 2023 09:51:39 +0800
+Subject: [PATCH 02/12] containerd: add dl_path_arm64 in meta_data.yaml
+
+The dl_path for arm64 is different whith the one for x86,
+so add dl_path_arm64 for arm64.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: I06b89a75b8efe5e06470b00eeef46f543d49f980
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ kubernetes/containerd/debian/meta_data.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kubernetes/containerd/debian/meta_data.yaml b/kubernetes/containerd/debian/meta_data.yaml
+index eb6f85a6..3c707824 100644
+--- a/kubernetes/containerd/debian/meta_data.yaml
++++ b/kubernetes/containerd/debian/meta_data.yaml
+@@ -5,6 +5,10 @@ dl_path:
+   name: containerd-1.6.21-linux-amd64.tar.gz
+   url: https://github.com/containerd/containerd/releases/download/v1.6.21/containerd-1.6.21-linux-amd64.tar.gz
+   sha256sum: 04dcc1b99368492caee758583e531392683268197e58156888a3cea2941117b6
++dl_path_arm64:
++  name: containerd-1.6.21-linux-arm64.tar.gz
++  url: https://github.com/containerd/containerd/releases/download/v1.6.21/containerd-1.6.21-linux-arm64.tar.gz
++  sha256sum: d713d8fbec491705ffe8c33ecc9051a904f6eedc92574928e1d33616f291c583
+ src_files:
+   - debian/files/config.toml
+   - debian/files/containerd.service
+-- 
+2.30.2
+

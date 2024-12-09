@@ -1,0 +1,45 @@
+From 2ef897d3c2a69ead38d0141502f6c1223424db42 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 16 Oct 2023 17:21:11 +0800
+Subject: [PATCH 12/12] kubernetes-unversioned: update the checksums
+
+The checksums of the upstream github tarballs are changed
+with only minor change of the version string:
+
+$ diff -r a/kubernetes-retired-contrib-89f6948/ \
+          b/kubernetes-retired-contrib-89f6948/
+<       gitVersion   string = "v0.0.0-master+89f6948e245"
+
+Change-Id: I084affe696b85ab1fece56151782e3a8ec928a3c
+---
+>       gitVersion   string = "v0.0.0-master+89f6948e24"
+
+Test Plan:
+Pass: export CENGN_STRATEGY=upstream; downloader -s
+
+Closes-bug: 2039414
+
+Change-Id: Ie1a771b4e5130430f53500312d52ac3e3365a74e
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ kubernetes/kubernetes-unversioned/debian/meta_data.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kubernetes/kubernetes-unversioned/debian/meta_data.yaml b/kubernetes/kubernetes-unversioned/debian/meta_data.yaml
+index 196b0ab8..237f5847 100644
+--- a/kubernetes/kubernetes-unversioned/debian/meta_data.yaml
++++ b/kubernetes/kubernetes-unversioned/debian/meta_data.yaml
+@@ -4,8 +4,8 @@ debver: 1.0-1
+ dl_path:
+   name: kubernetes-contrib-v1.18.1.tar.gz
+   url: https://github.com/kubernetes-retired/contrib/tarball/89f6948e24578fed2a90a87871b2263729f90ac3
+-  md5sum: 9aa15af65ed89a7167b9520573bbdcd7
+-  sha256sum: 97206b6c1ea8dc7cb6201f909c2d14fc68cf40faa4e2641cdefb8411e9403274
++  md5sum: fc05d9dc693dd71e3afb98fa51419879
++  sha256sum: 0e1c6f70fc167d4ff1f268bbb72a8a91fab9bdeb17cec95bd3bb7fe4f56ebdcb
+ revision:
+   dist: $STX_DIST
+   GITREVCOUNT:
+-- 
+2.30.2
+

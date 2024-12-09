@@ -1,0 +1,69 @@
+From 55b007fcc580559e12d72c53ae39ba0136488b24 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 6 Dec 2023 17:28:44 +0800
+Subject: [PATCH 10/12] isolcpu: handle devPath when it doesn't exist
+
+The /dev/cpu/<cpunum>/cpuid doesn't exist and is not supported
+for Arm architecture, so check its existence before passing
+devPath to DeviceSpec.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Change-Id: I0f4905139365e6dc071994c46672816ae22b294d
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../isolcpus-device-plugin/files/isolcpu.go   | 20 ++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/kubernetes/plugins/isolcpus-device-plugin/files/isolcpu.go b/kubernetes/plugins/isolcpus-device-plugin/files/isolcpu.go
+index 1ef784df..0ebab58b 100644
+--- a/kubernetes/plugins/isolcpus-device-plugin/files/isolcpu.go
++++ b/kubernetes/plugins/isolcpus-device-plugin/files/isolcpu.go
+@@ -27,6 +27,7 @@ import (
+ 	"isolcpu_plugin/kubernetes/pkg/kubelet/cm/cpuset"
+ 	"github.com/pkg/errors"
+         "io/ioutil"
++	"os"
+ 	"strconv"
+ 	"strings"
+         "time"
+@@ -111,13 +112,18 @@ func (dp *devicePlugin) scan() (dpapi.DeviceTree, error) {
+                         cpustr := strconv.Itoa(cpu)
+ 			numaNode, _ := dp.getCPUNode(cpu)
+ 			devPath := path.Join("/dev/cpu", cpustr, "cpuid")
+-			debug.Printf("Adding %s to isolcpus", devPath)
+-		        var nodes []pluginapi.DeviceSpec
+-			nodes = append(nodes, pluginapi.DeviceSpec{
+-				HostPath:      devPath,
+-				ContainerPath: devPath,
+-				Permissions:   "r",
+-			})
++			var nodes []pluginapi.DeviceSpec
++			if _, err := os.Stat(devPath); os.IsNotExist(err) {
++				debug.Printf("Dev path %s doesn't exist", devPath)
++			} else {
++				debug.Printf("Adding %s to isolcpus", devPath)
++				nodes = append(nodes, pluginapi.DeviceSpec{
++					HostPath:      devPath,
++					ContainerPath: devPath,
++					Permissions:   "r",
++				})
++
++			}
+ 		        devTree.AddDevice(deviceType, cpustr, dpapi.DeviceInfo{
+ 			    State: pluginapi.Healthy, Nodes: nodes, NumaNode: numaNode,
+ 		        })
+-- 
+2.30.2
+

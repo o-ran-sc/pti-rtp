@@ -1,0 +1,76 @@
+From 152f4dc88e0d915cce7281c7ccced83feb581f7e Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 8 Feb 2023 02:09:05 -0500
+Subject: [PATCH 04/12] chartmuseum: add support for arm64
+
+* The link for arm64 is different, so add dl_files_arm64
+
+* Use DEB_HOST_ARCH to handle tar files for different arches.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: I8047d006c56bb611e6dcec8ec12c2cdd8d5eb612
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ kubernetes/chartmuseum/debian/deb_folder/rules | 5 +++--
+ kubernetes/chartmuseum/debian/meta_data.yaml   | 6 ++++++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/kubernetes/chartmuseum/debian/deb_folder/rules b/kubernetes/chartmuseum/debian/deb_folder/rules
+index 4ea4c8fa..e38d88bf 100755
+--- a/kubernetes/chartmuseum/debian/deb_folder/rules
++++ b/kubernetes/chartmuseum/debian/deb_folder/rules
+@@ -4,17 +4,18 @@
+ export CHARTMUSEUM_VERSION = 0.13.0
+ export ROOT = debian/tmp
+ export BINDIR = $(ROOT)/usr/bin
++export DEB_HOST_ARCH = $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+ 
+ %:
+ 	dh $@
+ 
+ override_dh_auto_build:
+-	tar xfz chartmuseum-v$(CHARTMUSEUM_VERSION)-linux-amd64.tar.gz
++	tar xfz chartmuseum-v$(CHARTMUSEUM_VERSION)-linux-$(DEB_HOST_ARCH).tar.gz
+ 
+ override_dh_auto_clean:
+ 
+ override_dh_auto_install:
+ 	install -d -m 755 $(BINDIR)
+-	install -p -D -m 755 linux-amd64/chartmuseum $(BINDIR)/chartmuseum
++	install -p -D -m 755 linux-$(DEB_HOST_ARCH)/chartmuseum $(BINDIR)/chartmuseum
+ 
+ override_dh_auto_test:
+diff --git a/kubernetes/chartmuseum/debian/meta_data.yaml b/kubernetes/chartmuseum/debian/meta_data.yaml
+index a898c279..1b722f48 100644
+--- a/kubernetes/chartmuseum/debian/meta_data.yaml
++++ b/kubernetes/chartmuseum/debian/meta_data.yaml
+@@ -12,6 +12,12 @@ dl_files:
+     url: https://get.helm.sh/chartmuseum-v0.13.0-linux-amd64.tar.gz
+     md5sum: 14aaebaf95022fbc557f776f578f609f
+     sha256sum: fc6a8beda32975737a95b99292d18dd755ecfead0ceac1840f353d238818f683
++dl_files_arm64:
++  chartmuseum-v0.13.0-linux-arm64.tar.gz:
++    topdir: linux-arm64
++    url: https://get.helm.sh/chartmuseum-v0.13.0-linux-arm64.tar.gz
++    md5sum: d870170f1a0b04fb7f6efc4fc8f4bab5
++    sha256sum: 9d803f7c6798a846cf173aff08f3a3f932093eaa38d8708f3cdf10bc1dd6b7a2
+ revision:
+   dist: $STX_DIST
+   GITREVCOUNT:
+-- 
+2.30.2
+

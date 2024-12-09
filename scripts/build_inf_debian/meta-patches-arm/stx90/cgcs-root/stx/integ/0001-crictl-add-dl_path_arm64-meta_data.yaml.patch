@@ -1,0 +1,48 @@
+From 8d61823f6ff3444b4c5f5dc392eab9aca74484ac Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 26 Jul 2023 17:38:08 +0800
+Subject: [PATCH 01/12] crictl: add dl_path_arm64 meta_data.yaml
+
+The dl_path for arm64 is different whith the one for x86,
+so add dl_path_arm64 for arm64.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: Iec381a35faaeaf9b1e257c2be75c37e780756ae0
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ kubernetes/crictl/debian/meta_data.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kubernetes/crictl/debian/meta_data.yaml b/kubernetes/crictl/debian/meta_data.yaml
+index a6154068..62a70ca0 100644
+--- a/kubernetes/crictl/debian/meta_data.yaml
++++ b/kubernetes/crictl/debian/meta_data.yaml
+@@ -6,6 +6,11 @@ dl_path:
+   url: https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.21.0/crictl-v1.21.0-linux-amd64.tar.gz
+   md5sum: 671e173f96f87aab18a4f9f8111cd4e6
+   sha256sum: 85c78a35584971625bf1c3bcd46e5404a90396f979d7586f18b11119cb623e24
++dl_path_arm64:
++  name: crictl-v1.21.0-linux-arm64.tar.gz
++  url: https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.21.0/crictl-v1.21.0-linux-arm64.tar.gz
++  md5sum: 5ca26d26d254fb59b776c63d8523b175
++  sha256sum: 454eecd29fe636282339af5b73c60234a7d10e4b11b9e18937e33056763d72cf
+ revision:
+   dist: $STX_DIST
+   GITREVCOUNT:
+-- 
+2.30.2
+

@@ -1,0 +1,74 @@
+From 55769435d21a5f5b50bdeb478c2f5e6a3496b94a Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 8 Feb 2023 06:18:24 -0500
+Subject: [PATCH 06/12] kubectl-cert-manager: add dl_files_arm64
+
+The dl_files for arm64 are different whith the ones for x86,
+so add dl_files_arm64 for arm64.
+
+Use DEB_HOST_ARCH to replace the hardcoded arch name in the
+rules file.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: Ie4f3a5e35f0ce1edead4e4d25548cc9744cf89c7
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../plugins/kubectl-cert-manager/debian/deb_folder/rules    | 5 +++--
+ .../plugins/kubectl-cert-manager/debian/meta_data.yaml      | 6 ++++++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/kubernetes/plugins/kubectl-cert-manager/debian/deb_folder/rules b/kubernetes/plugins/kubectl-cert-manager/debian/deb_folder/rules
+index 6060bda9..df7e75ae 100644
+--- a/kubernetes/plugins/kubectl-cert-manager/debian/deb_folder/rules
++++ b/kubernetes/plugins/kubectl-cert-manager/debian/deb_folder/rules
+@@ -2,7 +2,8 @@
+ # vim: set expandtab!
+ # export DH_VERBOSE = 1
+ 
+-export CERT_MANAGER_PKG = kubectl-cert-manager-linux-amd64.tar.gz
++export DEB_HOST_ARCH = $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
++export CERT_MANAGER_PKG = kubectl-cert-manager-linux-$(DEB_HOST_ARCH).tar.gz
+ export ROOT = debian/tmp
+ export SBIN_DIR = $(ROOT)/usr/sbin
+ 
+@@ -18,4 +19,4 @@ override_dh_auto_install:
+ 	install -p -D -m 755 kubectl-cert_manager $(SBIN_DIR)
+ 
+ override_dh_usrlocal:
+-	# Do Nothing
+\ No newline at end of file
++	# Do Nothing
+diff --git a/kubernetes/plugins/kubectl-cert-manager/debian/meta_data.yaml b/kubernetes/plugins/kubectl-cert-manager/debian/meta_data.yaml
+index d66447af..5ecf0d34 100644
+--- a/kubernetes/plugins/kubectl-cert-manager/debian/meta_data.yaml
++++ b/kubernetes/plugins/kubectl-cert-manager/debian/meta_data.yaml
+@@ -8,6 +8,12 @@ dl_files:
+     url: https://github.com/cert-manager/cert-manager/releases/download/v1.7.1/kubectl-cert_manager-linux-amd64.tar.gz
+     md5sum: 661909b84c3ef582a0d941f7ff3d9be7
+     sha256sum: f5a2741db8f5f5db4ab7ad041561b4c541a1ae35923053deadb0afb0e8c16cef
++dl_files_arm64:
++  kubectl-cert-manager-linux-arm64.tar.gz:
++    topdir: null
++    url: https://github.com/cert-manager/cert-manager/releases/download/v1.7.1/kubectl-cert_manager-linux-arm64.tar.gz
++    md5sum: abf045f8a28c7104587a6bfae9fd964c
++    sha256sum: 116b34c2890fed102c743205c52f3c66ded5c44f4ca3594beebe3ba4581bb8f5
+ revision:
+   dist: $STX_DIST
+   GITREVCOUNT:
+-- 
+2.30.2
+
