@@ -1,0 +1,27 @@
+From a23fead38b61cc1f4107830307a02e6afbd1bef7 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Fri, 28 Jul 2023 23:39:11 +0800
+Subject: [PATCH] TMP: Add list for arm64
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ debian_iso_image_arm64.inc | 2 ++
+ debian_pkg_dirs_arm64      | 0
+ 2 files changed, 2 insertions(+)
+ create mode 100644 debian_iso_image_arm64.inc
+ create mode 100644 debian_pkg_dirs_arm64
+
+diff --git a/debian_iso_image_arm64.inc b/debian_iso_image_arm64.inc
+new file mode 100644
+index 0000000..d9ee199
+--- /dev/null
++++ b/debian_iso_image_arm64.inc
+@@ -0,0 +1,2 @@
++#stx-istio-helm
++#stx-istio-helm
+diff --git a/debian_pkg_dirs_arm64 b/debian_pkg_dirs_arm64
+new file mode 100644
+index 0000000..e69de29
+-- 
+2.30.2
+
