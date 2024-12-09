@@ -1,0 +1,107 @@
+From ecdbdc0db662ffb5abb6eca9c84d5307fabad0f6 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 19 Jan 2022 04:49:59 -0500
+Subject: [PATCH 2/2] download_images: add support to load image from offline
+ file
+
+Add support to load image from offline file, the steps to use
+this feature:
+1. Get and place all offline image files in a dir:
+   e.g. /home/sysadmin/docker_images
+
+2. Add the following line in local.conf:
+   offline_img_dir: /home/sysadmin/docker_images
+
+3. run bootstrap playbook as usual.
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../files/download_images.py                  | 28 +++++++++++++++----
+ .../common/push-docker-images/tasks/main.yml  |  2 ++
+ 2 files changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
+index e4239188..8e47a28b 100644
+--- a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
++++ b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
+@@ -43,6 +43,8 @@ registries = json.loads(os.environ['REGISTRIES'])
+ add_docker_prefix = False
+ crictl_image_list = []
+ 
++offline_img_suffix = ['.tar.gz', '.tar.bz2', '.tar']
++offline_img_dir = os.environ.get('OFFLINE_IMG_DIR', '')
+ 
+ def get_local_registry_auth():
+     password = keyring.get_password("sysinv", "services")
+@@ -50,6 +52,16 @@ def get_local_registry_auth():
+         raise Exception("Local registry password not found.")
+     return dict(username="sysinv", password=str(password))
+ 
++def get_offline_img_file(img):
++    if not offline_img_dir:
++        return False
++
++    for suffix in offline_img_suffix:
++        img_file_name = img.replace("/", "_").replace(":", "_") + suffix
++        img_file = os.path.join(offline_img_dir, img_file_name)
++        if os.path.exists(img_file):
++            return img_file
++    return False
+ 
+ def convert_img_for_local_lookup(img):
+     # This function converts the given image reference to the
+@@ -178,6 +190,7 @@ def download_and_push_an_image(img):
+     local_img = convert_img_for_local_lookup(img)
+     target_img = get_img_tag_with_registry(img)
+     err_msg = " Image download failed: %s " % target_img
++    offline_img_file = get_offline_img_file(img)
+ 
+     client = docker.APIClient()
+     auth = get_local_registry_auth()
+@@ -201,13 +214,18 @@ def download_and_push_an_image(img):
+         return target_img, True
+     except docker.errors.APIError as e:
+         print(str(e))
+-        print("Image %s not found on local registry, attempt to download..."
++        print("Image %s not found on local registry, attempt to load from offline file or download..."
+               % target_img)
+         try:
+-            response = client.pull(target_img)
+-            check_response(response)
+-            print("Image download succeeded: %s" % target_img)
+-            client.tag(target_img, local_img)
++            if offline_img_file:
++                with open(offline_img_file, 'rb') as f:
++                    client.load_image(f)
++                    print("Image loaded from offline file (%s) succeeded: %s" % (offline_img_file, local_img))
++            else:
++                response = client.pull(target_img)
++                check_response(response)
++                print("Image download succeeded: %s" % target_img)
++                client.tag(target_img, local_img)
+             client.push(local_img, auth_config=auth)
+             print("Image push succeeded: %s" % local_img)
+ 
+diff --git a/playbookconfig/src/playbooks/roles/common/push-docker-images/tasks/main.yml b/playbookconfig/src/playbooks/roles/common/push-docker-images/tasks/main.yml
+index 1429b9c9..be9e9a49 100644
+--- a/playbookconfig/src/playbooks/roles/common/push-docker-images/tasks/main.yml
++++ b/playbookconfig/src/playbooks/roles/common/push-docker-images/tasks/main.yml
+@@ -260,6 +260,7 @@
+ - block:
+   - set_fact:
+       download_images: "{{ download_images_list | join(',') }}"
++      offline_img_dir: "{{ offline_img_dir | default('') }}"
+ 
+   - name: "{{ download_images_task_name }}"
+     script: download_images.py {{ download_images }}
+@@ -271,6 +272,7 @@
+     environment:
+       REGISTRIES: "{{ registries | to_json }}"
+       ADD_DOCKER_PREFIX: "{{ add_docker_prefix }}"
++      OFFLINE_IMG_DIR: "{{ offline_img_dir }}"
+ 
+   - debug:
+       msg: "{{ download_images_output.stdout_lines }}"
+-- 
+2.30.2
+
