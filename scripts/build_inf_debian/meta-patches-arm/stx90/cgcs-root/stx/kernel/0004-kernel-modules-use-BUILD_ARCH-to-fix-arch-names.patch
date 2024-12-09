@@ -1,0 +1,667 @@
+From 61591a7585758c25ce9fcd9ac7f318b27f016f86 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 31 Jul 2023 15:05:44 +0800
+Subject: [PATCH 4/7] kernel-modules: use BUILD_ARCH to fix arch names
+
+Use @BUILD_ARCH@ to fix the hardcoded arch names
+in kernel modules deb meta files.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-SX(low-latency) on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+
+Story: 2010739
+Task: 48018
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: Id2e19860235b89b60be949ae5929b38a4c0d7b55
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ kernel-modules/bnxt_en/debian/deb_folder/control            | 6 +++---
+ kernel-modules/bnxt_en/debian/deb_folder/rules              | 4 ++--
+ .../intel-i40e-cvl-2.54/debian/deb_folder/control           | 6 +++---
+ kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/rules  | 2 +-
+ .../intel-i40e-cvl-4.10/debian/deb_folder/control           | 6 +++---
+ kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/rules  | 2 +-
+ kernel-modules/intel-i40e/debian/deb_folder/control         | 6 +++---
+ kernel-modules/intel-i40e/debian/deb_folder/rules           | 2 +-
+ .../intel-iavf-cvl-2.54/debian/deb_folder/control           | 6 +++---
+ kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/rules  | 2 +-
+ .../intel-iavf-cvl-4.10/debian/deb_folder/control           | 6 +++---
+ kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/rules  | 2 +-
+ kernel-modules/intel-iavf/debian/deb_folder/control         | 6 +++---
+ kernel-modules/intel-iavf/debian/deb_folder/rules           | 2 +-
+ kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/control | 6 +++---
+ kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/rules   | 2 +-
+ kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/control | 6 +++---
+ kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/rules   | 2 +-
+ kernel-modules/intel-ice/debian/deb_folder/control          | 6 +++---
+ kernel-modules/intel-ice/debian/deb_folder/rules            | 2 +-
+ kernel-modules/intel-igb_uio/debian/deb_folder/control      | 6 +++---
+ kernel-modules/intel-igb_uio/debian/deb_folder/rules        | 2 +-
+ kernel-modules/intel-opae-fpga/debian/deb_folder/control    | 6 +++---
+ kernel-modules/intel-opae-fpga/debian/deb_folder/rules      | 2 +-
+ kernel-modules/intel-qv/debian/deb_folder/control           | 4 ++--
+ kernel-modules/intel-qv/debian/deb_folder/rules             | 2 +-
+ ...nx-ofa_kernel-adapt-the-debian-folder-for-starling.patch | 4 ++--
+ kernel-modules/octeon_ep/debian/deb_folder/control          | 4 ++--
+ kernel-modules/octeon_ep/debian/deb_folder/rules            | 2 +-
+ kernel-modules/qat/debian/deb_folder/control                | 2 +-
+ kernel-modules/qat/debian/deb_folder/rules                  | 2 +-
+ 31 files changed, 59 insertions(+), 59 deletions(-)
+
+diff --git a/kernel-modules/bnxt_en/debian/deb_folder/control b/kernel-modules/bnxt_en/debian/deb_folder/control
+index 020bf4c..fa3063a 100644
+--- a/kernel-modules/bnxt_en/debian/deb_folder/control
++++ b/kernel-modules/bnxt_en/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: bnxt-en
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys, mlnx-ofed-kernel-dev@KERNEL_TYPE@
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys, mlnx-ofed-kernel-dev@KERNEL_TYPE@
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, bnxt-en-common
+ Description: This package provides the bnxt_en and bnxt_re kernel modules.
+  This package provides the bnxt_en and bnxt_re kernel modules built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: bnxt-en-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of the bnxt_en and bnxt_re kernel modules.
+  This package provides the common files of the bnxt_en and bnxt_re kernel modules built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/bnxt_en/debian/deb_folder/rules b/kernel-modules/bnxt_en/debian/deb_folder/rules
+index f999594..5d5ff6c 100755
+--- a/kernel-modules/bnxt_en/debian/deb_folder/rules
++++ b/kernel-modules/bnxt_en/debian/deb_folder/rules
+@@ -27,13 +27,13 @@
+ WITH_MOD_SIGN ?= 1
+ 
+ kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep common)
+-kbuild_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kbuild_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ kversion=$(shell echo $(kbuild_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+ pkg_common_name=bnxt-en-common
+ 
+ # "dpkg --status mlnx-ofed-kernel-dev" prints a version line
+ # like the following:
+-#   Version: 5.5-OFED.5.5.1.0.3.1.stx.5.kver.5.10.0-6-amd64
++#   Version: 5.5-OFED.5.5.1.0.3.1.stx.5.kver.5.10.0-6-@BUILD_ARCH@
+ # Reduce this line to the version number substring "5.5" before
+ # the substring "-OFED".
+ ofed_version=$(shell dpkg  --status mlnx-ofed-kernel-dev@KERNEL_TYPE@ | \
+diff --git a/kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/control b/kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/control
+index 79f79b9..0781b5b 100644
+--- a/kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/control
++++ b/kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: i40e-cvl-2.54
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, i40e-cvl-2.54-common
+ Description: This package provides the i40e kernel module(s).
+  This package provides the i40e kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: i40e-cvl-2.54-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of i40e kernel module(s).
+  This package provides the common files of i40e kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/rules b/kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/rules
+index 065bc84..a961074 100755
+--- a/kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/rules
++++ b/kernel-modules/intel-i40e-cvl-2.54/debian/deb_folder/rules
+@@ -26,7 +26,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ export KSRC=/usr/src/$(kheaders_name)
+ kversion=$(shell echo $(kheaders_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+ kmod_name=i40e
+diff --git a/kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/control b/kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/control
+index 81c71f9..d24f420 100644
+--- a/kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/control
++++ b/kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: i40e-cvl-4.10
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, i40e-cvl-4.10-common
+ Description: This package provides the i40e kernel module(s).
+  This package provides the i40e kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: i40e-cvl-4.10-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of i40e kernel module(s).
+  This package provides the common files of i40e kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/rules b/kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/rules
+index d84ef16..366d041 100755
+--- a/kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/rules
++++ b/kernel-modules/intel-i40e-cvl-4.10/debian/deb_folder/rules
+@@ -9,7 +9,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ export KSRC=/usr/src/$(kheaders_name)
+ kversion=$(shell echo $(kheaders_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+ kmod_name=i40e
+diff --git a/kernel-modules/intel-i40e/debian/deb_folder/control b/kernel-modules/intel-i40e/debian/deb_folder/control
+index a6fd3b3..f3d2faf 100644
+--- a/kernel-modules/intel-i40e/debian/deb_folder/control
++++ b/kernel-modules/intel-i40e/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: i40e
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, i40e-common
+ Description: This package provides the i40e kernel module(s).
+  This package provides the i40e kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: i40e-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of i40e kernel module(s).
+  This package provides the common files of i40e kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-i40e/debian/deb_folder/rules b/kernel-modules/intel-i40e/debian/deb_folder/rules
+index 7cd46e7..a03ac56 100755
+--- a/kernel-modules/intel-i40e/debian/deb_folder/rules
++++ b/kernel-modules/intel-i40e/debian/deb_folder/rules
+@@ -26,7 +26,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ export KSRC=/usr/src/$(kheaders_name)
+ kversion=$(shell echo $(kheaders_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+ kmod_name=i40e
+diff --git a/kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/control b/kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/control
+index 02857b5..83bbf35 100644
+--- a/kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/control
++++ b/kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: iavf-cvl-2.54
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, iavf-cvl-2.54-common
+ Description: This package provides the iavf kernel module(s).
+  This package provides the iavf kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: iavf-cvl-2.54-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of iavf kernel module(s).
+  This package provides the common files of iavf kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/rules b/kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/rules
+index e779779..144c4cc 100755
+--- a/kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/rules
++++ b/kernel-modules/intel-iavf-cvl-2.54/debian/deb_folder/rules
+@@ -26,7 +26,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ kheaders_common=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep common)
+ export KSRC=/usr/src/$(kheaders_name)
+ export KSRC_COMMON=/usr/src/$(kheaders_common)
+diff --git a/kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/control b/kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/control
+index 3fb8898..1ea0b9f 100644
+--- a/kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/control
++++ b/kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: iavf-cvl-4.10
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, iavf-cvl-4.10-common
+ Description: This package provides the iavf kernel module(s).
+  This package provides the iavf kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: iavf-cvl-4.10-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of iavf kernel module(s).
+  This package provides the common files of iavf kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/rules b/kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/rules
+index 14fbe89..c172606 100755
+--- a/kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/rules
++++ b/kernel-modules/intel-iavf-cvl-4.10/debian/deb_folder/rules
+@@ -9,7 +9,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ kheaders_common=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep common)
+ export KSRC=/usr/src/$(kheaders_name)
+ export KSRC_COMMON=/usr/src/$(kheaders_common)
+diff --git a/kernel-modules/intel-iavf/debian/deb_folder/control b/kernel-modules/intel-iavf/debian/deb_folder/control
+index ac1cb68..a548951 100644
+--- a/kernel-modules/intel-iavf/debian/deb_folder/control
++++ b/kernel-modules/intel-iavf/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: iavf
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, iavf-common
+ Description: This package provides the iavf kernel module(s).
+  This package provides the iavf kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: iavf-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of iavf kernel module(s).
+  This package provides the common files of iavf kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-iavf/debian/deb_folder/rules b/kernel-modules/intel-iavf/debian/deb_folder/rules
+index aba5cee..13fbc62 100755
+--- a/kernel-modules/intel-iavf/debian/deb_folder/rules
++++ b/kernel-modules/intel-iavf/debian/deb_folder/rules
+@@ -26,7 +26,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ kheaders_common=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep common)
+ export KSRC=/usr/src/$(kheaders_name)
+ export KSRC_COMMON=/usr/src/$(kheaders_common)
+diff --git a/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/control b/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/control
+index 206a90e..44d5d36 100644
+--- a/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/control
++++ b/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: ice-cvl-2.54
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys, unzip
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys, unzip
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,7 +11,7 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, ice-cvl-2.54-common
+ Description: This package provides the ice kernel module(s).
+  This package provides the ice kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+  This package contains the Intel(R) Ethernet Connection E800 Series Linux Driver.
+ 
+ Package: ice-cvl-2.54-common
+@@ -19,5 +19,5 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of ice kernel module(s).
+  This package provides the common files of ice kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+  This package contains the Intel(R) Ethernet Connection E800 Series Linux Driver.
+diff --git a/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/rules b/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/rules
+index 3c4149a..5cdfbb2 100755
+--- a/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/rules
++++ b/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/rules
+@@ -26,7 +26,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ kheaders_common=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep common)
+ export KSRC=/usr/src/$(kheaders_name)
+ export KSRC_COMMON=/usr/src/$(kheaders_common)
+diff --git a/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/control b/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/control
+index a038fce..422c6f7 100644
+--- a/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/control
++++ b/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: ice-cvl-4.10
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys, unzip
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys, unzip
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,7 +11,7 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, ice-cvl-4.10-common
+ Description: This package provides the ice kernel module(s).
+  This package provides the ice kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+  This package contains the Intel(R) Ethernet Connection E800 Series Linux Driver.
+ 
+ Package: ice-cvl-4.10-common
+@@ -19,5 +19,5 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of ice kernel module(s).
+  This package provides the common files of ice kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+  This package contains the Intel(R) Ethernet Connection E800 Series Linux Driver.
+diff --git a/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/rules b/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/rules
+index 24c15ac..8a6a52c 100755
+--- a/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/rules
++++ b/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/rules
+@@ -9,7 +9,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ kheaders_common=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep common)
+ export KSRC=/usr/src/$(kheaders_name)
+ export KSRC_COMMON=/usr/src/$(kheaders_common)
+diff --git a/kernel-modules/intel-ice/debian/deb_folder/control b/kernel-modules/intel-ice/debian/deb_folder/control
+index f4da898..a5e19e4 100644
+--- a/kernel-modules/intel-ice/debian/deb_folder/control
++++ b/kernel-modules/intel-ice/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: ice
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys, unzip
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys, unzip
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,7 +11,7 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, ice-common
+ Description: This package provides the ice kernel module(s).
+  This package provides the ice kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+  This package contains the Intel(R) Ethernet Connection E800 Series Linux Driver.
+ 
+ Package: ice-common
+@@ -19,5 +19,5 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of ice kernel module(s).
+  This package provides the common files of ice kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+  This package contains the Intel(R) Ethernet Connection E800 Series Linux Driver.
+diff --git a/kernel-modules/intel-ice/debian/deb_folder/rules b/kernel-modules/intel-ice/debian/deb_folder/rules
+index 3e85540..85d98ac 100755
+--- a/kernel-modules/intel-ice/debian/deb_folder/rules
++++ b/kernel-modules/intel-ice/debian/deb_folder/rules
+@@ -26,7 +26,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ kheaders_common=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep common)
+ export KSRC=/usr/src/$(kheaders_name)
+ export KSRC_COMMON=/usr/src/$(kheaders_common)
+diff --git a/kernel-modules/intel-igb_uio/debian/deb_folder/control b/kernel-modules/intel-igb_uio/debian/deb_folder/control
+index 4cfde19..c5ef2fb 100644
+--- a/kernel-modules/intel-igb_uio/debian/deb_folder/control
++++ b/kernel-modules/intel-igb_uio/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: igb-uio
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, python3, igb-uio-common
+ Description: This package provides the igb-uio kernel module(s).
+  This package provides the igb_uio kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: igb-uio-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, python3
+ Description: This package provides the common files of igb-uio kernel module(s).
+  This package provides the common files of igb_uio kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-igb_uio/debian/deb_folder/rules b/kernel-modules/intel-igb_uio/debian/deb_folder/rules
+index cc2cd59..868e86b 100755
+--- a/kernel-modules/intel-igb_uio/debian/deb_folder/rules
++++ b/kernel-modules/intel-igb_uio/debian/deb_folder/rules
+@@ -26,7 +26,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ export KSRC=/usr/src/$(kheaders_name)
+ export PWD = `pwd`
+ kversion=$(shell echo $(kheaders_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+diff --git a/kernel-modules/intel-opae-fpga/debian/deb_folder/control b/kernel-modules/intel-opae-fpga/debian/deb_folder/control
+index a7e7a2f..960cea6 100644
+--- a/kernel-modules/intel-opae-fpga/debian/deb_folder/control
++++ b/kernel-modules/intel-opae-fpga/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: kmod-opae-fpga-driver
+ Section: kernel
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys, perl, openssl
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys, perl, openssl
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,11 +11,11 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}, kmod-opae-fpga-driver-common
+ Description: This package provides the opae-fpga kernel module(s).
+  This package provides the opae-fpga-driver kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+ 
+ Package: kmod-opae-fpga-driver-common
+ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of opae-fpga kernel module(s).
+  This package provides the common files of opae-fpga-driver kernel module(s) built
+- for the Linux kernel-std and kernel-rt using the amd64 processors.
++ for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-opae-fpga/debian/deb_folder/rules b/kernel-modules/intel-opae-fpga/debian/deb_folder/rules
+index 78443fc..665f208 100755
+--- a/kernel-modules/intel-opae-fpga/debian/deb_folder/rules
++++ b/kernel-modules/intel-opae-fpga/debian/deb_folder/rules
+@@ -26,7 +26,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ export KERNELDIR=/usr/src/$(kheaders_name)
+ kversion=$(shell echo $(kheaders_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+ kmod_name=opae-intel-fpga-driver
+diff --git a/kernel-modules/intel-qv/debian/deb_folder/control b/kernel-modules/intel-qv/debian/deb_folder/control
+index eb5cbbf..9de0800 100644
+--- a/kernel-modules/intel-qv/debian/deb_folder/control
++++ b/kernel-modules/intel-qv/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: iqvlinux
+ Section: kernel
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -11,4 +11,4 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the iqvlinux kernel module(s).
+  This package provides the iqvlinux kernel module(s) built
+- for the Linux kernel using the amd64 processors.
++ for the Linux kernel using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/intel-qv/debian/deb_folder/rules b/kernel-modules/intel-qv/debian/deb_folder/rules
+index 7f1262b..c5a6e54 100755
+--- a/kernel-modules/intel-qv/debian/deb_folder/rules
++++ b/kernel-modules/intel-qv/debian/deb_folder/rules
+@@ -26,7 +26,7 @@ export NALDIR="$(PWD)"
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ export KSRC=/usr/src/$(kheaders_name)
+ kversion=$(shell echo $(kheaders_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+ kmod_name=iqvlinux
+diff --git a/kernel-modules/mlnx-ofa_kernel/debian/deb_patches/0001-mlnx-ofa_kernel-adapt-the-debian-folder-for-starling.patch b/kernel-modules/mlnx-ofa_kernel/debian/deb_patches/0001-mlnx-ofa_kernel-adapt-the-debian-folder-for-starling.patch
+index 46375fd..1e4680c 100644
+--- a/kernel-modules/mlnx-ofa_kernel/debian/deb_patches/0001-mlnx-ofa_kernel-adapt-the-debian-folder-for-starling.patch
++++ b/kernel-modules/mlnx-ofa_kernel/debian/deb_patches/0001-mlnx-ofa_kernel-adapt-the-debian-folder-for-starling.patch
+@@ -47,7 +47,7 @@ index 2b00d80..6b59989 100644
+  Priority: optional
+  Maintainer: Vladimir Sokolovsky <vlad@mellanox.com>
+ -Build-Depends: debhelper (>= 8.0.0), autotools-dev, bzip2, dkms,
+-+Build-Depends: debhelper (>= 8.0.0), autotools-dev, bzip2, dkms, linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
+++Build-Depends: debhelper (>= 8.0.0), autotools-dev, bzip2, dkms, linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+  Standards-Version: 3.9.2
+  Homepage: http://www.mellanox.com/page/products_dyn?product_family=26&mtag=linux_sw_drivers
+  
+@@ -256,7 +256,7 @@ index 7e32e3c..e9b2564 100755
+ +
+ +#Here kernelver should be the one this package depends on,
+ +#while "uname -r" got the building machine's os release number.
+-+kheaders_name = $(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
+++kheaders_name = $(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ +kernelver = $(shell echo $(kheaders_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+ +
+ +ifeq ($(WITH_MOD_SIGN),1)
+diff --git a/kernel-modules/octeon_ep/debian/deb_folder/control b/kernel-modules/octeon_ep/debian/deb_folder/control
+index 0d0fb9c..f425649 100644
+--- a/kernel-modules/octeon_ep/debian/deb_folder/control
++++ b/kernel-modules/octeon_ep/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: octeon-ep
+ Section: net
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+@@ -19,4 +19,4 @@ Architecture: any
+ Depends: ${shlibs:Depends}, ${misc:Depends}
+ Description: This package provides the common files of the octeon_ep kernel modules.
+  This package provides the config files files of the octeon_ep, octeon_ep_vf, oct_ep_phc
+- kernel modules built for the Linux kernel-std and kernel-rt using the amd64 processors.
++ kernel modules built for the Linux kernel-std and kernel-rt using the @BUILD_ARCH@ processors.
+diff --git a/kernel-modules/octeon_ep/debian/deb_folder/rules b/kernel-modules/octeon_ep/debian/deb_folder/rules
+index a50ac33..c3b3ef5 100755
+--- a/kernel-modules/octeon_ep/debian/deb_folder/rules
++++ b/kernel-modules/octeon_ep/debian/deb_folder/rules
+@@ -8,7 +8,7 @@
+ 
+ WITH_MOD_SIGN ?= 1
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ kheaders_common=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep common)
+ export KSRC=/usr/src/$(kheaders_name)
+ export KSRC_COMMON=/usr/src/$(kheaders_common)
+diff --git a/kernel-modules/qat/debian/deb_folder/control b/kernel-modules/qat/debian/deb_folder/control
+index 6d57018..e8cc660 100644
+--- a/kernel-modules/qat/debian/deb_folder/control
++++ b/kernel-modules/qat/debian/deb_folder/control
+@@ -2,7 +2,7 @@ Source: qat2.0.l
+ Section: kernel
+ Priority: optional
+ Maintainer: StarlingX Developers <starlingx-discuss@lists.starlingx.io>
+-Build-Depends: debhelper-compat (= 13), autotools-dev, pkg-config, libudev-dev, yasm, libssl-dev, libz-dev, pciutils, libboost-dev, perl, openssl, libboost-regex-dev, linux@KERNEL_TYPE@-headers-stx-amd64, linux@KERNEL_TYPE@-keys
++Build-Depends: debhelper-compat (= 13), autotools-dev, pkg-config, libudev-dev, yasm, libssl-dev, libz-dev, pciutils, libboost-dev, perl, openssl, libboost-regex-dev, linux@KERNEL_TYPE@-headers-stx-@BUILD_ARCH@, linux@KERNEL_TYPE@-keys
+ Standards-Version: 4.5.1
+ Rules-Requires-Root: no
+ 
+diff --git a/kernel-modules/qat/debian/deb_folder/rules b/kernel-modules/qat/debian/deb_folder/rules
+index 63244e9..7bf5994 100755
+--- a/kernel-modules/qat/debian/deb_folder/rules
++++ b/kernel-modules/qat/debian/deb_folder/rules
+@@ -28,7 +28,7 @@ WITH_MOD_SIGN ?= 1
+ export DEB_BUILD_OPTIONS=noddebs
+ DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+ 
+-kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep amd64)
++kheaders_name=$(shell ls /usr/src | grep linux@KERNEL_TYPE@-headers | grep @BUILD_ARCH@)
+ export KERNEL_SOURCE_ROOT=/usr/src/$(kheaders_name)
+ kernel_version=$(shell echo $(kheaders_name) | sed 's/linux@KERNEL_TYPE@-headers-//g')
+ pkg_name=qat2.0.l@KERNEL_TYPE@
+-- 
+2.30.2
+

@@ -1,0 +1,82 @@
+From e698992c6db14cb7fc7b9534184d32f1e8499d31 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 31 Jul 2023 16:17:15 +0800
+Subject: [PATCH 5/7] Add debian_pkg_dirs_arm64
+
+Add debian_pkg_dirs_arm64 from debian_pkg_dirs,
+debian_pkg_dirs_rt_arm64 from debian_pkg_dirs_rt
+and remove packages that failed to build for arm64:
+  - ice, octeon-ep, qat, intel-qv
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std(2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 48018
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889682
+
+Change-Id: I52569ae067c6ff9109ceefb0501797c650dc36d5
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ debian_pkg_dirs_arm64    | 19 +++++++++++++++++++
+ debian_pkg_dirs_rt_arm64 | 14 ++++++++++++++
+ 2 files changed, 33 insertions(+)
+ create mode 100644 debian_pkg_dirs_arm64
+ create mode 100644 debian_pkg_dirs_rt_arm64
+
+diff --git a/debian_pkg_dirs_arm64 b/debian_pkg_dirs_arm64
+new file mode 100644
+index 0000000..875e390
+--- /dev/null
++++ b/debian_pkg_dirs_arm64
+@@ -0,0 +1,19 @@
++kernel-std
++kernel-modules/bnxt_en
++kernel-modules/intel-i40e
++kernel-modules/intel-i40e-cvl-2.54
++kernel-modules/intel-i40e-cvl-4.10
++kernel-modules/intel-iavf
++kernel-modules/intel-iavf-cvl-2.54
++kernel-modules/intel-iavf-cvl-4.10
++kernel-modules/intel-ice
++kernel-modules/intel-ice-cvl-2.54
++kernel-modules/intel-ice-cvl-4.10
++kernel-modules/intel-igb_uio
++kernel-modules/intel-opae-fpga
++kernel-modules/mlnx-ofa_kernel
++userspace/broadcom/libbnxt_re
++userspace/mellanox/rdma-core
++userspace/mellanox/mstflint
++userspace/mellanox/mlnx-tools
++userspace/initramfs-trigger
+diff --git a/debian_pkg_dirs_rt_arm64 b/debian_pkg_dirs_rt_arm64
+new file mode 100644
+index 0000000..f9d9273
+--- /dev/null
++++ b/debian_pkg_dirs_rt_arm64
+@@ -0,0 +1,14 @@
++kernel-rt
++kernel-modules/bnxt_en
++kernel-modules/intel-i40e
++kernel-modules/intel-i40e-cvl-2.54
++kernel-modules/intel-i40e-cvl-4.10
++kernel-modules/intel-iavf
++kernel-modules/intel-iavf-cvl-2.54
++kernel-modules/intel-iavf-cvl-4.10
++kernel-modules/intel-ice
++kernel-modules/intel-ice-cvl-2.54
++kernel-modules/intel-ice-cvl-4.10
++kernel-modules/intel-igb_uio
++kernel-modules/intel-opae-fpga
++kernel-modules/mlnx-ofa_kernel
+-- 
+2.30.2
+
