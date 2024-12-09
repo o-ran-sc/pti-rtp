@@ -1,0 +1,42 @@
+From 21f59b5cbf7d64eb9e3ebb80a5f05c3379091e16 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 8 Feb 2023 07:36:52 -0500
+Subject: [PATCH] fm-common: add support for arm64
+
+Add arm64 into supported arch in the control file.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 48015
+
+Change-Id: I0e1017193623abf817ab75e947c204fa30d98b67
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ fm-common/debian/deb_folder/control | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fm-common/debian/deb_folder/control b/fm-common/debian/deb_folder/control
+index 60148b1..ded30be 100644
+--- a/fm-common/debian/deb_folder/control
++++ b/fm-common/debian/deb_folder/control
+@@ -16,7 +16,7 @@ Rules-Requires-Root: no
+ 
+ Package: fm-common-dev
+ Section: libdevel
+-Architecture: amd64
++Architecture: amd64 arm64
+ Multi-Arch: no
+ Depends: fm-common (= ${binary:Version}), ${misc:Depends}
+ Description: StarlingX fault management client library - header files
+-- 
+2.30.2
+
