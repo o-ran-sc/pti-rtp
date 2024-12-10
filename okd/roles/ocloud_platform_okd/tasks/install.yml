@@ -37,6 +37,13 @@
     - agent-config.yaml
     - install-config.yaml
 
+- ansible.builtin.debug:
+    verbosity: 2
+    msg: "{{ lookup('file', [ocloud_platform_okd_staging_dir['path'], 'cfg', item] | path_join) }}"
+  loop:
+    - agent-config.yaml
+    - install-config.yaml
+
 - name: Generate OKD agent-based installer image
   ansible.builtin.shell:
     cmd: "openshift-install agent create image --dir {{ ocloud_platform_okd_staging_dir['path'] }}/cfg"
