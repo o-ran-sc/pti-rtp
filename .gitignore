@@ -6,6 +6,7 @@
 /okd/fetched
 
 # ignored anywhere
+collections/
 fetched/
 tmp/
 temp/
