@@ -5,3 +5,9 @@ ocloud_topology: "aio"
 ocloud_cluster_name: "ocloud-{{ ocloud_infra }}-{{ ocloud_platform }}-{{ ocloud_topology }}"
 ocloud_domain_name: "example.com"
 ocloud_net_cidr: "192.168.123.0/24"
+ocloud_cluster_net_cidr: "10.128.0.0/14"
+ocloud_cluster_net_hostprefix: "23"
+ocloud_service_net_cidr: "172.30.0.0/16"
+ocloud_network_type: "OVNKubernetes"
+ocloud_ntp_servers: []
+ocloud_dns_servers: []

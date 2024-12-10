@@ -1,0 +1,2 @@
+---
+ocloud_infra_baremetal_image: "{{ ocloud_cluster_name }}.iso"
