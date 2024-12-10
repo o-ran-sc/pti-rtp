@@ -11,6 +11,12 @@
   delegate_to: "{{ groups['kvm'][0] }}"
   when: ocloud_infra == "vm"
 
+- name: Include infra role - {{ ocloud_infra }}
+  ansible.builtin.import_role:
+    name: "ocloud_infra_baremetal"
+  delegate_to: "{{ groups['deployer'][0] }}"
+  when: ocloud_infra == "baremetal"
+
 - meta: flush_handlers
 
 - name: Include platform role - Stolostron
