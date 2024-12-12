@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecfd2266_58fc0e36",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-12T02:27:56Z",
+      "side": 1,
+      "message": "Is there a list of supported hardwares or is there minimum requirements for the hardware?",
+      "revId": "37b88156d0991485c87d303592427ddf762c4f2c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1afc82a0_ed59162e",
+        "filename": "okd/inventory/host_vars/master-0-baremetal/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-12T02:27:56Z",
+      "side": 1,
+      "message": "Is \"aio\" the only one topology to support?",
+      "revId": "37b88156d0991485c87d303592427ddf762c4f2c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "40cf4e93_d7ea571e",
+        "filename": "okd/inventory/host_vars/master-0-baremetal/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-12T02:27:56Z",
+      "side": 1,
+      "message": "Is other disk path like \"/dev/disk/by-path/pci-0000:01:00.0-nvme-1\" supported?",
+      "revId": "37b88156d0991485c87d303592427ddf762c4f2c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
