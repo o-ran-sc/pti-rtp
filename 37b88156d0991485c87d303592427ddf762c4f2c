@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a27398eb_9ee721b3",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-12-13T01:11:17Z",
+      "side": 1,
+      "message": "I will update the README with a link to documentation that defines the minimum hardware requirements.",
+      "parentUuid": "ecfd2266_58fc0e36",
+      "revId": "37b88156d0991485c87d303592427ddf762c4f2c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1afc82a0_ed59162e",
         "filename": "okd/inventory/host_vars/master-0-baremetal/vars.yml",
         "patchSetId": 3
@@ -37,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "37f208f5_91434e3c",
+        "filename": "okd/inventory/host_vars/master-0-baremetal/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-12-13T01:11:17Z",
+      "side": 1,
+      "message": "Currently, yes. Multi-node cluster support is one of the items we plan for the next release.",
+      "parentUuid": "1afc82a0_ed59162e",
+      "revId": "37b88156d0991485c87d303592427ddf762c4f2c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "40cf4e93_d7ea571e",
         "filename": "okd/inventory/host_vars/master-0-baremetal/vars.yml",
         "patchSetId": 3
@@ -48,6 +84,24 @@
       "writtenOn": "2024-12-12T02:27:56Z",
       "side": 1,
       "message": "Is other disk path like \"/dev/disk/by-path/pci-0000:01:00.0-nvme-1\" supported?",
+      "revId": "37b88156d0991485c87d303592427ddf762c4f2c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5869d7e2_9959e491",
+        "filename": "okd/inventory/host_vars/master-0-baremetal/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2024-12-13T01:11:17Z",
+      "side": 1,
+      "message": "Yes, it is supported and recommended. I will update the README with a link to documentation for the value of this parameter and use this format in the example host_vars.",
+      "parentUuid": "40cf4e93_d7ea571e",
       "revId": "37b88156d0991485c87d303592427ddf762c4f2c",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
