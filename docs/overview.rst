@@ -144,7 +144,7 @@ Multi OS and Deployment Configurations
 
   * OKD
 
-    * Fedora CoreOS 38
+    * CentOS Stream CoreOS release 4.17
 
 A variety of deployment configuration options are supported:
 

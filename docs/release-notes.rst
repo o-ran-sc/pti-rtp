@@ -50,6 +50,19 @@ Version history
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 
+Version 11.0.0, 2024-12-31
+--------------------------
+#. 11th version (K release)
+#. INF Multi O-Cloud and Multi OS support:
+   * OKD 4.16
+
+     * Supported OS:
+
+       * CentOS Stream CoreOS 4.17
+
+#. Support VM and bare metal automated deployment for OKD O-Cloud
+#. Support automated integration of Stolostron and oran-o2ims operator into OKD O-Cloud
+
 Version 10.0.0, 2024-06-28
 --------------------------
 #. 10th version (J release)
@@ -68,6 +81,7 @@ Version 10.0.0, 2024-06-28
      * Supported OS:
 
        * Fedora CoreOS 38
+
 
 #. INF MultiArch support for StarlingX O-Cloud:
 

@@ -35,7 +35,7 @@ The INF project supports Multi OS and the latest released images for each based 
 .. _`inf-image-centos-all-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/latest/inf-image-centos-all-x86-64.iso
 .. _`inf-image-yocto-aio-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/latest/inf-image-yocto-aio-x86-64.iso
 
-Deployment automation and documentation for OKD / Fedora CoreOS 38 can be found under the 'okd' directory in the `pti/rtp`_ repository.
+Deployment automation and documentation for OKD / CentOS Stream CoreOS can be found under the 'okd' directory in the `pti/rtp`_ repository.
 
 .. _`pti/rtp`: https://gerrit.o-ran-sc.org/r/admin/repos/pti/rtp
 
