@@ -24,7 +24,7 @@ This project is a reference implementation of O-Cloud infrastructure which is ba
 
   * OKD
 
-    * Fedora CoreOS 38
+    * CentOS Stream CoreOS 4.17
 
 Notes:
   * Debian based is the recommended platfrom.
@@ -64,9 +64,9 @@ To contribute on this project, basic knowledge of Yocto/OpenEmbedded is needed, 
 .. _`Yocto dev manual`: https://www.yoctoproject.org/docs/2.6.3/dev-manual/dev-manual.html
 .. _`OpenEmbedded wiki`: http://www.openembedded.org/wiki/Main_Page
 
-1.4 About the Fedora CoreOS / OKD based implementation
-------------------------------------------------------
-Deployment automation and documentation for OKD / Fedora CoreOS 38 can be found under the 'okd' directory in the `pti/rtp`_ repository.
+1.4 About the CentOS Stream CoreOS / OKD based implementation
+-------------------------------------------------------------
+Deployment automation and documentation for OKD / CentOS Stream CoreOS can be found under the 'okd' directory in the `pti/rtp`_ repository.
 
 .. _`pti/rtp`: https://gerrit.o-ran-sc.org/r/admin/repos/pti/rtp
 
