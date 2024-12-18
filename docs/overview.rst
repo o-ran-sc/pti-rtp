@@ -20,7 +20,7 @@ Following requirements are going to address the container based solution:
 3. Support CPU Affinity and Isolation
 4. Support Dynamic HugePages Allocation
 
-And for the network requirements, the following should be supported:
+And for the network requirements, the following will be supported:
 
 1. Multiple Networking Interface
 2. High performance data plane including the DPDK based vswitch and PCI pass-through/SR-IOV.
