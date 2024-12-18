@@ -1,0 +1,8 @@
+Verified+1: ORAN Jobbuilder <releng+oran-jobbuilder@linuxfoundation.org>
+Verified+1: ORAN Required GHA <releng+oran.required.gha@linuxfoundation.org>
+Code-Review+2: Jackie Huang <jackie.huang@windriver.com>
+Submitted-by: Jackie Huang <jackie.huang@windriver.com>
+Submitted-at: Wed, 18 Dec 2024 03:39:56 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/pti/rtp/+/13895
+Project: pti/rtp
+Branch: refs/heads/master
