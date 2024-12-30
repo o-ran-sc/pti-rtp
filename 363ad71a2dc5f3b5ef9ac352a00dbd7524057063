@@ -112,6 +112,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "db60c5b7_4809ce3b",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T05:53:26Z",
+      "side": 1,
+      "message": "I fixed all unexpected blank lines and moved all referrence links to the end of the doc.",
+      "parentUuid": "d23959e1_811847c5",
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2b850de7_cf44edf3",
@@ -270,6 +288,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e70da23_067da381",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T05:53:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "83ece822_4ee86c41",
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e11eefc6_807734d6",
@@ -283,6 +319,24 @@
       "writtenOn": "2024-12-20T03:29:47Z",
       "side": 1,
       "message": "unexpected line",
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b4b4a68d_4bbdcb15",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T05:53:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e11eefc6_807734d6",
       "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -304,6 +358,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b318e68e_e304745c",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T05:53:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5e3ed12f_5f77ee15",
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9bb22e6c_76973704",
@@ -317,6 +389,30 @@
       "writtenOn": "2024-12-20T03:29:47Z",
       "side": 1,
       "message": "this whole section looks format is kind loose compared to previous sections. better to make it consistent.",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 272,
+        "endChar": 38
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cb67120_80ac185d",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T05:53:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9bb22e6c_76973704",
       "range": {
         "startLine": 272,
         "startChar": 0,
@@ -364,6 +460,30 @@
       "side": 1,
       "message": "Yes, they are still availabel, but we can remove the ones for Yocto and CentOS.",
       "parentUuid": "482f815e_a0fd7ab9",
+      "range": {
+        "startLine": 280,
+        "startChar": 0,
+        "endLine": 281,
+        "endChar": 25
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "542bc010_93b1554c",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T05:53:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aacc01ad_9f9dfdba",
       "range": {
         "startLine": 280,
         "startChar": 0,
