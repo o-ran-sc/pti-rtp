@@ -24,6 +24,30 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9febd10a_59cc1219",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T03:43:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3ca23ffb_89276f1a",
+      "range": {
+        "startLine": 32,
+        "startChar": 120,
+        "endLine": 32,
+        "endChar": 125
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a74cb422_048ce07c",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-12-20T03:29:47Z",
       "side": 1,
       "message": "item of 3 missing here?",
+      "range": {
+        "startLine": 85,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 33
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "298bcd14_0d0201d7",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T03:43:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a74cb422_048ce07c",
       "range": {
         "startLine": 85,
         "startChar": 0,
@@ -87,6 +135,30 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "97268f8b_d445ca91",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T03:43:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2b850de7_cf44edf3",
+      "range": {
+        "startLine": 173,
+        "startChar": 5,
+        "endLine": 173,
+        "endChar": 25
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "96be93ce_a0a7e177",
@@ -110,6 +182,30 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d8755e0_140c6c2e",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T03:43:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "96be93ce_a0a7e177",
+      "range": {
+        "startLine": 175,
+        "startChar": 7,
+        "endLine": 175,
+        "endChar": 20
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "790866a8_ec6d4a81",
@@ -123,6 +219,30 @@
       "writtenOn": "2024-12-20T03:29:47Z",
       "side": 1,
       "message": "Where did you get this statement?\nFeeling that it will be better to use \"Support the ansible bootstrap to implement the low touch provisioning\", since we use DM for the ZTP.",
+      "range": {
+        "startLine": 262,
+        "startChar": 4,
+        "endLine": 262,
+        "endChar": 74
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0b73f3fc_1ebbd464",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T03:43:27Z",
+      "side": 1,
+      "message": "Done.\nThe statement was origianlly wrote by xiaohua.",
+      "parentUuid": "790866a8_ec6d4a81",
       "range": {
         "startLine": 262,
         "startChar": 4,
@@ -232,6 +352,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "aacc01ad_9f9dfdba",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T03:43:27Z",
+      "side": 1,
+      "message": "Yes, they are still availabel, but we can remove the ones for Yocto and CentOS.",
+      "parentUuid": "482f815e_a0fd7ab9",
+      "range": {
+        "startLine": 280,
+        "startChar": 0,
+        "endLine": 281,
+        "endChar": 25
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5f76e520_c7f337d3",
         "filename": "docs/overview.rst",
         "patchSetId": 2
@@ -243,6 +387,30 @@
       "writtenOn": "2024-12-20T03:29:47Z",
       "side": 1,
       "message": "Better to avoid using specific company name in Opensource doc.",
+      "range": {
+        "startLine": 342,
+        "startChar": 115,
+        "endLine": 342,
+        "endChar": 132
+      },
+      "revId": "363ad71a2dc5f3b5ef9ac352a00dbd7524057063",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "43e58019_13b13d93",
+        "filename": "docs/overview.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 1000237
+      },
+      "writtenOn": "2024-12-30T03:43:27Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "5f76e520_c7f337d3",
       "range": {
         "startLine": 342,
         "startChar": 115,
