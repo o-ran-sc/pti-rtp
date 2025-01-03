@@ -17,9 +17,7 @@ O-RAN INF is a downstream project of `StarlingX`_ and `OKD`_, and use the instal
 
 Please see the detail of all the supported `Deployment Configurations`_.
 
-Notes: For Yocto based image, only "All-in-one Simplex" and "All-in-one Duplex (up to 50 worker nodes)" are supported.
-
-.. _`Deployment Configurations`: https://docs.starlingx.io/r/stx.7.0/deploy/index-deploy-da06a98b83b1.html
+.. _`Deployment Configurations`: https://docs.starlingx.io/r/stx.9.0/deploy/index-deploy-da06a98b83b1.html
 
 Preface
 *******
@@ -27,13 +25,9 @@ Preface
 Before starting the installation and deployment of O-RAN INF, you need to download the released ISO image or build from source as described in developer-guide.
 
 The INF project supports Multi OS and the latest released images for each based OS can be dwonloaded in:
-  - CentOS 7: `inf-image-centos-all-x86-64.iso`_
   - Debian 11 (bullseye): `inf-image-debian-all-x86-64.iso`_
-  - Yocto 2.7 (warrior): `inf-image-yocto-aio-x86-64.iso`_
 
 .. _`inf-image-debian-all-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/latest/inf-image-debian-all-x86-64.iso
-.. _`inf-image-centos-all-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/latest/inf-image-centos-all-x86-64.iso
-.. _`inf-image-yocto-aio-x86-64.iso`: https://nexus.o-ran-sc.org/content/sites/images/org/o-ran-sc/pti/rtp/latest/inf-image-yocto-aio-x86-64.iso
 
 Deployment automation and documentation for OKD / CentOS Stream CoreOS can be found under the 'okd' directory in the `pti/rtp`_ repository.
 
@@ -59,7 +53,7 @@ Platform Installation
 
 INF uses the same installation and deployment methods of StarlingX or OKD, please refer to `StarlingX Installation`_ or 'okd/README.md' in the `pti/rtp`_ repository for the detail installation steps.
 
-.. _`StarlingX Installation`: https://docs.starlingx.io/r/stx.7.0/deploy_install_guides/index-install-e083ca818006.html 
+.. _`StarlingX Installation`: https://docs.starlingx.io/r/stx.9.0/deploy_install_guides/release/index-install-r7-8966076f0e81.html
 
 Applications Installation
 -------------------------
