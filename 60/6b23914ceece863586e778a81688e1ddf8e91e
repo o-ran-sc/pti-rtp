@@ -1,0 +1,8 @@
+Code-Review+2: Jackie Huang <jackie.huang@windriver.com>
+Verified+1: ORAN Required GHA <releng+oran.required.gha@linuxfoundation.org>
+Verified+1: Jackie Huang <jackie.huang@windriver.com>
+Submitted-by: Jackie Huang <jackie.huang@windriver.com>
+Submitted-at: Fri, 03 Jan 2025 07:11:02 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/pti/rtp/+/13985
+Project: pti/rtp
+Branch: refs/heads/master
