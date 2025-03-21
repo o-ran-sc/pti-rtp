@@ -9,13 +9,13 @@
   ansible.builtin.import_role:
     name: "ocloud_infra_vm"
   delegate_to: "{{ groups['kvm'][0] }}"
-  when: ocloud_infra == "vm"
+  when: ocloud_infra == "vm" and ocloud_platform_image is defined
 
 - name: Include infra role - {{ ocloud_infra }}
   ansible.builtin.import_role:
     name: "ocloud_infra_baremetal"
   delegate_to: "{{ groups['deployer'][0] }}"
-  when: ocloud_infra == "baremetal"
+  when: ocloud_infra == "baremetal" and ocloud_platform_image is defined
 
 - meta: flush_handlers
 

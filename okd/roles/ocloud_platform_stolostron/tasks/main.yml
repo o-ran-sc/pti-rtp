@@ -39,6 +39,12 @@
     dest: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/bin"
     remote_src: true
 
+- name: Download yq
+  ansible.builtin.get_url:
+    url: "{{ ocloud_platform_stolostron_yq_url }}"
+    dest: "{{ ocloud_platform_stolostron_staging_dir['path'] }}/bin/yq"
+    mode: '0555'
+
 - name: Clone stolostron/deploy repo
   ansible.builtin.git:
     repo: "{{ ocloud_platform_stolostron_repo_url }}"

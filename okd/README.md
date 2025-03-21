@@ -13,16 +13,35 @@ Currently supported Kubernetes platforms and infrastructure targets are:
 # Prerequisites
 The following prerequisites must be installed on the host where the playbook will be run (localhost, by default):
 
-# DNS
-To enable network access to cluster services, DNS address records must be defined for the following endpoints:
+## Deployer
 
-* api.<cluster>.<domain> (e.g. api.ocloud.example.com)
-* api-int.<cluster>.<domain> (e.g. api-int.ocloud.example.com)
-* *.apps.<cluster>.<domain> (e.g. *.apps.ocloud.example.com)
+A Linux deployer host is required from which to execute Ansible playbooks. By default, localhost is used as the deployer.
+A minimum of 2GB must be available in /tmp for generation of the installer boot image.
 
-In the case of all-in-one topology clusters, all addresses must resolve to the machine network IP assigned to the node.
+## Packages
 
-The okd/playbooks/deploy_dns.yml playbook can be used to deploy dnsmasq if a DNS server needs to be configured.
+Several packages are required by Ansible modules or deployment scripts that are invoked by Ansible roles, including:
+
+- ansible
+- make
+- pip
+- wget
+- python development headers/libraries
+- libvirt development headers/libraries
+
+Following are examples of how to install these packages on common distributions:
+```
+
+Fedora Linux
+```
+dnf install https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm
+dnf group install "Development Tools"
+dnf install python3-devel python3-libvirt python3-netaddr ansible pip pkgconfig libvirt-devel python-lxml nmstate wget make
+```
+
+Ubuntu Linux
+```
+apt-get install libpython3-dev python3-libvirt python3-netaddr ansible python3-pip wget make
 
 ## Ansible
 
@@ -30,13 +49,16 @@ Install Ansible per [Installing Ansible on specific operating systems](https://d
 
 ## libvirt/KVM
 
-If deploying the O-Cloud as a virtual machine, the host must be configured as a libvirt/KVM host.
+If deploying the O-Cloud as a virtual machine, the host (as defined in the 'kvm' inventory group) must be configured as a libvirt/KVM host.
 Instructions for doing so vary by Linux distribution, for example:
 
 - [Fedora](https://docs.fedoraproject.org/en-US/quick-docs/virtualization-getting-started/)
 - [Ubuntu](https://ubuntu.com/server/docs/virtualization-libvirt)
 
 Ensure that the 'libvirt-devel' package is installed, as it is a dependency for the 'libvirt-python' module.
+
+Ensure that the images filesystem (as defined by the 'ocloud_infra_vm_disk_dir' variable) has enough space to accomodate the size of
+the VM disk image (as defined by the 'ocloud_infra_vm_disk_gb' variable).
 
 ## Python Modules
 
@@ -54,9 +76,36 @@ Install required Ansible collections by running:
 ansible-galaxy collection install -r requirements.yml
 ```
 
+## DNS
+To enable network access to cluster services, DNS address records must be defined for the following endpoints:
+
+* api.<cluster>.<domain> (e.g. api.ocloud.example.com)
+* api-int.<cluster>.<domain> (e.g. api-int.ocloud.example.com)
+* *.apps.<cluster>.<domain> (e.g. *.apps.ocloud.example.com)
+
+In the case of all-in-one topology clusters, all addresses must resolve to the machine network IP assigned to the node.
+
+The okd/playbooks/deploy_dns.yml playbook can be used to deploy dnsmasq if a DNS server needs to be configured.
+
+## HTTP
+An HTTP server is required for bare metal deployment in order to provide a source from which to mount the
+installer image via virtual media. The okd/playbooks/deploy_http_store.yml playbook can be used to deploy one if needed.
+
+The following inventory variables must be defined for the 'http_store' host if the okd/playbooks/deploy_http_store.yml playbook
+is being used (see okd/inventory/host_vars/http_store/ for example):
+- ansible_host: hostname/IP of the HTTP store that will serve the agent-based installer ISO image
+- http_store_dir: document root on the HTTP store where thet agent-based installer ISO image will be copied
+- http_port: port on which the HTTP store listens
+
 ## Ansible Variables
 
 ### General
+
+Update inventory/hosts.yml to specify the deployment target host(s) under the 'ocloud' group. The sample
+inventory can be used without modification to deploy to a VM host. For bare metal deployment, populate
+the 'ocloud' group with the hostname(s) of the baremetal server(s) and create a directory for each
+host under inventory/host_vars/ containing required variables as defined under [Infrastructure / Bare Metal](#infrastructure--bare-metal)
+below.
 
 #### Optional
 The following variables can be set to override deployment defaults:
@@ -98,13 +147,6 @@ The following variables must be set for deploying to a bare metal infrastructure
 - ocloud_net_cidr: must be set to the subnet corresponding to the node's IP assigned in 'network_config'
 - ocloud_ntp_servers: list of NTP servers to configure (see okd/playbooks/deploy_ntp.yml if an NTP server needs to be deployed)
 - role: cluster role of the node (supported values: "master")
-
-#### Inventory
-The following inventory variables must be defined for the 'http_store' host (see okd/inventory/host_vars/http_store/ for example
-x inventory and okd/playbooks/deploy_http_store.yml if an HTTP store needs to be deployed):
-- ansible_host: hostname/IP of the HTTP store that will serve the agent-based installer ISO image
-- http_store_dir: document root on the HTTP store where thet agent-based installer ISO image will be copied 
-- http_port: port on which the HTTP store listens
 
 #### Optional
 
