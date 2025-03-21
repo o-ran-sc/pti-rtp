@@ -17,7 +17,7 @@
     url: "{{ http_host }}/{{ test_file_name }}"
     return_content: true
   register: response
-  delegate_to: bastion
+  delegate_to: "{{ groups['deployer'][0] }}"
 
 - name: Check content matches
   ansible.builtin.assert:
