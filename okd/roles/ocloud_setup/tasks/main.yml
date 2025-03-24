@@ -1,0 +1,23 @@
+---
+- name: Gather facts
+  ansible.builtin.setup:
+    gather_subset: all
+
+- name: Create staging dir for O-Cloud installation
+  ansible.builtin.tempfile:
+    path: "{{ lookup('env', 'HOME') }}"
+    prefix: "ocloud.{{ ansible_date_time['date'] }}."
+    state: directory
+  register: ocloud_staging_dir
+
+- name: Create staging subdirs
+  ansible.builtin.file:
+    path: "{{ ocloud_staging_dir['path'] }}/{{ item }}"
+    state: directory
+  loop:
+    - bin
+    - cfg
+    - git
+
+- include_tasks: okd.yml
+  when: ocloud_platform == "okd"

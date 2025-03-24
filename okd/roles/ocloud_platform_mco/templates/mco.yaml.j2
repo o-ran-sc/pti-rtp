@@ -1,0 +1,36 @@
+apiVersion: observability.open-cluster-management.io/v1beta2
+kind: MultiClusterObservability
+metadata:
+  name: observability
+  namespace: "{{ ocloud_platform_mco_namespace }}"
+spec:
+  observabilityAddonSpec: {}
+  storageConfig:
+    metricObjectStorage:
+      name: thanos-object-storage
+      key: thanos.yaml
+    compactStorageSize: "{{ ocloud_platform_mco_storage_size }}"
+    receiveStorageSize: "{{ ocloud_platform_mco_storage_size }}"
+  advanced:
+    alertmanager:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    grafana:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    observatoriumAPI:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    query:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    queryFrontend:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    queryFrontendMemcached:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    rbacQueryProxy:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    receive:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    rule:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    store:
+      replicas: {{ ocloud_platform_mco_replicas }}
+    storeMemcached:
+      replicas: {{ ocloud_platform_mco_replicas }}

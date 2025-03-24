@@ -11,6 +11,7 @@
   loop:
     - bin
     - cfg
+    - cfg/openshift
 
 - name: Download OKD CLI
   ansible.builtin.get_url:
@@ -36,6 +37,13 @@
   loop:
     - agent-config.yaml
     - install-config.yaml
+
+- name: Copy MachineConfig manifests
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ ocloud_platform_okd_staging_dir['path'] }}/cfg/openshift/{{ item }}"
+  loop:
+    - 99-master-pvs.yaml
 
 - ansible.builtin.debug:
     verbosity: 2

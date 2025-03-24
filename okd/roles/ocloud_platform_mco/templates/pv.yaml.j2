@@ -1,0 +1,138 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv1-{{ item }}
+spec:
+  capacity:
+    storage: "1Gi"
+  volumeMode: "Filesystem"
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "local-storage"
+  local:
+    path: "/dev/disk/by-partlabel/pv1"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ item }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv2-{{ item }}
+spec:
+  capacity:
+    storage: "1Gi"
+  volumeMode: "Filesystem"
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "local-storage"
+  local:
+    path: "/dev/disk/by-partlabel/pv2"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ item }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv3-{{ item }}
+spec:
+  capacity:
+    storage: "1Gi"
+  volumeMode: "Filesystem"
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "local-storage"
+  local:
+    path: "/dev/disk/by-partlabel/pv3"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ item }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv4-{{ item }}
+spec:
+  capacity:
+    storage: "10Gi"
+  volumeMode: "Filesystem"
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "local-storage"
+  local:
+    path: "/dev/disk/by-partlabel/pv4"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ item }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv5-{{ item }}
+spec:
+  capacity:
+    storage: "10Gi"
+  volumeMode: "Filesystem"
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "local-storage"
+  local:
+    path: "/dev/disk/by-partlabel/pv5"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ item }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv6-{{ item }}
+spec:
+  capacity:
+    storage: "10Gi"
+  volumeMode: "Filesystem"
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "local-storage"
+  local:
+    path: "/dev/disk/by-partlabel/pv6"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ item }}
