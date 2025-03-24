@@ -1,0 +1,50 @@
+---
+- name: Generate S3 access and secret keys
+  set_fact:
+    ocloud_platform_mco_access_key: "{{ 999999999 | random | to_uuid }}"
+    ocloud_platform_mco_secret_key: "{{ 999999999 | random | to_uuid }}"
+
+- name: Create namespace
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: "{{ ocloud_platform_mco_namespace }}"
+    state: present
+    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+
+- name: Create StorageClass
+  kubernetes.core.k8s:
+    template: "sc.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+
+- name: Create PersistentVolume
+  kubernetes.core.k8s:
+    template: "pv.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+  loop: "{{ groups['ocloud'] }}"
+
+- name: Create PersistentVolumeClaim
+  kubernetes.core.k8s:
+    template: "pvc.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+
+- name: Create Secret
+  kubernetes.core.k8s:
+    template: "secret.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    template: "deployment.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+
+- name: Create Service
+  kubernetes.core.k8s:
+    template: "service.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"

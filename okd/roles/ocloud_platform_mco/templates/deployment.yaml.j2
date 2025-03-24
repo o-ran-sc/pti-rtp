@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: "{{ ocloud_platform_mco_namespace }}"
+  labels:
+    app.kubernetes.io/name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: minio
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - mkdir -p /storage/thanos && /usr/bin/minio server /storage
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "{{ ocloud_platform_mco_access_key }}"
+        - name: MINIO_SECRET_KEY
+          value: "{{ ocloud_platform_mco_secret_key }}"
+        image:  "{{ ocloud_platform_mco_minio_image }}"
+        name: minio
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /storage
+          name: storage
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: minio

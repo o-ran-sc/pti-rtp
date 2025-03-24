@@ -1,0 +1,9 @@
+---
+- include_tasks: minio.yaml
+
+- name: Create MultiClusterObservability resource
+  kubernetes.core.k8s:
+    template: "mco.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+

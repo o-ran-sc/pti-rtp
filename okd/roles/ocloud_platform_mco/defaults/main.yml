@@ -1,0 +1,8 @@
+---
+ocloud_platform_mco_kubeconfig: "{{ ocloud_platform_okd_kubeconfig }}"
+ocloud_platform_mco_namespace: "open-cluster-management-observability"
+ocloud_platform_mco_minio_image: "quay.io/minio/minio:RELEASE.2021-08-25T00-41-18Z"
+ocloud_platform_mco_storageclass: "local-storage"
+ocloud_platform_mco_pv_mode: "Filesystem"
+ocloud_platform_mco_pv_path: "/var/srv"
+ocloud_platform_mco_pv_size: "50Gi"
