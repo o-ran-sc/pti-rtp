@@ -1,0 +1,22 @@
+---
+- name: Download OKD CLI
+  ansible.builtin.get_url:
+    url: "{{ ocloud_setup_okd_cli_url }}/{{ ocloud_setup_okd_cli_version }}/openshift-client-linux.tar.gz"
+    dest: "{{ ocloud_staging_dir['path'] }}"
+
+- name: Extract OKD CLI
+  ansible.builtin.unarchive:
+    src: "{{ ocloud_staging_dir['path'] }}/openshift-client-linux.tar.gz"
+    dest: "{{ ocloud_staging_dir['path'] }}/bin"
+    remote_src: true
+
+- name: Download golang
+  ansible.builtin.get_url:
+    url: "{{ ocloud_setup_golang_url }}"
+    dest: "{{ ocloud_staging_dir['path'] }}/go.linux-amd64.tar.gz"
+
+- name: Extract golang
+  ansible.builtin.unarchive:
+    src: "{{ ocloud_staging_dir['path'] }}/go.linux-amd64.tar.gz"
+    dest: "{{ ocloud_staging_dir['path'] }}"
+    remote_src: true
