@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69b81332_4c479265",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002633
+      },
+      "writtenOn": "2025-03-26T12:40:00Z",
+      "side": 1,
+      "message": "Looks good Chris - just a couple minor comments.",
+      "revId": "07e5c61c1a3a691bb7b9ae45b83393e0209cc5ca",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7e190b5e_dac386e7",
+        "filename": "okd/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002633
+      },
+      "writtenOn": "2025-03-26T12:40:00Z",
+      "side": 1,
+      "message": "Should this mention this needs to be a \"linux\" deployer host. I guess it is going to vary depending on distro used, but I needed a bunch of extra stuff when using centos9stream:\n\ndnf install https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm\ndnf group install \"Development Tools\"\ndnf install python3-devel ansible pip pkgconfig libvirt-devel python-lxml nmstate wget \n\nIs there a way to list some of these requirements in a generic way?",
+      "revId": "07e5c61c1a3a691bb7b9ae45b83393e0209cc5ca",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac17cc66_da0022ea",
+        "filename": "okd/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002633
+      },
+      "writtenOn": "2025-03-26T12:40:00Z",
+      "side": 1,
+      "message": "Should this be after the Ansible section?",
+      "revId": "07e5c61c1a3a691bb7b9ae45b83393e0209cc5ca",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
