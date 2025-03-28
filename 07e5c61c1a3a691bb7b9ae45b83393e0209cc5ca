@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6dc1b07b_ff266520",
+        "filename": "okd/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-03-28T21:39:16Z",
+      "side": 1,
+      "message": "I clarified that the deployer host needs to be Linux and added a Packages section with examples for Ubuntu and Fedora.",
+      "parentUuid": "7e190b5e_dac386e7",
+      "revId": "07e5c61c1a3a691bb7b9ae45b83393e0209cc5ca",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ac17cc66_da0022ea",
         "filename": "okd/README.md",
         "patchSetId": 2
@@ -48,6 +66,24 @@
       "writtenOn": "2025-03-26T12:40:00Z",
       "side": 1,
       "message": "Should this be after the Ansible section?",
+      "revId": "07e5c61c1a3a691bb7b9ae45b83393e0209cc5ca",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "744d2b0e_a36f251b",
+        "filename": "okd/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-03-28T21:39:16Z",
+      "side": 1,
+      "message": "Good point. I moved it there, along with the DNS section which references an Ansible playbook.",
+      "parentUuid": "ac17cc66_da0022ea",
       "revId": "07e5c61c1a3a691bb7b9ae45b83393e0209cc5ca",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
