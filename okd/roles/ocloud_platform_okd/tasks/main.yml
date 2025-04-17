@@ -1,8 +1,4 @@
 ---
-- name: Gather facts
-  ansible.builtin.setup:
-    gather_subset: all
-
 - include_tasks: version.yml
   when: ocloud_platform_okd_kubeconfig
 
