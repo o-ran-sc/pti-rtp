@@ -1,6 +1,6 @@
 ---
-ocloud_infra_vm_cpus: 8
-ocloud_infra_vm_mem_gb: 24
+ocloud_infra_vm_cpus: 16
+ocloud_infra_vm_mem_gb: 32
 ocloud_infra_vm_disk_gb: 120
 ocloud_infra_vm_disk_dir: "/var/lib/libvirt/images"
 ocloud_infra_vm_disk_path: "{{ ocloud_infra_vm_disk_dir }}/{{ inventory_hostname }}.qcow2"
