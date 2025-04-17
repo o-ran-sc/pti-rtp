@@ -14,12 +14,19 @@ spec:
   advanced:
     alertmanager:
       replicas: {{ ocloud_platform_mco_replicas }}
+    compact:
+      resources:
+        requests:
+          memory: 512m
     grafana:
       replicas: {{ ocloud_platform_mco_replicas }}
     observatoriumAPI:
       replicas: {{ ocloud_platform_mco_replicas }}
     query:
       replicas: {{ ocloud_platform_mco_replicas }}
+      resources:
+        requests:
+          memory: 512m
     queryFrontend:
       replicas: {{ ocloud_platform_mco_replicas }}
     queryFrontendMemcached:
@@ -32,5 +39,8 @@ spec:
       replicas: {{ ocloud_platform_mco_replicas }}
     store:
       replicas: {{ ocloud_platform_mco_replicas }}
+      resources:
+        requests:
+          memory: 512m
     storeMemcached:
       replicas: {{ ocloud_platform_mco_replicas }}

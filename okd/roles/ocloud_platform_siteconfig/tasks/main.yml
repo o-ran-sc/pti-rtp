@@ -11,3 +11,16 @@
   environment:
     PATH: "{{ ocloud_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
     KUBECONFIG: "{{ ocloud_platform_siteconfig_kubeconfig }}"
+
+- name: Enable siteconfig
+  kubernetes.core.k8s_json_patch:
+    name: multiclusterhub
+    kind: MultiClusterHub
+    namespace: open-cluster-management
+    kubeconfig: "{{ ocloud_platform_siteconfig_kubeconfig }}"
+    patch:
+      - op: add
+        path: "/spec/overrides/components/-"
+        value:
+          name: siteconfig
+          enabled: true
