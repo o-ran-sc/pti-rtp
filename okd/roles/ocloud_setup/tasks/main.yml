@@ -17,6 +17,7 @@
   loop:
     - bin
     - cfg
+    - cfg/openshift
     - git
 
 - include_tasks: okd.yml

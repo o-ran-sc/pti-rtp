@@ -20,3 +20,10 @@
     src: "{{ ocloud_staging_dir['path'] }}/go.linux-amd64.tar.gz"
     dest: "{{ ocloud_staging_dir['path'] }}"
     remote_src: true
+
+- name: Download yq
+  ansible.builtin.get_url:
+    url: "{{ ocloud_setup_yq_url }}"
+    dest: "{{ ocloud_staging_dir['path'] }}/bin/yq"
+    mode: '0555'
+
