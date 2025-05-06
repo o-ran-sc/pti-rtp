@@ -1,0 +1,14 @@
+---
+- name: Get deployment managers
+  ansible.builtin.uri:
+    url: "https://{{ ocloud_dms_host }}/o2ims-infrastructureInventory/v1/deploymentManagers/{{ ocloud_dms_deployment_mgr_id }}"
+    headers:
+      Authorization: "Bearer {{ ocloud_token }}"
+    validate_certs: false
+  register: o2_dms_deployment_mgr_profile
+
+- name: Template deployment manager kubeconfig
+  ansible.builtin.template:
+    src: "kubeconfig.j2"
+    dest: "{{ ocloud_dms_kubeconfig }}"
+    mode: "600"
