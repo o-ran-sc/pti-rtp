@@ -1,0 +1,18 @@
+---
+- name: Execute O2 compliance tests
+  hosts: deployer
+  gather_facts: true
+  pre_tasks:
+    - ansible.builtin.fail:
+        msg: "ocloud_kubeconfig must be set to the path of the kubeconfig for the cluster hosting the O2 API server"
+      when: ocloud_kubeconfig is undefined
+
+    - ansible.builtin.fail:
+        msg: "ocloud_compliance_resource_type must be set to the name of a resource type associated with the target O-Cloud"
+      when: ocloud_compliance_resource_type is undefined
+
+    - ansible.builtin.fail:
+        msg: "ocloud_compliance_resource_desc_substring must be set to a substring of a resource description associated with the target O-Cloud"
+      when: ocloud_compliance_resource_desc_substring is undefined
+  roles:
+    - ocloud_compliance
