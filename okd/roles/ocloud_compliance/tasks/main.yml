@@ -1,0 +1,43 @@
+---
+- name: Create staging dir for O-Cloud compliance testing
+  ansible.builtin.tempfile:
+    path: "{{ lookup('env', 'HOME') }}"
+    prefix: "ocloud_compliance.{{ ansible_date_time['date'] }}."
+    state: directory
+  register: ocloud_compliance_staging_dir
+
+- name: Clone it/test repo
+  ansible.builtin.git:
+    repo: "{{ ocloud_compliance_repo }}"
+    dest: "{{ ocloud_compliance_staging_dir['path'] }}/git"
+
+- name: Install pip requirements
+  ansible.builtin.pip:
+    name:
+      - robotframework
+      - RESTinstance
+      - robotframework-sshlibrary
+    virtualenv: "{{ ocloud_compliance_staging_dir['path'] }}/venv"
+
+- name: Run mock SMO server
+  community.docker.docker_container:
+    name: mocksmo
+    image: mockserver/mockserver
+    state: present
+    detach: true
+    auto_remove: true
+
+- name: Register mock server endpoints
+  ansible.builtin.shell:
+    cmd: "/bin/bash mock.sh {{ ocloud_compliance_smo_host }} {{ ocloud_compliance_smo_port }}"
+    chdir: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test"
+
+- name: Template test configuration
+  ansible.builtin.template:
+    src: "test_configs.yaml.j2"
+    dest: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test/test_configs.yaml"
+
+- name: Execute compliance tests
+  ansible.builtin.shell:
+    cmd: "{{ ocloud_compliance_staging_dir['path'] }}/venv/bin/robot -L debug -d {{ ocloud_compliance_staging_dir['path'] }}/reports ./o2ims_compliance"
+    chdir: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test"
