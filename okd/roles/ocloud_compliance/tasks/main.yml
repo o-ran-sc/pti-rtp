@@ -1,0 +1,99 @@
+---
+- name: Create staging dir for O-Cloud compliance testing
+  ansible.builtin.tempfile:
+    path: "{{ lookup('env', 'HOME') }}"
+    prefix: "ocloud_compliance.{{ ansible_date_time['date'] }}."
+    state: directory
+  register: ocloud_compliance_staging_dir
+
+- name: Clone it/test repo
+  ansible.builtin.git:
+    repo: "{{ ocloud_compliance_repo }}"
+    dest: "{{ ocloud_compliance_staging_dir['path'] }}/git"
+
+- name: Install pip requirements
+  ansible.builtin.pip:
+    name:
+      - robotframework
+      - RESTinstance
+      - robotframework-sshlibrary
+    virtualenv: "{{ ocloud_compliance_staging_dir['path'] }}/venv"
+
+- name: Create SSH user
+  become: true
+  ansible.builtin.user:
+    name: "{{ ocloud_compliance_ssh_user }}"
+    state: present
+    password: "{{ ocloud_compliance_ssh_password | password_hash('sha512', 'salt') }}"
+  delegate_to: "{{ ocloud_compliance_ssh_host }}"
+
+- name: Get oran-o2ims Inventory
+  kubernetes.core.k8s_info:
+    name: default
+    api_version: o2ims.oran.openshift.io/v1alpha1
+    kind: Inventory
+    namespace: oran-o2ims
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+  register: o2ims_inventory
+
+- set_fact:
+    ocloud_compliance_o2_host: "{{ o2ims_inventory['resources'][0]['status']['ingressHost'] }}"
+
+- name: Get O2 resource pools
+  ansible.builtin.uri:
+    url: "https://{{ ocloud_compliance_o2_host }}/o2ims-infrastructureInventory/v1/resourcePools"
+    headers:
+      Authorization: "Bearer {{ ocloud_token }}"
+    validate_certs: false
+  register: o2_resource_pools
+
+- set_fact:
+    ocloud_compliance_location_id: "{{ o2_resource_pools['json'][0]['location'] }}"
+    ocloud_compliance_ocloud_id: "{{ o2_resource_pools['json'][0]['oCloudId'] }}"
+
+- name: Get O2 deployment managers
+  ansible.builtin.uri:
+    url: "https://{{ ocloud_compliance_o2_host }}/o2ims-infrastructureInventory/v1/deploymentManagers"
+    headers:
+      Authorization: "Bearer {{ ocloud_token }}"
+    validate_certs: false
+  register: o2_deployment_managers
+
+- set_fact:
+    ocloud_compliance_deployment_manager: "{{ o2_deployment_managers['json'][0]['name'] }}"
+
+- name: Run mock SMO container
+  containers.podman.podman_container:
+    name: "mocksmo"
+    image: mockserver/mockserver
+    publish:
+      - "{{ ocloud_compliance_smo_port }}:{{ ocloud_compliance_smo_port }}"
+    state: started
+    rm: true
+  register: mock_smo_container
+
+- name: Wait for mock SMO container to start listening
+  ansible.builtin.wait_for:
+    host: "{{ ocloud_compliance_smo_host }}"
+    port: "{{ ocloud_compliance_smo_port }}"
+    delay: 5
+
+- name: Register mock server endpoints
+  ansible.builtin.shell:
+    cmd: "/bin/bash mock.sh {{ ocloud_compliance_smo_host }} {{ ocloud_compliance_smo_port }}"
+    chdir: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test"
+
+- name: Template test configuration
+  ansible.builtin.template:
+    src: "test_configs.yaml.j2"
+    dest: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test/test_configs.yaml"
+
+- name: Execute compliance tests
+  ansible.builtin.shell:
+    cmd: "{{ ocloud_compliance_staging_dir['path'] }}/venv/bin/robot -L debug -d {{ ocloud_compliance_staging_dir['path'] }}/reports ./o2ims_compliance"
+    chdir: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test"
+
+- name: Stop mock SMO container
+  containers.podman.podman_container:
+    name: "mocksmo"
+    state: stopped

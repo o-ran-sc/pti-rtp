@@ -1,0 +1,53 @@
+---
+- name: Create test-client service account
+  kubernetes.core.k8s:
+    name: test-client
+    api_version: v1
+    kind: ServiceAccount
+    namespace: oran-o2ims
+    state: present
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+
+- name: Create test-client cluster role binding
+  kubernetes.core.k8s:
+    name: oran-o2ims-test-client-binding
+    api_version: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    namespace: oran-o2ims
+    resource_definition:
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: oran-o2ims-admin-role
+      subjects:
+        - kind: ServiceAccount
+          name: test-client
+          namespace: oran-o2ims
+    state: present
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+
+- name: Create test-client token
+  kubernetes.core.k8s:
+    name: test-client-token
+    api_version: v1
+    kind: Secret
+    namespace: oran-o2ims
+    resource_definition:
+      metadata:
+        annotations:
+          kubernetes.io/service-account.name: test-client
+      type: kubernetes.io/service-account-token
+    state: present
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+
+- name: get test-client token
+  kubernetes.core.k8s_info:
+    name: test-client-token
+    api_version: v1
+    kind: Secret
+    namespace: oran-o2ims
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+  register: test_client_token
+
+- set_fact:
+    ocloud_token: "{{ test_client_token['resources'][0]['data']['token'] | b64decode }}"

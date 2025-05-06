@@ -1,0 +1,11 @@
+---
+- name: Execute O2 compliance tests
+  hosts: deployer
+  gather_facts: true
+  pre_tasks:
+    - ansible.builtin.assert:
+        that: ocloud_kubeconfig is defined
+        fail_msg: "ocloud_kubeconfig must be set to the path of the kubeconfig for the cluster hosting the O2 API server"
+        success_msg: "ocloud_kubeconfig = {{ ocloud_kubeconfig }}"
+  roles:
+    - ocloud_compliance
