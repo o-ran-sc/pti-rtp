@@ -1,0 +1,35 @@
+#olcoud ssh info
+ocloud:
+  ssh:
+    host: {{ ocloud_compliance_ssh_host }}
+    port: {{ ocloud_compliance_ssh_port }}
+    username: {{ ocloud_compliance_ssh_user }}
+    password: {{ ocloud_compliance_ssh_password }}
+    openrc: /etc/platform/openrc
+  #oran_o2_ims_info 
+  oran_o2_app:
+    g_location_id: {{ ocloud_compliance_location_id }}
+    g_ocloud_id: {{ ocloud_compliance_ocloud_id }}
+    smo_token_data: {{ ocloud_token }}
+    deploymentmanager_name: {{ ocloud_compliance_deployment_manager }}
+    resourcetype_name: {{ ocloud_compliance_resource_type }}
+    resource_description_substring: {{ ocloud_compliance_resource_desc_substring }}
+
+    api:
+      host: {{ ocloud_compliance_o2ims_host }}
+      node_port: {{ ocloud_compliance_o2ims_port }}
+      protocol: {{ ocloud_compliance_o2ims_protocol }}
+#smo mock server ip and callback endpoints
+smo:
+  service:
+    protocol: {{ ocloud_compliance_smo_protocol }}
+    host: {{ ocloud_compliance_smo_host }}
+    port: {{ ocloud_compliance_smo_port }}
+    verify_endpoint: /mockserver/verify
+  ocloud_observer:
+    path: /mock_smo/v1/ocloud_observer
+  o2ims_inventory_observer:
+    path: /mock_smo/v1/o2ims_inventory_observer
+  o2ims_alarm_observer:
+    path: /mock_smo/v1/o2ims_alarm_observer
+
