@@ -1,0 +1,15 @@
+---
+ocloud_compliance_repo: "https://gerrit.o-ran-sc.org/r/it/test.git"
+ocloud_compliance_mockserver_ca: "https://raw.githubusercontent.com/mock-server/mockserver/master/mockserver-core/src/main/resources/org/mockserver/socket/CertificateAuthorityCertificate.pem"
+ocloud_compliance_mockserver_key: "https://raw.githubusercontent.com/mock-server/mockserver/master/mockserver-core/src/main/resources/org/mockserver/socket/CertificateAuthorityPrivateKey.pem"
+ocloud_compliance_o2_port: 443
+ocloud_compliance_o2_protocol: https
+ocloud_compliance_resource_type: "pserver"
+ocloud_compliance_resource_desc_substring: "pserver"
+ocloud_compliance_ssh_host: localhost
+ocloud_compliance_ssh_port: 22
+ocloud_compliance_ssh_user: robot
+ocloud_compliance_ssh_password: robot
+ocloud_compliance_smo_host: "{{ ansible_default_ipv4['address'] }}"
+ocloud_compliance_smo_port: 34667
+ocloud_compliance_smo_protocol: https

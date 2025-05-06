@@ -1,0 +1,6 @@
+---
+- name: Execute O2 compliance tests
+  hosts: deployer
+  gather_facts: true
+  roles:
+    - ocloud_compliance

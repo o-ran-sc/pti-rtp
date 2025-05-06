@@ -1,0 +1,26 @@
+---
+- name: Create staging dir
+  ansible.builtin.tempfile:
+    path: "{{ lookup('env', 'HOME') }}"
+    prefix: "ocloud_workload_oaicucp.{{ ansible_date_time['date'] }}."
+    state: directory
+  register: ocloud_workload_oaicucp_staging_dir
+
+- name: Clone oai-cn5g-fed repo
+  ansible.builtin.git:
+    repo: "{{ ocloud_workload_oaicucp_repo_url }}"
+    version: "{{ ocloud_workload_oaicucp_repo_version }}"
+    dest: "{{ ocloud_workload_oaicucp_staging_dir['path'] }}/git/oai-cn5g-fed"
+
+- name: Deploy oai-cu-cp Helm chart
+  kubernetes.core.helm:
+    name: oai-cu-cp
+    chart_ref: "{{ ocloud_staging_dir['path'] }}/git/oai-cn5g-fed/charts/oai-5g-ran/oai-cu-cp"
+    release_namespace: "{{ ocloud_workload_oaicucp_namespace }}"
+    create_namespace: true
+    values:
+      kubernetesDistribution: "Openshift"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+    state: present
+
+

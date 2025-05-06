@@ -1,0 +1,22 @@
+---
+- name: Deploy sample workload(s) via O2 DMS interface
+  hosts: deployer
+  gather_facts: true
+  tasks:
+    - ansible.builtin.assert:
+        that: ocloud_workloads is defined
+        fail_msg: "ocloud_workloads must be set to a comma-delimited list of workloads to deploy"
+
+    - ansible.builtin.assert:
+        that: ocloud_dms_host is defined
+        fail_msg: "ocloud_dms_host must be set to the hostname of the O2 API server providing the DMS interface"
+
+    - ansible.builtin.assert:
+        that: ocloud_dms_deployment_mgr_id is defined
+        fail_msg: "ocloud_dms_deployment_mgr_id must be set to the deployment manager ID where the sample workload(s) will be deployed"
+
+    - ansible.builtin.assert:
+        that: ocloud_kubeconfig is defined
+        fail_msg: "ocloud_kubeconfig must be set to the path of the kubeconfig for the cluster hosting the O2 API server"
+  roles:
+    - ocloud_workload

@@ -1,0 +1,4 @@
+---
+ocloud_workload_oaicucp_repo_url: "https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git"
+ocloud_workload_oaicucp_repo_version: "main"
+ocloud_workload_oaicucp_namespace: "oai-cu-cp"

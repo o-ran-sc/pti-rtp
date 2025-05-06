@@ -1,0 +1,4 @@
+---
+ocloud_dms_host: ~
+ocloud_dms_deployment_mgr_id: ~
+ocloud_dms_kubeconfig: "~/.kube/kubeconfig.{{ ocloud_dms_deployment_mgr }}"
