@@ -25,8 +25,8 @@ SRC_ORAN_BRANCH="master"
 
 SRC_ORAN_URL="https://gerrit.o-ran-sc.org/r/pti/rtp"
 
-STX_VER="9.0"
-ORAN_REL="ORAN J-Release (${STX_VER})"
+STX_VER="10.0"
+ORAN_REL="ORAN L-Release (${STX_VER})"
 
 SCRIPTS_DIR=$(dirname $(readlink -f $0))
 SCRIPTS_NAME=$(basename $0)
