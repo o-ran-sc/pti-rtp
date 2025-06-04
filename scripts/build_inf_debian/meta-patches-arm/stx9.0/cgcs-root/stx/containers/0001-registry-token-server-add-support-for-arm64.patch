@@ -1,0 +1,42 @@
+From a4217bb60afc5ee9d55d6d28bc59a57517c5224c Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 8 Feb 2023 06:49:56 -0500
+Subject: [PATCH] registry-token-server: add support for arm64
+
+Add arm64 into supported arch in the control file.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 48016
+
+Change-Id: Id075d30c59a92b4a6536e754fb4390dbddaa88f7
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ registry-token-server/debian/deb_folder/control | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/registry-token-server/debian/deb_folder/control b/registry-token-server/debian/deb_folder/control
+index c7143e5..c9fd58e 100644
+--- a/registry-token-server/debian/deb_folder/control
++++ b/registry-token-server/debian/deb_folder/control
+@@ -9,7 +9,7 @@ Standards-Version: 4.4.1
+ XS-Go-Import-Path: registry-token-server
+ 
+ Package: registry-token-server
+-Architecture: amd64
++Architecture: amd64 arm64
+ Multi-Arch: no
+ Depends: ${misc:Depends},
+  ${shlibs:Depends}
+-- 
+2.30.2
+

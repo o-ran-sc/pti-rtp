@@ -1,0 +1,42 @@
+From a866467b15afb3200e168e5a245316b51210e8e6 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 26 Jul 2023 22:30:09 +0800
+Subject: [PATCH 08/12] ceph: add support for arm64
+
+Add arm64 as the supported arch in the control file.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Change-Id: Ice075e99a153b9b7da64a7da9eadc7233bc685ea
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ ceph/ceph/debian/deb_folder/control | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ceph/ceph/debian/deb_folder/control b/ceph/ceph/debian/deb_folder/control
+index b8677932..6d8d12ff 100644
+--- a/ceph/ceph/debian/deb_folder/control
++++ b/ceph/ceph/debian/deb_folder/control
+@@ -178,7 +178,7 @@ Description: common utilities to mount and interact with a ceph storage cluster
+  of common tools that allow one to interact with and administer a Ceph cluster.
+ 
+ Package: ceph-fuse
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends:
+  python3,
+  ${misc:Depends},
+-- 
+2.30.2
+

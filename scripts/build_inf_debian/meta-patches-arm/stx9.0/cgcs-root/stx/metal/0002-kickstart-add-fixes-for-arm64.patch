@@ -1,0 +1,127 @@
+From 0bc9acfc4a699faa4ba0d620f2301f257da51cf4 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Mon, 31 Jul 2023 22:55:29 +0800
+Subject: [PATCH 2/2] kickstart: add fixes for arm64
+
+Use "uname -m" to check the host arch and make the following
+fixes only for arm64:
+
+1. Reconfigure pkgs cracklib-runtime for arm64
+This step is done when runing build-image but failed:
+    appsdk - DEBUG: Setting up cracklib-runtime (2.9.6-3.4) ...
+    appsdk - DEBUG: file: could not find any valid magic files!
+
+And it ended up with failure when setting new password:
+    You are required to change your password immediately
+    (administrator enforced).
+    Changing password for sysadmin.
+    Current password:
+    New password:
+    /var/cache/cracklib/cracklib_dict.pwd: No such file or directory
+    BAD PASSWORD: The password fails the dictionary check - error
+    loading dictionary
+
+2. Add efi=runtime for arm64 on RT kernel:
+ARM64 server only support UEFI but the efi runtime is disable
+by default on RT kernel, so Add the efi=runtime kernel command
+line option to enable it for arm64.
+
+As reference here is the difference in the std and rt kernel
+requiring this change:
+
+    $ diff linux-yocto-{std,rt}/drivers/firmware/efi/efi.c
+    69c69
+    < static bool disable_runtime;
+    ---
+    > static bool disable_runtime = IS_ENABLED(CONFIG_PREEMPT_RT);
+    98a99,101
+    >
+    >       if (parse_option_str(str, "runtime"))
+    >               disable_runtime = false;
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-SX(LL) on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std(2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 48019
+
+Change-Id: Ic36f3757b0086979e4792c7a889c3779bd44a78a
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ kickstart/files/kickstart.cfg | 13 +++++++++++++
+ kickstart/files/miniboot.cfg  | 13 +++++++++++++
+ 2 files changed, 26 insertions(+)
+
+diff --git a/kickstart/files/kickstart.cfg b/kickstart/files/kickstart.cfg
+index a8cb299..e333852 100644
+--- a/kickstart/files/kickstart.cfg
++++ b/kickstart/files/kickstart.cfg
+@@ -2093,6 +2093,13 @@ groupadd nobody
+ 
+ # Reload /etc/group- to make systemd-sysusers.service happy
+ /usr/sbin/grpconv || report_failure_with_msg "Failed to convert from shadow passwords and groups"
++
++# reconfigure pkgs cracklib-runtime for arm64
++uname_arch=$(uname -m)
++if [ "${uname_arch}" = "aarch64" ] ; then
++    dpkg-reconfigure cracklib-runtime
++fi
++
+ %end
+ 
+ %post --interpreter=/bin/bash
+@@ -2357,6 +2364,12 @@ if [ "${aio}" = true -o "${worker}" = true ] ; then
+         add_kernel_option "skew_tick=1"
+     fi
+ 
++    # Add kernel option to enable efi runtime for arm64 on RT kernel
++    uname_arch=$(uname -m)
++    if [ "${lowlatency}" = true -a "${uname_arch}" = "aarch64" ] ; then
++        add_kernel_option "efi=runtime"
++    fi
++
+ elif [ "${controller}" = true ] ; then
+ 
+     ilog "Adding ${TRAIT__CONTROLLER} function kernel options"
+diff --git a/kickstart/files/miniboot.cfg b/kickstart/files/miniboot.cfg
+index b1c2547..3f3bdb9 100644
+--- a/kickstart/files/miniboot.cfg
++++ b/kickstart/files/miniboot.cfg
+@@ -2281,6 +2281,13 @@ groupadd nobody
+ 
+ # Reload /etc/group- to make systemd-sysusers.service happy
+ /usr/sbin/grpconv || report_failure_with_msg "Failed to convert from shadow passwords and groups"
++
++# reconfigure pkgs cracklib-runtime for arm64
++uname_arch=$(uname -m)
++if [ "${uname_arch}" = "aarch64" ] ; then
++    dpkg-reconfigure cracklib-runtime
++fi
++
+ %end
+ 
+ %post --interpreter=/bin/bash
+@@ -2545,6 +2552,12 @@ if [ "${aio}" = true -o "${worker}" = true ] ; then
+         add_kernel_option "skew_tick=1"
+     fi
+ 
++    # Add kernel option to enable efi runtime for arm64 on RT kernel
++    uname_arch=$(uname -m)
++    if [ "${lowlatency}" = true -a "${uname_arch}" = "aarch64" ] ; then
++        add_kernel_option "efi=runtime"
++    fi
++
+ elif [ "${controller}" = true ] ; then
+ 
+     ilog "Adding ${TRAIT__CONTROLLER} function kernel options"
+-- 
+2.30.2
+

@@ -1,0 +1,84 @@
+From 1577df1f8edf3e322eb743eab8f8e82ee6e3f5ee Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 16 Nov 2023 16:52:33 +0800
+Subject: [PATCH 2/2] sysinv-agent: get cpu model from lscpu for Arm
+
+Change-Id: I70a155b98090a0bb83577345f64c3ffb281183e8
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ sysinv/sysinv/sysinv/sysinv/agent/node.py | 28 +++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/sysinv/sysinv/sysinv/sysinv/agent/node.py b/sysinv/sysinv/sysinv/sysinv/agent/node.py
+index 4b75a11af..2a09b43cb 100644
+--- a/sysinv/sysinv/sysinv/sysinv/agent/node.py
++++ b/sysinv/sysinv/sysinv/sysinv/agent/node.py
+@@ -20,6 +20,8 @@ import re
+ from oslo_log import log as logging
+ import tsconfig.tsconfig as tsc
+ 
++from sysinv.common import utils
++
+ LOG = logging.getLogger(__name__)
+ 
+ # Defines the size of one kilobyte
+@@ -223,8 +225,10 @@ class NodeOperator(object):
+ 
+         # In the case topology not detected, hard-code structures
+         if self.num_nodes == 0:
++            cpu_model = self._get_cpu_model_lscpu()
+             n_sockets, n_cores, n_threads = (1, int(self.num_cpus), 1)
+             self.topology = {}
++            cpu = 0
+             for socket_id in range(n_sockets):
+                 self.topology[socket_id] = {}
+                 if socket_id not in sockets:
+@@ -245,7 +249,11 @@ class NodeOperator(object):
+                             'thread': thread_id,
+                             'capabilities': {},
+                         }
++                        if cpu_model:
++                            attrs.update({'cpu_model': cpu_model})
++
+                         icpus.append(attrs)
++                        cpu += 1
+ 
+             # Define Thread-Socket-Core order for logical cpu enumeration
+             cpu = 0
+@@ -267,6 +275,8 @@ class NodeOperator(object):
+                             'thread': thread_id,
+                             'capabilities': {},
+                         }
++                        if cpu_model:
++                            attrs.update({'cpu_model': cpu_model})
+                         icpus.append(attrs)
+                         cpu += 1
+             self.num_nodes = len(list(self.topology.keys()))
+@@ -275,6 +285,24 @@ class NodeOperator(object):
+ 
+         return inumas, icpus
+ 
++    def _get_cpu_model_lscpu(self):
++        """Get cpu model from lscpu
++
++        Returns:
++            string: the cpu model name
++        """
++        cpu_model = ""
++        output = utils.execute(
++            "lscpu | grep 'Model name' | cut -f 2- -d:|awk '{$1=$1}1'",
++            shell=True)
++
++        if isinstance(output, tuple):
++            cpu_model = output[0]
++            if cpu_model:
++                cpu_model = cpu_model.strip()
++                LOG.info("CPU Model name: {}".format(cpu_model))
++        return cpu_model
++
+     def _get_immediate_subdirs(self, dir):
+         return [name for name in listdir(dir)
+                 if os.path.isdir(join(dir, name))]
+-- 
+2.30.2
+

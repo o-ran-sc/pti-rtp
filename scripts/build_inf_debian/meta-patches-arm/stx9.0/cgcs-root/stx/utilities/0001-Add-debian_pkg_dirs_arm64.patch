@@ -1,0 +1,59 @@
+From 58d9ddad1f68ea024798718a6ecf49835e247bba Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 27 Jul 2023 23:19:16 +0800
+Subject: [PATCH] Add debian_pkg_dirs_arm64
+
+Add debian_pkg_dirs_arm64 and remove the following 4
+packages for arm64 since they are not supported.
+
+-tools/opae/python3-opae.admin
+-tools/opae/python3-opae.pacsign
+-tools/opae/opae-sdk
+-tools/pcm
+
+Test Plan:
+PASS: downloader -s -b on x86-64 host
+PASS: downloader -s -b on arm64 host
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+
+Story: 2010739
+Task: 48014
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889681
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889682
+
+Change-Id: I47e72054c14911ccb5c81499179a3bd4d10e5897
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ debian_pkg_dirs_arm64 | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+ create mode 100644 debian_pkg_dirs_arm64
+
+diff --git a/debian_pkg_dirs_arm64 b/debian_pkg_dirs_arm64
+new file mode 100644
+index 0000000..764e9c2
+--- /dev/null
++++ b/debian_pkg_dirs_arm64
+@@ -0,0 +1,14 @@
++ceph/ceph-manager
++ceph/python-cephclient
++tools/collector
++tools/engtools/hostdata-collectors
++utilities/build-info
++utilities/k8s-coredump
++utilities/logmgmt
++utilities/namespace-utils
++utilities/nfscheck
++utilities/pci-irq-affinity-agent
++utilities/platform-util
++utilities/stx-extensions
++utilities/update-motd
++utilities/worker-utils
+-- 
+2.30.2
+

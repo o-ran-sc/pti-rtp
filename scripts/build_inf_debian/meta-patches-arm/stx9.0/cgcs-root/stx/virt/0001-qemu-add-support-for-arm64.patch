@@ -1,0 +1,282 @@
+From 00b23156c45c519bc12841dc8773229295af1832 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 23 Jan 2024 09:49:13 +0800
+Subject: [PATCH 1/2] qemu: add support for arm64
+
+Add the following patches to support for building
+for arm64:
+- Remove dependency on gcc-alpha-linux-gnu, which
+  is not availabel for arm64.
+- Remove unsupported BIOS targets.
+- Add package qemu-system-arm
+
+Test Plan:
+PASS: downloader -s -b on x86-64 host
+PASS: downloader -s -b on arm64 host
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+
+Story: 2010739
+Task: 48533
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: I3b2a81923ee0f5c5bad1ddcde4a760fea257ff15
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../0008-ARM-remove-gcc-alpha-linux-gnu.patch |  31 +++++
+ .../0009-ARM-remove-BIOS-targets.patch        | 124 ++++++++++++++++++
+ .../0010-ARM-add-pkg-qemu-system-arm.patch    |  50 +++++++
+ qemu/debian/deb_patches/series_arm64          |  10 ++
+ 4 files changed, 215 insertions(+)
+ create mode 100644 qemu/debian/deb_patches/0008-ARM-remove-gcc-alpha-linux-gnu.patch
+ create mode 100644 qemu/debian/deb_patches/0009-ARM-remove-BIOS-targets.patch
+ create mode 100644 qemu/debian/deb_patches/0010-ARM-add-pkg-qemu-system-arm.patch
+ create mode 100644 qemu/debian/deb_patches/series_arm64
+
+diff --git a/qemu/debian/deb_patches/0008-ARM-remove-gcc-alpha-linux-gnu.patch b/qemu/debian/deb_patches/0008-ARM-remove-gcc-alpha-linux-gnu.patch
+new file mode 100644
+index 0000000..3edaa12
+--- /dev/null
++++ b/qemu/debian/deb_patches/0008-ARM-remove-gcc-alpha-linux-gnu.patch
+@@ -0,0 +1,31 @@
++From 10362ba97dbd9c861554c5ce7258b9dc26e7b95e Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Sun, 21 Jan 2024 21:30:44 -0500
++Subject: [PATCH] ARM: remove dependency on gcc-alpha-linux-gnu
++
++gcc-alpha-linux-gnu doesn't exist for arm64 according to:
++https://packages.debian.org/bullseye/gcc-alpha-linux-gnu
++
++So remove it from the dependency for arm64
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ debian/control | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/debian/control b/debian/control
++index 57154e2..ebc5b59 100644
++--- a/debian/control
+++++ b/debian/control
++@@ -125,7 +125,7 @@ Build-Depends-Indep:
++  device-tree-compiler,
++ # gcc-s390x-linux-gnu,
++ # qemu-palcode/palcode-clipper
++- gcc-alpha-linux-gnu,
+++# gcc-alpha-linux-gnu,
++ # skiboot firmware, openbios
++ # gcc-powerpc64-linux-gnu,
++ # openbios
++-- 
++2.30.2
++
+diff --git a/qemu/debian/deb_patches/0009-ARM-remove-BIOS-targets.patch b/qemu/debian/deb_patches/0009-ARM-remove-BIOS-targets.patch
+new file mode 100644
+index 0000000..c3651f0
+--- /dev/null
++++ b/qemu/debian/deb_patches/0009-ARM-remove-BIOS-targets.patch
+@@ -0,0 +1,124 @@
++From f1be5a19e4b8f46f1475f0dbaabba29cc4dd2424 Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Sun, 21 Jan 2024 23:27:14 -0500
++Subject: [PATCH] ARM: remove unsupported BIOS target
++
++The following BIOS related targets are for x86 only,
++- build-x86-optionrom
++- build-sgabios
++- build-qboot
++
++Remove these targets for ARM.
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ debian/rules | 88 ++++++++++++++++++++++++++--------------------------
++ 1 file changed, 44 insertions(+), 44 deletions(-)
++
++diff --git a/debian/rules b/debian/rules
++index efa092c..01764cc 100755
++--- a/debian/rules
+++++ b/debian/rules
++@@ -405,55 +405,55 @@ endif
++ 
++ 
++ ### x86 optionrom
++-build-x86-optionrom: b/optionrom/built
++-b/optionrom/built:
++-	mkdir -p b/optionrom
++-	${MAKE} -f ${CURDIR}/debian/optionrom.mak -C b/optionrom SRC_PATH="${CURDIR}" all
++-	touch $@
++-install-x86-optionrom: build-x86-optionrom | ${sysdataidir}
++-	${MAKE} -f ${CURDIR}/debian/optionrom.mak -C b/optionrom SRC_PATH="${CURDIR}" install DESTDIR="${CURDIR}/${sysdataidir}"
++-sysdata-components += x86-optionrom
+++#build-x86-optionrom: b/optionrom/built
+++#b/optionrom/built:
+++#	mkdir -p b/optionrom
+++#	${MAKE} -f ${CURDIR}/debian/optionrom.mak -C b/optionrom SRC_PATH="${CURDIR}" all
+++#	touch $@
+++#install-x86-optionrom: build-x86-optionrom | ${sysdataidir}
+++#	${MAKE} -f ${CURDIR}/debian/optionrom.mak -C b/optionrom SRC_PATH="${CURDIR}" install DESTDIR="${CURDIR}/${sysdataidir}"
+++#sysdata-components += x86-optionrom
++ 
++ ### sgabios.
++ # The Makefile is too complex and forces current date to be embedded to binary
++-build-sgabios: b/sgabios/sgabios.bin
++-b/sgabios/sgabios.bin:
++-	mkdir -p b/sgabios
++-	cc -c -o b/sgabios/sgabios.o roms/sgabios/sgabios.S -Wall -Os -m32 -nostdlib \
++-	  -DBUILD_DATE="\"$$(LC_ALL=C date -u -r roms/sgabios/sgabios.S)\"" \
++-	  -DBUILD_SHORT_DATE="\"$$(date -u +%D -r roms/sgabios/sgabios.S)\"" \
++-	  -DBUILD_HOST=\"debian\" -DBUILD_USER=\"build\"
++-	ld -T roms/sgabios/rom16.ld -nostdlib b/sgabios/sgabios.o -o b/sgabios/sgabios.elf
++-	objcopy -O binary b/sgabios/sgabios.elf b/sgabios/sgabios.bin
++-	cc -Wall -O2 -o b/sgabios/csum8 roms/sgabios/csum8.c
++-	b/sgabios/csum8 b/sgabios/sgabios.bin
++-install-sgabios: b/sgabios/sgabios.bin
++-	install -m 0644 $< ${sysdataidir}/sgabios.bin
++-sysdata-components += sgabios
+++#build-sgabios: b/sgabios/sgabios.bin
+++#b/sgabios/sgabios.bin:
+++#	mkdir -p b/sgabios
+++#	cc -c -o b/sgabios/sgabios.o roms/sgabios/sgabios.S -Wall -Os -m32 -nostdlib \
+++#	  -DBUILD_DATE="\"$$(LC_ALL=C date -u -r roms/sgabios/sgabios.S)\"" \
+++#	  -DBUILD_SHORT_DATE="\"$$(date -u +%D -r roms/sgabios/sgabios.S)\"" \
+++#	  -DBUILD_HOST=\"debian\" -DBUILD_USER=\"build\"
+++#	ld -T roms/sgabios/rom16.ld -nostdlib b/sgabios/sgabios.o -o b/sgabios/sgabios.elf
+++#	objcopy -O binary b/sgabios/sgabios.elf b/sgabios/sgabios.bin
+++#	cc -Wall -O2 -o b/sgabios/csum8 roms/sgabios/csum8.c
+++#	b/sgabios/csum8 b/sgabios/sgabios.bin
+++#install-sgabios: b/sgabios/sgabios.bin
+++#	install -m 0644 $< ${sysdataidir}/sgabios.bin
+++#sysdata-components += sgabios
++ 
++ ### qboot, aka bios-microvm
++-build-qboot: b/qboot/bios.bin
++-b/qboot/bios.bin: | b
++-	rm -rf b/qboot
++-	meson setup roms/qboot b/qboot
++-	ninja -C b/qboot
++-install-qboot: b/qboot/bios.bin
++-	install -m 0644 $< ${sysdataidir}/qboot.rom
++-	# 5.0 & 5.1 compat symlink, can go for bullseye final
++-	ln -s qboot.rom ${sysdataidir}/bios-microvm.bin
++-sysdata-components += qboot
++-
++-### alpha firmware in roms/palcode-clipper
++-build-palcode-clipper: b/qemu-palcode/palcode-clipper
++-b/qemu-palcode/palcode-clipper: | b
++-	cp -al roms/qemu-palcode b/
++-#XXX #1019011 (remove OPT= alternative when fixed)
++-	${MAKE} -C b/qemu-palcode CROSS=${ALPHAEV67_CROSSPFX} -k || \
++-	${MAKE} -C b/qemu-palcode CROSS=${ALPHAEV67_CROSSPFX} OPT=-O1
++-	${ALPHAEV67_CROSSPFX}strip b/qemu-palcode/palcode-clipper
++-install-palcode-clipper: b/qemu-palcode/palcode-clipper
++-	install -m 0644 $< ${sysdataidir}/palcode-clipper
++-sysdata-components += palcode-clipper
+++#build-qboot: b/qboot/bios.bin
+++#b/qboot/bios.bin: | b
+++#	rm -rf b/qboot
+++#	meson setup roms/qboot b/qboot
+++#	ninja -C b/qboot
+++#install-qboot: b/qboot/bios.bin
+++#	install -m 0644 $< ${sysdataidir}/qboot.rom
+++#	# 5.0 & 5.1 compat symlink, can go for bullseye final
+++#	ln -s qboot.rom ${sysdataidir}/bios-microvm.bin
+++#sysdata-components += qboot
+++#
+++#### alpha firmware in roms/palcode-clipper
+++#build-palcode-clipper: b/qemu-palcode/palcode-clipper
+++#b/qemu-palcode/palcode-clipper: | b
+++#	cp -al roms/qemu-palcode b/
+++##XXX #1019011 (remove OPT= alternative when fixed)
+++#	${MAKE} -C b/qemu-palcode CROSS=${ALPHAEV67_CROSSPFX} -k || \
+++#	${MAKE} -C b/qemu-palcode CROSS=${ALPHAEV67_CROSSPFX} OPT=-O1
+++#	${ALPHAEV67_CROSSPFX}strip b/qemu-palcode/palcode-clipper
+++#install-palcode-clipper: b/qemu-palcode/palcode-clipper
+++#	install -m 0644 $< ${sysdataidir}/palcode-clipper
+++#sysdata-components += palcode-clipper
++ 
++ ### vbootrom (npcm7xx)
++ build-vbootrom: b/vbootrom/.built
++-- 
++2.30.2
++
+diff --git a/qemu/debian/deb_patches/0010-ARM-add-pkg-qemu-system-arm.patch b/qemu/debian/deb_patches/0010-ARM-add-pkg-qemu-system-arm.patch
+new file mode 100644
+index 0000000..faea655
+--- /dev/null
++++ b/qemu/debian/deb_patches/0010-ARM-add-pkg-qemu-system-arm.patch
+@@ -0,0 +1,50 @@
++From d1d25e6dcad633b5f785c4b4192d9d10fa232f21 Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Mon, 22 Jan 2024 00:13:08 -0500
++Subject: [PATCH] ARM: add package qemu-system-arm
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ debian/control | 26 ++++++++++++++++++++++++++
++ 1 file changed, 26 insertions(+)
++
++diff --git a/debian/control b/debian/control
++index ebc5b59..ed0e714 100644
++--- a/debian/control
+++++ b/debian/control
++@@ -243,6 +243,32 @@ Description: QEMU full system emulation binaries (x86)
++  On x86 host hardware this package also enables KVM kernel virtual machine
++  usage on systems which supports it.
++ 
+++Package: qemu-system-arm
+++Architecture: amd64 arm arm64 armel armhf i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel mips64 mips64el powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64 x32
+++Multi-Arch: foreign
+++Depends: ${shlibs:Depends}, ${misc:Depends}, qemu-system-common (= ${binary:Version}), qemu-system-data (>> ${source:Upstream-Version}~),
+++Recommends: qemu-system-gui (= ${binary:Version}), qemu-utils,
+++# aarch64 arm uses bootroms
+++ ipxe-qemu,
+++ qemu-efi-aarch64, qemu-efi-arm,
+++ qemu-block-extra (= ${binary:Version}),
+++Suggests: samba, vde2,
+++Provides: qemu-kvm [linux-arm64 linux-armhf linux-armel], ${sysprovides:arm}
+++Breaks:   qemu-kvm [linux-arm64 linux-armhf linux-armel]
+++Replaces: qemu-kvm [linux-arm64 linux-armhf linux-armel]
+++Description: QEMU full system emulation binaries (arm)
+++ QEMU is a fast processor emulator: currently the package supports
+++ ARM emulation. By using dynamic translation it achieves
+++ reasonable speed while being easy to port on new host CPUs.
+++ .
+++ This package provides the full system emulation binaries to emulate
+++ the following arm hardware: ${sysarch:arm}.
+++ .
+++ In system emulation mode QEMU emulates a full system, including a processor
+++ and various peripherals.  It enables easier testing and debugging of system
+++ code.  It can also be used to provide virtual hosting of several virtual
+++ machines on a single server.
+++
++ Package: qemu-utils
++ Architecture: amd64 arm arm64 armel armhf hppa i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel mips64 mips64el powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64 x32
++ Multi-Arch: foreign
++-- 
++2.30.2
++
+diff --git a/qemu/debian/deb_patches/series_arm64 b/qemu/debian/deb_patches/series_arm64
+new file mode 100644
+index 0000000..64200a0
+--- /dev/null
++++ b/qemu/debian/deb_patches/series_arm64
+@@ -0,0 +1,10 @@
++0001-Customize-Debian-build-files-for-STX.patch
++0002-remove-xen-build-for-STX.patch
++0003-rules-remove-vof.patch
++0004-add-condition-for-dh_installdocs.patch
++0005-fix-for-dh_missing.patch
++0006-remove-dependency-on-qemu-system-ARCH.patch
++0007-workaround-for-libvirt-breaks.patch
++0008-ARM-remove-gcc-alpha-linux-gnu.patch
++0009-ARM-remove-BIOS-targets.patch
++0010-ARM-add-pkg-qemu-system-arm.patch
+-- 
+2.30.2
+

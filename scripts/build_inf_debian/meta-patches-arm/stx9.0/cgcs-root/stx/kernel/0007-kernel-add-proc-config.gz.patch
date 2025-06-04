@@ -1,0 +1,45 @@
+From bf7b0bb94179d04905527126df5f0537ba1d121b Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 13 Dec 2023 10:51:28 +0800
+Subject: [PATCH 7/7] kernel: add /proc/config.gz
+
+add IKCONFIG_PROC
+
+Change-Id: I645e8d26250b78378914f7a24e4984c3b5bebf84
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../debian/deb_patches/0035-ARM-linux-rt-fix-for-arm64.patch   | 3 ++-
+ .../deb_patches/0034-ARM-debian-config-fix-for-arm64.patch     | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/kernel-rt/debian/deb_patches/0035-ARM-linux-rt-fix-for-arm64.patch b/kernel-rt/debian/deb_patches/0035-ARM-linux-rt-fix-for-arm64.patch
+index c5c224e..819d1f3 100644
+--- a/kernel-rt/debian/deb_patches/0035-ARM-linux-rt-fix-for-arm64.patch
++++ b/kernel-rt/debian/deb_patches/0035-ARM-linux-rt-fix-for-arm64.patch
+@@ -153,7 +153,8 @@ index 0000000..ca69257
+ +# end of RCU Subsystem
+ +
+ +CONFIG_BUILD_BIN2C=y
+-+# CONFIG_IKCONFIG is not set
+++CONFIG_IKCONFIG=y
+++CONFIG_IKCONFIG_PROC=y
+ +# CONFIG_IKHEADERS is not set
+ +CONFIG_LOG_BUF_SHIFT=18
+ +CONFIG_LOG_CPU_MAX_BUF_SHIFT=12
+diff --git a/kernel-std/debian/deb_patches/0034-ARM-debian-config-fix-for-arm64.patch b/kernel-std/debian/deb_patches/0034-ARM-debian-config-fix-for-arm64.patch
+index 0b13b69..d5d508f 100644
+--- a/kernel-std/debian/deb_patches/0034-ARM-debian-config-fix-for-arm64.patch
++++ b/kernel-std/debian/deb_patches/0034-ARM-debian-config-fix-for-arm64.patch
+@@ -148,7 +148,8 @@ index 0000000..75625e0
+ +# end of RCU Subsystem
+ +
+ +CONFIG_BUILD_BIN2C=y
+-+# CONFIG_IKCONFIG is not set
+++CONFIG_IKCONFIG=y
+++CONFIG_IKCONFIG_PROC=y
+ +# CONFIG_IKHEADERS is not set
+ +CONFIG_LOG_BUF_SHIFT=18
+ +CONFIG_LOG_CPU_MAX_BUF_SHIFT=12
+-- 
+2.30.2
+

@@ -1,0 +1,363 @@
+From d1018c38965a4a58e7d8ed735259a880887af814 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Thu, 27 Jul 2023 11:19:40 +0800
+Subject: [PATCH 09/12] grub-efi: add support for arm64
+
+The patches for x86 secure boot can't work for arm64,
+add extra series_arm64 in patches and deb_patches dir
+for arm64 specifc patches, not secure boot specifc patches
+are included, so the secure boot feature is disable
+for arm64 now.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Depends-On: https://review.opendev.org/c/starlingx/root/+/889686
+
+Change-Id: Ie0c63e4f35c34dc26971b2129c0b82001c78e059
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ ...ARM-rules-create-efi-files-for-arm64.patch |  70 +++++++++++
+ ...2-ARM-rules-disable-efivar-for-arm64.patch |  29 +++++
+ ...rol-add-grub-common-and-grub2-common.patch | 111 ++++++++++++++++++
+ grub/grub-efi/debian/deb_patches/series_arm64 |   5 +
+ .../1001-ARM-init.c-fix-build-for-arm64.patch |  34 ++++++
+ grub/grub-efi/debian/patches/series_arm64     |  32 +++++
+ 6 files changed, 281 insertions(+)
+ create mode 100644 grub/grub-efi/debian/deb_patches/arm/1001-ARM-rules-create-efi-files-for-arm64.patch
+ create mode 100644 grub/grub-efi/debian/deb_patches/arm/1002-ARM-rules-disable-efivar-for-arm64.patch
+ create mode 100644 grub/grub-efi/debian/deb_patches/arm/1003-ARM-control-add-grub-common-and-grub2-common.patch
+ create mode 100644 grub/grub-efi/debian/deb_patches/series_arm64
+ create mode 100644 grub/grub-efi/debian/patches/arm/1001-ARM-init.c-fix-build-for-arm64.patch
+ create mode 100644 grub/grub-efi/debian/patches/series_arm64
+
+diff --git a/grub/grub-efi/debian/deb_patches/arm/1001-ARM-rules-create-efi-files-for-arm64.patch b/grub/grub-efi/debian/deb_patches/arm/1001-ARM-rules-create-efi-files-for-arm64.patch
+new file mode 100644
+index 00000000..596fee53
+--- /dev/null
++++ b/grub/grub-efi/debian/deb_patches/arm/1001-ARM-rules-create-efi-files-for-arm64.patch
+@@ -0,0 +1,70 @@
++From af42d524353ffd95f63fb9afa910258f1394231d Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Fri, 19 May 2023 05:56:03 -0400
++Subject: [PATCH] rules: create efi files for arm64
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ debian/rules | 32 +++++++++++++++++++++++++++++++-
++ 1 file changed, 31 insertions(+), 1 deletion(-)
++
++diff --git a/debian/rules b/debian/rules
++index c22ba5a..e45d349 100755
++--- a/debian/rules
+++++ b/debian/rules
++@@ -344,7 +344,7 @@ install/grub-none:
++ 	# files.
++ 	mkdir -p debian/tmp-$(package)/usr/share/locale
++ 
++-D_PACKAGE := debian/grub-efi-amd64/
+++D_PACKAGE := debian/grub-efi-$(DEB_HOST_ARCH)/
++ EFI_BOOT_PATH := /boot/efi/EFI/BOOT
++ DISTRO_NAME := StarlingX
++ DISTRO_VERSION :=
++@@ -357,6 +357,12 @@ GRUB_TARGET := x86_64
++ GRUB_PREFIX_DIR := /EFI/BOOT
++ OBJ_DIR := ./obj/grub-efi-amd64
++ 
+++ifeq ($(DEB_HOST_ARCH),arm64)
+++OSTREE_CONSOLE := console=ttyAMA0,115200
+++GRUB_TARGET := arm64
+++OBJ_DIR := ./obj/grub-efi-arm64
+++endif
+++
++ install/grub-efi-amd64 install/grub-efi-ia64 install/grub-efi-arm install/grub-efi-arm64 install/grub-ieee1275 install/grub-coreboot install/grub-emu install/grub-uboot install/grub-xen install/grub-yeeloong:
++ 	set -e ; \
++ 	if [ "$@" = "install/grub-xen" ] ; then \
++@@ -501,6 +507,30 @@ install/grub-efi-amd64 install/grub-efi-ia64 install/grub-efi-arm install/grub-e
++ 		install -m 0644 $(OBJ_DIR)/grub-core/*.mod $(D_PACKAGE)$(EFI_BOOT_PATH)/$(GRUB_TARGET)-efi ; \
++ 	fi
++ 
+++	if [ "$@" = "install/grub-efi-arm64" ] ; then \
+++		install -d $(D_PACKAGE)/$(EFI_BOOT_PATH) ; \
+++		install -m 0600 ./grub-runtime.cfg $(D_PACKAGE)$(EFI_BOOT_PATH)/grub.cfg ; \
+++		sed -i "s#%DISTRO_NAME%#$(DISTRO_NAME)#g" "$(D_PACKAGE)$(EFI_BOOT_PATH)/grub.cfg" ; \
+++		sed -i "s#%DISTRO_VERSION%#$(DISTRO_VERSION)#g" "$(D_PACKAGE)$(EFI_BOOT_PATH)/grub.cfg" ; \
+++		echo -n "password_pbkdf2 $(OSTREE_GRUB_USER) " > ./pw ; \
+++		cat "$(OSTREE_GRUB_PW_FILE)" >> ./pw ; \
+++		sed -i "s#%OSTREE_GRUB_USER%#$(OSTREE_GRUB_USER)#g" "$(D_PACKAGE)$(EFI_BOOT_PATH)/grub.cfg" ; \
+++		str_pw=`cat ./pw` ; \
+++		sed -i "s#%OSTREE_GRUB_PW%#$${str_pw}#g" "$(D_PACKAGE)$(EFI_BOOT_PATH)/grub.cfg" ; \
+++		sed -i "s#%OSTREE_CONSOLE%#$(OSTREE_CONSOLE)#g" "$(D_PACKAGE)$(EFI_BOOT_PATH)/grub.cfg" ; \
+++		$(OBJ_DIR)/grub-mkimage -c ./cfg_nosecure -p "$(GRUB_PREFIX_DIR)" -d "$(OBJ_DIR)/grub-core" \
+++			-O "$(GRUB_TARGET)-efi" -o "./bootaa64-nosig.efi" \
+++			$(GRUB_BUILDIN) ; \
+++		install -m 0644 ./bootaa64-nosig.efi $(D_PACKAGE)$(EFI_BOOT_PATH)/bootaa64-nosig.efi ; \
+++		$(OBJ_DIR)/grub-editenv "$(D_PACKAGE)$(EFI_BOOT_PATH)/grubenv" create ; \
+++		install -d $(D_PACKAGE)$(EFI_BOOT_PATH)/$(GRUB_TARGET)-efi ; \
+++		$(OBJ_DIR)/grub-mkimage -c ./cfg -p "$(GRUB_PREFIX_DIR)" -d "$(OBJ_DIR)/grub-core" \
+++			-O "$(GRUB_TARGET)-efi" -o "./grubaa64.efi" \
+++			$(GRUB_BUILDIN) $(GRUB_SECURE_BUILDIN) ; \
+++		install -m 0644 ./grubaa64.efi $(D_PACKAGE)$(EFI_BOOT_PATH)/grubaa64.efi ; \
+++		install -m 0644 $(OBJ_DIR)/grub-core/*.mod $(D_PACKAGE)$(EFI_BOOT_PATH)/$(GRUB_TARGET)-efi ; \
+++	fi
+++
++ common_subst = \
++ 	if [ -e debian/grub-common.$(1) ]; then \
++ 		sed 's/@COMMON_PLATFORM@/$(COMMON_PLATFORM)/g' \
++-- 
++2.30.2
++
+diff --git a/grub/grub-efi/debian/deb_patches/arm/1002-ARM-rules-disable-efivar-for-arm64.patch b/grub/grub-efi/debian/deb_patches/arm/1002-ARM-rules-disable-efivar-for-arm64.patch
+new file mode 100644
+index 00000000..5312a255
+--- /dev/null
++++ b/grub/grub-efi/debian/deb_patches/arm/1002-ARM-rules-disable-efivar-for-arm64.patch
+@@ -0,0 +1,29 @@
++From 84f319dd8deaf2bb5d00e697979d4a432faafba8 Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Fri, 19 May 2023 06:22:57 -0400
++Subject: [PATCH] rules: disable efivar for arm64
++
++./obj/grub-efi-arm64/grub-mkimage: error: cannot open `./obj/grub-efi-arm64/grub-core/efivar.mod': No such file or directory.
++./obj/grub-efi-arm64/grub-mkimage: error: cannot open `./obj/grub-efi-arm64/grub-core/efivar.mod': No such file or directory.
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ debian/rules | 2 ++
++ 1 file changed, 2 insertions(+)
++
++diff --git a/debian/rules b/debian/rules
++index 5697b3d..9fef924 100755
++--- a/debian/rules
+++++ b/debian/rules
++@@ -361,6 +361,8 @@ ifeq ($(DEB_HOST_ARCH),arm64)
++ OSTREE_CONSOLE := console=ttyAMA0,115200
++ GRUB_TARGET := arm64
++ OBJ_DIR := ./obj/grub-efi-arm64
+++GRUB_BUILDIN := boot linux ext2 fat serial part_msdos part_gpt normal efi_gop iso9660 configfile search loadenv test tftp efinet reboot chain regexp
+++GRUB_SECURE_BUILDIN := tftp reboot chain password_pbkdf2 pgp gcry_rsa gcry_sha256 gcry_sha512 --pubkey ./boot_pub_key
++ endif
++ 
++ install/grub-efi-amd64 install/grub-efi-ia64 install/grub-efi-arm install/grub-efi-arm64 install/grub-ieee1275 install/grub-coreboot install/grub-emu install/grub-uboot install/grub-xen install/grub-yeeloong:
++-- 
++2.30.2
++
+diff --git a/grub/grub-efi/debian/deb_patches/arm/1003-ARM-control-add-grub-common-and-grub2-common.patch b/grub/grub-efi/debian/deb_patches/arm/1003-ARM-control-add-grub-common-and-grub2-common.patch
+new file mode 100644
+index 00000000..14c5f19c
+--- /dev/null
++++ b/grub/grub-efi/debian/deb_patches/arm/1003-ARM-control-add-grub-common-and-grub2-common.patch
+@@ -0,0 +1,111 @@
++From 05ca2538d90be2c9789e5076770457039f6f4ab0 Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Tue, 23 May 2023 23:28:14 -0400
++Subject: [PATCH] control: add grub-common and grub2-common
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ debian/control                | 33 +++++++++++++++++++++++++++++++++
++ debian/grub-common.install.in |  2 --
++ debian/rules                  |  7 ++++---
++ 3 files changed, 37 insertions(+), 5 deletions(-)
++
++diff --git a/debian/control b/debian/control
++index caea0c3..7b4f933 100644
++--- a/debian/control
+++++ b/debian/control
++@@ -50,6 +50,39 @@ Description: GRand Unified Bootloader, version 2 (dummy package)
++  This is a dummy package that depends on the grub-efi-$ARCH package most likely
++  to be appropriate for each architecture.
++ 
+++Package: grub-common
+++Architecture: any
+++Depends: ${shlibs:Depends}, ${misc:Depends}, gettext-base, ${lsb-base-depends}
+++Replaces: grub-pc (<< 2.00-4), grub-ieee1275 (<< 2.00-4), grub-efi (<< 1.99-1), grub-coreboot (<< 2.00-4), grub-linuxbios (<< 1.96+20080831-1), grub-efi-ia32 (<< 2.00-4), grub-efi-amd64 (<< 2.00-4), grub-efi-ia64 (<< 2.00-4), grub-yeeloong (<< 2.00-4), init-select
+++Recommends: os-prober (>= 1.33)
+++Suggests: multiboot-doc, grub-emu [any-i386 any-amd64 any-powerpc], mtools [any-i386 any-amd64 any-ia64 any-arm any-arm64], xorriso (>= 0.5.6.pl00), desktop-base (>= 4.0.6), console-setup
+++Conflicts: init-select
+++# mdadm: See bugs #435983 and #455746
+++Breaks: mdadm (<< 2.6.7-2), lupin-support (<< 0.55), friendly-recovery (<< 0.2.13), apport (<< 2.1.1)
+++Multi-Arch: foreign
+++Description: GRand Unified Bootloader (common files)
+++ This package contains common files shared by the distinct flavours of GRUB.
+++ It is shared between GRUB Legacy and GRUB 2, although a number of files
+++ specific to GRUB 2 are here as long as they do not break GRUB Legacy.
+++ .
+++ grub-mkrescue needs the suggested packages mtools (for UEFI targets) and
+++ xorriso.
+++
+++Package: grub2-common
+++# Not Architecture: any because this package contains some things which are
+++# only built when there is a real platform (e.g. grub-install), and the rest
+++# of the package is not very useful in a utilities-only build.
+++Architecture: any-i386 any-amd64 any-powerpc any-ppc64 any-ppc64el any-sparc any-sparc64 any-mipsel any-ia64 any-arm any-arm64
+++Depends: grub-common (= ${binary:Version}), dpkg (>= 1.15.4) | install-info, ${shlibs:Depends}, ${misc:Depends}
+++Replaces: grub, grub-legacy, ${legacy-doc-br}, grub-common (<< 1.99-1), grub-pc (<< 2.02+dfsg1-7), grub-coreboot (<< 2.02+dfsg1-7), grub-efi-ia32 (<< 2.02+dfsg1-7), grub-efi-amd64 (<< 2.02+dfsg1-7), grub-efi-ia64 (<< 2.02+dfsg1-7), grub-efi-arm (<< 2.02+dfsg1-7), grub-efi-arm64 (<< 2.02+dfsg1-7), grub-ieee1275 (<< 2.02+dfsg1-7), grub-uboot (<< 2.02+dfsg1-7), grub-xen (<< 2.02+dfsg1-7), grub-yeeloong (<< 2.02+dfsg1-7), grub-cloud-amd64 (<< 0.0.4)
+++Conflicts: grub-legacy
+++Breaks: grub (<< 0.97-54), ${legacy-doc-br}, shim (<< 0.9+1474479173.6c180c6-0ubuntu1~), grub-pc (<< 2.02+dfsg1-7), grub-coreboot (<< 2.02+dfsg1-7), grub-efi-ia32 (<< 2.02+dfsg1-7), grub-efi-amd64 (<< 2.02+dfsg1-7), grub-efi-ia64 (<< 2.02+dfsg1-7), grub-efi-arm (<< 2.02+dfsg1-7), grub-efi-arm64 (<< 2.02+dfsg1-7), grub-ieee1275 (<< 2.02+dfsg1-7), grub-uboot (<< 2.02+dfsg1-7), grub-xen (<< 2.02+dfsg1-7), grub-yeeloong (<< 2.02+dfsg1-7), grub-cloud-amd64 (<< 0.0.4)
+++Multi-Arch: foreign
+++Description: GRand Unified Bootloader (common files for version 2)
+++ This package contains common files shared by the distinct flavours of GRUB.
+++ The files in this package are specific to GRUB 2, and would break GRUB
+++ Legacy if installed on the same system.
+++
++ Package: grub-efi-amd64-bin
++ Architecture: i386 kopensolaris-i386 any-amd64
++ Depends: ${shlibs:Depends}, ${misc:Depends}, grub-common
++diff --git a/debian/grub-common.install.in b/debian/grub-common.install.in
++index 420a61e..cc6ae6d 100644
++--- a/debian/grub-common.install.in
+++++ b/debian/grub-common.install.in
++@@ -22,7 +22,6 @@ usr/bin/grub-script-check
++ usr/bin/grub-syslinux2cfg
++ usr/sbin/grub-macbless
++ usr/sbin/grub-mkconfig
++-usr/sbin/grub-mkdevicemap
++ usr/sbin/grub-probe
++ usr/share/grub/*.h
++ usr/share/grub/*.pf2
++@@ -47,5 +46,4 @@ usr/share/man/man1/grub-script-check.1
++ usr/share/man/man1/grub-syslinux2cfg.1
++ usr/share/man/man8/grub-macbless.8
++ usr/share/man/man8/grub-mkconfig.8
++-usr/share/man/man8/grub-mkdevicemap.8
++ usr/share/man/man8/grub-probe.8
++diff --git a/debian/rules b/debian/rules
++index 9fef924..b3d2897 100755
++--- a/debian/rules
+++++ b/debian/rules
++@@ -167,10 +167,10 @@ override_dh_autoreconf:
++ 		PYTHON=python3 \
++ 		dh_autoreconf -- ./autogen.sh
++ 
++-debian/stamps/configure-grub-common:
+++debian/stamps/configure-grub-common: debian/stamps/configure-grub-$(COMMON_PLATFORM)
++ 	touch $@
++ 
++-debian/stamps/build-grub-common:
+++debian/stamps/build-grub-common: debian/stamps/build-grub-$(COMMON_PLATFORM)
++ 	touch $@
++ 
++ debian/stamps/configure-grub-none debian/stamps/configure-grub-pc debian/stamps/configure-grub-ieee1275 debian/stamps/configure-grub-coreboot debian/stamps/configure-grub-emu debian/stamps/configure-grub-uboot debian/stamps/configure-grub-yeeloong:
++@@ -208,7 +208,7 @@ debian/stamps/build-grub-none debian/stamps/build-grub-efi-ia64 debian/stamps/bu
++ 	dh_auto_build
++ 	touch $@
++ 
++-debian/stamps/build-grub-efi-amd64 debian/stamps/build-grub-efi-arm64: debian/stamps/build-%: debian/stamps/configure-%
+++debian/stamps/build-grub-efi-amd64 debian/stamps/build-grub-efi-arm64: debian/stamps/build-%: debian/stamps/configure-% debian/stamps/build-grub-$(COMMON_PLATFORM)
++ 	dh_auto_build
++ 	grub_dir=`mktemp -d` ; \
++ 	sed -e "s/@DEB_VERSION@/$(deb_version)/g" \
++@@ -564,6 +564,7 @@ override_dh_install:
++ ifneq (,$(NON_PLATFORM_PACKAGES))
++ 	dh_install $(patsubst %,-p%,$(NON_PLATFORM_PACKAGES))
++ endif
+++	dh_install $(patsubst %,-p%,$(COMMON_PLATFORM_PACKAGES)) --sourcedir=debian/tmp-grub-$(COMMON_PLATFORM)
++ 	rm -f debian/grub2-common/usr/share/info/dir*
++ 	rm -f debian/grub-theme-starfield/usr/share/grub/themes/starfield/COPYING.CC-BY-SA-3.0
++ ifneq (,$(PLATFORM_PACKAGES))
++-- 
++2.30.2
++
+diff --git a/grub/grub-efi/debian/deb_patches/series_arm64 b/grub/grub-efi/debian/deb_patches/series_arm64
+new file mode 100644
+index 00000000..0d336ead
+--- /dev/null
++++ b/grub/grub-efi/debian/deb_patches/series_arm64
+@@ -0,0 +1,5 @@
++0001-Make-series-null.patch
++0002-grub-efi-build-packages-related-with-grub-efi.patch
++arm/1001-ARM-rules-create-efi-files-for-arm64.patch
++arm/1002-ARM-rules-disable-efivar-for-arm64.patch
++arm/1003-ARM-control-add-grub-common-and-grub2-common.patch
+diff --git a/grub/grub-efi/debian/patches/arm/1001-ARM-init.c-fix-build-for-arm64.patch b/grub/grub-efi/debian/patches/arm/1001-ARM-init.c-fix-build-for-arm64.patch
+new file mode 100644
+index 00000000..fcdd0c86
+--- /dev/null
++++ b/grub/grub-efi/debian/patches/arm/1001-ARM-init.c-fix-build-for-arm64.patch
+@@ -0,0 +1,34 @@
++From 46e54aec0b0f6eda1bed195dd63f79e02f8b020a Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Thu, 25 May 2023 22:54:29 -0400
++Subject: [PATCH] init.c: fix build for arm64
++
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ grub-core/kern/efi/init.c | 3 ++-
++ 1 file changed, 2 insertions(+), 1 deletion(-)
++
++diff --git a/grub-core/kern/efi/init.c b/grub-core/kern/efi/init.c
++index 4a88397..0ddadaa 100644
++--- a/grub-core/kern/efi/init.c
+++++ b/grub-core/kern/efi/init.c
++@@ -94,6 +94,7 @@ grub_cmd_efi_watchdog (grub_command_t cmd  __attribute__ ((unused)),
++     grub_efi_status_t status;
++     grub_efi_uintn_t timeout;
++     grub_efi_uint64_t code;
+++    grub_efi_char16_t *str_grub = (grub_efi_char16_t *)L"GRUB";
++ 
++     if (argc < 1)
++        return grub_error (GRUB_ERR_BAD_ARGUMENT,
++@@ -137,7 +138,7 @@ grub_cmd_efi_watchdog (grub_command_t cmd  __attribute__ ((unused)),
++     }
++ 
++     status = efi_call_4 (grub_efi_system_table->boot_services->set_watchdog_timer,
++-                        timeout, code, sizeof(L"GRUB"), L"GRUB");
+++                        timeout, code, sizeof(str_grub), str_grub);
++ 
++     if (status != GRUB_EFI_SUCCESS)
++        return grub_error (GRUB_ERR_BUG,
++-- 
++2.30.2
++
+diff --git a/grub/grub-efi/debian/patches/series_arm64 b/grub/grub-efi/debian/patches/series_arm64
+new file mode 100644
+index 00000000..54cbcc3d
+--- /dev/null
++++ b/grub/grub-efi/debian/patches/series_arm64
+@@ -0,0 +1,32 @@
++0001-grub2-add-tboot.patch
++0002-grub2-checking-if-loop-devices-are-available.patch
++0020-kern-efi-sb-Reject-non-kernel-files-in-the-shim_lock.patch
++0021-video-readers-Add-artificial-limit-to-image-dimensio.patch
++0022-font-Reject-glyphs-exceeds-font-max_glyph_width-or-f.patch
++0023-font-Fix-size-overflow-in-grub_font_get_glyph_intern.patch
++0024-font-Fix-several-integer-overflows-in-grub_font_cons.patch
++0025-font-Remove-grub_font_dup_glyph.patch
++0026-font-Fix-integer-overflow-in-ensure_comb_space.patch
++0027-font-Fix-integer-overflow-in-BMP-index.patch
++0028-font-Fix-integer-underflow-in-binary-search-of-char-.patch
++0029-kern-efi-sb-Enforce-verification-of-font-files.patch
++0030-fbutil-Fix-integer-overflow.patch
++0031-font-Fix-an-integer-underflow-in-blit_comb.patch
++0032-font-Harden-grub_font_blit_glyph-and-grub_font_blit_.patch
++0033-font-Assign-null_font-to-glyphs-in-ascii_font_glyph.patch
++0034-normal-charset-Fix-an-integer-overflow-in-grub_unico.patch
++0035-video-readers-png-Drop-greyscale-support-to-fix-heap.patch
++0036-video-readers-png-Avoid-heap-OOB-R-W-inserting-huff-.patch
++0037-video-readers-jpeg-Block-int-underflow-wild-pointer-.patch
++0038-net-ip-Do-IP-fragment-maths-safely.patch
++0039-net-http-Fix-OOB-write-for-split-http-headers.patch
++0040-net-http-Error-out-on-headers-with-LF-without-CR.patch
++0041-loader-efi-chainloader-Simplify-the-loader-state.patch
++0042-commands-boot-Add-API-to-pass-context-to-loader.patch
++0043-loader-efi-chainloader-Use-grub_loader_set_ex.patch
++0044-fs-ntfs-Fix-an-OOB-write-when-parsing-the-ATTRIBUTE_.patch
++0045-fs-ntfs-Fix-an-OOB-read-when-reading-data-from-the-r.patch
++lat/0003-Make-UEFI-watchdog-behaviour-configurable.patch
++lat/0004-correct-grub_errno.patch
++lat/0005-grub-verify-Add-skip_check_cfg-variable.patch
++arm/1001-ARM-init.c-fix-build-for-arm64.patch
+-- 
+2.30.2
+

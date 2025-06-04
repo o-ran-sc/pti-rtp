@@ -1,0 +1,73 @@
+From 12f147bd9367649d3704a7abd6c520ce3124d340 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 1 Aug 2023 17:49:30 +0800
+Subject: [PATCH 2/9] stx-init-env: add support arch specific dockerfile
+
+Check the host arch by uname and if there arch specific
+dockerfiles (suffix with _arm64) exist, use it to do
+the docker build.
+
+Test Plan:
+PASS: add stx-lat-tool_arm64.Dockerfile and made adjustment
+PASS: run ./stx-init-env --rebuild on x86-64 host
+PASS: run ./stx-init-env --rebuild on arm64 host
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on x86-64 target
+PASS: Deploy AIO-DX on arm64 target
+
+Story: 2010739
+Task: 48002
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+Change-Id: I3912eda4033ad0a6a2c0c4d3d29098215362343c
+---
+ stx-init-env | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/stx-init-env b/stx-init-env
+index b9fa668..6f1a989 100755
+--- a/stx-init-env
++++ b/stx-init-env
+@@ -86,6 +86,12 @@ ASSUME_YES=0
+ 
+ COREUTILS_DOCKER_IMAGE="debian:bookworm-20240130-slim"
+ 
++ARCH="amd64"
++uname_arch=$(uname -m)
++if [ "${uname_arch}" = "aarch64" ]; then
++    ARCH="arm64"
++fi
++
+ info() {
+     local tty_on tty_off
+     if [[ -t 2 ]] ; then
+@@ -718,14 +724,19 @@ if [[ -n "${BUILD_DOCKER_IMAGES}" ]] ; then
+         docker_build_args+=("--no-cache")
+     fi
+     for img in $BUILD_DOCKER_IMAGES; do
++        img_dockerfile=${img}.Dockerfile
++        if [[ -f $STX_TOOLS_DIR/stx/dockerfiles/${img}_${ARCH}.Dockerfile ]]; then
++            img_dockerfile=${img}_${ARCH}.Dockerfile
++        fi
++
+         extra_build_args=()
+-        if grep -q -E '^\s*ARG\s+STX_MIRROR_URL\s*=' "$STX_TOOLS_DIR/"stx/dockerfiles/$img.Dockerfile ; then
++        if grep -q -E '^\s*ARG\s+STX_MIRROR_URL\s*=' "$STX_TOOLS_DIR/"stx/dockerfiles/${img_dockerfile} ; then
+             init_stx_mirror_url
+             if [[ -n "$STX_MIRROR_URL" ]] ; then
+                 extra_build_args+=("--build-arg" "STX_MIRROR_URL=$STX_MIRROR_URL")
+             fi
+         fi
+-        docker build "${docker_build_args[@]}" "${extra_build_args[@]}" -t $img:$DOCKER_TAG_LOCAL -f "$STX_TOOLS_DIR/"stx/dockerfiles/$img.Dockerfile "$STX_TOOLS_DIR" || exit 1
++        docker build "${docker_build_args[@]}" "${extra_build_args[@]}" -t $img:$DOCKER_TAG_LOCAL -f "$STX_TOOLS_DIR/"stx/dockerfiles/${img_dockerfile} "$STX_TOOLS_DIR" || exit 1
+         info "built image $img:$DOCKER_TAG_LOCAL"
+     done
+ fi
+-- 
+2.30.2
+

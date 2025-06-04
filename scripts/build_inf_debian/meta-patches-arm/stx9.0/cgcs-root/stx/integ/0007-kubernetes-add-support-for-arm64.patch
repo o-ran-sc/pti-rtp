@@ -1,0 +1,382 @@
+From f3f34146a74eb4e286bb3f626c2ac7d197f4b640 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 8 Feb 2023 03:01:19 -0500
+Subject: [PATCH 07/12] kubernetes: add support for arm64
+
+Add arm64 as the supported arch in the control file.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Deploy std (2+2+2) on arm64 targets
+
+Story: 2010739
+Task: 47981
+
+Change-Id: I04bcb23bc67f0c885e4c1ca99260d27e7e06e023
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ .../kubernetes-1.24.4/debian/deb_folder/control      | 12 ++++++------
+ .../kubernetes-1.25.3/debian/deb_folder/control      | 12 ++++++------
+ .../kubernetes-1.26.1/debian/deb_folder/control      | 12 ++++++------
+ .../kubernetes-1.27.5/debian/deb_folder/control      | 12 ++++++------
+ .../kubernetes-1.28.4/debian/deb_folder/control      | 12 ++++++------
+ .../kubernetes-1.29.2/debian/deb_folder/control      | 12 ++++++------
+ 6 files changed, 36 insertions(+), 36 deletions(-)
+
+diff --git a/kubernetes/kubernetes-1.24.4/debian/deb_folder/control b/kubernetes/kubernetes-1.24.4/debian/deb_folder/control
+index 4635bf47..79bd790d 100644
+--- a/kubernetes/kubernetes-1.24.4/debian/deb_folder/control
++++ b/kubernetes/kubernetes-1.24.4/debian/deb_folder/control
+@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+ 
+ Package: kubernetes-1.24.4-client
+ Provides: kubernetes-utils
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+  The Kubernetes command line tool for interacting with the Kubernetes API.
+ 
+ Package: kubernetes-1.24.4-master
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         lsb-base,
+@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+ 
+ Package: kubernetes-1.24.4-node
+ Provides: cadvisor
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         conntrack,
+@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+  issues.
+ 
+ Package: kubernetes-1.24.4-kubeadm
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, containernetworking-plugins
+ Recommends: ${misc:Recommends}, kubernetes-1.24.4-client
+ Built-Using: ${misc:Built-Using}
+@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+  The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
+ 
+ Package: kubernetes-1.24.4-misc
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -80,7 +80,7 @@ Description: dummy package
+  Kubernetes dummy package for misc stuff we don't want to install in production.
+ 
+ Package: kubernetes-1.24.4-unit-test
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+          hostname,
+          rsync,
+diff --git a/kubernetes/kubernetes-1.25.3/debian/deb_folder/control b/kubernetes/kubernetes-1.25.3/debian/deb_folder/control
+index 33e2b16e..b441ac79 100644
+--- a/kubernetes/kubernetes-1.25.3/debian/deb_folder/control
++++ b/kubernetes/kubernetes-1.25.3/debian/deb_folder/control
+@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+ 
+ Package: kubernetes-1.25.3-client
+ Provides: kubernetes-utils
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+  The Kubernetes command line tool for interacting with the Kubernetes API.
+ 
+ Package: kubernetes-1.25.3-master
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         lsb-base,
+@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+ 
+ Package: kubernetes-1.25.3-node
+ Provides: cadvisor
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         conntrack,
+@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+  issues.
+ 
+ Package: kubernetes-1.25.3-kubeadm
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, containernetworking-plugins
+ Recommends: ${misc:Recommends}, kubernetes-1.25.3-client
+ Built-Using: ${misc:Built-Using}
+@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+  The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
+ 
+ Package: kubernetes-1.25.3-misc
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -80,7 +80,7 @@ Description: dummy package
+  Kubernetes dummy package for misc stuff we don't want to install in production.
+ 
+ Package: kubernetes-1.25.3-unit-test
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+          hostname,
+          rsync,
+diff --git a/kubernetes/kubernetes-1.26.1/debian/deb_folder/control b/kubernetes/kubernetes-1.26.1/debian/deb_folder/control
+index 03a3003c..94948c07 100644
+--- a/kubernetes/kubernetes-1.26.1/debian/deb_folder/control
++++ b/kubernetes/kubernetes-1.26.1/debian/deb_folder/control
+@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+ 
+ Package: kubernetes-1.26.1-client
+ Provides: kubernetes-utils
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+  The Kubernetes command line tool for interacting with the Kubernetes API.
+ 
+ Package: kubernetes-1.26.1-master
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         lsb-base,
+@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+ 
+ Package: kubernetes-1.26.1-node
+ Provides: cadvisor
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         conntrack,
+@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+  issues.
+ 
+ Package: kubernetes-1.26.1-kubeadm
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, containernetworking-plugins
+ Recommends: ${misc:Recommends}, kubernetes-1.26.1-client
+ Built-Using: ${misc:Built-Using}
+@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+  The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
+ 
+ Package: kubernetes-1.26.1-misc
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -80,7 +80,7 @@ Description: dummy package
+  Kubernetes dummy package for misc stuff we don't want to install in production.
+ 
+ Package: kubernetes-1.26.1-unit-test
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+          hostname,
+          rsync,
+diff --git a/kubernetes/kubernetes-1.27.5/debian/deb_folder/control b/kubernetes/kubernetes-1.27.5/debian/deb_folder/control
+index cb1081e6..55bb901e 100644
+--- a/kubernetes/kubernetes-1.27.5/debian/deb_folder/control
++++ b/kubernetes/kubernetes-1.27.5/debian/deb_folder/control
+@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+ 
+ Package: kubernetes-1.27.5-client
+ Provides: kubernetes-utils
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+  The Kubernetes command line tool for interacting with the Kubernetes API.
+ 
+ Package: kubernetes-1.27.5-master
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         lsb-base,
+@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+ 
+ Package: kubernetes-1.27.5-node
+ Provides: cadvisor
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         conntrack,
+@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+  issues.
+ 
+ Package: kubernetes-1.27.5-kubeadm
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, containernetworking-plugins
+ Recommends: ${misc:Recommends}, kubernetes-1.27.5-client
+ Built-Using: ${misc:Built-Using}
+@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+  The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
+ 
+ Package: kubernetes-1.27.5-misc
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -80,7 +80,7 @@ Description: dummy package
+  Kubernetes dummy package for misc stuff we don't want to install in production.
+ 
+ Package: kubernetes-1.27.5-unit-test
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+          hostname,
+          rsync,
+diff --git a/kubernetes/kubernetes-1.28.4/debian/deb_folder/control b/kubernetes/kubernetes-1.28.4/debian/deb_folder/control
+index 1dca8da8..4eed9bdb 100644
+--- a/kubernetes/kubernetes-1.28.4/debian/deb_folder/control
++++ b/kubernetes/kubernetes-1.28.4/debian/deb_folder/control
+@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+ 
+ Package: kubernetes-1.28.4-client
+ Provides: kubernetes-utils
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+  The Kubernetes command line tool for interacting with the Kubernetes API.
+ 
+ Package: kubernetes-1.28.4-master
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         lsb-base,
+@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+ 
+ Package: kubernetes-1.28.4-node
+ Provides: cadvisor
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         conntrack,
+@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+  issues.
+ 
+ Package: kubernetes-1.28.4-kubeadm
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, containernetworking-plugins
+ Recommends: ${misc:Recommends}, kubernetes-1.28.4-client
+ Built-Using: ${misc:Built-Using}
+@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+  The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
+ 
+ Package: kubernetes-1.28.4-misc
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -80,7 +80,7 @@ Description: dummy package
+  Kubernetes dummy package for misc stuff we don't want to install in production.
+ 
+ Package: kubernetes-1.28.4-unit-test
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+          hostname,
+          rsync,
+diff --git a/kubernetes/kubernetes-1.29.2/debian/deb_folder/control b/kubernetes/kubernetes-1.29.2/debian/deb_folder/control
+index ec5491ea..dcc5e6f7 100644
+--- a/kubernetes/kubernetes-1.29.2/debian/deb_folder/control
++++ b/kubernetes/kubernetes-1.29.2/debian/deb_folder/control
+@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+ 
+ Package: kubernetes-1.29.2-client
+ Provides: kubernetes-utils
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+  The Kubernetes command line tool for interacting with the Kubernetes API.
+ 
+ Package: kubernetes-1.29.2-master
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         lsb-base,
+@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+ 
+ Package: kubernetes-1.29.2-node
+ Provides: cadvisor
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+         adduser,
+         conntrack,
+@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+  issues.
+ 
+ Package: kubernetes-1.29.2-kubeadm
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, containernetworking-plugins
+ Recommends: ${misc:Recommends}, kubernetes-1.29.2-client
+ Built-Using: ${misc:Built-Using}
+@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+  The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
+ 
+ Package: kubernetes-1.29.2-misc
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends}
+ Recommends: ${misc:Recommends}
+ Built-Using: ${misc:Built-Using}
+@@ -80,7 +80,7 @@ Description: dummy package
+  Kubernetes dummy package for misc stuff we don't want to install in production.
+ 
+ Package: kubernetes-1.29.2-unit-test
+-Architecture: amd64
++Architecture: amd64 arm64
+ Depends: ${misc:Depends}, ${shlibs:Depends},
+          hostname,
+          rsync,
+-- 
+2.30.2
+

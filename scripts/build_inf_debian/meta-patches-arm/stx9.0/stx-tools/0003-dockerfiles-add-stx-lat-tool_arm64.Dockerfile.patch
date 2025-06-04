@@ -1,0 +1,124 @@
+From 9a2832b8269a5c4e6610dbb80b46a0368f7e898b Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 1 Aug 2023 16:09:29 +0800
+Subject: [PATCH 3/9] dockerfiles: add stx-lat-tool_arm64.Dockerfile
+
+Add stx-lat-tool_arm64.Dockerfile from stx-lat-tool.Dockerfile
+and made the following adjustments:
+* amd64 -> arm64
+* corei7-64 -> cortexa57
+* x86_64 -> aarch64
+
+Test Plan:
+PASS: run ./stx-init-env --rebuild on x86-64 host
+PASS: run ./stx-init-env --rebuild on arm64 host
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on x86-64 target
+PASS: Deploy AIO-DX on arm64 target
+
+Story: 2010739
+Task: 48002
+
+Depends-On: https://review.opendev.org/c/starlingx/tools/+/890268
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+Change-Id: Idd10ed519c97b44f1053ed30854dad6a0013052a
+---
+ stx/dockerfiles/stx-lat-tool_arm64.Dockerfile | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
+
+diff --git a/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile b/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
+new file mode 100644
+index 0000000..6b249c2
+--- /dev/null
++++ b/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
+@@ -0,0 +1,80 @@
++# Copyright (c) 2023 Wind River Systems, Inc.
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#     http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++
++FROM debian:bullseye
++
++MAINTAINER Jackie Huang <jackie.huang@windriver.com>
++
++ARG STX_MIRROR_URL=https://mirror.starlingx.windriver.com/mirror
++ARG LAT_BINARY_RESOURCE_PATH=${STX_MIRROR_URL}/lat-sdk/lat-sdk-20231206
++
++# Update certificates
++RUN apt-get -y update && apt-get -y install --no-install-recommends ca-certificates && update-ca-certificates
++
++# Install necessary packages
++RUN apt-get -y update && apt-get --no-install-recommends -y install \
++        openssh-client \
++        python3 \
++        python3-pip \
++        xz-utils \
++        file \
++        bzip2 \
++        procps \
++        tini \
++        wget \
++        locales-all \
++        python3-yaml \
++        rsync \
++        cpio \
++        vim \
++        && \
++        apt-get clean && \
++        rm -rf /var/lib/apt/lists/* && \
++        mkdir -p /opt/LAT/SDK && \
++        pip3 install pycryptodomex requests_toolbelt
++
++# Insert pubkey of the package repository
++COPY stx/toCOPY/builder/pubkey.rsa /opt/LAT/
++
++# Prepare executables
++COPY stx/toCOPY/lat-tool/lat/ /opt/LAT/lat
++
++# Fix the hardcoded env_script name in the lat-sdk for arm64
++# For x86_64, it's environment-setup-corei7-64-wrs-linux
++# For arm64, it's environment-setup-cortexa57-wrs-linux
++RUN sed -i 's/corei7-64/cortexa57/' /opt/LAT/lat/latd
++
++# Download & install LAT SDK.
++RUN wget --quiet ${LAT_BINARY_RESOURCE_PATH}/lat-sdk.sh --output-document=/opt/LAT/AppSDK.sh && \
++    chmod +x /opt/LAT/AppSDK.sh && \
++    /opt/LAT/AppSDK.sh -d /opt/LAT/SDK -y && \
++    rm -f /opt/LAT/AppSDK.sh
++
++# Fix: Use Debian CDN address for geo-frendly servers
++RUN sed -i 's/ftp.cn.debian.org/deb.debian.org/g' /opt/LAT/SDK/sysroots/aarch64-wrlinuxsdk-linux/usr/lib/python3.11/site-packages/genimage/debian_constant.py
++
++# Fix: Align DEFAULT_INITRD_NAME with our custom names
++RUN sed -i 's/debian-initramfs-ostree-image/starlingx-initramfs-ostree-image/g' /opt/LAT/SDK/sysroots/aarch64-wrlinuxsdk-linux/usr/lib/python3.11/site-packages/genimage/debian_constant.py
++
++# Fix: Align kernel with custom starlingx kernel
++RUN sed -i 's/linux-image-arm64/linux-image-stx-arm64/g' /opt/LAT/SDK/sysroots/aarch64-wrlinuxsdk-linux/usr/lib/python3.11/site-packages/genimage/debian_constant.py
++
++RUN sed -i 's/Wind River Linux Graphics development .* ostree/StarlingX ostree/g' /opt/LAT/SDK/sysroots/cortexa57-wrs-linux/boot/efi/EFI/BOOT/grub.cfg
++
++# Add vimrc
++COPY stx/toCOPY/common/vimrc.local /etc/vim/vimrc.local
++RUN chmod 0644 /etc/vim/vimrc.local
++
++ENTRYPOINT ["/usr/bin/tini", "--"]
++CMD ["/opt/LAT/lat/latd"]
+-- 
+2.30.2
+

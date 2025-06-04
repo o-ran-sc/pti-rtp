@@ -1,0 +1,430 @@
+From 516085675edd2a3330b4ddba10c4b613ee91955b Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Wed, 26 Jul 2023 14:55:29 +0800
+Subject: [PATCH 3/4] build-tools: add supoort for arm64
+
+* Check the host arch.
+* use ARCH to replace the hardcoded arch names.
+* Support arch specific pkg list files and yaml files,
+  and the arch specific one (with suffix _arm64) will
+  be used if it exists.
+
+e.g.
+debian-image.inc
+debian-image_arm64.inc
+
+debian_iso_image.inc
+debian_iso_image_arm64.inc
+
+debian_pkg_dirs
+debian_pkg_dirs_arm64
+
+base-bullseye.yaml
+base-bullseye_arm64.yaml
+
+base-initramfs-bullseye.yaml
+base-initramfs-bullseye_arm64.yaml
+
+os-std.lst
+os-std_arm64.lst
+
+Test Plan:
+PASS: update packages list for arm64 in repos:
+      - starlingx/tools
+      - starlingx/kernel
+      - starlingx/integ
+      - starlingx/virt
+      - starlingx/utilities
+PASS: downloader -s -b on x86-64 host
+PASS: downloader -s -b on arm64 host
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+
+Story: 2010739
+Task: 48013
+
+Change-Id: I9e381f3f04f6747c68d40011c9eda419219c2311
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ build-tools/stx/aptly_deb_usage.py | 12 ++++--
+ build-tools/stx/build-image        | 65 ++++++++++++++++++++++++------
+ build-tools/stx/build-pkgs         |  8 +++-
+ build-tools/stx/discovery.py       | 42 ++++++++++++++++---
+ build-tools/stx/downloader         |  2 +-
+ build-tools/stx/repo_manage.py     |  9 ++++-
+ 6 files changed, 111 insertions(+), 27 deletions(-)
+
+diff --git a/build-tools/stx/aptly_deb_usage.py b/build-tools/stx/aptly_deb_usage.py
+index f1d91c2..d10e6a2 100755
+--- a/build-tools/stx/aptly_deb_usage.py
++++ b/build-tools/stx/aptly_deb_usage.py
+@@ -25,6 +25,7 @@ from debian import debian_support
+ import os
+ import time
+ from typing import Optional
++import platform
+ 
+ PREFIX_LOCAL = 'deb-local-'
+ PREFIX_REMOTE = 'deb-remote-'
+@@ -34,6 +35,11 @@ SIGN_PASSWD = 'starlingx'
+ DEFAULT_TIMEOUT_COUNT = 1
+ STX_DIST = os.environ.get('STX_DIST')
+ 
++STX_ARCH = 'amd64'
++host_arch = platform.machine()
++if host_arch == 'aarch64':
++    STX_ARCH = "arm64"
++
+ # Class used to manage aptly data base, it can:
+ #     create_remote: Create a repository link to a remote mirror
+ #     deploy_remote: Sync and deploy a remote mirror
+@@ -326,7 +332,7 @@ class Deb_aptly():
+                     self.logger.warning('Drop failed publication %s : %s', publish_name, task_state)
+                     return None
+         task = self.aptly.publish.publish(source_kind='local', sources=[{'Name': repo_name}],
+-                                          architectures=['amd64', 'source'], prefix=publish_name,
++                                          architectures=[STX_ARCH, 'source'], prefix=publish_name,
+                                           distribution=None, sign_skip=True)
+         task_state = self.__wait_for_task(task, 10)
+         if task_state != 'SUCCEEDED':
+@@ -366,8 +372,8 @@ class Deb_aptly():
+             extra_param['distribution'] = mirror.distribution
+             extra_param['origin'] = None
+         else:
+-            # Only support binary_amd64 and source packages
+-            extra_param['architectures'] = ['amd64', 'source']
++            # Only support binary_amd64/arm64 and source packages
++            extra_param['architectures'] = [STX_ARCH, 'source']
+             extra_param['distribution'] = None
+             extra_param['origin'] = self.origin
+ 
+diff --git a/build-tools/stx/build-image b/build-tools/stx/build-image
+index 8536c32..ea04fa2 100755
+--- a/build-tools/stx/build-image
++++ b/build-tools/stx/build-image
+@@ -28,11 +28,17 @@ import sys
+ import time
+ import utils
+ import yaml
++import platform
+ 
+ STX_DEFAULT_DISTRO = discovery.STX_DEFAULT_DISTRO
+ ALL_LAYERS = discovery.get_all_layers(distro=STX_DEFAULT_DISTRO)
+ ALL_BUILD_TYPES = discovery.get_all_build_types(distro=STX_DEFAULT_DISTRO)
+ 
++STX_ARCH = 'amd64'
++host_arch = platform.machine()
++if host_arch == 'aarch64':
++    STX_ARCH = "arm64"
++
+ LAT_ROOT = '/localdisk'
+ REPO_ALL = 'deb-merge-all'
+ REPO_BINARY = 'deb-local-binary'
+@@ -48,8 +54,8 @@ IMAGE_LAYERS_PATH = os.path.join(
+ )
+ img_pkgs = []
+ kernel_type = 'std'
+-stx_std_kernel = 'linux-image-5.10.0-6-amd64-unsigned'
+-stx_rt_kernel =  'linux-rt-image-5.10.0-6-rt-amd64-unsigned'
++stx_std_kernel = 'linux-image-5.10.0-6-%s-unsigned' % STX_ARCH
++stx_rt_kernel =  'linux-rt-image-5.10.0-6-rt-%s-unsigned' % STX_ARCH
+ WAIT_TIME_BEFORE_CHECKING_LOG = 2
+ # The max timeout value to wait LAT to output the build log
+ MAX_WAIT_LAT_TIME = 300
+@@ -242,7 +248,7 @@ def update_rt_kernel_in_initramfs_yaml(initramfs_yaml):
+ 
+     # Updated the name of kernel module
+     for layer in ALL_LAYERS:
+-        pkg_dirs = discovery.package_dir_list(distro=STX_DEFAULT_DISTRO, layer=layer, build_type='rt')
++        pkg_dirs = discovery.package_dir_list(distro=STX_DEFAULT_DISTRO, layer=layer, build_type='rt', arch=STX_ARCH)
+         if not pkg_dirs:
+             continue
+         for pkg_dir in pkg_dirs:
+@@ -305,7 +311,7 @@ def add_lat_packages(img_yaml, packages):
+     yaml_doc['packages'].extend(packages)
+ 
+     for build_type in ALL_BUILD_TYPES:
+-        pkgs = discovery.package_iso_list(distro=STX_DEFAULT_DISTRO, layer="all", build_type=build_type)
++        pkgs = discovery.package_iso_list(distro=STX_DEFAULT_DISTRO, layer="all", build_type=build_type, arch=STX_ARCH)
+         yaml_doc['packages'].extend(pkgs)
+ 
+     yaml_doc['packages'] = list(set(yaml_doc['packages']))
+@@ -319,8 +325,16 @@ def add_lat_packages(img_yaml, packages):
+ 
+ 
+ def check_base_os_binaries(repomgr):
+-    base_bins_list = os.path.join(os.environ.get('MY_REPO_ROOT_DIR'),
++    base_bins_list_default = os.path.join(os.environ.get('MY_REPO_ROOT_DIR'),
+                                   'cgcs-root/build-tools/stx/debian-image.inc')
++    base_bins_list_arch = os.path.join(os.environ.get('MY_REPO_ROOT_DIR'),
++                                  'cgcs-root/build-tools/stx',
++                                  'debian-image_%s.inc' % STX_ARCH)
++    if os.path.exists(base_bins_list_arch):
++        base_bins_list = base_bins_list_arch
++    else:
++        base_bins_list = base_bins_list_default
++
+     if not os.path.exists(base_bins_list):
+         logger.error(' '.join(['Base OS packages list', base_bins_list,
+                                'does not exist']))
+@@ -338,8 +352,15 @@ def check_base_os_binaries(repomgr):
+ 
+ 
+ def check_stx_binaries(repomgr, btype='std'):
+-    stx_bins_list = ''.join([PKG_LIST_DIR, '/debian/distro/os-', btype,
+-                             '.lst'])
++    stx_bins_list_default = ''.join([PKG_LIST_DIR, '/debian/distro/os-',
++                                     btype, '.lst'])
++    stx_bins_list_arch = ''.join([PKG_LIST_DIR, '/debian/distro/os-',
++                                  btype, '_', STX_ARCH, '.lst'])
++    if os.path.exists(stx_bins_list_arch):
++        stx_bins_list = stx_bins_list_arch
++    else:
++        stx_bins_list = stx_bins_list_default
++
+     if not os.path.exists(stx_bins_list):
+         logger.warning(' '.join(['STX binary packages list', stx_bins_list,
+                                 'does not exist']))
+@@ -660,16 +681,30 @@ if __name__ == "__main__":
+         logger.error("Fail to get prepared to build image")
+         sys.exit(1)
+ 
+-    base_yaml = os.path.join(PKG_LIST_DIR, 'debian/common/base-bullseye.yaml')
+-    base_initramfs_yaml = os.path.join(PKG_LIST_DIR, 'debian/common/base-initramfs-bullseye.yaml')
++    base_yaml_default = os.path.join(PKG_LIST_DIR, 'debian/common/base-bullseye.yaml')
++    base_yaml_arch = os.path.join(PKG_LIST_DIR, 'debian/common/base-bullseye_%s.yaml' % STX_ARCH)
++    base_initramfs_yaml_default = os.path.join(PKG_LIST_DIR, 'debian/common/base-initramfs-bullseye.yaml')
++    base_initramfs_yaml_arch = os.path.join(PKG_LIST_DIR, 'debian/common/base-initramfs-bullseye_%s.yaml' % STX_ARCH)
++
+     os.environ["WORKSPACE_DIR"] = LAT_ROOT
+     lat_yaml = os.path.join(LAT_ROOT, "lat.yaml")
+     lat_initramfs_yaml = os.path.join(LAT_ROOT, "lat-initramfs.yaml")
+ 
+-    for yaml_file in (base_yaml, base_initramfs_yaml):
+-        if not os.path.exists(yaml_file):
+-            logger.error(' '.join(['Base yaml file', yaml_file, 'does not exist']))
+-            sys.exit(1)
++    if os.path.exists(base_yaml_arch):
++        base_yaml = base_yaml_arch
++    elif os.path.exists(base_yaml_default):
++        base_yaml = base_yaml_default
++    else:
++        logger.error(' '.join(['Base yaml file', base_yaml_default, 'does not exist']))
++        sys.exit(1)
++
++    if os.path.exists(base_initramfs_yaml_arch):
++        base_initramfs_yaml = base_initramfs_yaml_arch
++    elif os.path.exists(base_initramfs_yaml_default):
++        base_initramfs_yaml = base_initramfs_yaml_default
++    else:
++        logger.error(' '.join(['Base yaml file', base_initramfs_yaml_default, 'does not exist']))
++        sys.exit(1)
+ 
+     if not os.path.exists(LAT_ROOT):
+         os.makedirs(LAT_ROOT)
+@@ -758,6 +793,10 @@ if __name__ == "__main__":
+                     logger.info("build-image successfully done, check the output in %s", LAT_ROOT)
+                     ret = 0
+                     break
++                if STX_ARCH == "arm64" and "INFO: Create ISO Image: Succeeded" in line:
++                    logger.info("build-image successfully done, check the output in %s", LAT_ROOT)
++                    ret = 0
++                    break
+     # stop latd
+     stop_latd()
+ 
+diff --git a/build-tools/stx/build-pkgs b/build-tools/stx/build-pkgs
+index a8feaa9..9dacef3 100755
+--- a/build-tools/stx/build-pkgs
++++ b/build-tools/stx/build-pkgs
+@@ -37,7 +37,7 @@ import tempfile
+ import time
+ import utils
+ import yaml
+-
++import platform
+ 
+ BUILDER_URL = os.environ.get('BUILDER_URL')
+ REPOMGR_URL = os.environ.get('REPOMGR_URL')
+@@ -49,6 +49,10 @@ USER = os.environ.get('MYUNAME')
+ PROJECT = os.environ.get('PROJECT')
+ DISTRIBUTION = os.environ.get('DEBIAN_DISTRIBUTION')
+ STX_ARCH = 'amd64'
++host_arch = platform.machine()
++if host_arch == 'aarch64':
++    STX_ARCH = "arm64"
++
+ STX_META_NAME = 'stx-meta'
+ STX_META_PKG = 'stx-meta_1.0.orig.tar.gz'
+ # Different reasons can lead to package build failure
+@@ -1658,7 +1662,7 @@ class BuildController():
+             logger.error('Failed to specify build_type')
+             return
+ 
+-        pkg_dirs = discovery.package_dir_list(distro=self.attrs['distro'], layer=layer, build_type=build_type)
++        pkg_dirs = discovery.package_dir_list(distro=self.attrs['distro'], layer=layer, build_type=build_type, arch=STX_ARCH)
+         layer_pkg_dirs = pkg_dirs
+         word = "all"
+         if packages:
+diff --git a/build-tools/stx/discovery.py b/build-tools/stx/discovery.py
+index 3de7d48..d16e520 100644
+--- a/build-tools/stx/discovery.py
++++ b/build-tools/stx/discovery.py
+@@ -17,6 +17,7 @@ import os
+ import re
+ import glob
+ import yaml
++import platform
+ 
+ from git_utils import git_list
+ from repo_utils import repo_root
+@@ -30,6 +31,11 @@ STX_DEFAULT_DISTRO_LIST = [ "debian", "centos" ]
+ STX_DEFAULT_BUILD_TYPE = "std"
+ STX_DEFAULT_BUILD_TYPE_LIST = [STX_DEFAULT_BUILD_TYPE]
+ 
++STX_ARCH = "amd64"
++STX_SUPPORTED_ARCH = ["amd64", "arm64"]
++host_arch = platform.machine()
++if host_arch == 'aarch64':
++    STX_ARCH = "arm64"
+ 
+ def get_all_distros():
+     distro_lst = STX_DEFAULT_DISTRO_LIST
+@@ -126,6 +132,14 @@ def get_layer_build_types (layer, distro="debian", skip_non_buildable=True):
+     for proj_dir in project_dir_list_all:
+         for pkg_dir_file in glob.glob("%s/%s%s" % (proj_dir, distro, "_pkg_dirs_*")):
+             bt = os.path.basename(pkg_dir_file).split("_pkg_dirs_")[1]
++            # cleanup arch specific suffix
++            if bt in STX_SUPPORTED_ARCH:
++                continue
++            else:
++                for arch in STX_SUPPORTED_ARCH:
++                    arch_suffix = "_" + arch
++                    if bt.endswith(arch_suffix):
++                        bt = bt.replace(arch_suffix, "")
+             if not bt in bt_lst:
+                 bt_lst.append(bt)
+     return sort_build_type_list(bt_lst, layer)
+@@ -137,6 +151,14 @@ def get_all_build_types (distro="debian", skip_non_buildable=True):
+     for proj_dir in project_dir_list_all:
+         for pkg_dir_file in glob.glob("%s/%s%s" % (proj_dir, distro, "_pkg_dirs_*")):
+             bt = os.path.basename(pkg_dir_file).split("_pkg_dirs_")[1]
++            # cleanup arch specific suffix
++            if bt in STX_SUPPORTED_ARCH:
++                continue
++            else:
++                for arch in STX_SUPPORTED_ARCH:
++                    arch_suffix = "_" + arch
++                    if bt.endswith(arch_suffix):
++                        bt = bt.replace(arch_suffix, "")
+             if not bt in bt_lst:
+                 bt_lst.append(bt)
+     return sorted(bt_lst)
+@@ -186,32 +208,40 @@ def package_dir_list_handler(entry, proj_dir):
+     return [ path ]
+ 
+ 
+-def package_iso_list (distro="debian", layer="all", build_type="std", skip_non_buildable=True):
++def package_iso_list (distro="debian", layer="all", build_type="std", arch=STX_ARCH, skip_non_buildable=True):
+     pkg_iso_list = []
+     if layer is None:
+         layer = "all"
+     for proj_dir in project_dir_list(distro=distro, layer=layer, skip_non_buildable=skip_non_buildable):
+-        iso_file = os.path.join(proj_dir, "%s%s%s%s" % (distro, "_iso_image_", build_type, ".inc"))
++        iso_file = os.path.join(proj_dir, "%s_%s_%s_%s%s" % (distro, "iso_image", build_type, arch, ".inc"))
++        if not os.path.isfile(iso_file):
++            iso_file = os.path.join(proj_dir, "%s_%s_%s%s" % (distro, "iso_image", build_type, ".inc"))
+         if not os.path.isfile(iso_file):
+             if build_type == "std":
+                 # It's permitted to omit the "_std" suffix from the file name
+-                iso_file = os.path.join(proj_dir, "%s%s" % (distro, "_iso_image.inc"))
++                iso_file = os.path.join(proj_dir, "%s_%s_%s%s" % (distro, "iso_image", arch, ".inc"))
++                if not os.path.isfile(iso_file):
++                    iso_file = os.path.join(proj_dir, "%s_%s" % (distro, "iso_image.inc"))
+         if not os.path.isfile(iso_file):
+             continue
+         pkg_iso_list.extend(bc_safe_fetch(iso_file))
+     return pkg_iso_list
+ 
+ 
+-def package_dir_list (distro="debian", layer="all", build_type="std", skip_non_buildable=True):
++def package_dir_list (distro="debian", layer="all", build_type="std", arch=STX_ARCH, skip_non_buildable=True):
+     pkg_dir_list = []
+     if layer is None:
+         layer = "all"
+     for proj_dir in project_dir_list(distro=distro, layer=layer, skip_non_buildable=skip_non_buildable):
+-        pkg_file = os.path.join(proj_dir, "%s%s%s" % (distro, "_pkg_dirs_", build_type))
++        pkg_file = os.path.join(proj_dir, "%s_%s_%s_%s" % (distro, "pkg_dirs", build_type, arch))
++        if not os.path.isfile(pkg_file):
++            pkg_file = os.path.join(proj_dir, "%s_%s_%s" % (distro, "pkg_dirs", build_type))
+         if not os.path.isfile(pkg_file):
+             if build_type == "std":
+                 # It's permitted to omit the "_std" suffix from the file name
+-                pkg_file = os.path.join(proj_dir, "%s%s" % (distro, "_pkg_dirs"))
++                pkg_file = os.path.join(proj_dir, "%s_%s_%s" % (distro, "pkg_dirs", arch))
++                if not os.path.isfile(pkg_file):
++                    pkg_file = os.path.join(proj_dir, "%s_%s" % (distro, "pkg_dirs"))
+         if not os.path.isfile(pkg_file):
+             continue
+         pkg_dir_list.extend(bc_safe_fetch(pkg_file, package_dir_list_handler, proj_dir))
+diff --git a/build-tools/stx/downloader b/build-tools/stx/downloader
+index 2d98707..47093ea 100755
+--- a/build-tools/stx/downloader
++++ b/build-tools/stx/downloader
+@@ -635,7 +635,7 @@ class SrcDownloader(BaseDownloader):
+                     logger.warning(' '.join([build_type, 'is not a valid build_type for distro', distro, 'of layer', layer]))
+                     continue
+ 
+-                pkg_dirs.extend(discovery.package_dir_list(distro=distro, layer=layer, build_type=build_type))
++                pkg_dirs.extend(discovery.package_dir_list(distro=distro, layer=layer, build_type=build_type, arch=STX_ARCH))
+ 
+         if not len(pkg_dirs):
+             logger.info("No source packages found")
+diff --git a/build-tools/stx/repo_manage.py b/build-tools/stx/repo_manage.py
+index dbe0cc3..bf68b70 100755
+--- a/build-tools/stx/repo_manage.py
++++ b/build-tools/stx/repo_manage.py
+@@ -31,6 +31,7 @@ import shutil
+ from threading import Lock
+ import urllib.request
+ import utils
++import platform
+ 
+ REPOMGR_URL = os.environ.get('REPOMGR_URL')
+ REPOMGR_ORIGIN = os.environ.get('REPOMGR_ORIGIN')
+@@ -38,6 +39,10 @@ REPOMGR_DEPLOY_URL = os.environ.get('REPOMGR_DEPLOY_URL')
+ 
+ APTFETCH_JOBS = 20
+ 
++STX_ARCH = 'amd64'
++host_arch = platform.machine()
++if host_arch == 'aarch64':
++    STX_ARCH = "arm64"
+ 
+ class AptFetch():
+     '''
+@@ -497,7 +502,7 @@ class RepoMgr():
+     # kwargs:url: URL of the upstream repo (http://deb.debian.org/debian)
+     # kwargs:distribution: the distribution of the repo (bullseye)
+     # kwargs:component: component of the repo (main)
+-    # kwargs:architecture: architecture of the repo, "all" is always enabled. (amd64)
++    # kwargs:architecture: architecture of the repo, "all" is always enabled. (amd64 or arm64)
+     # kwargs:with_sources: include source packages, default is False.
+     # Output: None
+     def mirror(self, repo_name, **kwargs):
+@@ -923,7 +928,7 @@ def subcmd_mirror(subparsers):
+     mirror_parser.add_argument('--component', '-c', help='component name', required=False,
+                                default='nginx')
+     mirror_parser.add_argument('--architectures', '-a', help='architectures', required=False,
+-                               default='amd64')
++                               default=STX_ARCH)
+     mirror_parser.add_argument('--with-sources', '-s', help='include source packages',
+                                action='store_true')
+     mirror_parser.set_defaults(handle=_handleMirror)
+-- 
+2.30.2
+

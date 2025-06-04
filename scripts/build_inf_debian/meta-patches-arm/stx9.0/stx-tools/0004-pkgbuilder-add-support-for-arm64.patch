@@ -1,0 +1,47 @@
+From 477fe86fda3b6980e6ebf7e2f2754a83fb9e4aa1 Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Tue, 1 Aug 2023 17:38:05 +0800
+Subject: [PATCH 4/9] pkgbuilder: add support for arm64
+
+Use platform.machine() to check the host arch.
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-DX on x86-64 target
+PASS: Deploy AIO-DX on arm64 target
+
+Story: 2010739
+Task: 48002
+
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+Change-Id: I22d39e9d4b3ef06859b28b0f41a4f21eb8e4b340
+---
+ stx/toCOPY/pkgbuilder/app.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/stx/toCOPY/pkgbuilder/app.py b/stx/toCOPY/pkgbuilder/app.py
+index da24eb7..2ed13d1 100644
+--- a/stx/toCOPY/pkgbuilder/app.py
++++ b/stx/toCOPY/pkgbuilder/app.py
+@@ -18,9 +18,13 @@ from flask import Flask
+ from flask import jsonify
+ from flask import request
+ import logging
++import platform
+ 
+ STX_DISTRO = 'bullseye'
+ STX_ARCH = 'amd64'
++if platform.machine() == 'aarch64':
++    STX_ARCH = "arm64"
++
+ PKG_BUILDER_LOG = '/localdisk/pkgbuilder.log'
+ 
+ app = Flask(__name__)
+-- 
+2.30.2
+

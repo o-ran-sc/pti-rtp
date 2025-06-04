@@ -1,0 +1,186 @@
+From cc78fc23ff6c9be14464e3880d5491415c020e8b Mon Sep 17 00:00:00 2001
+From: Jackie Huang <jackie.huang@windriver.com>
+Date: Fri, 26 Jan 2024 04:14:19 -0500
+Subject: [PATCH 3/7] intel-ice: limit the hw timestamp for x86 only
+
+It failed to build due to missing hw timestamp support on Arm platform,
+So limit the configuration macro for x86 only.
+
+The patch is backported from ice 1.13.7
+
+Test Plan:
+PASS: build-pkgs on x86-64 host
+PASS: build-image on x86-64 host
+PASS: build-pkgs on arm64 host
+PASS: build-image on arm64 host
+PASS: Deploy AIO-SX on x86-64 target
+PASS: Deploy AIO-SX on arm64 target
+PASS: Deploy AIO-SX(low-latency) on arm64 target
+PASS: Deploy AIO-DX on arm64 targets
+PASS: Check the ice module loaded successfully
+
+Story: 2010739
+Task: 48018
+
+Change-Id: I05a25e3e0d2e05b9593e44ebbef476c7c3d1b2ad
+Signed-off-by: Tianyu Li <tianyu.li@arm.com>
+Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
+---
+ ...-limit-the-hw-timestamp-for-x86-only.patch | 33 +++++++++++++++++++
+ .../debian/deb_folder/patches/series          |  1 +
+ ...-limit-the-hw-timestamp-for-x86-only.patch | 33 +++++++++++++++++++
+ .../debian/deb_folder/patches/series          |  1 +
+ ...-limit-the-hw-timestamp-for-x86-only.patch | 33 +++++++++++++++++++
+ .../debian/deb_folder/patches/series          |  1 +
+ 6 files changed, 102 insertions(+)
+ create mode 100644 kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/patches/0005-limit-the-hw-timestamp-for-x86-only.patch
+ create mode 100644 kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/patches/0006-limit-the-hw-timestamp-for-x86-only.patch
+ create mode 100644 kernel-modules/intel-ice/debian/deb_folder/patches/0001-limit-the-hw-timestamp-for-x86-only.patch
+
+diff --git a/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/patches/0005-limit-the-hw-timestamp-for-x86-only.patch b/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/patches/0005-limit-the-hw-timestamp-for-x86-only.patch
+new file mode 100644
+index 0000000..06b1032
+--- /dev/null
++++ b/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/patches/0005-limit-the-hw-timestamp-for-x86-only.patch
+@@ -0,0 +1,33 @@
++From 36f42b9a661ac673e3d6b742576283cd2d9abcaa Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Mon, 22 Jan 2024 04:06:33 -0500
++Subject: [PATCH] limit the hw timestamp for x86 only
++
++It failed to build due to missing hw timestamp support on Arm platform,
++So limit the configuration macro for x86 only.
++
++This is backported from ice 1.13.7
++
++Signed-off-by: Tianyu Li <tianyu.li@arm.com>
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ src/kcompat.h | 2 ++
++ 1 file changed, 2 insertions(+)
++
++diff --git a/src/kcompat.h b/src/kcompat.h
++index 469094f..eff5162 100644
++--- a/src/kcompat.h
+++++ b/src/kcompat.h
++@@ -2273,7 +2273,9 @@ int _kc_kstrtobool(const char *s, bool *res);
++ #else /* >= 4.6.0 */
++ #define HAVE_PAGE_COUNT_BULK_UPDATE
++ #define HAVE_ETHTOOL_FLOW_UNION_IP6_SPEC
+++#ifdef CONFIG_X86
++ #define HAVE_PTP_CROSSTIMESTAMP
+++#endif
++ #define HAVE_TC_SETUP_CLSFLOWER
++ #define HAVE_TC_SETUP_CLSU32
++ #endif /* 4.6.0 */
++-- 
++2.30.2
++
+diff --git a/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/patches/series b/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/patches/series
+index 1be2042..16d59ea 100644
+--- a/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/patches/series
++++ b/kernel-modules/intel-ice-cvl-2.54/debian/deb_folder/patches/series
+@@ -2,3 +2,4 @@
+ 0002-ice_main-ice_lib-Use-irq_update_affinity_hint.patch
+ 0003-ddp-change-ddp-file-name-for-legacy-driver.patch
+ 0004-Disable-irq_msix_misc-before-ptp-release.patch
++0005-limit-the-hw-timestamp-for-x86-only.patch
+diff --git a/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/patches/0006-limit-the-hw-timestamp-for-x86-only.patch b/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/patches/0006-limit-the-hw-timestamp-for-x86-only.patch
+new file mode 100644
+index 0000000..06b1032
+--- /dev/null
++++ b/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/patches/0006-limit-the-hw-timestamp-for-x86-only.patch
+@@ -0,0 +1,33 @@
++From 36f42b9a661ac673e3d6b742576283cd2d9abcaa Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Mon, 22 Jan 2024 04:06:33 -0500
++Subject: [PATCH] limit the hw timestamp for x86 only
++
++It failed to build due to missing hw timestamp support on Arm platform,
++So limit the configuration macro for x86 only.
++
++This is backported from ice 1.13.7
++
++Signed-off-by: Tianyu Li <tianyu.li@arm.com>
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ src/kcompat.h | 2 ++
++ 1 file changed, 2 insertions(+)
++
++diff --git a/src/kcompat.h b/src/kcompat.h
++index 469094f..eff5162 100644
++--- a/src/kcompat.h
+++++ b/src/kcompat.h
++@@ -2273,7 +2273,9 @@ int _kc_kstrtobool(const char *s, bool *res);
++ #else /* >= 4.6.0 */
++ #define HAVE_PAGE_COUNT_BULK_UPDATE
++ #define HAVE_ETHTOOL_FLOW_UNION_IP6_SPEC
+++#ifdef CONFIG_X86
++ #define HAVE_PTP_CROSSTIMESTAMP
+++#endif
++ #define HAVE_TC_SETUP_CLSFLOWER
++ #define HAVE_TC_SETUP_CLSU32
++ #endif /* 4.6.0 */
++-- 
++2.30.2
++
+diff --git a/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/patches/series b/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/patches/series
+index c845385..36d5a99 100644
+--- a/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/patches/series
++++ b/kernel-modules/intel-ice-cvl-4.10/debian/deb_folder/patches/series
+@@ -3,3 +3,4 @@
+ 0003-rename-the-ddp-file-to-avoid-conflict.patch
+ 0004-Disable-irq_msix_misc-before-ptp-release.patch
+ 0005-ICE-Add-the-condition-of-undef-NEED_ETH_HW_ADDR_SET-.patch
++0006-limit-the-hw-timestamp-for-x86-only.patch
+diff --git a/kernel-modules/intel-ice/debian/deb_folder/patches/0001-limit-the-hw-timestamp-for-x86-only.patch b/kernel-modules/intel-ice/debian/deb_folder/patches/0001-limit-the-hw-timestamp-for-x86-only.patch
+new file mode 100644
+index 0000000..06b1032
+--- /dev/null
++++ b/kernel-modules/intel-ice/debian/deb_folder/patches/0001-limit-the-hw-timestamp-for-x86-only.patch
+@@ -0,0 +1,33 @@
++From 36f42b9a661ac673e3d6b742576283cd2d9abcaa Mon Sep 17 00:00:00 2001
++From: Jackie Huang <jackie.huang@windriver.com>
++Date: Mon, 22 Jan 2024 04:06:33 -0500
++Subject: [PATCH] limit the hw timestamp for x86 only
++
++It failed to build due to missing hw timestamp support on Arm platform,
++So limit the configuration macro for x86 only.
++
++This is backported from ice 1.13.7
++
++Signed-off-by: Tianyu Li <tianyu.li@arm.com>
++Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
++---
++ src/kcompat.h | 2 ++
++ 1 file changed, 2 insertions(+)
++
++diff --git a/src/kcompat.h b/src/kcompat.h
++index 469094f..eff5162 100644
++--- a/src/kcompat.h
+++++ b/src/kcompat.h
++@@ -2273,7 +2273,9 @@ int _kc_kstrtobool(const char *s, bool *res);
++ #else /* >= 4.6.0 */
++ #define HAVE_PAGE_COUNT_BULK_UPDATE
++ #define HAVE_ETHTOOL_FLOW_UNION_IP6_SPEC
+++#ifdef CONFIG_X86
++ #define HAVE_PTP_CROSSTIMESTAMP
+++#endif
++ #define HAVE_TC_SETUP_CLSFLOWER
++ #define HAVE_TC_SETUP_CLSU32
++ #endif /* 4.6.0 */
++-- 
++2.30.2
++
+diff --git a/kernel-modules/intel-ice/debian/deb_folder/patches/series b/kernel-modules/intel-ice/debian/deb_folder/patches/series
+index fe60ba8..200e193 100644
+--- a/kernel-modules/intel-ice/debian/deb_folder/patches/series
++++ b/kernel-modules/intel-ice/debian/deb_folder/patches/series
+@@ -3,3 +3,4 @@
+ 0001-rename-the-ddp-file-to-avoid-conflict.patch
+ 0001-Disable-irq_msix_misc-before-ptp-release.patch
+ 0001-ICE-Add-the-condition-of-undef-NEED_ETH_HW_ADDR_SET-.patch
++0001-limit-the-hw-timestamp-for-x86-only.patch
+-- 
+2.30.2
+
