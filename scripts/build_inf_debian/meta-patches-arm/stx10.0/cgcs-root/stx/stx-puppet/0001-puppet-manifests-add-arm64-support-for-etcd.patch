@@ -1,7 +1,7 @@
-From 1b3c2bf1aa20eb17cbafd54e85e7afe806a91aaf Mon Sep 17 00:00:00 2001
+From a1d6dd94f0f942272b9728f4a3b157eff9795fc7 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 12 Jul 2023 10:32:54 +0800
-Subject: [PATCH 2/2] puppet-manifests: add arm64 support for etcd
+Subject: [PATCH] puppet-manifests: add arm64 support for etcd
 
 Add environmnet ETCD_UNSUPPORTED_ARCH=arm64 for etcd
 so it will workaround the unsupported warning.
