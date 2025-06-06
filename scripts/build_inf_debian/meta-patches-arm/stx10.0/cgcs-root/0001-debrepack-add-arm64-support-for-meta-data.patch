@@ -1,4 +1,4 @@
-From 7518b647ea0085c231a903c7a3e4351b2b2966c4 Mon Sep 17 00:00:00 2001
+From 74f44fc8cf8f6b94a57ca8ff7370c62320cb5af5 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 26 Jul 2023 17:23:55 +0800
 Subject: [PATCH 1/4] debrepack: add arm64 support for meta data
@@ -83,18 +83,18 @@ Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
  1 file changed, 93 insertions(+), 21 deletions(-)
 
 diff --git a/build-tools/stx/debrepack.py b/build-tools/stx/debrepack.py
-index 524b38d..85f593b 100755
+index c4fb570..3cf6410 100755
 --- a/build-tools/stx/debrepack.py
 +++ b/build-tools/stx/debrepack.py
-@@ -28,6 +28,7 @@ import sys
+@@ -30,6 +30,7 @@ import tempfile
  import utils
- from utils import run_shell_cmd, get_download_url
+ from utils import run_shell_cmd, run_shell_cmd_full, get_download_url
  import yaml
 +import platform
  
  
  RELEASENOTES = " ".join([os.environ.get('PROJECT'), os.environ.get('MY_RELEASE'), "distribution"])
-@@ -58,7 +59,21 @@ if STX_MIRROR_STRATEGY is None:
+@@ -60,7 +61,21 @@ if STX_MIRROR_STRATEGY is None:
          STX_MIRROR_STRATEGY = "stx_mirror_first"
  
  BTYPE = "@KERNEL_TYPE@"
@@ -116,7 +116,7 @@ index 524b38d..85f593b 100755
  
  class DownloadProgress():
      def __init__(self):
-@@ -296,6 +311,16 @@ class Parser():
+@@ -348,6 +363,16 @@ class Parser():
  
          self.pkginfo["debfolder"] = os.path.join(local_debian)
  
@@ -133,7 +133,7 @@ index 524b38d..85f593b 100755
      def get_gitrevcount_srcdir(self, gitrevcount_obj):
          src_dir = str(gitrevcount_obj.get("SRC_DIR", ""))
          if src_dir:
-@@ -463,8 +488,14 @@ class Parser():
+@@ -515,8 +540,14 @@ class Parser():
          self.logger.info("Overwrite the debian folder by %s", metadata)
          run_shell_cmd('cp -r %s/* %s' % (metadata, deb_folder), self.logger)
  
@@ -150,7 +150,7 @@ index 524b38d..85f593b 100755
              return True
  
          format_ver, format_type = self.set_deb_format()
-@@ -497,11 +528,16 @@ class Parser():
+@@ -549,11 +580,16 @@ class Parser():
                  run_shell_cmd('cp -rL %s %s' % (src_file, self.pkginfo["srcdir"]),
                                self.logger)
  
@@ -170,7 +170,7 @@ index 524b38d..85f593b 100755
                  dl_path = os.path.join(self.pkginfo["packdir"], dl_file)
                  if not os.path.exists(dl_path):
                      self.logger.error("No such file %s in local mirror", dl_file)
-@@ -537,8 +573,15 @@ class Parser():
+@@ -589,8 +625,15 @@ class Parser():
      def apply_src_patches(self):
  
          format_ver, format_type = self.set_deb_format()
@@ -188,7 +188,7 @@ index 524b38d..85f593b 100755
              return True
  
          f = open(series)
-@@ -547,7 +590,13 @@ class Parser():
+@@ -599,7 +642,13 @@ class Parser():
          f.close()
  
          patches_folder = os.path.join(self.pkginfo["srcdir"], "debian/patches")
@@ -202,8 +202,8 @@ index 524b38d..85f593b 100755
 +
          if not os.path.isdir(patches_folder):
              os.mkdir(patches_folder)
-             os.mknod(series_file)
-@@ -587,9 +636,16 @@ class Parser():
+             os.mknod(series_file, 0o666)
+@@ -639,9 +688,16 @@ class Parser():
  
      def apply_deb_patches(self):
  
@@ -222,7 +222,7 @@ index 524b38d..85f593b 100755
          f = open(series)
          patches = f.readlines()
          patches_src = os.path.dirname(series)
-@@ -609,8 +665,12 @@ class Parser():
+@@ -661,8 +717,12 @@ class Parser():
          return True
  
      def extract_tarball(self):
@@ -236,7 +236,7 @@ index 524b38d..85f593b 100755
          tarball_file = os.path.join(self.pkginfo["packdir"], tarball_name)
  
          cmd, _, _ = tar_cmd(tarball_name, self.logger)
-@@ -715,9 +775,15 @@ class Parser():
+@@ -770,9 +830,15 @@ class Parser():
  
          pwd = os.getcwd()
          os.chdir(saveto)
@@ -255,9 +255,9 @@ index 524b38d..85f593b 100755
                  url = dl_file_info['url']
                  if "sha256sum" in dl_file_info:
                      check_cmd = "sha256sum"
-@@ -739,16 +805,21 @@ class Parser():
-                     if not checksum(dl_file, check_sum, check_cmd, self.logger):
+@@ -795,16 +861,21 @@ class Parser():
                          raise Exception(f'Fail to download {dl_file}')
+                 rel_used_dl_files.append(dl_file)
  
 -        if "dl_path" in self.meta_data:
 -            dl_file = self.meta_data["dl_path"]["name"]
@@ -283,7 +283,7 @@ index 524b38d..85f593b 100755
              if not checksum(dl_file, check_sum, check_cmd, self.logger):
                  (dl_url, alt_dl_url) = get_download_url(url, self.strategy)
                  if alt_dl_url:
-@@ -813,6 +884,7 @@ class Parser():
+@@ -935,6 +1006,7 @@ class Parser():
          os.mkdir(self.pkginfo["packdir"])
  
          self.set_build_type()
@@ -291,7 +291,7 @@ index 524b38d..85f593b 100755
  
          logfile = os.path.join(self.pkginfo["packdir"], self.pkginfo["pkgname"] + ".log")
          if os.path.exists(logfile):
-@@ -832,7 +904,7 @@ class Parser():
+@@ -954,7 +1026,7 @@ class Parser():
  
          if "dl_hook" in self.meta_data:
              self.run_dl_hook()

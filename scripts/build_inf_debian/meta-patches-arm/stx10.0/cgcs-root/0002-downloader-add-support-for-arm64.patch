@@ -1,4 +1,4 @@
-From c3a2332443a87b1a5c9477838cae5314413eebe6 Mon Sep 17 00:00:00 2001
+From 8c3f0091bf119df68661b227ac7edcc93e2efe8f Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 26 Jul 2023 13:06:48 +0800
 Subject: [PATCH 2/4] downloader: add support for arm64
@@ -45,8 +45,8 @@ Change-Id: I5fadf737ee75fc631d57d6bf689d54638548bffe
 Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
  build-tools/stx/debdownloader |  5 +++++
- build-tools/stx/downloader    | 37 +++++++++++++++++++++++++++--------
- 2 files changed, 34 insertions(+), 8 deletions(-)
+ build-tools/stx/downloader    | 38 +++++++++++++++++++++++++++--------
+ 2 files changed, 35 insertions(+), 8 deletions(-)
 
 diff --git a/build-tools/stx/debdownloader b/build-tools/stx/debdownloader
 index 6988cc7..a1ca92e 100755
@@ -72,14 +72,19 @@ index 6988cc7..a1ca92e 100755
                      if debs_downloaded and pname_all in debs_downloaded:
                          logger.info(''.join([name, '-', version,
 diff --git a/build-tools/stx/downloader b/build-tools/stx/downloader
-index 14d97f7..2d98707 100755
+index fc2f4ed..4341fe2 100755
 --- a/build-tools/stx/downloader
 +++ b/build-tools/stx/downloader
-@@ -27,8 +27,14 @@ import shutil
- import signal
+@@ -29,13 +29,20 @@ import signal
+ import subprocess
  import sys
  import utils
 +import platform
+ 
+ # make ourself nice
+ pid = os.getpid()
+ os.setpriority(os.PRIO_PROCESS, 0, 15)
+ subprocess.run(['ionice', '-c', '3', '-p', str(pid)])
  
 -DEFAULT_ARCH = 'amd64'
 +STX_ARCH = 'amd64'
@@ -88,10 +93,11 @@ index 14d97f7..2d98707 100755
 +    STX_ARCH = "arm64"
 +
 +DEB_DISTRO = 'bullseye'
++
  REPO_BIN = 'deb-local-binary'
  mirror_root = os.environ.get('STX_MIRROR')
  stx_src_mirror = os.path.join(mirror_root, 'sources')
-@@ -115,7 +121,11 @@ def get_all_stx_pkgs():
+@@ -122,7 +129,11 @@ def get_all_stx_pkgs():
          for r in files:
              # Find all types of package dirs?
              if r in types_pkg_dirs:
@@ -104,7 +110,7 @@ index 14d97f7..2d98707 100755
                  pkgs.update(get_pkgs_from_list(root, pkgs_file))
      return pkgs
  
-@@ -153,24 +163,34 @@ def get_all_binary_list(distro=STX_DEFAULT_DISTRO, layers=None, build_types=None
+@@ -160,24 +171,34 @@ def get_all_binary_list(distro=STX_DEFAULT_DISTRO, layers=None, build_types=None
                  logger.warning(' '.join([build_type, 'is not a valid build_type for distro', distro, 'of layer', layer]))
                  continue
  
@@ -143,20 +149,22 @@ index 14d97f7..2d98707 100755
  
      logger.info(
          f"Binary lists for layer `common`: "
-@@ -727,13 +747,14 @@ if __name__ == "__main__":
-         args.download_source = True
- 
+@@ -771,15 +792,16 @@ if __name__ == "__main__":
+         shutil.rmtree(dl_list_dir)
+     os.makedirs(dl_list_dir, exist_ok=True)
      if args.download_binary:
 +
          all_binary_lists = get_all_binary_list(distro=distro, layers=layers, build_types=build_types)
--        binary_dl = DebDownloader(DEFAULT_ARCH, stx_bin_mirror, clean_mirror, all_binary_lists)
-+        binary_dl = DebDownloader(STX_ARCH, stx_bin_mirror, clean_mirror, all_binary_lists)
+         dl_list_file_bin = '%s/binaries.txt' % dl_list_dir
+-        binary_dl = DebDownloader(DEFAULT_ARCH, stx_bin_mirror, dl_list_file_bin, clean_mirror, all_binary_lists)
++        binary_dl = DebDownloader(STX_ARCH, stx_bin_mirror, dl_list_file_bin, clean_mirror, all_binary_lists)
          if not binary_dl.create_binary_repo():
              sys.exit(1)
  
      if args.download_source:
--        source_dl = SrcDownloader(DEFAULT_ARCH, stx_src_mirror, clean_mirror)
-+        source_dl = SrcDownloader(STX_ARCH, stx_src_mirror, clean_mirror)
+         dl_list_file_src = '%s/sources.txt' % dl_list_dir
+-        source_dl = SrcDownloader(DEFAULT_ARCH, stx_src_mirror, dl_list_file_src, clean_mirror)
++        source_dl = SrcDownloader(STX_ARCH, stx_src_mirror, dl_list_file_src, clean_mirror)
  
      dl_register_signal_handler()
      if binary_dl:

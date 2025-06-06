@@ -1,4 +1,4 @@
-From 516085675edd2a3330b4ddba10c4b613ee91955b Mon Sep 17 00:00:00 2001
+From 5ba18d573d5c38e58bb2ae8e0bebec0e902797b1 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 26 Jul 2023 14:55:29 +0800
 Subject: [PATCH 3/4] build-tools: add supoort for arm64
@@ -52,11 +52,11 @@ Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
 ---
  build-tools/stx/aptly_deb_usage.py | 12 ++++--
  build-tools/stx/build-image        | 65 ++++++++++++++++++++++++------
- build-tools/stx/build-pkgs         |  8 +++-
+ build-tools/stx/build-pkgs         |  7 +++-
  build-tools/stx/discovery.py       | 42 ++++++++++++++++---
  build-tools/stx/downloader         |  2 +-
  build-tools/stx/repo_manage.py     |  9 ++++-
- 6 files changed, 111 insertions(+), 27 deletions(-)
+ 6 files changed, 111 insertions(+), 26 deletions(-)
 
 diff --git a/build-tools/stx/aptly_deb_usage.py b/build-tools/stx/aptly_deb_usage.py
 index f1d91c2..d10e6a2 100755
@@ -103,16 +103,18 @@ index f1d91c2..d10e6a2 100755
              extra_param['origin'] = self.origin
  
 diff --git a/build-tools/stx/build-image b/build-tools/stx/build-image
-index 8536c32..ea04fa2 100755
+index 7b60f3f..9c5f803 100755
 --- a/build-tools/stx/build-image
 +++ b/build-tools/stx/build-image
-@@ -28,11 +28,17 @@ import sys
+@@ -29,6 +29,7 @@ import sys
  import time
  import utils
  import yaml
 +import platform
  
- STX_DEFAULT_DISTRO = discovery.STX_DEFAULT_DISTRO
+ # make ourself nice
+ pid = os.getpid()
+@@ -39,6 +40,11 @@ STX_DEFAULT_DISTRO = discovery.STX_DEFAULT_DISTRO
  ALL_LAYERS = discovery.get_all_layers(distro=STX_DEFAULT_DISTRO)
  ALL_BUILD_TYPES = discovery.get_all_build_types(distro=STX_DEFAULT_DISTRO)
  
@@ -124,7 +126,7 @@ index 8536c32..ea04fa2 100755
  LAT_ROOT = '/localdisk'
  REPO_ALL = 'deb-merge-all'
  REPO_BINARY = 'deb-local-binary'
-@@ -48,8 +54,8 @@ IMAGE_LAYERS_PATH = os.path.join(
+@@ -54,8 +60,8 @@ IMAGE_LAYERS_PATH = os.path.join(
  )
  img_pkgs = []
  kernel_type = 'std'
@@ -135,7 +137,7 @@ index 8536c32..ea04fa2 100755
  WAIT_TIME_BEFORE_CHECKING_LOG = 2
  # The max timeout value to wait LAT to output the build log
  MAX_WAIT_LAT_TIME = 300
-@@ -242,7 +248,7 @@ def update_rt_kernel_in_initramfs_yaml(initramfs_yaml):
+@@ -248,7 +254,7 @@ def update_rt_kernel_in_initramfs_yaml(initramfs_yaml):
  
      # Updated the name of kernel module
      for layer in ALL_LAYERS:
@@ -144,7 +146,7 @@ index 8536c32..ea04fa2 100755
          if not pkg_dirs:
              continue
          for pkg_dir in pkg_dirs:
-@@ -305,7 +311,7 @@ def add_lat_packages(img_yaml, packages):
+@@ -311,7 +317,7 @@ def add_lat_packages(img_yaml, packages):
      yaml_doc['packages'].extend(packages)
  
      for build_type in ALL_BUILD_TYPES:
@@ -153,7 +155,7 @@ index 8536c32..ea04fa2 100755
          yaml_doc['packages'].extend(pkgs)
  
      yaml_doc['packages'] = list(set(yaml_doc['packages']))
-@@ -319,8 +325,16 @@ def add_lat_packages(img_yaml, packages):
+@@ -325,8 +331,16 @@ def add_lat_packages(img_yaml, packages):
  
  
  def check_base_os_binaries(repomgr):
@@ -171,7 +173,7 @@ index 8536c32..ea04fa2 100755
      if not os.path.exists(base_bins_list):
          logger.error(' '.join(['Base OS packages list', base_bins_list,
                                 'does not exist']))
-@@ -338,8 +352,15 @@ def check_base_os_binaries(repomgr):
+@@ -344,8 +358,15 @@ def check_base_os_binaries(repomgr):
  
  
  def check_stx_binaries(repomgr, btype='std'):
@@ -189,7 +191,7 @@ index 8536c32..ea04fa2 100755
      if not os.path.exists(stx_bins_list):
          logger.warning(' '.join(['STX binary packages list', stx_bins_list,
                                  'does not exist']))
-@@ -660,16 +681,30 @@ if __name__ == "__main__":
+@@ -749,16 +770,30 @@ if __name__ == "__main__":
          logger.error("Fail to get prepared to build image")
          sys.exit(1)
  
@@ -226,7 +228,7 @@ index 8536c32..ea04fa2 100755
  
      if not os.path.exists(LAT_ROOT):
          os.makedirs(LAT_ROOT)
-@@ -758,6 +793,10 @@ if __name__ == "__main__":
+@@ -847,6 +882,10 @@ if __name__ == "__main__":
                      logger.info("build-image successfully done, check the output in %s", LAT_ROOT)
                      ret = 0
                      break
@@ -238,19 +240,18 @@ index 8536c32..ea04fa2 100755
      stop_latd()
  
 diff --git a/build-tools/stx/build-pkgs b/build-tools/stx/build-pkgs
-index a8feaa9..9dacef3 100755
+index ec812a4..a7cbe5b 100755
 --- a/build-tools/stx/build-pkgs
 +++ b/build-tools/stx/build-pkgs
-@@ -37,7 +37,7 @@ import tempfile
+@@ -37,6 +37,7 @@ import tempfile
  import time
  import utils
  import yaml
--
 +import platform
  
- BUILDER_URL = os.environ.get('BUILDER_URL')
- REPOMGR_URL = os.environ.get('REPOMGR_URL')
-@@ -49,6 +49,10 @@ USER = os.environ.get('MYUNAME')
+ # make ourself nice
+ pid = os.getpid()
+@@ -53,6 +54,10 @@ USER = os.environ.get('MYUNAME')
  PROJECT = os.environ.get('PROJECT')
  DISTRIBUTION = os.environ.get('DEBIAN_DISTRIBUTION')
  STX_ARCH = 'amd64'
@@ -260,8 +261,8 @@ index a8feaa9..9dacef3 100755
 +
  STX_META_NAME = 'stx-meta'
  STX_META_PKG = 'stx-meta_1.0.orig.tar.gz'
- # Different reasons can lead to package build failure
-@@ -1658,7 +1662,7 @@ class BuildController():
+ 
+@@ -1715,7 +1720,7 @@ class BuildController():
              logger.error('Failed to specify build_type')
              return
  
@@ -271,7 +272,7 @@ index a8feaa9..9dacef3 100755
          word = "all"
          if packages:
 diff --git a/build-tools/stx/discovery.py b/build-tools/stx/discovery.py
-index 3de7d48..d16e520 100644
+index dc4b35f..d94d295 100644
 --- a/build-tools/stx/discovery.py
 +++ b/build-tools/stx/discovery.py
 @@ -17,6 +17,7 @@ import os
@@ -282,7 +283,7 @@ index 3de7d48..d16e520 100644
  
  from git_utils import git_list
  from repo_utils import repo_root
-@@ -30,6 +31,11 @@ STX_DEFAULT_DISTRO_LIST = [ "debian", "centos" ]
+@@ -30,6 +31,11 @@ STX_DEFAULT_DISTRO_LIST = [ "debian" ]
  STX_DEFAULT_BUILD_TYPE = "std"
  STX_DEFAULT_BUILD_TYPE_LIST = [STX_DEFAULT_BUILD_TYPE]
  
@@ -372,10 +373,10 @@ index 3de7d48..d16e520 100644
              continue
          pkg_dir_list.extend(bc_safe_fetch(pkg_file, package_dir_list_handler, proj_dir))
 diff --git a/build-tools/stx/downloader b/build-tools/stx/downloader
-index 2d98707..47093ea 100755
+index 4341fe2..bca05ca 100755
 --- a/build-tools/stx/downloader
 +++ b/build-tools/stx/downloader
-@@ -635,7 +635,7 @@ class SrcDownloader(BaseDownloader):
+@@ -672,7 +672,7 @@ class SrcDownloader(BaseDownloader):
                      logger.warning(' '.join([build_type, 'is not a valid build_type for distro', distro, 'of layer', layer]))
                      continue
  

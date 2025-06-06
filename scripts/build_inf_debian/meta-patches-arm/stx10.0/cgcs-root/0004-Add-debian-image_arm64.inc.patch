@@ -1,4 +1,4 @@
-From c0f2e1c04e0a3ceb7a9aff4651186dfb68dc3f16 Mon Sep 17 00:00:00 2001
+From c9f81b1bdc69fb020c91a0d99e15a50d52767cd0 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Thu, 27 Jul 2023 23:46:36 +0800
 Subject: [PATCH 4/4] Add debian-image_arm64.inc
