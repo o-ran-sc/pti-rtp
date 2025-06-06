@@ -1,4 +1,4 @@
-From 12f147bd9367649d3704a7abd6c520ce3124d340 Mon Sep 17 00:00:00 2001
+From 6fa794a9ab036a20ab3b0441121c69c52ab78d26 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Tue, 1 Aug 2023 17:49:30 +0800
 Subject: [PATCH 2/9] stx-init-env: add support arch specific dockerfile
@@ -30,10 +30,10 @@ Change-Id: I3912eda4033ad0a6a2c0c4d3d29098215362343c
  1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/stx-init-env b/stx-init-env
-index b9fa668..6f1a989 100755
+index edf66cf..8267630 100755
 --- a/stx-init-env
 +++ b/stx-init-env
-@@ -86,6 +86,12 @@ ASSUME_YES=0
+@@ -87,6 +87,12 @@ STX_START_OPTS=
  
  COREUTILS_DOCKER_IMAGE="debian:bookworm-20240130-slim"
  
@@ -46,10 +46,10 @@ index b9fa668..6f1a989 100755
  info() {
      local tty_on tty_off
      if [[ -t 2 ]] ; then
-@@ -718,14 +724,19 @@ if [[ -n "${BUILD_DOCKER_IMAGES}" ]] ; then
-         docker_build_args+=("--no-cache")
-     fi
+@@ -727,15 +733,20 @@ if [[ -n "${BUILD_DOCKER_IMAGES}" ]] ; then
      for img in $BUILD_DOCKER_IMAGES; do
+         info "Starting to build image: $img:$DOCKER_TAG_LOCAL"
+ 
 +        img_dockerfile=${img}.Dockerfile
 +        if [[ -f $STX_TOOLS_DIR/stx/dockerfiles/${img}_${ARCH}.Dockerfile ]]; then
 +            img_dockerfile=${img}_${ARCH}.Dockerfile
@@ -63,11 +63,12 @@ index b9fa668..6f1a989 100755
                  extra_build_args+=("--build-arg" "STX_MIRROR_URL=$STX_MIRROR_URL")
              fi
          fi
--        docker build "${docker_build_args[@]}" "${extra_build_args[@]}" -t $img:$DOCKER_TAG_LOCAL -f "$STX_TOOLS_DIR/"stx/dockerfiles/$img.Dockerfile "$STX_TOOLS_DIR" || exit 1
-+        docker build "${docker_build_args[@]}" "${extra_build_args[@]}" -t $img:$DOCKER_TAG_LOCAL -f "$STX_TOOLS_DIR/"stx/dockerfiles/${img_dockerfile} "$STX_TOOLS_DIR" || exit 1
-         info "built image $img:$DOCKER_TAG_LOCAL"
-     done
- fi
+ 
+-        cmd="docker build "${docker_build_args[@]}" "${extra_build_args[@]}" -t $img:$DOCKER_TAG_LOCAL -f "$STX_TOOLS_DIR/"stx/dockerfiles/$img.Dockerfile "$STX_TOOLS_DIR""
++        cmd="docker build "${docker_build_args[@]}" "${extra_build_args[@]}" -t $img:$DOCKER_TAG_LOCAL -f "$STX_TOOLS_DIR/"stx/dockerfiles/${img_dockerfile} "$STX_TOOLS_DIR""
+         info "Running command: ${cmd}"
+         eval "$cmd" || exit 1
+ 
 -- 
 2.30.2
 

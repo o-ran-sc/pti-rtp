@@ -1,4 +1,4 @@
-From 5f29e7ac97eeb0cfe3930a3e0b9f0955aad1c40e Mon Sep 17 00:00:00 2001
+From fb4d98c1634a382dde80874865f099d6579d934c Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Tue, 17 Oct 2023 14:50:47 +0800
 Subject: [PATCH 9/9] WA - pkgbuilder: remove STX_MIRROR_URL

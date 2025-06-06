@@ -1,4 +1,4 @@
-From 477fe86fda3b6980e6ebf7e2f2754a83fb9e4aa1 Mon Sep 17 00:00:00 2001
+From 419b2552a692631909b2b3d2c35a65153f1e34cc Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Tue, 1 Aug 2023 17:38:05 +0800
 Subject: [PATCH 4/9] pkgbuilder: add support for arm64
@@ -25,13 +25,13 @@ Change-Id: I22d39e9d4b3ef06859b28b0f41a4f21eb8e4b340
  1 file changed, 4 insertions(+)
 
 diff --git a/stx/toCOPY/pkgbuilder/app.py b/stx/toCOPY/pkgbuilder/app.py
-index da24eb7..2ed13d1 100644
+index 7c40fb3..beb906c 100644
 --- a/stx/toCOPY/pkgbuilder/app.py
 +++ b/stx/toCOPY/pkgbuilder/app.py
-@@ -18,9 +18,13 @@ from flask import Flask
- from flask import jsonify
+@@ -19,9 +19,13 @@ from flask import jsonify
  from flask import request
  import logging
+ import utils
 +import platform
  
  STX_DISTRO = 'bullseye'

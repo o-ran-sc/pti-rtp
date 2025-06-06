@@ -1,4 +1,4 @@
-From 14fa67797b13e986619a11d9b09524fe759dbf54 Mon Sep 17 00:00:00 2001
+From 30f035c21ddae7f9b1b1c46970454de426d1d21c Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Tue, 1 Aug 2023 11:39:33 +0800
 Subject: [PATCH 5/9] Add packages list for arm64

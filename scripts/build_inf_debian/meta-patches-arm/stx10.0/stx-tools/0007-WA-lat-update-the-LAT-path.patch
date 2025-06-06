@@ -1,4 +1,4 @@
-From 5d8dca4341f166498af2c314d9fd89564ae5fa35 Mon Sep 17 00:00:00 2001
+From 282a1d6c06d5cf6560606410d56064c101e98043 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Tue, 17 Oct 2023 15:11:34 +0800
 Subject: [PATCH 7/9] WA - lat: update the LAT path
@@ -10,7 +10,7 @@ Change-Id: I4dee0d6142a6d69386562a90b735cc7a9bab8b91
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile b/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
-index 9a8b3f8..a1521f6 100644
+index b06037f..4639808 100644
 --- a/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
 +++ b/stx/dockerfiles/stx-lat-tool_arm64.Dockerfile
 @@ -17,7 +17,8 @@ FROM debian:bullseye
