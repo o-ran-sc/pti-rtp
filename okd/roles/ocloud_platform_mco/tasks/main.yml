@@ -8,19 +8,19 @@
     kind: Namespace
     name: "{{ ocloud_platform_mco_namespace }}"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
 
 - name: Create StorageClass
   kubernetes.core.k8s:
     template: "sc.yaml.j2"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
 
 - name: Create PersistentVolumes
   kubernetes.core.k8s:
     template: "pv.yaml.j2"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
   loop: "{{ groups['ocloud'] }}"
   when: hostvars[item]['role'] == "master"
 
@@ -28,7 +28,7 @@
   kubernetes.core.k8s:
     template: "pull-secret.yaml.j2"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
 
 - name: Generate S3 access and secret keys
   set_fact:
@@ -39,28 +39,28 @@
   kubernetes.core.k8s:
     template: "pvc.yaml.j2"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
 
 - name: Create Secret
   kubernetes.core.k8s:
     template: "secret.yaml.j2"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
 
 - name: Create Deployment - minio
   kubernetes.core.k8s:
     template: "deployment.yaml.j2"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
 
 - name: Create Service - minio
   kubernetes.core.k8s:
     template: "service.yaml.j2"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
 
 - name: Create MultiClusterObservability resource
   kubernetes.core.k8s:
     template: "mco.yaml.j2"
     state: present
-    kubeconfig: "{{ ocloud_platform_mco_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"

@@ -1,0 +1,14 @@
+---
+- name: Clone oran-hwmgr-plugin repo
+  ansible.builtin.git:
+    repo: "{{ ocloud_platform_hwmgr_repo_url }}"
+    version: "{{ ocloud_platform_hwmgr_repo_version }}"
+    dest: "{{ ocloud_staging_dir['path'] }}/git/oran-hwmgr-plugin"
+
+- name: Install oran-hwmgr-plugin
+  ansible.builtin.shell:
+    chdir: "{{ ocloud_staging_dir['path'] }}/git/oran-hwmgr-plugin"
+    cmd: "make install deploy"
+  environment:
+    PATH: "{{ ocloud_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
+    KUBECONFIG: "{{ ocloud_kubeconfig }}"

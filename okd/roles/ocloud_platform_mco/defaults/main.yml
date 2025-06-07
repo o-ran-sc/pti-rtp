@@ -1,5 +1,5 @@
 ---
-ocloud_platform_mco_kubeconfig: "{{ ocloud_platform_okd_kubeconfig }}"
+ocloud_kubeconfig: ~
 ocloud_platform_mco_pull_secret: "{{ ocloud_platform_okd_pull_secret }}"
 ocloud_platform_mco_namespace: "open-cluster-management-observability"
 ocloud_platform_mco_minio_image: "quay.io/minio/minio:RELEASE.2021-08-25T00-41-18Z"
