@@ -11,4 +11,4 @@
     cmd: "make install deploy"
   environment:
     PATH: "{{ ocloud_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
-    KUBECONFIG: "{{ ocloud_platform_o2ims_kubeconfig }}"
+    KUBECONFIG: "{{ ocloud_kubeconfig }}"

@@ -1,4 +1,4 @@
 ---
-ocloud_platform_cgu_kubeconfig: "{{ ocloud_platform_okd_kubeconfig }}"
+ocloud_kubeconfig: ~
 ocloud_platform_cgu_version: "4.19.0"
 ocloud_platform_cgu_repo_url: "https://github.com/openshift-kni/cluster-group-upgrades-operator.git"

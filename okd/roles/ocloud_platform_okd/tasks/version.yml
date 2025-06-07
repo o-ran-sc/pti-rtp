@@ -3,7 +3,7 @@
   kubernetes.core.k8s_info:
     api_version: config.openshift.io/v1
     kind: ClusterVersion
-    kubeconfig: "{{ ocloud_platform_okd_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
   register: ocloud_platform_okd_cluster_info
 
 - name: Set OKD installed release
