@@ -1,4 +1,4 @@
-From 58d9ddad1f68ea024798718a6ecf49835e247bba Mon Sep 17 00:00:00 2001
+From f75df7ec0fc368bb3a672ff6096056f373528f7d Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Thu, 27 Jul 2023 23:19:16 +0800
 Subject: [PATCH] Add debian_pkg_dirs_arm64
