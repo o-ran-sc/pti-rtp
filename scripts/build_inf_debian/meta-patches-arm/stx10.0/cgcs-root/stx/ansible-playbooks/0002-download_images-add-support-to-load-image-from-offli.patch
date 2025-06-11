@@ -1,4 +1,4 @@
-From ecdbdc0db662ffb5abb6eca9c84d5307fabad0f6 Mon Sep 17 00:00:00 2001
+From dbe473340f583b0e84ddbf29c57c135521e4cae6 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 19 Jan 2022 04:49:59 -0500
 Subject: [PATCH 2/2] download_images: add support to load image from offline
@@ -21,19 +21,19 @@ Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
  2 files changed, 25 insertions(+), 5 deletions(-)
 
 diff --git a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
-index e4239188..8e47a28b 100644
+index cfa2899f..ee5679d2 100644
 --- a/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
 +++ b/playbookconfig/src/playbooks/roles/common/push-docker-images/files/download_images.py
-@@ -43,6 +43,8 @@ registries = json.loads(os.environ['REGISTRIES'])
- add_docker_prefix = False
+@@ -44,6 +44,8 @@ add_docker_prefix = False
  crictl_image_list = []
+ backed_up_crictl_cache_images = os.environ.get('CRICTL_CACHE_IMAGES', None)
  
 +offline_img_suffix = ['.tar.gz', '.tar.bz2', '.tar']
 +offline_img_dir = os.environ.get('OFFLINE_IMG_DIR', '')
  
  def get_local_registry_auth():
      password = keyring.get_password("sysinv", "services")
-@@ -50,6 +52,16 @@ def get_local_registry_auth():
+@@ -51,6 +53,16 @@ def get_local_registry_auth():
          raise Exception("Local registry password not found.")
      return dict(username="sysinv", password=str(password))
  
@@ -50,7 +50,7 @@ index e4239188..8e47a28b 100644
  
  def convert_img_for_local_lookup(img):
      # This function converts the given image reference to the
-@@ -178,6 +190,7 @@ def download_and_push_an_image(img):
+@@ -179,6 +191,7 @@ def download_and_push_an_image(img):
      local_img = convert_img_for_local_lookup(img)
      target_img = get_img_tag_with_registry(img)
      err_msg = " Image download failed: %s " % target_img
@@ -58,7 +58,7 @@ index e4239188..8e47a28b 100644
  
      client = docker.APIClient()
      auth = get_local_registry_auth()
-@@ -201,13 +214,18 @@ def download_and_push_an_image(img):
+@@ -210,13 +223,18 @@ def download_and_push_an_image(img):
          return target_img, True
      except docker.errors.APIError as e:
          print(str(e))
@@ -83,7 +83,7 @@ index e4239188..8e47a28b 100644
              print("Image push succeeded: %s" % local_img)
  
 diff --git a/playbookconfig/src/playbooks/roles/common/push-docker-images/tasks/main.yml b/playbookconfig/src/playbooks/roles/common/push-docker-images/tasks/main.yml
-index 1429b9c9..be9e9a49 100644
+index 7cbec99a..e0aaaa23 100644
 --- a/playbookconfig/src/playbooks/roles/common/push-docker-images/tasks/main.yml
 +++ b/playbookconfig/src/playbooks/roles/common/push-docker-images/tasks/main.yml
 @@ -260,6 +260,7 @@
@@ -94,10 +94,10 @@ index 1429b9c9..be9e9a49 100644
  
    - name: "{{ download_images_task_name }}"
      script: download_images.py {{ download_images }}
-@@ -271,6 +272,7 @@
-     environment:
+@@ -272,6 +273,7 @@
        REGISTRIES: "{{ registries | to_json }}"
        ADD_DOCKER_PREFIX: "{{ add_docker_prefix }}"
+       CRICTL_CACHE_IMAGES: "{{ crictl_image_cache_list|default(None) }}"
 +      OFFLINE_IMG_DIR: "{{ offline_img_dir }}"
  
    - debug:

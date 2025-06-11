@@ -1,4 +1,4 @@
-From b10fce0a79dfc6bcb9996b59ff78b07be6f715ab Mon Sep 17 00:00:00 2001
+From 29ca65de45b6d33bac1454d6cc9c5c0708fcccaa Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Fri, 28 Jul 2023 22:15:23 +0800
 Subject: [PATCH 1/2] playbooks: fix images for arm64
@@ -29,14 +29,13 @@ Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
  .../templates/k8s-v1.24.4/multus-cni.yaml.j2      |  4 ++--
  .../templates/k8s-v1.24.4/sriov-cni.yaml.j2       |  4 ++--
  .../templates/k8s-v1.24.4/sriov-plugin.yaml.j2    |  4 ++--
- .../templates/k8s-v1.26.1/multus-cni.yaml.j2      |  4 ++--
- .../templates/k8s-v1.26.1/sriov-cni.yaml.j2       |  4 ++--
- .../templates/k8s-v1.26.1/sriov-plugin.yaml.j2    |  4 ++--
+ .../templates/k8s-v1.29.2/multus-cni.yaml.j2      |  4 ++--
+ .../templates/k8s-v1.29.2/sriov-plugin.yaml.j2    |  4 ++--
  .../common/load-images-information/tasks/main.yml | 15 +++++++++++++++
  .../vars/k8s-v1.24.4/system-images.yml            |  5 ++++-
  .../vars/k8s-v1.25.3/system-images.yml            |  5 ++++-
- .../vars/k8s-v1.26.1/system-images.yml            |  5 ++++-
- 10 files changed, 39 insertions(+), 15 deletions(-)
+ .../vars/k8s-v1.29.2/system-images.yml            |  5 ++++-
+ 9 files changed, 37 insertions(+), 13 deletions(-)
 
 diff --git a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.24.4/multus-cni.yaml.j2 b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.24.4/multus-cni.yaml.j2
 index e0adf105..56ac9ca5 100644
@@ -104,11 +103,11 @@ index 086d2a8a..1744ca2f 100644
          sriovdp: enabled
        tolerations:
        - operator: Exists
-diff --git a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/multus-cni.yaml.j2 b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/multus-cni.yaml.j2
-index 62eba417..8025a531 100644
---- a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/multus-cni.yaml.j2
-+++ b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/multus-cni.yaml.j2
-@@ -200,7 +200,7 @@ data:
+diff --git a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.29.2/multus-cni.yaml.j2 b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.29.2/multus-cni.yaml.j2
+index 24ce03c8..11b9805f 100644
+--- a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.29.2/multus-cni.yaml.j2
++++ b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.29.2/multus-cni.yaml.j2
+@@ -202,7 +202,7 @@ data:
  apiVersion: apps/v1
  kind: DaemonSet
  metadata:
@@ -117,7 +116,7 @@ index 62eba417..8025a531 100644
    namespace: kube-system
    labels:
      tier: node
-@@ -223,7 +223,7 @@ spec:
+@@ -225,7 +225,7 @@ spec:
      spec:
        hostNetwork: true
        nodeSelector:
@@ -126,33 +125,11 @@ index 62eba417..8025a531 100644
        tolerations:
        - operator: Exists
          effect: NoSchedule
-diff --git a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/sriov-cni.yaml.j2 b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/sriov-cni.yaml.j2
-index 74eea969..6306dc73 100644
---- a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/sriov-cni.yaml.j2
-+++ b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/sriov-cni.yaml.j2
-@@ -25,7 +25,7 @@
- apiVersion: apps/v1
- kind: DaemonSet
- metadata:
--  name: kube-sriov-cni-ds-amd64
-+  name: kube-sriov-cni-ds
-   namespace: kube-system
-   labels:
-     tier: node
-@@ -47,7 +47,7 @@ spec:
-         app: sriov-cni
-     spec:
-       nodeSelector:
--        kubernetes.io/arch: amd64
-+        kubernetes.io/arch: "{{ image_architecture }}"
-       tolerations:
-       - operator: Exists
-         effect: NoSchedule
-diff --git a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/sriov-plugin.yaml.j2 b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/sriov-plugin.yaml.j2
-index 7bf73e26..c7e3b108 100644
---- a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/sriov-plugin.yaml.j2
-+++ b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.26.1/sriov-plugin.yaml.j2
-@@ -36,7 +36,7 @@ metadata:
+diff --git a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.29.2/sriov-plugin.yaml.j2 b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.29.2/sriov-plugin.yaml.j2
+index b814ba44..332e5858 100644
+--- a/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.29.2/sriov-plugin.yaml.j2
++++ b/playbookconfig/src/playbooks/roles/common/bringup-kubemaster/templates/k8s-v1.29.2/sriov-plugin.yaml.j2
+@@ -38,7 +38,7 @@ metadata:
  apiVersion: apps/v1
  kind: DaemonSet
  metadata:
@@ -161,17 +138,17 @@ index 7bf73e26..c7e3b108 100644
    namespace: kube-system
    labels:
      tier: node
-@@ -59,7 +59,7 @@ spec:
+@@ -61,7 +61,7 @@ spec:
      spec:
        hostNetwork: true
        nodeSelector:
--        beta.kubernetes.io/arch: amd64
+-        kubernetes.io/arch: amd64
 +        kubernetes.io/arch: "{{ image_architecture }}"
          sriovdp: enabled
        tolerations:
        - operator: Exists
 diff --git a/playbookconfig/src/playbooks/roles/common/load-images-information/tasks/main.yml b/playbookconfig/src/playbooks/roles/common/load-images-information/tasks/main.yml
-index e8d65c44..3705bce4 100644
+index bc3c3831..3d025eb3 100644
 --- a/playbookconfig/src/playbooks/roles/common/load-images-information/tasks/main.yml
 +++ b/playbookconfig/src/playbooks/roles/common/load-images-information/tasks/main.yml
 @@ -95,6 +95,21 @@
@@ -197,7 +174,7 @@ index e8d65c44..3705bce4 100644
      set_fact:
        networking_images:
 diff --git a/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.24.4/system-images.yml b/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.24.4/system-images.yml
-index 8cecfd2a..cb55604e 100644
+index 3897d28d..94f03af3 100644
 --- a/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.24.4/system-images.yml
 +++ b/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.24.4/system-images.yml
 @@ -2,17 +2,20 @@
@@ -214,16 +191,16 @@ index 8cecfd2a..cb55604e 100644
  sriov_network_device_img: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.5.1
 +sriov_network_device_img_arm64: docker.io/stx4arm/sriov-network-device-plugin:v3.5.1
  # Nginx images
- nginx_ingress_controller_img: registry.k8s.io/ingress-nginx/controller:v1.9.3
- nginx_kube_webhook_certgen_img: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0
+ nginx_ingress_controller_img: registry.k8s.io/ingress-nginx/controller:v1.11.1
+ nginx_kube_webhook_certgen_img: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.1
  nginx_opentelemetry_img: registry.k8s.io/ingress-nginx/opentelemetry:v20230721-3e2062ee5
 -default_backend_img: registry.k8s.io/defaultbackend-amd64:1.5
 +default_backend_img: "registry.k8s.io/defaultbackend-{{ image_architecture }}:1.5"
  # Cert-manager images
- cert_manager_acmesolver_img: quay.io/jetstack/cert-manager-acmesolver:v1.13.1
- cert_manager_cainjector_img: quay.io/jetstack/cert-manager-cainjector:v1.13.1
+ cert_manager_acmesolver_img: quay.io/jetstack/cert-manager-acmesolver:v1.15.3
+ cert_manager_cainjector_img: quay.io/jetstack/cert-manager-cainjector:v1.15.3
 diff --git a/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.25.3/system-images.yml b/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.25.3/system-images.yml
-index 2b5b8367..68b23d62 100644
+index a8d0fcb3..644a07d8 100644
 --- a/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.25.3/system-images.yml
 +++ b/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.25.3/system-images.yml
 @@ -2,12 +2,15 @@
@@ -231,55 +208,55 @@ index 2b5b8367..68b23d62 100644
  n3000_opae_img: docker.io/starlingx/n3000-opae:stx.8.0-v1.0.2
  kubernetes_entrypoint_img: quay.io/stackanetes/kubernetes-entrypoint:v0.3.1
 +kubernetes_entrypoint_img_arm64: docker.io/stx4arm/kubernetes-entrypoint:v0.3.1
- calico_cni_img: quay.io/calico/cni:v3.25.0
- calico_node_img: quay.io/calico/node:v3.25.0
- calico_kube_controllers_img: quay.io/calico/kube-controllers:v3.25.0
+ calico_cni_img: quay.io/calico/cni:v3.28.0
+ calico_node_img: quay.io/calico/node:v3.28.0
+ calico_kube_controllers_img: quay.io/calico/kube-controllers:v3.28.0
  multus_img: ghcr.io/k8snetworkplumbingwg/multus-cni:v3.9.3
- sriov_cni_img: ghcr.io/k8snetworkplumbingwg/sriov-cni:v2.7.0
-+sriov_cni_img_arm64: docker.io/stx4arm/sriov-cni:v2.7.0
- sriov_network_device_img: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.5.1
-+sriov_network_device_img_arm64: docker.io/stx4arm/sriov-network-device-plugin:v3.5.1
+ sriov_cni_img: ghcr.io/k8snetworkplumbingwg/sriov-cni:v2.8.1
++sriov_cni_img_arm64: docker.io/stx4arm/sriov-cni:v2.8.1
+ sriov_network_device_img: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.6.2
++sriov_network_device_img_arm64: docker.io/stx4arm/sriov-network-device-plugin:v3.6.2
  intel_qat_plugin_img: docker.io/intel/intel-qat-plugin:0.26.0
  intel_gpu_plugin_img: docker.io/intel/intel-gpu-plugin:0.26.0
  intel_gpu_initcontainer_img: docker.io/intel/intel-gpu-initcontainer:0.26.0
 @@ -15,7 +18,7 @@ intel_gpu_initcontainer_img: docker.io/intel/intel-gpu-initcontainer:0.26.0
- nginx_ingress_controller_img: registry.k8s.io/ingress-nginx/controller:v1.9.3
- nginx_kube_webhook_certgen_img: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0
+ nginx_ingress_controller_img: registry.k8s.io/ingress-nginx/controller:v1.11.1
+ nginx_kube_webhook_certgen_img: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.1
  nginx_opentelemetry_img: registry.k8s.io/ingress-nginx/opentelemetry:v20230721-3e2062ee5
 -default_backend_img: registry.k8s.io/defaultbackend-amd64:1.5
 +default_backend_img: "registry.k8s.io/defaultbackend-{{ image_architecture }}:1.5"
  # Cert-manager images
- cert_manager_acmesolver_img: quay.io/jetstack/cert-manager-acmesolver:v1.13.1
- cert_manager_cainjector_img: quay.io/jetstack/cert-manager-cainjector:v1.13.1
-diff --git a/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.26.1/system-images.yml b/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.26.1/system-images.yml
-index 0a9f7584..d536b23e 100644
---- a/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.26.1/system-images.yml
-+++ b/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.26.1/system-images.yml
+ cert_manager_acmesolver_img: quay.io/jetstack/cert-manager-acmesolver:v1.15.3
+ cert_manager_cainjector_img: quay.io/jetstack/cert-manager-cainjector:v1.15.3
+diff --git a/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.29.2/system-images.yml b/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.29.2/system-images.yml
+index ffca3bcd..8cc7e888 100644
+--- a/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.29.2/system-images.yml
++++ b/playbookconfig/src/playbooks/roles/common/load-images-information/vars/k8s-v1.29.2/system-images.yml
 @@ -2,12 +2,15 @@
  # System images that are pre-pulled and pushed to local registry
  n3000_opae_img: docker.io/starlingx/n3000-opae:stx.8.0-v1.0.2
  kubernetes_entrypoint_img: quay.io/stackanetes/kubernetes-entrypoint:v0.3.1
 +kubernetes_entrypoint_img_arm64: docker.io/stx4arm/kubernetes-entrypoint:v0.3.1
- calico_cni_img: quay.io/calico/cni:v3.25.0
- calico_node_img: quay.io/calico/node:v3.25.0
- calico_kube_controllers_img: quay.io/calico/kube-controllers:v3.25.0
+ calico_cni_img: quay.io/calico/cni:v3.28.0
+ calico_node_img: quay.io/calico/node:v3.28.0
+ calico_kube_controllers_img: quay.io/calico/kube-controllers:v3.28.0
  multus_img: ghcr.io/k8snetworkplumbingwg/multus-cni:v3.9.3
- sriov_cni_img: ghcr.io/k8snetworkplumbingwg/sriov-cni:v2.7.0
-+sriov_cni_img_arm64: docker.io/stx4arm/sriov-cni:v2.7.0
- sriov_network_device_img: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.5.1
-+sriov_network_device_img_arm64: docker.io/stx4arm/sriov-network-device-plugin:v3.5.1
+ sriov_cni_img: ghcr.io/k8snetworkplumbingwg/sriov-cni:v2.8.1
++sriov_cni_img_arm64: docker.io/stx4arm/sriov-cni:v2.8.1
+ sriov_network_device_img: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin:v3.6.2
++sriov_network_device_img_arm64: docker.io/stx4arm/sriov-network-device-plugin:v3.6.2
  intel_qat_plugin_img: docker.io/intel/intel-qat-plugin:0.26.0
  intel_gpu_plugin_img: docker.io/intel/intel-gpu-plugin:0.26.0
  intel_gpu_initcontainer_img: docker.io/intel/intel-gpu-initcontainer:0.26.0
 @@ -15,7 +18,7 @@ intel_gpu_initcontainer_img: docker.io/intel/intel-gpu-initcontainer:0.26.0
- nginx_ingress_controller_img: registry.k8s.io/ingress-nginx/controller:v1.9.3
- nginx_kube_webhook_certgen_img: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0
+ nginx_ingress_controller_img: registry.k8s.io/ingress-nginx/controller:v1.11.1
+ nginx_kube_webhook_certgen_img: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.1
  nginx_opentelemetry_img: registry.k8s.io/ingress-nginx/opentelemetry:v20230721-3e2062ee5
 -default_backend_img: registry.k8s.io/defaultbackend-amd64:1.5
 +default_backend_img: "registry.k8s.io/defaultbackend-{{ image_architecture }}:1.5"
  # Cert-manager images
- cert_manager_acmesolver_img: quay.io/jetstack/cert-manager-acmesolver:v1.13.1
- cert_manager_cainjector_img: quay.io/jetstack/cert-manager-cainjector:v1.13.1
+ cert_manager_acmesolver_img: quay.io/jetstack/cert-manager-acmesolver:v1.15.3
+ cert_manager_cainjector_img: quay.io/jetstack/cert-manager-cainjector:v1.15.3
 -- 
 2.30.2
 
