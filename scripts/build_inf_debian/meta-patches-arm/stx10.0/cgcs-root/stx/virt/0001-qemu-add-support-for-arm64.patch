@@ -1,4 +1,4 @@
-From 00b23156c45c519bc12841dc8773229295af1832 Mon Sep 17 00:00:00 2001
+From 8b29cd17fcf0b68b8d740aaf26b241b9b60fab44 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Tue, 23 Jan 2024 09:49:13 +0800
 Subject: [PATCH 1/2] qemu: add support for arm64
