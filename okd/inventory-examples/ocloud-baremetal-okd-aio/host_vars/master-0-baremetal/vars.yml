@@ -1,7 +1,4 @@
 ---
-ocloud_infra: baremetal
-ocloud_platform: okd
-ocloud_topology: aio
 bmc_address: "192.168.12.34"
 bmc_user: admin
 role: master

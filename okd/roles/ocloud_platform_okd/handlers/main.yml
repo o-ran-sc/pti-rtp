@@ -8,3 +8,4 @@
     - bootstrap-complete
     - install-complete
   listen: monitor_platform_deployment
+  run_once: true

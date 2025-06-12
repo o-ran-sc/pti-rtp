@@ -24,6 +24,7 @@ Several packages are required by Ansible modules or deployment scripts that are 
 
 - ansible
 - make
+- nmstate
 - pip
 - wget
 - python development headers/libraries
@@ -101,17 +102,18 @@ is being used (see okd/inventory/host_vars/http_store/ for example):
 
 ### General
 
-Update inventory/hosts.yml to specify the deployment target host(s) under the 'ocloud' group. The sample
-inventory can be used without modification to deploy to a VM host. For bare metal deployment, populate
-the 'ocloud' group with the hostname(s) of the baremetal server(s) and create a directory for each
-host under inventory/host_vars/ containing required variables as defined under [Infrastructure / Bare Metal](#infrastructure--bare-metal)
-below.
+Customize one of the inventories under the 'inventory-examples' directory to match the desired infrastructure
+and deployment topology for your cluster. The 'ocloud' host group determines the hosts that will comprise
+the cluster. The 'ocloud-vm-okd-aio' sample inventory can be used without modification to deploy to a single-node,
+VM-based cluster. For bare metal deployment, populate the 'ocloud' group with the hostname(s) of the baremetal
+server(s) and create a directory for each host under host_vars/ containing required variables as defined under
+[Infrastructure / Bare Metal](#infrastructure--bare-metal) below.
 
 #### Optional
 The following variables can be set to override deployment defaults:
 - ocloud_infra [default="vm"]: infrastructure target (supported values: "vm", "baremetal")
 - ocloud_platform [default="okd"]: platform target
-- ocloud_topology [default="aio"]: O-Cloud cluster topology
+- ocloud_topology [default="aio"]: O-Cloud cluster topology (supported values: "aio", "multinode")
 - ocloud_cluster_name [default="ocloud-{{ ocloud_infra }}-{{ ocloud_platform }}-{{ ocloud_topology }}"]: O-Cloud cluster name
 - ocloud_domain_name [default="example.com"]: O-Cloud domain name
 - ocloud_net_cidr [default="192.168.123.0/24"]: O-Cloud machine network CIDR
@@ -160,8 +162,10 @@ The following Ansible variables must be defined in group_vars/all.yml:
 #### Optional
 Optionally, the following variables can be set to override default settings:
 
-- ocloud_platform_okd_release [default=4.14.0-0.okd-2024-01-26-175629]: OKD release, as defined in [OKD releases](https://github.com/okd-project/okd/releases)
+- ocloud_platform_okd_release [default=4.19.0-okd-scos.0]: OKD release, as defined in [OKD releases](https://github.com/okd-project/okd/releases)
 - ocloud_platform_okd_pull_secret [default=None]: pull secret for use with non-public image registries
+- ocloud_platform_okd_api_vips [default=None]: list of virtual IPs to use for OKD API access (required if deploying a multi-node cluster)
+- ocloud_platform_okd_ingress_vips [default=None]: list of virtual IPs to use for ingress (required if deploying a multi-node cluster)
 
 # Installation
 
@@ -414,12 +418,40 @@ $ curl -H "Authorization: Bearer $TOKEN" -k https://o2ims.apps.ocloud-baremetal-
   "extensions": {
   }
 ```
+
+## ORAN O2 IMS Compliance
+
+A playbook is provided to automate execution of O2 IMS compliance tests from the [it/test](https://gerrit.o-ran-sc.org/r/q/project:it/test) repo. The following extra variables must be provided:
+
+- ocloud_kubeconfig: path of the kubeconfig for the cluster hosting the O2 API server
+- ocloud_compliance_resource_type: name of a resource type associated with the target O-Cloud
+- ocloud_compliance_resource_desc_substring: substring of a resource description associated with the target O-Cloud
+
+For example:
+
+```
+ansible-playbook -i inventory playbooks/ocloud_compliance.yml -e ocloud_kubeconfig=$KUBECONFIG -e ocloud_compliance_resource_type=pserver -e ocloud_compliance_resource_desc_substring=pserver
+```
+
+## Sample Workload Deployment
+
+A playbook is provided to deploy a sample workload to the O-Cloud. The following extra variables must be provided:
+
+- ocloud_workloads: comma-delimited list of workloads to deploy
+- ocloud_dms_host: hostname of the O2 API server providing the DMS interface
+- ocloud_dms_deployment_mgr_id: deployment manager ID where the sample workload(s) will be deployed
+- ocloud_kubeconfig: path of the kubeconfig for the cluster hosting the O2 API server
+
+For example:
+```
+ansible-playbook -i inventory playbooks/ocloud_workload.yml -e ocloud_dms_host=o2ims.apps.ocloud-vm-okd-aio.example.com -e ocloud_dms_deployment_mgr_id=local-cluster -e ocloud_workloads=oaicucp -e ocloud_kubeconfig=$KUBECONFIG
+```
+
 # Troubleshooting
 
 ## OKD
 
-Refer to [Troubleshooting installation issues](https://docs.okd.io/4.14/installing/installing-troubleshooting.html) for information
-on diagnosing OKD deployment failures.
+Refer to [Troubleshooting installation issues](https://docs.okd.io/latest/installing/validation_and_troubleshooting/installing-troubleshooting.html) for information on diagnosing OKD deployment failures.
 
 # Cleanup
 

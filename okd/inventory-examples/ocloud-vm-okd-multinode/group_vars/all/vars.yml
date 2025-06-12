@@ -1,0 +1,10 @@
+---
+ocloud_infra: vm
+ocloud_platform: okd
+ocloud_topology: multinode
+ocloud_platform_okd_ssh_pubkey: ~
+ocloud_cluster_name: "ocloud-vm-okd-multinode"
+ocloud_platform_okd_api_vips: ["192.168.123.100"]
+ocloud_platform_okd_ingress_vips: ["192.168.123.101"]
+# Uncomment to override default release from ocloud_platform_okd role:
+#ocloud_platform_okd_release: ~
