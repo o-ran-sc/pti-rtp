@@ -24,6 +24,7 @@ Several packages are required by Ansible modules or deployment scripts that are 
 
 - ansible
 - make
+- nmstate
 - pip
 - wget
 - python development headers/libraries
@@ -162,6 +163,8 @@ Optionally, the following variables can be set to override default settings:
 
 - ocloud_platform_okd_release [default=4.14.0-0.okd-2024-01-26-175629]: OKD release, as defined in [OKD releases](https://github.com/okd-project/okd/releases)
 - ocloud_platform_okd_pull_secret [default=None]: pull secret for use with non-public image registries
+- ocloud_platform_okd_api_vips: list of virtual IPs to use for OKD API access (required if deploying a multi-node cluster)
+- ocloud_platform_okd_ingress_vips: list of virtual IPs to use for ingress (required if deploying a multi-node cluster)
 
 # Installation
 
