@@ -39,7 +39,7 @@
        kubeconfig and kubeadmin-password can be found under {{ ocloud_staging_dir['path'] }}/cfg/auth/
 
 - ansible.builtin.set_fact:
-    ocloud_platform_okd_kubeconfig: "{{ ocloud_staging_dir['path'] }}/cfg/auth/kubeconfig"
+    ocloud_kubeconfig: "{{ ocloud_staging_dir['path'] }}/cfg/auth/kubeconfig"
 
 - ansible.builtin.set_fact:
     ocloud_platform_image: "{{ ocloud_staging_dir['path'] }}/cfg/agent.x86_64.iso"

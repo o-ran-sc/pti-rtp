@@ -9,7 +9,7 @@
     definition:
       spec:
         disableAllDefaultSources: true
-    kubeconfig: "{{ ocloud_platform_stolostron_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
 
 - name: Clone stolostron/deploy repo
   ansible.builtin.git:
@@ -32,7 +32,7 @@
     cmd: "./start.sh --silent --watch --search"
   environment:
     PATH: "{{ ocloud_staging_dir['path'] }}/bin:{{ ansible_env.PATH }}"
-    KUBECONFIG: "{{ ocloud_platform_stolostron_kubeconfig }}"
+    KUBECONFIG: "{{ ocloud_kubeconfig }}"
 
 - name: Create search-api route
   kubernetes.core.k8s:
@@ -48,4 +48,4 @@
         to:
           kind: Service
           name: search-search-api
-    kubeconfig: "{{ ocloud_platform_stolostron_kubeconfig }}"
+    kubeconfig: "{{ ocloud_kubeconfig }}"

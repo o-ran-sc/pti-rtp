@@ -1,6 +1,6 @@
 ---
 - include_tasks: version.yml
-  when: ocloud_platform_okd_kubeconfig
+  when: ocloud_kubeconfig
 
 - include_tasks: install.yml
   when: ocloud_platform_okd_installed_release != ocloud_platform_okd_release

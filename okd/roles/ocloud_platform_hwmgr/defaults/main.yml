@@ -1,0 +1,4 @@
+---
+ocloud_kubeconfig: ~
+ocloud_platform_hwmgr_repo_url: "https://github.com/openshift-kni/oran-hwmgr-plugin.git"
+ocloud_platform_hwmgr_repo_version: "main"

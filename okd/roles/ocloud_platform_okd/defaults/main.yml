@@ -1,7 +1,7 @@
 ---
 ocloud_platform_okd_pull_secret: '{"auths":{"fake":{"auth":"aWQ6cGFzcwo="}}}'
 ocloud_platform_okd_ssh_pubkey: ~
-ocloud_platform_okd_kubeconfig: ~
+ocloud_kubeconfig: ~
 ocloud_platform_okd_release: "4.19.0-okd-scos.0"
 ocloud_platform_okd_base_url: "quay.io/okd/scos-release"
 ocloud_platform_okd_cli_url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp"
