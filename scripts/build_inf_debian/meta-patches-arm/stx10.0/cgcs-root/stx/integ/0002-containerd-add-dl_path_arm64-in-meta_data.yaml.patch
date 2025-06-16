@@ -1,4 +1,4 @@
-From 48534868e120b89468d1f7805603f717e45bbb75 Mon Sep 17 00:00:00 2001
+From b2976defeacf3dc34d6ca13b0168e54bf19e6476 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 28 Jun 2023 09:51:39 +0800
 Subject: [PATCH 02/12] containerd: add dl_path_arm64 in meta_data.yaml
