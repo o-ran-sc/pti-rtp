@@ -1,4 +1,4 @@
-From bcbd1156399106a4baf156ed144759579d7176d3 Mon Sep 17 00:00:00 2001
+From 5e3015be41c6e00b9dd47bf440385614d5b044f6 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 28 Jun 2023 10:23:00 +0800
 Subject: [PATCH 03/12] runc: add dl_path_arm64 in meta_data.yaml
@@ -32,15 +32,15 @@ Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
  3 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/kubernetes/runc/debian/deb_folder/copyright b/kubernetes/runc/debian/deb_folder/copyright
-index 737e4ed7..e33b7616 100644
+index a56ec79e..1db49c31 100644
 --- a/kubernetes/runc/debian/deb_folder/copyright
 +++ b/kubernetes/runc/debian/deb_folder/copyright
 @@ -7,7 +7,7 @@ License: Apache-2
  
  Other files are included from the upstream runc
  binary package at
--https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.amd64
-+https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.@BUILD_ARCH@
+-https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
++https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.@BUILD_ARCH@
  
  
  License: Apache-2.0
@@ -53,18 +53,18 @@ index 430dc94d..1b9a3d51 100755
 -runc.amd64 => usr/bin/runc
 +runc.@BUILD_ARCH@ => usr/bin/runc
 diff --git a/kubernetes/runc/debian/meta_data.yaml b/kubernetes/runc/debian/meta_data.yaml
-index cc813a2f..14c6735f 100644
+index c7801a73..fc0d39e0 100644
 --- a/kubernetes/runc/debian/meta_data.yaml
 +++ b/kubernetes/runc/debian/meta_data.yaml
 @@ -7,6 +7,11 @@ dl_files:
      topdir: null
-     url: https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.amd64
-     sha256sum: c3aadb419e5872af49504b6de894055251d2e685fddddb981a79703e7f895cbd
+     url: https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
+     sha256sum: aadeef400b8f05645768c1476d1023f7875b78f52c7ff1967a6dbce236b8cbd8
 +dl_files_arm64:
 +  runc.arm64:
 +    topdir: null
-+    url: https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.arm64
-+    sha256sum: 1b309c4d5aa4cc7b888b2f79c385ecee26ca3d55dae0852e7c4a692196d5faab
++    url: https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.arm64
++    sha256sum: 879f910a05c95c10c64ad8eb7d5e3aa8e4b30e65587b3d68e009a3565aed5bb8
  revision:
    dist: $STX_DIST
    GITREVCOUNT:

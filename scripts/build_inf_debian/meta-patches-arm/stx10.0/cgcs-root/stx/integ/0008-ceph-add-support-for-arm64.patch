@@ -1,4 +1,4 @@
-From a866467b15afb3200e168e5a245316b51210e8e6 Mon Sep 17 00:00:00 2001
+From 0b7ae84562b0c7518d514eba883ceed04f2bc464 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 26 Jul 2023 22:30:09 +0800
 Subject: [PATCH 08/12] ceph: add support for arm64
@@ -25,10 +25,10 @@ Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/ceph/ceph/debian/deb_folder/control b/ceph/ceph/debian/deb_folder/control
-index b8677932..6d8d12ff 100644
+index d5582e0f..363305b3 100644
 --- a/ceph/ceph/debian/deb_folder/control
 +++ b/ceph/ceph/debian/deb_folder/control
-@@ -178,7 +178,7 @@ Description: common utilities to mount and interact with a ceph storage cluster
+@@ -179,7 +179,7 @@ Description: common utilities to mount and interact with a ceph storage cluster
   of common tools that allow one to interact with and administer a Ceph cluster.
  
  Package: ceph-fuse

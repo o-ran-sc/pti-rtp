@@ -1,4 +1,4 @@
-From f3f34146a74eb4e286bb3f626c2ac7d197f4b640 Mon Sep 17 00:00:00 2001
+From a5c923bf03187701ab7b8d821fd8549a83702af5 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 8 Feb 2023 03:01:19 -0500
 Subject: [PATCH 07/12] kubernetes: add support for arm64
@@ -30,10 +30,10 @@ Signed-off-by: Jackie Huang <jackie.huang@windriver.com>
  6 files changed, 36 insertions(+), 36 deletions(-)
 
 diff --git a/kubernetes/kubernetes-1.24.4/debian/deb_folder/control b/kubernetes/kubernetes-1.24.4/debian/deb_folder/control
-index 4635bf47..79bd790d 100644
+index bf972671..2a234711 100644
 --- a/kubernetes/kubernetes-1.24.4/debian/deb_folder/control
 +++ b/kubernetes/kubernetes-1.24.4/debian/deb_folder/control
-@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+@@ -16,7 +16,7 @@ XS-Build-Size: 15GB
  
  Package: kubernetes-1.24.4-client
  Provides: kubernetes-utils
@@ -42,7 +42,7 @@ index 4635bf47..79bd790d 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+@@ -24,7 +24,7 @@ Description: Kubernetes Command Line Tool
   The Kubernetes command line tool for interacting with the Kubernetes API.
  
  Package: kubernetes-1.24.4-master
@@ -51,7 +51,7 @@ index 4635bf47..79bd790d 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          lsb-base,
-@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+@@ -45,7 +45,7 @@ Description: Kubernetes services for master host
  
  Package: kubernetes-1.24.4-node
  Provides: cadvisor
@@ -60,7 +60,7 @@ index 4635bf47..79bd790d 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          conntrack,
-@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+@@ -65,7 +65,7 @@ Description: Kubernetes services for node host
   issues.
  
  Package: kubernetes-1.24.4-kubeadm
@@ -69,7 +69,7 @@ index 4635bf47..79bd790d 100644
  Depends: ${misc:Depends}, containernetworking-plugins
  Recommends: ${misc:Recommends}, kubernetes-1.24.4-client
  Built-Using: ${misc:Built-Using}
-@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+@@ -73,7 +73,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
   The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
  
  Package: kubernetes-1.24.4-misc
@@ -78,7 +78,7 @@ index 4635bf47..79bd790d 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -80,7 +80,7 @@ Description: dummy package
+@@ -81,7 +81,7 @@ Description: dummy package
   Kubernetes dummy package for misc stuff we don't want to install in production.
  
  Package: kubernetes-1.24.4-unit-test
@@ -88,10 +88,10 @@ index 4635bf47..79bd790d 100644
           hostname,
           rsync,
 diff --git a/kubernetes/kubernetes-1.25.3/debian/deb_folder/control b/kubernetes/kubernetes-1.25.3/debian/deb_folder/control
-index 33e2b16e..b441ac79 100644
+index 350d62cf..f529ca6a 100644
 --- a/kubernetes/kubernetes-1.25.3/debian/deb_folder/control
 +++ b/kubernetes/kubernetes-1.25.3/debian/deb_folder/control
-@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+@@ -16,7 +16,7 @@ XS-Build-Size: 15GB
  
  Package: kubernetes-1.25.3-client
  Provides: kubernetes-utils
@@ -100,7 +100,7 @@ index 33e2b16e..b441ac79 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+@@ -24,7 +24,7 @@ Description: Kubernetes Command Line Tool
   The Kubernetes command line tool for interacting with the Kubernetes API.
  
  Package: kubernetes-1.25.3-master
@@ -109,7 +109,7 @@ index 33e2b16e..b441ac79 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          lsb-base,
-@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+@@ -45,7 +45,7 @@ Description: Kubernetes services for master host
  
  Package: kubernetes-1.25.3-node
  Provides: cadvisor
@@ -118,7 +118,7 @@ index 33e2b16e..b441ac79 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          conntrack,
-@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+@@ -65,7 +65,7 @@ Description: Kubernetes services for node host
   issues.
  
  Package: kubernetes-1.25.3-kubeadm
@@ -127,7 +127,7 @@ index 33e2b16e..b441ac79 100644
  Depends: ${misc:Depends}, containernetworking-plugins
  Recommends: ${misc:Recommends}, kubernetes-1.25.3-client
  Built-Using: ${misc:Built-Using}
-@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+@@ -73,7 +73,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
   The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
  
  Package: kubernetes-1.25.3-misc
@@ -136,7 +136,7 @@ index 33e2b16e..b441ac79 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -80,7 +80,7 @@ Description: dummy package
+@@ -81,7 +81,7 @@ Description: dummy package
   Kubernetes dummy package for misc stuff we don't want to install in production.
  
  Package: kubernetes-1.25.3-unit-test
@@ -146,10 +146,10 @@ index 33e2b16e..b441ac79 100644
           hostname,
           rsync,
 diff --git a/kubernetes/kubernetes-1.26.1/debian/deb_folder/control b/kubernetes/kubernetes-1.26.1/debian/deb_folder/control
-index 03a3003c..94948c07 100644
+index 71be774c..089d1242 100644
 --- a/kubernetes/kubernetes-1.26.1/debian/deb_folder/control
 +++ b/kubernetes/kubernetes-1.26.1/debian/deb_folder/control
-@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+@@ -16,7 +16,7 @@ XS-Build-Size: 15GB
  
  Package: kubernetes-1.26.1-client
  Provides: kubernetes-utils
@@ -158,7 +158,7 @@ index 03a3003c..94948c07 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+@@ -24,7 +24,7 @@ Description: Kubernetes Command Line Tool
   The Kubernetes command line tool for interacting with the Kubernetes API.
  
  Package: kubernetes-1.26.1-master
@@ -167,7 +167,7 @@ index 03a3003c..94948c07 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          lsb-base,
-@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+@@ -45,7 +45,7 @@ Description: Kubernetes services for master host
  
  Package: kubernetes-1.26.1-node
  Provides: cadvisor
@@ -176,7 +176,7 @@ index 03a3003c..94948c07 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          conntrack,
-@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+@@ -65,7 +65,7 @@ Description: Kubernetes services for node host
   issues.
  
  Package: kubernetes-1.26.1-kubeadm
@@ -185,7 +185,7 @@ index 03a3003c..94948c07 100644
  Depends: ${misc:Depends}, containernetworking-plugins
  Recommends: ${misc:Recommends}, kubernetes-1.26.1-client
  Built-Using: ${misc:Built-Using}
-@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+@@ -73,7 +73,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
   The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
  
  Package: kubernetes-1.26.1-misc
@@ -194,7 +194,7 @@ index 03a3003c..94948c07 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -80,7 +80,7 @@ Description: dummy package
+@@ -81,7 +81,7 @@ Description: dummy package
   Kubernetes dummy package for misc stuff we don't want to install in production.
  
  Package: kubernetes-1.26.1-unit-test
@@ -204,10 +204,10 @@ index 03a3003c..94948c07 100644
           hostname,
           rsync,
 diff --git a/kubernetes/kubernetes-1.27.5/debian/deb_folder/control b/kubernetes/kubernetes-1.27.5/debian/deb_folder/control
-index cb1081e6..55bb901e 100644
+index f084db2b..ee403b73 100644
 --- a/kubernetes/kubernetes-1.27.5/debian/deb_folder/control
 +++ b/kubernetes/kubernetes-1.27.5/debian/deb_folder/control
-@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+@@ -16,7 +16,7 @@ XS-Build-Size: 15GB
  
  Package: kubernetes-1.27.5-client
  Provides: kubernetes-utils
@@ -216,7 +216,7 @@ index cb1081e6..55bb901e 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+@@ -24,7 +24,7 @@ Description: Kubernetes Command Line Tool
   The Kubernetes command line tool for interacting with the Kubernetes API.
  
  Package: kubernetes-1.27.5-master
@@ -225,7 +225,7 @@ index cb1081e6..55bb901e 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          lsb-base,
-@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+@@ -45,7 +45,7 @@ Description: Kubernetes services for master host
  
  Package: kubernetes-1.27.5-node
  Provides: cadvisor
@@ -234,7 +234,7 @@ index cb1081e6..55bb901e 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          conntrack,
-@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+@@ -65,7 +65,7 @@ Description: Kubernetes services for node host
   issues.
  
  Package: kubernetes-1.27.5-kubeadm
@@ -243,7 +243,7 @@ index cb1081e6..55bb901e 100644
  Depends: ${misc:Depends}, containernetworking-plugins
  Recommends: ${misc:Recommends}, kubernetes-1.27.5-client
  Built-Using: ${misc:Built-Using}
-@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+@@ -73,7 +73,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
   The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
  
  Package: kubernetes-1.27.5-misc
@@ -252,7 +252,7 @@ index cb1081e6..55bb901e 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -80,7 +80,7 @@ Description: dummy package
+@@ -81,7 +81,7 @@ Description: dummy package
   Kubernetes dummy package for misc stuff we don't want to install in production.
  
  Package: kubernetes-1.27.5-unit-test
@@ -262,10 +262,10 @@ index cb1081e6..55bb901e 100644
           hostname,
           rsync,
 diff --git a/kubernetes/kubernetes-1.28.4/debian/deb_folder/control b/kubernetes/kubernetes-1.28.4/debian/deb_folder/control
-index 1dca8da8..4eed9bdb 100644
+index 16f0838f..77546065 100644
 --- a/kubernetes/kubernetes-1.28.4/debian/deb_folder/control
 +++ b/kubernetes/kubernetes-1.28.4/debian/deb_folder/control
-@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+@@ -16,7 +16,7 @@ XS-Build-Size: 15GB
  
  Package: kubernetes-1.28.4-client
  Provides: kubernetes-utils
@@ -274,7 +274,7 @@ index 1dca8da8..4eed9bdb 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+@@ -24,7 +24,7 @@ Description: Kubernetes Command Line Tool
   The Kubernetes command line tool for interacting with the Kubernetes API.
  
  Package: kubernetes-1.28.4-master
@@ -283,7 +283,7 @@ index 1dca8da8..4eed9bdb 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          lsb-base,
-@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+@@ -45,7 +45,7 @@ Description: Kubernetes services for master host
  
  Package: kubernetes-1.28.4-node
  Provides: cadvisor
@@ -292,7 +292,7 @@ index 1dca8da8..4eed9bdb 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          conntrack,
-@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+@@ -65,7 +65,7 @@ Description: Kubernetes services for node host
   issues.
  
  Package: kubernetes-1.28.4-kubeadm
@@ -301,7 +301,7 @@ index 1dca8da8..4eed9bdb 100644
  Depends: ${misc:Depends}, containernetworking-plugins
  Recommends: ${misc:Recommends}, kubernetes-1.28.4-client
  Built-Using: ${misc:Built-Using}
-@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+@@ -73,7 +73,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
   The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
  
  Package: kubernetes-1.28.4-misc
@@ -310,7 +310,7 @@ index 1dca8da8..4eed9bdb 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -80,7 +80,7 @@ Description: dummy package
+@@ -81,7 +81,7 @@ Description: dummy package
   Kubernetes dummy package for misc stuff we don't want to install in production.
  
  Package: kubernetes-1.28.4-unit-test
@@ -320,10 +320,10 @@ index 1dca8da8..4eed9bdb 100644
           hostname,
           rsync,
 diff --git a/kubernetes/kubernetes-1.29.2/debian/deb_folder/control b/kubernetes/kubernetes-1.29.2/debian/deb_folder/control
-index ec5491ea..dcc5e6f7 100644
+index 815dda89..1baba07e 100644
 --- a/kubernetes/kubernetes-1.29.2/debian/deb_folder/control
 +++ b/kubernetes/kubernetes-1.29.2/debian/deb_folder/control
-@@ -15,7 +15,7 @@ Homepage: http://kubernetes.io/
+@@ -16,7 +16,7 @@ XS-Build-Size: 15GB
  
  Package: kubernetes-1.29.2-client
  Provides: kubernetes-utils
@@ -332,7 +332,7 @@ index ec5491ea..dcc5e6f7 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -23,7 +23,7 @@ Description: Kubernetes Command Line Tool
+@@ -24,7 +24,7 @@ Description: Kubernetes Command Line Tool
   The Kubernetes command line tool for interacting with the Kubernetes API.
  
  Package: kubernetes-1.29.2-master
@@ -341,7 +341,7 @@ index ec5491ea..dcc5e6f7 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          lsb-base,
-@@ -44,7 +44,7 @@ Description: Kubernetes services for master host
+@@ -45,7 +45,7 @@ Description: Kubernetes services for master host
  
  Package: kubernetes-1.29.2-node
  Provides: cadvisor
@@ -350,7 +350,7 @@ index ec5491ea..dcc5e6f7 100644
  Depends: ${misc:Depends}, ${shlibs:Depends},
          adduser,
          conntrack,
-@@ -64,7 +64,7 @@ Description: Kubernetes services for node host
+@@ -65,7 +65,7 @@ Description: Kubernetes services for node host
   issues.
  
  Package: kubernetes-1.29.2-kubeadm
@@ -359,7 +359,7 @@ index ec5491ea..dcc5e6f7 100644
  Depends: ${misc:Depends}, containernetworking-plugins
  Recommends: ${misc:Recommends}, kubernetes-1.29.2-client
  Built-Using: ${misc:Built-Using}
-@@ -72,7 +72,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
+@@ -73,7 +73,7 @@ Description: Kubernetes Cluster Bootstrapping Tool
   The Kubernetes command line tool for bootstrapping a Kubernetes cluster.
  
  Package: kubernetes-1.29.2-misc
@@ -368,7 +368,7 @@ index ec5491ea..dcc5e6f7 100644
  Depends: ${misc:Depends}, ${shlibs:Depends}
  Recommends: ${misc:Recommends}
  Built-Using: ${misc:Built-Using}
-@@ -80,7 +80,7 @@ Description: dummy package
+@@ -81,7 +81,7 @@ Description: dummy package
   Kubernetes dummy package for misc stuff we don't want to install in production.
  
  Package: kubernetes-1.29.2-unit-test

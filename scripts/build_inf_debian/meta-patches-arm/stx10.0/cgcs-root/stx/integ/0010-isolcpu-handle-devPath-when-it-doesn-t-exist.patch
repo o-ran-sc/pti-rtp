@@ -1,4 +1,4 @@
-From 55b007fcc580559e12d72c53ae39ba0136488b24 Mon Sep 17 00:00:00 2001
+From a5a526beac81c6d6e0a3d33d62cacb1b4f091269 Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 6 Dec 2023 17:28:44 +0800
 Subject: [PATCH 10/12] isolcpu: handle devPath when it doesn't exist

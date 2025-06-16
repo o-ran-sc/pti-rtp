@@ -1,4 +1,4 @@
-From 55769435d21a5f5b50bdeb478c2f5e6a3496b94a Mon Sep 17 00:00:00 2001
+From 48a95e530982d7b7fda1c0ff4de7033fe838926b Mon Sep 17 00:00:00 2001
 From: Jackie Huang <jackie.huang@windriver.com>
 Date: Wed, 8 Feb 2023 06:18:24 -0500
 Subject: [PATCH 06/12] kubectl-cert-manager: add dl_files_arm64
