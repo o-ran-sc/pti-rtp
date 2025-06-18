@@ -1,0 +1,4 @@
+ansible_host: 192.168.89.10
+http_store_dir: /opt/http_store/data
+http_port: 80
+ansible_connection: local

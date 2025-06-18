@@ -1,0 +1,23 @@
+---
+bmc_address: "192.168.12.34"
+bmc_user: admin
+role: master
+installation_disk_path: "/dev/disk/by-path/pci-0000:c3:00.0-nvme-1"
+mac_addresses:
+  ens1f0: "12:34:56:78:9A:BC"
+network_config:
+  interfaces:
+    - name: ens1f0
+      type: ethernet
+      state: up
+      ipv4:
+        enabled: true
+        dhcp: false
+        address:
+        - ip: "192.168.45.67"
+          prefix-length: "24"
+  routes:
+    config:
+    - destination: 0.0.0.0/0
+      next-hop-address: "192.168.45.1"
+      next-hop-interface: "ens1f0"

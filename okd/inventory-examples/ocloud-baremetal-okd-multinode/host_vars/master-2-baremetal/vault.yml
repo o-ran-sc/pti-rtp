@@ -1,0 +1,3 @@
+---
+# Encrypt with `ansible-vault encrypt vault.yml` before adding secrets
+bmc_password: ~

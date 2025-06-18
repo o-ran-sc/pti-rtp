@@ -4,4 +4,3 @@
   gather_facts: false
   roles:
     - role: setup_http_store
-      when: setup_http_store_service | bool

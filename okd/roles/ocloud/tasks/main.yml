@@ -3,6 +3,7 @@
   ansible.builtin.import_role:
     name: "ocloud_platform_okd"
   delegate_to: "{{ groups['deployer'][0] }}"
+  run_once: true
   when: ocloud_platform == "okd"
 
 - name: Include infra role - {{ ocloud_infra }}
@@ -23,30 +24,35 @@
   ansible.builtin.import_role:
     name: "ocloud_platform_stolostron"
   delegate_to: "{{ groups['deployer'][0] }}"
+  run_once: true
   when: ocloud_platform == "okd"
 
 - name: Include platform role - SiteConfig
   ansible.builtin.import_role:
     name: "ocloud_platform_siteconfig"
   delegate_to: "{{ groups['deployer'][0] }}"
+  run_once: true
   when: ocloud_platform == "okd"
 
 - name: Include platform role - ClusterGroupUpgrades
   ansible.builtin.import_role:
     name: "ocloud_platform_cgu"
   delegate_to: "{{ groups['deployer'][0] }}"
+  run_once: true
   when: ocloud_platform == "okd"
 
 - name: Include platform role - MultiClusterObservability
   ansible.builtin.import_role:
     name: "ocloud_platform_mco"
   delegate_to: "{{ groups['deployer'][0] }}"
+  run_once: true
   when: ocloud_platform == "okd"
 
 - name: Include platform role - oran-o2ims
   ansible.builtin.import_role:
     name: "ocloud_platform_o2ims"
   delegate_to: "{{ groups['deployer'][0] }}"
+  run_once: true
   when: ocloud_platform == "okd"
 
 - name: Include platform role - oran-hwmgr-plugin

@@ -4,5 +4,3 @@
   gather_facts: false
   roles:
     - role: setup_ntp
-      when: setup_ntp_service | bool
-

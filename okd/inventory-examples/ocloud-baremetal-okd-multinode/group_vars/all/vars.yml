@@ -1,0 +1,14 @@
+---
+ocloud_infra: baremetal
+ocloud_platform: okd
+ocloud_topology: multinode
+ocloud_platform_okd_ssh_pubkey: ~
+ocloud_cluster_name: "ocloud-baremetal-okd-multinode"
+ocloud_domain_name: "example.com"
+ocloud_dns_servers: ["192.168.45.11"]
+ocloud_ntp_servers: ["192.168.45.11"]
+ocloud_net_cidr: "192.168.45.0/24"
+ocloud_platform_okd_api_vips: ["192.168.45.123"]
+ocloud_platform_okd_ingress_vips: ["192.168.45.124"]
+# Uncomment to override default release from ocloud_platform_okd role:
+#ocloud_platform_okd_release: ~
