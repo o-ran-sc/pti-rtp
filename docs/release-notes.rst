@@ -52,6 +52,55 @@ Version history
 | 2024-12-31         | 11.0.0             | Jackie Huang       | K Release          |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2025-06-30         | 12.0.0             | Jackie Huang       | L Release          |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
+
+Version 12.0.0, 2025-06-30
+--------------------------
+#. 12th version (L release)
+#. INF Multi O-Cloud and Multi OS support:
+
+   * StarlingX 10.0
+
+     * Supported OS:
+
+       * Debian 11 (bulllseye)
+
+   * OKD 4.19
+
+     * Supported OS:
+
+       * CentOS Stream CoreOS 4.17
+
+#. INF MultiArch support for StarlingX O-Cloud:
+
+   * Add support for ARM64 arch.
+   * See developer-guide for how to build image for ARM64.
+   * No image will be provided.
+
+#. Support four deployment modes on Debian based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
+
+#. Support four deployment modes on CentOS based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
+
+#. Support three deployment modes on Yocto based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+
+#. Support VM and bare metal automated deployment for OKD O-Cloud
+#. Support automated integration of Stolostron and oran-o2ims operator into OKD O-Cloud
 
 Version 11.0.0, 2024-12-31
 --------------------------
