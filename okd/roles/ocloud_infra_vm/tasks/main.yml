@@ -34,7 +34,7 @@
   when: item.stat.exists
   loop: "{{ ocloud_infra_vm_emulator_stat.results }}"
 
-- name: Create virtual machine - {{ inventory_hostname }}
+- name: Create virtual machine
   community.libvirt.virt:
     command: define
     xml: '{{ lookup("template", "virt.xml.j2") }}'
@@ -55,7 +55,7 @@
   when: ocloud_infra_vm_definition.changed
   become: true
 
-- name: Activate virtual machine - {{ inventory_hostname }}
+- name: Activate virtual machine
   community.libvirt.virt:
     name: "{{ inventory_hostname }}"
     state: running
