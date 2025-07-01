@@ -45,6 +45,10 @@ Hardware Requirements
 .. _`Verified Commercial Hardware`: https://docs.starlingx.io/planning/kubernetes/verified-commercial-hardware.html
 .. _`Openstack Hardware Requirements`: https://docs.starlingx.io/planning/openstack/hardware-requirements.html
 
+* For OKD O-Cloud hardware requirements, refer to `OKD minimum resource requirements`_ in the documentation
+
+.. _`OKD minimum resource requirements`: https://docs.okd.io/latest/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-minimum-resource-requirements_installing-platform-agnostic
+
 Installation
 ************
 

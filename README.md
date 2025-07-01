@@ -5,6 +5,8 @@ to pull all required Yocto/OE layers to build out the reference platform.
 
 meta-stx-oran layer depends on many Yocto/OE layers with 'thud' branch (Yocto version 2.6),to have a better user experience, meta-stx-oran depends on WRLinux 1018 open source version and uses wrlinux setup tools to create the build environment.
 
+Deployment automation for OKD O-Cloud clusters is also provided. Refer to the README under the 'okd' directory for more details.
+
 ## About Yocto and Wind River Linux
 
 The Yocto Project is an open source collaboration project that provides templates,
@@ -16,6 +18,11 @@ to help maintain many Yocto Project components.
 
 Wind River Linux is based on Yocto and is the leading free open-source Linux for the
 embedded industry.
+
+## About OKD
+
+[OKD](https://okd.io/) is an open source Kubernetes distribution that serves as the upstream basis of
+Red Hat OpenShift Container Platform.
 
 ## How to use
 

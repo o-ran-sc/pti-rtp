@@ -249,7 +249,7 @@ Multi O-Clouds and Deployment Configurations
 
   * OKD
 
-    * CentOS Stream CoreOS 4.17
+    * CentOS Stream CoreOS 9
 
 A variety of deployment configuration options are supported:
 
@@ -277,9 +277,17 @@ A variety of deployment configuration options are supported:
 
    Distributed Cloud configuration supports an edge computing solution by providing central management and orchestration for a geographically distributed network of StarlingX systems.
 
+7. **Single-node OKD**
+
+   A single node providing control plane, worker, and storage functions in an OKD O-Cloud cluster.
+
+8. **Multi-node OKD**
+
+   A minimum of 3 control plane nodes and optional additional worker nodes (up to a theoretical maximum of 2,000 nodes) comprising an OKD O-Cloud cluster.
+
 **NOTE:**
-   - For StarlingX O-Cloud, all the above deployment configuration are supported.
-   - For OKD O-Cloud, only All-in-one Simplex is supported currently.
+   - For StarlingX O-Cloud, all the above deployment configuration are supported, with the exception of those specific to OKD.
+   - For OKD O-Cloud, Single-node OKD and Multi-node OKD deployment configurations are supported.
 
 Upstream Opensource Projects
 ****************************
