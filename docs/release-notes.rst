@@ -71,7 +71,7 @@ Version 12.0.0, 2025-06-30
 
      * Supported OS:
 
-       * CentOS Stream CoreOS 4.17
+       * CentOS Stream CoreOS 9
 
 #. INF MultiArch support for StarlingX O-Cloud:
 
@@ -99,8 +99,17 @@ Version 12.0.0, 2025-06-30
    * AIO duplex mode (2 servers with High Availabity)
    * AIO duplex mode (2 servers with High Availabity) with additional worker node
 
+#. Support two deployment modes on OKD O-Cloud:
+
+   * Single-Node OKD (SNO)
+   * Multi-Node OKD (3 control plane nodes minimum)
+
 #. Support VM and bare metal automated deployment for OKD O-Cloud
-#. Support automated integration of Stolostron and oran-o2ims operator into OKD O-Cloud
+#. Support automated integration of Stolostron, multi-cluster-observability,
+   cluster-group-upgrades, siteconfig, oran-hwmgr-plugin, and oran-o2ims
+   operators into OKD O-Cloud
+#. Includes supporting playbooks/roles for automating O2 compliance testing
+   and sample workload deployment for OKD O-Cloud
 
 Version 11.0.0, 2024-12-31
 --------------------------
