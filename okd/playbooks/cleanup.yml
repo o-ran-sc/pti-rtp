@@ -1,0 +1,55 @@
+---
+- name: Clean up failed O-Cloud deployment
+  hosts: kvm
+  become: true
+  gather_facts: false
+  vars:
+    ocloud_infra_vm_disk_dir: "/var/lib/libvirt/images"
+
+  pre_tasks:
+    - name: Display warning and require confirmation
+      ansible.builtin.pause:
+        prompt: |
+          
+          WARNING: This playbook will perform the following destructive actions:
+
+          - Destroy and undefine the following virtual machines:
+            - {{ groups['ocloud'] | join(', ') }}
+          - Destroy and undefine the virtual network: {{ ocloud_net_name | default('ocloud') }}
+          - Delete virtual disk and boot media for the VMs from {{ ocloud_infra_vm_disk_dir }}
+
+          Type 'yes' to continue, or anything else to abort:
+  tasks:
+    - name: Destroy virtual machine
+      ansible.builtin.command: "virsh destroy {{ item }}"
+      loop: "{{ groups['ocloud'] }}"
+      ignore_errors: true
+
+    - name: Undefine virtual machine
+      ansible.builtin.command: "virsh undefine {{ item }}"
+      loop: "{{ groups['ocloud'] }}"
+      ignore_errors: true
+
+    - name: Destroy virtual network
+      ansible.builtin.command: "virsh net-destroy {{ ocloud_net_name }}"
+      ignore_errors: true
+      run_once: true
+
+    - name: Undefine virtual network
+      ansible.builtin.command: "virsh net-undefine {{ ocloud_net_name }}"
+      ignore_errors: true
+      run_once: true
+
+    - name: Remove virtual disk (qcow2)
+      ansible.builtin.file:
+        path: "{{ ocloud_infra_vm_disk_dir }}/{{ item }}-{{ ocloud_infra }}.qcow2"
+        state: absent
+      loop: "{{ groups['ocloud'] }}"
+      ignore_errors: true
+
+    - name: Remove boot media (image.iso)
+      ansible.builtin.file:
+        path: "{{ ocloud_infra_vm_disk_dir }}/{{ item }}-{{ ocloud_infra }}-image.iso"
+        state: absent
+      loop: "{{ groups['ocloud'] }}"
+      ignore_errors: true
