@@ -455,26 +455,65 @@ Refer to [Troubleshooting installation issues](https://docs.okd.io/latest/instal
 
 # Cleanup
 
-## VM
+This section describes how to clean up a deployment, either due to a failure or to prepare for a new deployment.
 
-To cleanup a VM-based deployment due to failure, or to prepare to redeploy, execute the following as root on the libvirt/KVM host:
+## VM-based Deployment
 
-1. Shut down and remove the virtual machine (note that the VM name may differ if the default is overridden):
+For virtual machine-based deployments, a playbook is provided to automate the cleanup process. Alternatively, manual steps can be followed.
 
-   ```
+### Automated Cleanup (Recommended)
+
+To automate the cleanup process, set the `ocloud_action` variable to `cleanup` in the `playbooks/ocloud.yml` playbook, as shown below. This will trigger the cleanup tasks within the `ocloud_infra_vm` role, which handles the destruction of VMs, networks, and associated storage.
+
+```yaml
+- name: Deploy O-Cloud
+  hosts: ocloud
+  gather_facts: false
+  vars:
+    ocloud_action: cleanup
+  roles:
+    - ocloud
+```
+
+Execute the playbook from the base directory to apply the changes:
+
+```bash
+ansible-playbook -i inventory <PATH TO YOUR INVENTORY> playbooks/ocloud.yml
+```
+
+NOTE: The playbook will prompt for confirmation before proceeding with the destructive actions.
+
+### Manual Cleanup
+
+If you prefer to perform the cleanup manually, follow these steps on the libvirt/KVM host as the root user. Note that the names for the VM, network, and disk images may differ if you have overridden the default variables.
+
+1. **Shut down and remove the virtual machine(s):**
+   This command will forcefully stop and then delete the definition of the virtual machine from libvirt.
+
+   ```bash
+   # Replace 'master-0' with the actual VM name if you changed the default
    virsh destroy master-0
    virsh undefine master-0
    ```
+   If you have multiple VMs, repeat these commands for each one.
 
-2. Disable and remove the virtual network (note that the network name may differ if the default is overridden):
+2. **Disable and remove the virtual network:**
+   This will deactivate and delete the virtual network definition.
 
-   ```
+   ```bash
+   # Replace 'ocloud' with the actual network name if you changed the default
    virsh net-destroy ocloud
    virsh net-undefine ocloud
    ```
 
-3. Remove virtual disk and boot media:
+3. **Remove virtual disk and boot media:**
+   This command deletes the disk image and the installation ISO file.
 
-   ```
+   ```bash
+   # Adjust path and names if defaults were changed
    rm /var/lib/libvirt/images/master-0*.{qcow2,iso}
    ```
+
+## Bare Metal Deployment
+
+For bare metal deployments, cleanup typically involves reprovisioning the server(s) using their baseboard management controllers (BMCs). This process is outside the scope of this automation. Refer to your server hardware documentation for instructions on how to reinstall an operating system. No cleanup is required on the Ansible deployer host for a bare metal deployment.
