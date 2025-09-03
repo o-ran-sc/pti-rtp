@@ -1,4 +1,5 @@
 ---
+ocloud_action: "create"
 ocloud_infra_vm_cpus: 16
 ocloud_infra_vm_mem_gb: 32
 ocloud_infra_vm_disk_gb: 150
