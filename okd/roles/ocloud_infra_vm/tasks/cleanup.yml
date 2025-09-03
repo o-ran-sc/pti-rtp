@@ -1,0 +1,59 @@
+---
+- name: Check if cleanup confirmation should be bypassed
+  ansible.builtin.set_fact:
+    yes_i_know_what_im_doing: "{{ yes_i_know_what_im_doing | default(false) }}"
+
+- name: Display warning and require confirmation
+  ansible.builtin.pause:
+    prompt: |
+
+      WARNING: This playbook will perform the following destructive actions:
+
+      - Destroy and undefine the following virtual machines:
+        - {{ groups['ocloud'] | join(', ') }}
+      - Destroy and undefine the virtual network: {{ ocloud_net_name | default('ocloud') }}
+      - Delete virtual disk and boot media for the VMs from {{ ocloud_infra_vm_disk_dir }}
+
+      Type 'yes' to continue, or anything else to abort:
+  when: not yes_i_know_what_im_doing | bool
+
+- name: Destroy virtual machines
+  become: true
+  community.libvirt.virt:
+    command: destroy
+    name: "{{ item }}"
+  loop: "{{ groups['ocloud'] }}"
+  ignore_errors: true
+
+- name: Undefine virtual machines
+  become: true
+  community.libvirt.virt:
+    command: undefine
+    name: "{{ item }}"
+    force: true
+  loop: "{{ groups['ocloud'] }}"
+  ignore_errors: true
+
+- name: Destroy and undefine virtual network
+  become: true
+  community.libvirt.virt_net:
+    name: "{{ ocloud_net_name }}"
+    state: absent
+  ignore_errors: true
+  run_once: true
+
+- name: Remove virtual disk (qcow2)
+  become: true
+  ansible.builtin.file:
+    path: "{{ ocloud_infra_vm_disk_dir }}/{{ item }}-{{ ocloud_infra }}.qcow2"
+    state: absent
+  loop: "{{ groups['ocloud'] }}"
+  ignore_errors: true
+
+- name: Remove boot media (image.iso)
+  become: true
+  ansible.builtin.file:
+    path: "{{ ocloud_infra_vm_disk_dir }}/{{ item }}-{{ ocloud_infra }}-image.iso"
+    state: absent
+  loop: "{{ groups['ocloud'] }}"
+  ignore_errors: true
