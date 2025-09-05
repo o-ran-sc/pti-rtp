@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "af3210f7_323b2db7",
+        "filename": "okd/ansible.cfg",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-09-05T23:00:31Z",
+      "side": 0,
+      "message": "Documentation indicates that \"collections_paths\" is correct... https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths",
+      "revId": "6e5d405d98100ac797965c96b86f88ff3124e72b",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
