@@ -1,5 +1,10 @@
 ---
 ocloud_platform_stolostron_pull_secret: "{{ ocloud_platform_okd_pull_secret }}"
 ocloud_kubeconfig: ~
-ocloud_platform_stolostron_snapshot: "2.14.0-SNAPSHOT-2025-05-19-21-04-46"
+ocloud_platform_stolostron_snapshot: "2.15.0-SNAPSHOT-2025-09-08-23-25-39"
 ocloud_platform_stolostron_repo_url: "https://github.com/stolostron/deploy.git"
+ocloud_platform_stolostron_assisted_os_images:
+- cpuArchitecture: x86_64
+  openshiftVersion: "4.19"
+  url: https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/4.19/4.19.10/rhcos-4.19.10-x86_64-live-iso.x86_64.iso
+  version: 9.6.20250826-1
