@@ -10,20 +10,6 @@
     state: present
     kubeconfig: "{{ ocloud_kubeconfig }}"
 
-- name: Create StorageClass
-  kubernetes.core.k8s:
-    template: "sc.yaml.j2"
-    state: present
-    kubeconfig: "{{ ocloud_kubeconfig }}"
-
-- name: Create PersistentVolumes
-  kubernetes.core.k8s:
-    template: "pv.yaml.j2"
-    state: present
-    kubeconfig: "{{ ocloud_kubeconfig }}"
-  loop: "{{ groups['ocloud'] }}"
-  when: hostvars[item]['role'] == "master"
-
 - name: Create pull secret
   kubernetes.core.k8s:
     template: "pull-secret.yaml.j2"

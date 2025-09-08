@@ -12,3 +12,16 @@
   environment:
     PATH: "{{ ocloud_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
     KUBECONFIG: "{{ ocloud_kubeconfig }}"
+
+- name: Patch postgresql image in oran-o2ims-controller-manager deployment
+  kubernetes.core.k8s_json_patch:
+    name: oran-o2ims-controller-manager
+    kind: Deployment
+    namespace: "oran-o2ims"
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+    patch:
+      - op: replace
+        path: "/spec/template/spec/containers/0/env/1"
+        value:
+          name: POSTGRES_IMAGE
+          value: quay.io/sclorg/postgresql-16-c9s:c9s
