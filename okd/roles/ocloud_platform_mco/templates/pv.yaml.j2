@@ -136,3 +136,26 @@ spec:
           operator: In
           values:
           - {{ item }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv7-{{ item }}
+spec:
+  capacity:
+    storage: "20Gi"
+  volumeMode: "Filesystem"
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: "local-storage"
+  local:
+    path: "/dev/disk/by-partlabel/pv7"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ item }}

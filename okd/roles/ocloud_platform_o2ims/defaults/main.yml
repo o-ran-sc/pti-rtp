@@ -1,4 +1,4 @@
 ---
 ocloud_kubeconfig: ~
 ocloud_platform_o2ims_repo_url: "https://github.com/openshift-kni/oran-o2ims.git"
-ocloud_platform_o2ims_repo_version: "osc-l-release"
+ocloud_platform_o2ims_repo_version: "main"
