@@ -1,16 +1,16 @@
 ---
-- name: Clone stolostron/siteconfig repo
-  ansible.builtin.git:
-    repo: "{{ ocloud_platform_siteconfig_repo_url }}"
-    dest: "{{ ocloud_staging_dir['path'] }}/git/siteconfig"
-
-- name: Install siteconfig
-  ansible.builtin.shell:
-    chdir: "{{ ocloud_staging_dir['path'] }}/git/siteconfig"
-    cmd: "make install deploy VERSION={{ ocloud_platform_siteconfig_snapshot }}"
-  environment:
-    PATH: "{{ ocloud_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
-    KUBECONFIG: "{{ ocloud_kubeconfig }}"
+#- name: Clone stolostron/siteconfig repo
+#  ansible.builtin.git:
+#    repo: "{{ ocloud_platform_siteconfig_repo_url }}"
+#    dest: "{{ ocloud_staging_dir['path'] }}/git/siteconfig"
+#
+#- name: Install siteconfig
+#  ansible.builtin.shell:
+#    chdir: "{{ ocloud_staging_dir['path'] }}/git/siteconfig"
+#    cmd: "make install deploy VERSION={{ ocloud_platform_siteconfig_snapshot }}"
+#  environment:
+#    PATH: "{{ ocloud_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
+#    KUBECONFIG: "{{ ocloud_kubeconfig }}"
 
 - name: Enable siteconfig
   kubernetes.core.k8s_json_patch:

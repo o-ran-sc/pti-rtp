@@ -61,9 +61,9 @@
   run_once: true
   when: ocloud_platform == "okd"
 
-- name: Include platform role - oran-hwmgr-plugin
-  ansible.builtin.import_role:
-    name: "ocloud_platform_hwmgr"
-  delegate_to: "{{ groups['deployer'][0] }}"
-  run_once: true
-  when: ocloud_platform == "okd"
+#- name: Include platform role - oran-hwmgr-plugin
+#  ansible.builtin.import_role:
+#    name: "ocloud_platform_hwmgr"
+#  delegate_to: "{{ groups['deployer'][0] }}"
+#  run_once: true
+#  when: ocloud_platform == "okd"
