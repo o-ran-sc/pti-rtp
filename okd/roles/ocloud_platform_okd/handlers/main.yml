@@ -9,3 +9,28 @@
     - install-complete
   listen: monitor_platform_deployment
   when: inventory_hostname == groups['ocloud'][0]
+
+- name: Create StorageClass
+  kubernetes.core.k8s:
+    template: "sc.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+  listen: monitor_platform_deployment
+  when: inventory_hostname == groups['ocloud'][0]
+
+- name: Create PersistentVolumes
+  kubernetes.core.k8s:
+    template: "pv.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+  loop: "{{ groups['ocloud'] }}"
+  listen: monitor_platform_deployment
+  when: inventory_hostname == groups['ocloud'][0] and hostvars[item]['role'] == "master"
+
+- name: Create Provisioning
+  kubernetes.core.k8s:
+    template: "provisioning.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+  listen: monitor_platform_deployment
+  when: inventory_hostname == groups['ocloud'][0]

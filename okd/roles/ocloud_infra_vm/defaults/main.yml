@@ -1,8 +1,8 @@
 ---
 ocloud_action: "create"
 ocloud_infra_vm_cpus: 16
-ocloud_infra_vm_mem_gb: 32
-ocloud_infra_vm_disk_gb: 150
+ocloud_infra_vm_mem_gb: 64
+ocloud_infra_vm_disk_gb: 250
 ocloud_infra_vm_disk_dir: "/var/lib/libvirt/images"
 ocloud_infra_vm_disk_path: "{{ ocloud_infra_vm_disk_dir }}/{{ inventory_hostname }}.qcow2"
 ocloud_infra_vm_image: "{{ ocloud_infra_vm_disk_dir }}/{{ inventory_hostname }}-image.iso"

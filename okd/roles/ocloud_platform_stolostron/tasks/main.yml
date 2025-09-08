@@ -49,3 +49,22 @@
           kind: Service
           name: search-search-api
     kubeconfig: "{{ ocloud_kubeconfig }}"
+
+- name: Create AgentServiceConfig
+  kubernetes.core.k8s:
+    template: "agent-service-config.yaml.j2"
+    state: present
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+
+- name: Enable siteconfig
+  kubernetes.core.k8s_json_patch:
+    name: multiclusterhub
+    kind: MultiClusterHub
+    namespace: open-cluster-management
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+    patch:
+      - op: add
+        path: "/spec/overrides/components/-"
+        value:
+          name: siteconfig
+          enabled: true

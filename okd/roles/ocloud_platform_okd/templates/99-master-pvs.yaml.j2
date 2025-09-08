@@ -37,10 +37,26 @@ spec:
               number: 10
               sizeMiB: 10240
               startMiB: 56320
-            - label: var
+            - label: pv7
               number: 11
-              sizeMiB: 0
+              sizeMiB: 20480
               startMiB: 66560
+            - label: pv8
+              number: 12
+              sizeMiB: 8192
+              startMiB: 87040
+            - label: pv9
+              number: 13
+              sizeMiB: 8192
+              startMiB: 95232
+            - label: pv10
+              number: 14
+              sizeMiB: 10240
+              startMiB: 103424
+            - label: var
+              number: 15
+              sizeMiB: 0
+              startMiB: 113664
       filesystems:
         - device: /dev/disk/by-partlabel/var
           format: xfs
