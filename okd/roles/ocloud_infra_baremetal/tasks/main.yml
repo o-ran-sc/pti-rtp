@@ -49,13 +49,13 @@
     category: Manager
     command: VirtualMediaEject
     virtual_media:
-      image_url: "{{ item[1][0]['Image'] }}"
+      image_url: "{{ item['Image'] }}"
     baseuri: "{{ bmc_address }}"
     username: "{{ bmc_user }}"
     password: "{{ bmc_password }}"
     resource_id: "{{ ocloud_infra_baremetal_manager_id }}"
-  when: item[1][0]['ConnectedVia'] != "NotConnected" and item[1][0]['Image'] | length > 0
-  loop: "{{ virtual_media_info['redfish_facts']['virtual_media']['entries'] }}"
+  when: item['ConnectedVia'] != "NotConnected" and item['Image'] | length > 0
+  loop: "{{ virtual_media_info['redfish_facts']['virtual_media']['entries'][0][1] }}"
 
 - name: Configure one-time boot from virtual media
   community.general.redfish_command:
