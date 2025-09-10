@@ -442,10 +442,15 @@ A playbook is provided to deploy a sample workload to the O-Cloud. The following
 - ocloud_dms_deployment_mgr_id: deployment manager ID where the sample workload(s) will be deployed
 - ocloud_kubeconfig: path of the kubeconfig for the cluster hosting the O2 API server
 
-For example:
+For example, to deploy the OAI CU-UP workload, run the following command:
 ```
-ansible-playbook -i inventory playbooks/ocloud_workload.yml -e ocloud_dms_host=o2ims.apps.ocloud-vm-okd-aio.example.com -e ocloud_dms_deployment_mgr_id=local-cluster -e ocloud_workloads=oaicucp -e ocloud_kubeconfig=$KUBECONFIG
+ansible-playbook playbooks/ocloud_workload.yml \
+  -e ocloud_dms_host=o2ims.apps.ocloud-vm-okd-aio.example.com \
+  -e ocloud_dms_deployment_mgr_id=local-cluster \
+  -e ocloud_workloads=oaicuup \
+  -e ocloud_kubeconfig=$KUBECONFIG
 ```
+
 
 # Troubleshooting
 

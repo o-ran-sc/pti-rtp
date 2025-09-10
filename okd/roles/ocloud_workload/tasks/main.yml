@@ -6,3 +6,8 @@
   ansible.builtin.import_role:
     name: "ocloud_workload_oaicucp"
   when: '"oaicucp" in ocloud_workloads_list'
+
+- name: Deploy workload - OAI CU-UP
+  ansible.builtin.import_role:
+    name: "ocloud_workload_oaicuup"
+  when: '"oaicuup" in ocloud_workloads_list'

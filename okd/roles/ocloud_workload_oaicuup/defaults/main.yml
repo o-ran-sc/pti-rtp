@@ -1,0 +1,5 @@
+---
+ocloud_workload_oaicuup_repo_url: "https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git"
+ocloud_workload_oaicuup_repo_version: "master"
+ocloud_workload_oaicuup_namespace: "oai-cu-up"
+ocloud_workload_oaicuup_helm_url: "https://get.helm.sh/helm-v3.18.2-linux-amd64.tar.gz"
