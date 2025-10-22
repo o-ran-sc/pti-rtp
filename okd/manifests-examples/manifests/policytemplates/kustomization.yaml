@@ -1,0 +1,8 @@
+generators:
+# ACM PG needed for observability:
+- common/copy-acm-route-observability-v1.yaml
+
+resources:
+# MSC binding needed for observability:
+- common/msc-binding-observability.yaml
+- okd-4.19

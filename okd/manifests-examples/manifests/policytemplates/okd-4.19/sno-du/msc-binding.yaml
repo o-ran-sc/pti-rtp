@@ -1,0 +1,8 @@
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  name: global
+  namespace: ztp-sno-du-okd-v4-19
+spec:
+  clusterSet: global
