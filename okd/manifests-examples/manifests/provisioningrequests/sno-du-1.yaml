@@ -1,0 +1,82 @@
+apiVersion: clcm.openshift.io/v1alpha1
+kind: ProvisioningRequest
+metadata:
+  labels:
+    app.kubernetes.io/name: provisioningrequest
+    app.kubernetes.io/instance: provisioningrequest-sample
+    app.kubernetes.io/part-of: oran-o2ims
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: oran-o2ims
+  name: 123e4567-e89b-12d3-a456-426614174000
+spec:
+  name: "sno-du-1"
+  description: "Provisioning request for setting up a Single Node OKD (SNO) cluster in the test environment."
+  templateName: sno-du
+  templateVersion: okd-v4-19
+  templateParameters:
+    nodeClusterName: "sno-du-1"
+    oCloudSiteId: "oransc-example-lab"
+    policyTemplateParameters:
+      sriov-network-pfNames-1: '["ens1f0"]'
+      sriov-network-vlan-1: "110"
+      sriov-network-pfNames-2: '["ens1f1"]'
+      sriov-network-vlan-2: "111"
+      cpu-isolated: "0-1,28-29"
+      cpu-reserved: "2-10"
+    clusterInstanceParameters:
+      additionalNTPSources:
+        - 192.168.20.34
+      baseDomain: oran-sc.example.lab
+      clusterName: sno-du-1
+      extraLabels:
+        ManagedCluster:
+          cluster-version: "v4.19"
+          sno-du-policy: "v1"
+      machineNetwork:
+        - cidr: 192.168.42.0/25
+      nodes:
+        - bmcAddress: redfish-virtualmedia://192.168.42.142/redfish/v1/Systems/1
+          bmcCredentialsDetails:
+            username: QWRtaW5pc3RyYXRvcgo=
+            password: UGFzc3dvcmRHb2VzSGVyZQo=
+          bootMACAddress: de:ad:be:ef:ca:fe
+          extraLabels:
+            BareMetalHost:
+              resources.clcm.openshift.io/resourcePoolId: du-pool
+              resources.clcm.openshift.io/siteId: oransc-example-lab
+          hostName: master-0-sno.oran-sc.example.lab
+          nodeLabels:
+            node-role.kubernetes.io/infra: ""
+            node-role.kubernetes.io/master: ""
+          nodeNetwork:
+            config:
+              dns-resolver:
+                config:
+                  server:
+                    - 192.168.42.10
+              interfaces:
+                - ipv4:
+                    address:
+                      - ip: 192.168.42.42
+                        prefix-length: 25
+                    dhcp: false
+                    enabled: true
+                  ipv6:
+                    dhcp: false
+                    enabled: false
+                  name: ens10f0
+                  type: ethernet
+              routes:
+                config:
+                  - destination: 0.0.0.0/0
+                    next-hop-address: 192.168.42.1
+                    next-hop-interface: ens10f0
+                    table-id: 254
+            interfaces:
+              - name: ens10f0
+                macAddress: de:ad:be:ef:ca:fe
+      serviceNetwork:
+        - cidr: 172.30.0.0/16
+      sshPublicKey: ssh-rsa xxxxxxxxxx
+status:
+  conditions: []
