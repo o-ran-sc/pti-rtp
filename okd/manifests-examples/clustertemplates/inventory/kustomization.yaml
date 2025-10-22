@@ -1,0 +1,3 @@
+resources:
+- common.yaml
+- master-0-sno.yaml
