@@ -1,0 +1,7 @@
+---
+ocloud_infra: vm
+ocloud_platform: okd
+ocloud_topology: multinode
+ocloud_cluster_name: "ocloud-vm-bmw"
+ocloud_domain_name: "lab.local"
+ocloud_infra_vm_net_mode: "bridge"

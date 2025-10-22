@@ -1,0 +1,26 @@
+---
+role: master
+ip_address: 192.168.8.210
+ocloud_infra_vm_mem_gb: 48
+mac_addresses:
+  ens3: "52:54:00:ab:cd:01"
+network_config:
+  interfaces:
+    - name: ens3
+      type: ethernet
+      state: up
+      ipv4:
+        enabled: true
+        dhcp: false
+        address:
+          - ip: 192.168.8.210
+            prefix-length: 24
+  dns-resolver:
+    config:
+      server:
+        - 192.168.8.72
+  routes:
+    config:
+      - destination: 0.0.0.0/0
+        next-hop-address: 192.168.8.103
+        next-hop-interface: ens3
