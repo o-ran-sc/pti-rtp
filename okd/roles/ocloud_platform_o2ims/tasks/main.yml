@@ -8,7 +8,7 @@
 - name: Install oran-o2ims operator
   ansible.builtin.shell:
     chdir: "{{ ocloud_staging_dir['path'] }}/git/oran-o2ims"
-    cmd: "make install deploy"
+    cmd: "make install deploy IMG=bmw.ece.ntust.edu.tw/infidel/oran-o2ims:osc-l-release"
   environment:
     PATH: "{{ ocloud_staging_dir['path'] }}/go/bin:{{ ansible_env.PATH }}"
     KUBECONFIG: "{{ ocloud_kubeconfig }}"

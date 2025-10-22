@@ -3,10 +3,13 @@ apiVersion: v1beta1
 kind: AgentConfig
 metadata:
   name: {{ ocloud_cluster_name }}
-{% if hostvars[groups['ocloud'][0]]['ocloud_infra'] == "baremetal" %}
-rendezvousIP: {{ hostvars[groups['ocloud'][0]]['network_config']['interfaces'][0]['ipv4']['address'][0]['ip'] }}
+{% set rendezvous_host = groups['ocloud'] | map('extract', hostvars) | selectattr('role', 'equalto', 'master') | first %}
+{% if rendezvous_host.get('ip_address') %}
+rendezvousIP: {{ rendezvous_host['ip_address'] }}
+{% elif rendezvous_host.get('network_config') %}
+rendezvousIP: {{ rendezvous_host['network_config']['interfaces'][0]['ipv4']['address'][0]['ip'] }}
 {% else %}
-rendezvousIP: {{ ocloud_net_cidr | ansible.utils.ipmath(11) }}
+rendezvousIP: {{ ocloud_rendezvous_ip | default(ocloud_net_cidr | ansible.utils.ipmath(11)) }}
 {% endif %}
 {% if ocloud_ntp_servers is defined and ocloud_ntp_servers | length > 0 %}
 additionalNTPSources:
@@ -14,29 +17,19 @@ additionalNTPSources:
 - {{ ntp_server }}
 {% endfor %}
 {% endif %}
-{% if groups['ocloud'] | map('extract', hostvars, 'ocloud_infra') | select('equalto', 'baremetal') | length > 0 %}
+{% if groups['ocloud'] | map('extract', hostvars, 'network_config') | select | list | length > 0 %}
 hosts:
-{% endif %}
 {% for hostname in groups['ocloud'] %}
-  {% if hostvars[hostname]['ocloud_infra'] == "baremetal" %}
+  {% if hostvars[hostname].get('network_config') %}
   - role: {{ hostvars[hostname]['role'] }}
     hostname: {{ hostname }}
+    {% if hostvars[hostname].get('mac_addresses') %}
     interfaces:
     - name: {{ hostvars[hostname]['network_config']['interfaces'][0]['name'] }}
       macAddress: {{ hostvars[hostname]['mac_addresses'][hostvars[hostname]['network_config']['interfaces'][0]['name']] }}
+    {% endif %}
     networkConfig:
       {{ hostvars[hostname]['network_config'] | to_nice_yaml(indent=2) | trim | indent(6) }}
-      dns-resolver:
-        config:
-          search:
-          - {{ ocloud_domain_name }}
-          server:
-          {% for dns_server in ocloud_dns_servers %}
-          - {{ dns_server }}
-          {% endfor %}
-    {% if hostvars[hostname]['installation_disk_path'] is defined %}
-    rootDeviceHints:
-      deviceName: {{ hostvars[hostname]['installation_disk_path'] }}
-    {% endif %}
   {% endif %}
 {% endfor %}
+{% endif %}

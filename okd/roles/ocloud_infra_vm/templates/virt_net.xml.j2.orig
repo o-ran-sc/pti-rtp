@@ -1,10 +1,3 @@
-{% if ocloud_network_mode | default('nat') == 'bridge' %}
-<network>
-  <name>{{ ocloud_net_name }}</name>
-  <forward mode='bridge'/>
-  <bridge name='{{ ocloud_net_bridge }}'/>
-</network>
-{% else %}
 <network>
   <name>{{ ocloud_net_name }}</name>
   <forward mode='nat'>
@@ -23,4 +16,3 @@
     </dhcp>
   </ip>
 </network>
-{% endif %}

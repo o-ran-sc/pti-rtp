@@ -31,9 +31,9 @@ Several packages are required by Ansible modules or deployment scripts that are 
 - libvirt development headers/libraries
 
 Following are examples of how to install these packages on common distributions:
-```
 
 Fedora Linux
+
 ```
 dnf install https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm
 dnf group install "Development Tools"
@@ -43,6 +43,7 @@ dnf install python3-devel python3-libvirt python3-netaddr ansible pip pkgconfig 
 Ubuntu Linux
 ```
 apt-get install libpython3-dev python3-libvirt python3-netaddr ansible python3-pip wget make
+```
 
 ## Ansible
 
@@ -478,3 +479,4 @@ To cleanup a VM-based deployment due to failure, or to prepare to redeploy, exec
    ```
    rm /var/lib/libvirt/images/master-0*.{qcow2,iso}
    ```
+
