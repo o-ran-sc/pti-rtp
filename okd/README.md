@@ -31,9 +31,9 @@ Several packages are required by Ansible modules or deployment scripts that are 
 - libvirt development headers/libraries
 
 Following are examples of how to install these packages on common distributions:
-```
 
 Fedora Linux
+
 ```
 dnf install https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm
 dnf group install "Development Tools"
@@ -43,6 +43,7 @@ dnf install python3-devel python3-libvirt python3-netaddr ansible pip pkgconfig 
 Ubuntu Linux
 ```
 apt-get install libpython3-dev python3-libvirt python3-netaddr ansible python3-pip wget make
+```
 
 ## Ansible
 
@@ -117,6 +118,11 @@ The following variables can be set to override deployment defaults:
 - ocloud_cluster_name [default="ocloud-{{ ocloud_infra }}-{{ ocloud_platform }}-{{ ocloud_topology }}"]: O-Cloud cluster name
 - ocloud_domain_name [default="example.com"]: O-Cloud domain name
 - ocloud_net_cidr [default="192.168.123.0/24"]: O-Cloud machine network CIDR
+- ocloud_network_mode [default="nat"]: Network mode for VM deployment. To attach bridge network with extenal NIC use `bridge`. 
+- ocloud_platform_okd_airgapped_enabled [default=false]: Custom image mirrors for installation
+- ocloud_platform_okd_airgapped_registry []: Custom image mirror registry address
+- ocloud_platform_okd_airgapped_org []: Custom image mirror org or username
+- ocloud_platform_okd_airgapped_repo []: Custom image mirror repo
 
 ### Infrastructure / VM
 
@@ -447,6 +453,7 @@ For example:
 ansible-playbook -i inventory playbooks/ocloud_workload.yml -e ocloud_dms_host=o2ims.apps.ocloud-vm-okd-aio.example.com -e ocloud_dms_deployment_mgr_id=local-cluster -e ocloud_workloads=oaicucp -e ocloud_kubeconfig=$KUBECONFIG
 ```
 
+
 # Troubleshooting
 
 ## OKD
@@ -478,3 +485,4 @@ To cleanup a VM-based deployment due to failure, or to prepare to redeploy, exec
    ```
    rm /var/lib/libvirt/images/master-0*.{qcow2,iso}
    ```
+
