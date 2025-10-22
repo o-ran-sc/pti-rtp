@@ -1,0 +1,15 @@
+configMapGenerator:
+- files:
+  - extra-manifest/99-sync-time-once-master.yaml
+  - extra-manifest/99-sync-time-once-worker.yaml
+  name: okd.v1.0.0-extramanifests
+  namespace: sno-du-okd-v4-19
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+- sno-du/ns.yaml
+- sno-du/pull-secret.yaml
+- sno-du/clusterinstance-defaults-v1.yaml
+- sno-du/policytemplate-defaults-v1.yaml
+- sno-du/sno-du-okd-v4-19.yaml

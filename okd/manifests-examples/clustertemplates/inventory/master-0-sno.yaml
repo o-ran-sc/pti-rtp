@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: network-data-master-0-sno
+  namespace: du-pool
+type: Opaque
+stringData:
+  nmstate: |
+    dns-resolver:
+      config:
+        server:
+          - 192.168.42.10
+    interfaces:
+      - ipv4:
+          address:
+            - ip: 192.168.42.42
+              prefix-length: 25
+          dhcp: false
+          enabled: true
+        ipv6:
+          dhcp: false
+          enabled: false
+        name: ens10f0
+        type: ethernet
+    routes:
+      config:
+        - destination: 0.0.0.0/0
+          next-hop-address: 192.168.42.1
+          next-hop-interface: ens10f0
+          table-id: 254
+---
+apiVersion: v1
+data:
+  username: QWRtaW5pc3RyYXRvcgo=
+  password: UGFzc3dvcmRHb2VzSGVyZQo=
+kind: Secret
+metadata:
+  name: bmc-secret-master-0-sno
+  namespace: du-pool
+type: Opaque
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  labels:
+    resources.clcm.openshift.io/siteId: oransc-bos2-lab
+    resources.clcm.openshift.io/resourcePoolId: du-pool
+    resourceselector.clcm.openshift.io/server-type: DL360
+    resourceselector.clcm.openshift.io/server-id: master-0-sno
+    resourceselector.clcm.openshift.io/subnet: "192.168.42.0"
+    interfacelabel.clcm.openshift.io/data-interface: ens10f0
+  annotations:
+    bmac.agent-install.openshift.io/allow-provisioned-host-management: ""
+    resourceinfo.clcm.openshift.io/description: "DL360 DU"
+    resourceinfo.clcm.openshift.io/partNumber: "00001"
+    resourceinfo.clcm.openshift.io/globalAssetId: "asset0001"
+    resourceinfo.clcm.openshift.io/groups: "groupA, groupB"
+  name: master-0-sno
+  namespace: du-pool
+spec:
+  online: false
+  bmc:
+    address: redfish-virtualmedia://192.168.42.142/redfish/v1/Systems/1
+    credentialsName: bmc-secret-master-0-sno
+    disableCertificateVerification: true
+  bootMACAddress: de:ad:be:ef:ca:fe
+  preprovisioningNetworkDataName: network-data-master-0-sno

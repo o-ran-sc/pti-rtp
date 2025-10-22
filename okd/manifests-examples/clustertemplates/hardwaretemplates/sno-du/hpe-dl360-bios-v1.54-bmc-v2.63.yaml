@@ -1,0 +1,20 @@
+apiVersion: clcm.openshift.io/v1alpha1
+kind: HardwareTemplate
+metadata:
+  name: hpe-dl360-bios-v1.54-bmc-v2.63
+  namespace: oran-o2ims
+spec:
+  # hardwareProvisioningTimeout is optional.
+  # The value should be a duration string
+  # (e.g., "90m" for 90 minutes)
+  hardwareProvisioningTimeout: "90m"
+  hardwarePluginRef: metal3-hwplugin
+  bootInterfaceLabel: bootable-interface
+  nodeGroupData:
+    - name: controller
+      role: master
+      hwProfile: hpe-dl360-bios-v1.54-bmc-v2.63
+      resourceSelector:
+        "resourceselector.clcm.openshift.io/server-type": "DL360"
+        "hardwaredata/cpu_arch": "x86_64"
+        "hardwaredata/num_threads;>=": "64"
