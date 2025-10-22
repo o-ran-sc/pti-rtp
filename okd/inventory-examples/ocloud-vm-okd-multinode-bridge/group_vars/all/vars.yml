@@ -1,0 +1,37 @@
+---
+ocloud_infra: vm
+ocloud_platform: okd
+ocloud_topology: multinode
+ocloud_cluster_name: "ocloud-vm-bmw"
+ocloud_domain_name: "lab.local"
+
+ocloud_network_mode: "bridge"  
+ocloud_net_bridge: "bridge0"
+ocloud_net_name: "br0-okd"
+ocloud_net_cidr: "192.168.8.0/24"
+
+ocloud_platform_okd_api_vips: ["192.168.8.218"]
+ocloud_platform_okd_ingress_vips: ["192.168.8.219"]
+
+ocloud_cluster_net_cidr: "10.128.0.0/14"
+ocloud_cluster_net_hostprefix: 23
+ocloud_service_net_cidr: "172.30.0.0/16"
+ocloud_network_type: "OVNKubernetes"
+
+# DNS servers
+ocloud_dns_servers:
+  - "192.168.8.72"
+
+# Optional NTP servers
+ocloud_ntp_servers:
+  - "time.google.com"
+
+ocloud_infra_vm_mem_gb: 16
+ocloud_infra_vm_cpus: 8
+ocloud_infra_vm_disk_gb: 100
+
+# Airgapped configuration
+airgapped_enabled: true
+airgapped_registry: "bmw.ece.ntust.edu.tw"
+airgapped_org: "openshift"
+airgapped_repo: "okd"
