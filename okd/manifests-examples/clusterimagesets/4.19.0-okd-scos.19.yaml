@@ -1,0 +1,6 @@
+apiVersion: hive.openshift.io/v1
+kind: ClusterImageSet
+metadata:
+  name: 4.19.0-okd-scos.19
+spec:
+  releaseImage: quay.io/okd/scos-release:4.19.0-okd-scos.19
