@@ -1,0 +1,15 @@
+apiVersion: clcm.openshift.io/v1alpha1 
+kind: HardwareProfile
+metadata:
+  name: hpe-dl360-bios-v1.54-bmc-v2.63
+  namespace: oran-o2ims 
+spec:
+  bios:
+    attributes:
+      BootMode: Uefi
+  biosFirmware:
+    version: U46 v1.54 (11/03/2021)
+    url: http://192.168.42.10/cp049737.exe
+  bmcFirmware:
+    version: iLO 5 v2.70
+    url: http://192.168.42.10/ilo5_270.fwpkg

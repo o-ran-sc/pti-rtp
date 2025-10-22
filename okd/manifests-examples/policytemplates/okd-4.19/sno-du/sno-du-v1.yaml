@@ -1,0 +1,113 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: sno-du-okd-v4-19
+policyDefaults:
+  namespace: ztp-sno-du-okd-v4-19
+  # Use an existing placement rule so that placement bindings can be consolidated
+  placement:
+    # These labels must match the labels set for the ManagedCluster either through the ProvisioningRequest
+    # or the ClusterInstance ConfigMap.
+    labelSelector:
+      cluster-version: "v4.19"
+      sno-du-policy: "v1"
+  remediationAction: enforce
+  severity: low
+  namespaceSelector:
+    exclude:
+      - kube-*
+    include:
+      - '*'
+  evaluationInterval:
+    compliant: 5m
+    noncompliant: 10s
+  orderPolicies: true
+policies:
+- name: v1-subscriptions-policy
+  manifests:
+    - path: custom-crs/namespace-openshift-marketplace.yaml
+    - path: custom-crs/catalogsource-okderators.yaml
+    - path: source-crs/SriovSubscriptionNS.yaml
+    - path: source-crs/SriovSubscriptionOperGroup.yaml
+    - path: source-crs/SriovSubscription.yaml
+      patches:
+      - spec:
+          channel: "alpha"
+          source: okderators
+          installPlanApproval:
+            '{{hub $configMap:=(lookup "v1" "ConfigMap" "" (printf "%s-pg" .ManagedClusterName)) hub}}{{hub dig "data" "install-plan-approval" "Manual" $configMap hub}}'
+    - path: source-crs/SriovOperatorConfig.yaml
+- name: v1-perf-configuration-policy
+  manifests:
+    - path: source-crs/PerformanceProfile-SetSelector.yaml
+      patches:
+      - metadata:
+          name: openshift-node-performance-profile
+        spec:
+          additionalKernelArgs:
+          - rcupdate.rcu_normal_after_boot=0
+          - vfio_pci.enable_sriov=1
+          - vfio_pci.disable_idle_d3=1
+          - efi=runtime
+          cpu:
+            # These must be tailored for the specific hardware platform
+            isolated: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "cpu-isolated" hub}}'
+            reserved: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "cpu-reserved" hub}}'
+          hugepages:
+            defaultHugepagesSize: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "hugepages-default" hub}}'
+            pages:
+              - size: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "hugepages-size" hub}}'
+                count: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "hugepages-count" | toInt hub}}'
+          realTimeKernel:
+            enabled: true
+          machineConfigPoolSelector:
+            pools.operator.machineconfiguration.openshift.io/master: ""
+          nodeSelector:
+            node-role.kubernetes.io/master: ''
+- name: v1-sriov-configuration-policy
+  manifests:
+    - path: source-crs/SriovNetwork.yaml
+      patches:
+      - metadata:
+          name: sriov-nw-du-fh
+        spec:
+          resourceName: du_fh
+          vlan: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "sriov-network-vlan-1" | toInt hub}}'
+    - path: source-crs/SriovNetworkNodePolicy-SetSelector.yaml
+      patches:
+      - metadata:
+          name: sriov-nnp-du-fh
+        spec:
+          deviceType: netdevice
+          isRdma: false
+          nicSelector:
+            pfNames: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "sriov-network-pfNames-1" | toLiteral hub}}'
+          nodeSelector:
+            node-role.kubernetes.io/master: ""
+          numVfs: 8
+          priority: 10
+          resourceName: du_fh
+    - path: source-crs/SriovNetwork.yaml
+      patches:
+      - metadata:
+          name: sriov-nw-du-mh
+        spec:
+          resourceName: du_mh
+          vlan: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "sriov-network-vlan-2" | toInt hub}}'
+    - path: source-crs/SriovNetworkNodePolicy-SetSelector.yaml
+      patches:
+      - metadata:
+          name: sriov-nnp-du-mh
+        spec:
+          deviceType: vfio-pci
+          isRdma: false
+          nicSelector:
+            pfNames: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "sriov-network-pfNames-2" | toLiteral hub}}'
+          nodeSelector:
+            node-role.kubernetes.io/master: ""
+          numVfs: 8
+          priority: 10
+          resourceName: du_mh
+- name: v1-sctp-policy
+  manifests:
+    - path: source-crs/MachineConfigSctp.yaml
