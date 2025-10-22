@@ -133,7 +133,8 @@ The following variables can be set to override defaults for deploying to a VM in
 - ocloud_infra_vm_disk_gb [default=120]: Amount of disk space to allocate to the VM in GB
 - ocloud_infra_vm_disk_dir [default="/var/lib/libvirt/images"]: directory where VM images are stored
 - ocloud_net_name [default="ocloud"]: virtual network name
-- ocloud_net_bridge [default="ocloud-br"]: virtual network bridge name
+- ocloud_infra_vm_net_mode [default="nat"]: Network mode for VM deployment. To attach bridge network with extenal NIC use `bridge`.
+- ocloud_infra_vm_net_bridge [default="ocloud-br"]: virtual network bridge name
 - ocloud_net_mac_prefix [default="52:54:00:01:23"]: virtual network MAC prefix
 - ocloud_dns_servers: list of DNS resolvers to configure (see okd/playbooks/deploy_dns.yml if a DNS server needs to be deployed)
 - ocloud_ntp_servers: list of NTP servers to configure (see okd/playbooks/deploy_ntp.yml if an NTP server needs to be deployed)
@@ -168,6 +169,10 @@ Optionally, the following variables can be set to override default settings:
 - ocloud_platform_okd_pull_secret [default=None]: pull secret for use with non-public image registries
 - ocloud_platform_okd_api_vips [default=None]: list of virtual IPs to use for OKD API access (required if deploying a multi-node cluster)
 - ocloud_platform_okd_ingress_vips [default=None]: list of virtual IPs to use for ingress (required if deploying a multi-node cluster)
+- ocloud_platform_okd_airgapped_enabled [default=false]: Custom image mirrors for installation
+- ocloud_platform_okd_airgapped_registry []: Custom image mirror registry address
+- ocloud_platform_okd_airgapped_org []: Custom image mirror org or username
+- ocloud_platform_okd_airgapped_repo []: Custom image mirror repo
 
 # Installation
 
@@ -457,6 +462,7 @@ For example:
 ```
 ansible-playbook -i inventory playbooks/ocloud_workload.yml -e ocloud_dms_host=o2ims.apps.ocloud-vm-okd-aio.example.com -e ocloud_dms_deployment_mgr_id=local-cluster -e ocloud_workloads=oaicucp -e ocloud_kubeconfig=$KUBECONFIG
 ```
+
 
 # Troubleshooting
 

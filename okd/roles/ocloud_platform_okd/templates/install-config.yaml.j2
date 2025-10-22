@@ -3,10 +3,10 @@ apiVersion: v1
 baseDomain: {{ ocloud_domain_name }}
 controlPlane:
   name: master
-  replicas: {{ groups['ocloud'] | map('extract', hostvars, 'role') | select('equalto', 'master') | length }}
+  replicas: {{ groups['ocloud'] | map('extract', hostvars, 'role') | select('equalto', 'master') | list | length }}
 compute:
   - name: worker
-    replicas: {{ groups['ocloud'] | map('extract', hostvars, 'role') | select('equalto', 'worker') | length }}
+    replicas: {{ groups['ocloud'] | map('extract', hostvars, 'role') | select('equalto', 'worker') | list | length }}
 metadata:
   name: {{ ocloud_cluster_name }}
 networking:
@@ -45,4 +45,13 @@ proxy:
     {% if no_proxy is defined and no_proxy != "" %}
     noProxy: {{ no_proxy }}
     {% endif %}
+{% endif %}
+{% if ocloud_platform_okd_airgapped_enabled | default(false) %}
+imageDigestSources:
+- mirrors:
+  - {{ ocloud_platform_okd_airgapped_registry }}/{{ ocloud_platform_okd_airgapped_org }}/{{ ocloud_platform_okd_airgapped_repo }}
+  source: quay.io/okd/scos-content
+- mirrors:
+  - {{ ocloud_platform_okd_arigapped_registry }}/{{ ocloud_platform_okd_arigapped_org }}/{{ ocloud_platform_okd_arigapped_repo }}
+  source: quay.io/okd/scos-release
 {% endif %}

@@ -5,3 +5,7 @@ ocloud_kubeconfig: ~
 ocloud_platform_okd_release: "4.20.0-okd-scos.12"
 ocloud_platform_okd_base_url: "quay.io/okd/scos-release"
 ocloud_platform_okd_cli_url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp"
+ocloud_platform_okd_airgapped_enabled: false
+ocloud_platform_okd_airgapped_registry: ""
+ocloud_platform_okd_airgapped_org: ""
+ocloud_platform_okd_airgapped_repo: ""
