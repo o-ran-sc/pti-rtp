@@ -1,0 +1,4 @@
+---
+# Encrypt with `ansible-vault encrypt vault.yml` before adding secrets
+# Uncomment to override default pull secret from ocloud_platform_okd role:
+#ocloud_platform_okd_pull_secret: ~
