@@ -63,13 +63,21 @@
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </controller>
-    <interface type='network'>
+    <interface type='{% if ocloud_infra_vm_net_mode == "bridge" %}bridge{% else %}network{% endif %}'>
 {% for ocloud_host in groups['ocloud'] %}
 {% if ocloud_host == inventory_hostname %}
+  {% if hostvars[ocloud_host].get('mac_addresses') %}
+      <mac address='{{ hostvars[ocloud_host]['mac_addresses'].values() | list | first }}'/>
+  {% else %}
       <mac address='{{ ocloud_net_mac_prefix }}:{{ loop.index + 10 }}'/>
+  {% endif %}
 {% endif %}
 {% endfor %}
+{% if ocloud_infra_vm_net_mode == "bridge" %}
+      <source bridge='{{ ocloud_infra_vm_net_bridge }}'/>
+{% else %}
       <source network='{{ ocloud_net_name }}'/>
+{% endif %}
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </interface>
