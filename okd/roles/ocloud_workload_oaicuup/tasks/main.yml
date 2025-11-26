@@ -1,0 +1,49 @@
+---
+- name: Create staging dir
+  ansible.builtin.tempfile:
+    path: "{{ lookup('env', 'HOME') }}"
+    prefix: "ocloud_workload_oaicuup.{{ ansible_date_time['date'] }}."
+    state: directory
+  register: ocloud_workload_oaicuup_staging_dir
+
+- name: Download Helm
+  ansible.builtin.get_url:
+    url: "{{ ocloud_workload_oaicuup_helm_url }}"
+    dest: "{{ ocloud_workload_oaicuup_staging_dir['path'] }}/helm-linux-amd64.tar.gz"
+
+- name: Create helm directory
+  ansible.builtin.file:
+    path: "{{ ocloud_workload_oaicuup_staging_dir['path'] }}/helm"
+    state: directory
+
+- name: Extract Helm
+  ansible.builtin.unarchive:
+    src: "{{ ocloud_workload_oaicuup_staging_dir['path'] }}/helm-linux-amd64.tar.gz"
+    dest: "{{ ocloud_workload_oaicuup_staging_dir['path'] }}/helm"
+    remote_src: true
+
+- name: Clone oai-cn5g-fed repo
+  ansible.builtin.git:
+    repo: "{{ ocloud_workload_oaicuup_repo_url }}"
+    version: "{{ ocloud_workload_oaicuup_repo_version }}"
+    dest: "{{ ocloud_workload_oaicuup_staging_dir['path'] }}/git/oai-cn5g-fed"
+    recursive: false
+
+- name: Deploy oai-cu-up Helm chart
+  kubernetes.core.helm:
+    name: oai-cu-up
+    chart_ref: "{{ ocloud_workload_oaicuup_staging_dir['path'] }}/git/oai-cn5g-fed/charts/oai-5g-ran/oai-cu-up"
+    release_namespace: "{{ ocloud_workload_oaicuup_namespace }}"
+    create_namespace: true
+    values:
+      config:
+        cuCpHost: "{{ ocloud_workload_oaicuup_cucp_host }}"
+      kubernetesDistribution: "Openshift"
+      nfimage:
+        repository: docker.io/oaisoftwarealliance/oai-nr-cuup
+        version: 2024.w32
+    kubeconfig: "{{ ocloud_dms_kubeconfig }}"
+    binary_path: "{{ ocloud_workload_oaicuup_staging_dir['path'] }}/helm/linux-amd64/helm"
+    state: present
+
+
