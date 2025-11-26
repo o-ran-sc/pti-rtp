@@ -1,0 +1,3 @@
+---
+dependencies:
+  - role: ocloud_workload_oaicucp
