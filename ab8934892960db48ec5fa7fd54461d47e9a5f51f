@@ -18,6 +18,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "61376aa2_53cb62e6",
+        "filename": "okd/ansible.cfg",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5aff3976_d5cba277",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "87b65fd5_9aa97aa4",
@@ -31,6 +49,24 @@
       "writtenOn": "2025-12-01T23:28:59Z",
       "side": 1,
       "message": "Let\u0027s keep ocloud-vm-okd-aio as the default example linked here.",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "755c458d_3d2fe496",
+        "filename": "okd/inventory",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "87b65fd5_9aa97aa4",
       "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -52,6 +88,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "27c7a8cd_bc73e55c",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio-bridge/group_vars/all/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e5ff89bc_897aecf0",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0c8eccac_1630d840",
@@ -65,6 +119,24 @@
       "writtenOn": "2025-12-01T23:28:59Z",
       "side": 1,
       "message": "Is there a reason to set these to values the same as the defaults defined in the \"ocloud\" role?",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9c04abe2_3679f56e",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio/group_vars/all/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c8eccac_1630d840",
       "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -86,6 +158,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "64837894_dd0b8471",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio/ocloud-vm-okd-aio-bridge",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e8b4209e_15639958",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8d4b43a2_a9c02411",
@@ -99,6 +189,24 @@
       "writtenOn": "2025-12-01T23:28:59Z",
       "side": 1,
       "message": "Remove trailing whitespace.",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b5d7ba9_84055346",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/group_vars/all/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d4b43a2_a9c02411",
       "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -120,6 +228,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9d4cae4_bbbc1e2f",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/group_vars/all/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3392d406_7f97627e",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "afa10f18_297eca75",
@@ -133,6 +259,24 @@
       "writtenOn": "2025-12-01T23:28:59Z",
       "side": 1,
       "message": "Inventory examples should not contain environment-specific values.",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c36c50e5_875a2016",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/group_vars/all/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "afa10f18_297eca75",
       "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -154,6 +298,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f465a88f_932d58a7",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/host_vars/master-0-vm/vars.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e5ad0584_dff2b15f",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5e661eb7_2ca83d40",
@@ -167,6 +329,24 @@
       "writtenOn": "2025-12-01T23:28:59Z",
       "side": 1,
       "message": "Does the virtual interface always map to ens3 or does this need to be generalized?",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "35868110_5fcca5a1",
+        "filename": "okd/roles/ocloud_infra_vm/templates/virt.xml.j2",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Mac will be derived from defined interface name from hosts",
+      "parentUuid": "5e661eb7_2ca83d40",
       "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -188,6 +368,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f758d24d_dc78d8ae",
+        "filename": "okd/roles/ocloud_infra_vm/templates/virt_net.xml.j2",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "21b378b2_1aaaefce",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c17012e3_2b673ffb",
@@ -201,6 +399,24 @@
       "writtenOn": "2025-12-01T23:28:59Z",
       "side": 1,
       "message": "\"ocloud_infra_vm_net_bridge\" would be a more precise name.",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "25f00b26_4c071c2f",
+        "filename": "okd/roles/ocloud_infra_vm/templates/virt_net.xml.j2",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c17012e3_2b673ffb",
       "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -222,6 +438,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "090aa924_c0633284",
+        "filename": "okd/roles/ocloud_infra_vm/templates/virt_net.xml.j2.orig",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "83798a16_6f906982",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "094e50db_5cf100b3",
@@ -235,6 +469,24 @@
       "writtenOn": "2025-12-01T23:28:59Z",
       "side": 1,
       "message": "The reference to this image should either be made configurable via variable or removed.",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b6582d4_7e2c2b23",
+        "filename": "okd/roles/ocloud_platform_o2ims/tasks/main.yml",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "094e50db_5cf100b3",
       "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -256,6 +508,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "809d1c7b_5cc22a72",
+        "filename": "okd/roles/ocloud_platform_okd/templates/agent-config.yaml.j2",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Not needed anymore, static definition of interface will overwrite and Nat based deployment will use the original counter",
+      "parentUuid": "07742db5_1af92d69",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "387d4024_912c30c8",
@@ -269,6 +539,24 @@
       "writtenOn": "2025-12-01T23:28:59Z",
       "side": 1,
       "message": "I like the idea of supporting image mirrors, but let\u0027s prepend the variable names with \"ocloud_platform_okd_\" to keep consistent with other role variables, define the vars in role defaults, and update the README with information on usage.",
+      "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0e7bcddd_0f56a4a7",
+        "filename": "okd/roles/ocloud_platform_okd/templates/install-config.yaml.j2",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "387d4024_912c30c8",
       "revId": "ab8934892960db48ec5fa7fd54461d47e9a5f51f",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }

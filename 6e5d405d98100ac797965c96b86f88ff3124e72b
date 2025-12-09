@@ -16,6 +16,24 @@
       "message": "I don\u0027t understand why this section was removed.",
       "revId": "6e5d405d98100ac797965c96b86f88ff3124e72b",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f52063a_f310efc8",
+        "filename": "okd/roles/ocloud_platform_okd/templates/agent-config.yaml.j2",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2025-12-09T09:03:23Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "b18b63cb_7b0663b9",
+      "revId": "6e5d405d98100ac797965c96b86f88ff3124e72b",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
