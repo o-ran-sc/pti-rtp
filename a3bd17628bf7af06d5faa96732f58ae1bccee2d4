@@ -16,6 +16,91 @@
       "message": "Thre is merge conflict, please fix.",
       "revId": "a3bd17628bf7af06d5faa96732f58ae1bccee2d4",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a60e1d8_4dc401a5",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio-bridge/group_vars/all/vars.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-11T17:55:46Z",
+      "side": 1,
+      "message": "Should be \u0027ocloud_infra_vm_net_mode\u0027",
+      "revId": "a3bd17628bf7af06d5faa96732f58ae1bccee2d4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67afa35a_a9946f92",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio-bridge/group_vars/all/vars.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-11T17:55:46Z",
+      "side": 1,
+      "message": "Should be \u0027ocloud_infra_vm_net_bridge\u0027",
+      "revId": "a3bd17628bf7af06d5faa96732f58ae1bccee2d4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4530d250_e7c18d37",
+        "filename": "okd/roles/ocloud_infra_vm/defaults/main.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-11T17:55:46Z",
+      "side": 1,
+      "message": "Variable name needs to be updated in README.md",
+      "revId": "a3bd17628bf7af06d5faa96732f58ae1bccee2d4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70b7acb5_e13157fc",
+        "filename": "okd/roles/ocloud_infra_vm/templates/virt.xml.j2",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-11T17:55:46Z",
+      "side": 1,
+      "message": "I don\u0027t see where \u0027interface_name\u0027 is defined",
+      "revId": "a3bd17628bf7af06d5faa96732f58ae1bccee2d4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d05e3a68_46313858",
+        "filename": "okd/roles/ocloud_platform_okd/templates/install-config.yaml.j2",
+        "patchSetId": 4
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-11T17:55:46Z",
+      "side": 1,
+      "message": "Add `ocloud_platform_okd_airgapped_*\u0027 vars to role defaults",
+      "revId": "a3bd17628bf7af06d5faa96732f58ae1bccee2d4",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
