@@ -12,13 +12,17 @@ ocloud:
     g_ocloud_id: {{ ocloud_compliance_ocloud_id }}
     smo_token_data: {{ ocloud_token }}
     deploymentmanager_name: {{ ocloud_compliance_deployment_manager }}
-    resourcetype_name: {{ ocloud_compliance_resource_type }}
+    resourcetype_name: '{{ ocloud_compliance_resource_type | quote | urlencode }}'
     resource_description_substring: {{ ocloud_compliance_resource_desc_substring }}
-
+    expect_callback_verify: True
     api:
       host: {{ ocloud_compliance_o2ims_host }}
       node_port: {{ ocloud_compliance_o2ims_port }}
       protocol: {{ ocloud_compliance_o2ims_protocol }}
+  oran_o2_notification:
+    endpoint_uri: {{ ocloud_compliance_notification_endpoint }}
+    resource_address: {{ ocloud_compliance_notification_resource_address }}
+    publisher_endpoint: {{ ocloud_compliance_notification_publisher_endpoint }}
 #smo mock server ip and callback endpoints
 smo:
   service:
@@ -32,4 +36,3 @@ smo:
     path: /mock_smo/v1/o2ims_inventory_observer
   o2ims_alarm_observer:
     path: /mock_smo/v1/o2ims_alarm_observer
-

@@ -16,6 +16,7 @@
     name:
       - robotframework
       - RESTinstance
+      - robotframework-requests
       - robotframework-sshlibrary
     virtualenv: "{{ ocloud_compliance_staging_dir['path'] }}/venv"
 
@@ -30,7 +31,7 @@
 - name: Get oran-o2ims Inventory
   kubernetes.core.k8s_info:
     name: default
-    api_version: o2ims.oran.openshift.io/v1alpha1
+    api_version: ocloud.openshift.io/v1alpha1
     kind: Inventory
     namespace: oran-o2ims
     kubeconfig: "{{ ocloud_kubeconfig }}"
@@ -50,7 +51,7 @@
     register: o2ims_ocloud
 
   - set_fact:
-      ocloud_compliance_ocloud_id: "{{ o2ims_ocloud['json']['globalCloudId'] }}"
+      ocloud_compliance_ocloud_id: "{{ o2ims_ocloud['json']['globalcloudId'] }}"
   when: not ocloud_compliance_ocloud_id
 
 - name: Set ocloud_compliance_location_id
@@ -107,12 +108,13 @@
     src: "test_configs.yaml.j2"
     dest: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test/test_configs.yaml"
 
-- name: Execute compliance tests
-  ansible.builtin.shell:
-    cmd: "{{ ocloud_compliance_staging_dir['path'] }}/venv/bin/robot -L debug -d {{ ocloud_compliance_staging_dir['path'] }}/reports ./o2ims_compliance"
-    chdir: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test"
-
-- name: Stop mock SMO container
-  containers.podman.podman_container:
-    name: "mocksmo"
-    state: stopped
+- block:
+  - name: Execute compliance tests
+    ansible.builtin.shell:
+      cmd: "{{ ocloud_compliance_staging_dir['path'] }}/venv/bin/robot -L debug -d {{ ocloud_compliance_staging_dir['path'] }}/reports ./o2ims_compliance"
+      chdir: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test"
+  always:
+  - name: Stop mock SMO container
+    containers.podman.podman_container:
+      name: "mocksmo"
+      state: stopped

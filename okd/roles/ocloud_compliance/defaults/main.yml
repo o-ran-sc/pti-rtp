@@ -14,3 +14,6 @@ ocloud_compliance_ssh_password: robot
 ocloud_compliance_smo_host: "{{ ansible_default_ipv4['address'] }}"
 ocloud_compliance_smo_port: 1080
 ocloud_compliance_smo_protocol: https
+ocloud_compliance_notification_endpoint: ~
+ocloud_compliance_notification_resource_address: ~
+ocloud_compliance_notification_publisher_endpoint: ~

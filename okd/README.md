@@ -426,11 +426,20 @@ A playbook is provided to automate execution of O2 IMS compliance tests from the
 - ocloud_kubeconfig: path of the kubeconfig for the cluster hosting the O2 API server
 - ocloud_compliance_resource_type: name of a resource type associated with the target O-Cloud
 - ocloud_compliance_resource_desc_substring: substring of a resource description associated with the target O-Cloud
+- ocloud_compliance_notification_endpoint: endpoint of the O-Cloud event notification consumer
+- ocloud_compliance_notification_resource_address: resource address of O-Cloud event notification subscription
+- ocloud_compliance_notification_publisher_endpoint: endpoint of the O-Cloud event notification publisher
 
 For example:
 
 ```
-ansible-playbook -i inventory playbooks/ocloud_compliance.yml -e ocloud_kubeconfig=$KUBECONFIG -e ocloud_compliance_resource_type=pserver -e ocloud_compliance_resource_desc_substring=pserver
+ansible-playbook -i inventory playbooks/ocloud_compliance.yml \
+  -e ocloud_kubeconfig=$KUBECONFIG \
+  -e ocloud_compliance_resource_type="HPE/ProLiant DL360 Gen10 Plus (P28948-B21)" \
+  -e ocloud_compliance_resource_desc_substring="DL360" \
+  -e ocloud_compliance_notification_endpoint=http://consumer-events-subscription-service.cloud-events.svc.cluster.local:9043/event \
+  -e ocloud_compliance_notification_resource_address=/cluster/node/sno-du-1.example.com/sync/sync-status/sync-state \
+  -e ocloud_compliance_notification_publisher_endpoint=http://ptp-event-publisher-service-sno-du-1.openshift-ptp.svc.cluster.local:9043/api/ocloudNotifications/v2/subscriptions
 ```
 
 ## Sample Workload Deployment
