@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1a1f5ce_fb4e52b7",
+        "filename": "okd/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-17T21:07:47Z",
+      "side": 1,
+      "message": "Please move under the Infrastructure / VM section.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a670ce11_8319a940",
+        "filename": "okd/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-17T21:07:47Z",
+      "side": 1,
+      "message": "Please move this and the following three vars to the Platform / OKD section.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7e4a7ef_01084ea0",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio-bridge/group_vars/all/vars.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-17T21:07:47Z",
+      "side": 1,
+      "message": "Variable name should be `ocloud_infra_vm_net_mode` rather than `ocloud_infra_vm_network_mode`.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c3013ca_a2392356",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio-bridge/group_vars/all/vars.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-17T21:07:47Z",
+      "side": 1,
+      "message": "This should be reverted back to `ocloud_network_type`.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7a0b3c3_a2d140ce",
+        "filename": "okd/roles/ocloud_infra_vm/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2025-12-17T21:07:47Z",
+      "side": 1,
+      "message": "These defaults should be under the `ocloud_platform_okd` role since they are not specific to VM-based deployments.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
