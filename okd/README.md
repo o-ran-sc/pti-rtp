@@ -8,7 +8,7 @@ Currently supported Kubernetes platforms and infrastructure targets are:
 
 ## Infrastructure
 - KVM/libvirtd virtual machine
-- Bare metal (x86_64 architecture); see [Requirements for installing OpenShift on a single node](https://docs.okd.io/4.16/installing/installing_sno/install-sno-preparing-to-install-sno.html#install-sno-requirements-for-installing-on-a-single-node_install-sno-preparing) for hardware minimum resource requirements
+- Bare metal (x86_64 architecture); see [Requirements for installing OpenShift on a single node](https://docs.okd.io/latest/installing/installing_sno/install-sno-preparing-to-install-sno.html#install-sno-requirements-for-installing-on-a-single-node_install-sno-preparing) for hardware minimum resource requirements
 
 # Prerequisites
 The following prerequisites must be installed on the host where the playbook will be run (localhost, by default):
@@ -31,18 +31,20 @@ Several packages are required by Ansible modules or deployment scripts that are 
 - libvirt development headers/libraries
 
 Following are examples of how to install these packages on common distributions:
-```
 
-Fedora Linux
+**Fedora Linux**
+
 ```
 dnf install https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm
 dnf group install "Development Tools"
 dnf install python3-devel python3-libvirt python3-netaddr ansible pip pkgconfig libvirt-devel python-lxml nmstate wget make
 ```
 
-Ubuntu Linux
+**Ubuntu Linux**
+
 ```
 apt-get install libpython3-dev python3-libvirt python3-netaddr ansible python3-pip wget make
+```
 
 ## Ansible
 
@@ -162,7 +164,7 @@ The following Ansible variables must be defined in group_vars/all.yml:
 #### Optional
 Optionally, the following variables can be set to override default settings:
 
-- ocloud_platform_okd_release [default=4.19.0-okd-scos.0]: OKD release, as defined in [OKD releases](https://github.com/okd-project/okd/releases)
+- ocloud_platform_okd_release [default=4.20.0-okd-scos.12]: OKD release, as defined in [OKD releases](https://github.com/okd-project/okd/releases)
 - ocloud_platform_okd_pull_secret [default=None]: pull secret for use with non-public image registries
 - ocloud_platform_okd_api_vips [default=None]: list of virtual IPs to use for OKD API access (required if deploying a multi-node cluster)
 - ocloud_platform_okd_ingress_vips [default=None]: list of virtual IPs to use for ingress (required if deploying a multi-node cluster)
