@@ -71,6 +71,74 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "95f65567_510392bc",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio-bridge/host_vars/master-0-vm/vars.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-02-17T00:00:33Z",
+      "side": 1,
+      "message": "The `dns-resolver` section conflicts with the `ocloud_dns_servers` and `ocloud_domain_name` settings in group_vars and should be removed.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ce23aab0_6fdfe117",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/host_vars/master-0-vm/vars.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-02-17T00:00:33Z",
+      "side": 1,
+      "message": "The `dns-resolver` section conflicts with the `ocloud_dns_servers` and `ocloud_domain_name` settings in group_vars and should be removed.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b3a485d_c9b4c72f",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/host_vars/master-1-vm/vars.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-02-17T00:00:33Z",
+      "side": 1,
+      "message": "The `dns-resolver` section conflicts with the `ocloud_dns_servers` and `ocloud_domain_name` settings in group_vars and should be removed.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d3253d6_b11f7b13",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/host_vars/master-2-vm/vars.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-02-17T00:00:33Z",
+      "side": 1,
+      "message": "The `dns-resolver` section conflicts with the `ocloud_dns_servers` and `ocloud_domain_name` settings in group_vars and should be removed.",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b7a0b3c3_a2d140ce",
         "filename": "okd/roles/ocloud_infra_vm/defaults/main.yml",
         "patchSetId": 5
