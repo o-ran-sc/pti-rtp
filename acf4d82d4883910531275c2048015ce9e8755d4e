@@ -331,6 +331,24 @@
       "parentUuid": "b7a0b3c3_a2d140ce",
       "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "07563af7_5066cd39",
+        "filename": "okd/roles/ocloud_infra_vm/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-02-23T17:38:34Z",
+      "side": 1,
+      "message": "The ocloud_platform_okd_airgapped_* defaults still need to be moved to the ocloud_platform_okd role.",
+      "parentUuid": "93b95664_100da563",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
