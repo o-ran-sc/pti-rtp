@@ -367,6 +367,24 @@
       "parentUuid": "07563af7_5066cd39",
       "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3c109902_16266c12",
+        "filename": "okd/roles/ocloud_infra_vm/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-02-25T17:41:09Z",
+      "side": 1,
+      "message": "@m11202819@gapps.ntust.edu.tw I think there is a misunderstanding of what is needed here. The ocloud_platform_okd_* defaults in this file do not belong here since they aren\u0027t specific to the ocloud_infra_vm role (an air-gapped registry could be used with bare metal deployment also). These defaults need to be moved under `okd/roles/ocloud_platform_okd/defaults/main.yml`.",
+      "parentUuid": "8b5210c8_ddfcbd34",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
