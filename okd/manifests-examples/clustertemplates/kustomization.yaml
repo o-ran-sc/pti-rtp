@@ -1,2 +1,8 @@
 resources:
+- hardwareprofiles
+- hardwaretemplates
+- inventory
 - okd-4.19
+- okd-4.20
+- okd-4.21
+- okd-4.22
