@@ -1,0 +1,6 @@
+generators:
+- sno-du/sno-du-v1.yaml
+
+resources:
+- sno-du/ns.yaml
+- sno-du/msc-binding.yaml
