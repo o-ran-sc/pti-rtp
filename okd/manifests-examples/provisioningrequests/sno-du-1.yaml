@@ -16,6 +16,10 @@ spec:
   templateParameters:
     nodeClusterName: "sno-du-1"
     oCloudSiteId: "oransc-example-lab"
+    hwTemplateParameters:
+      nodeGroupData:
+        controller:
+          hwProfile: "hpe-dl360-bios-v1.54-bmc-v2.63"
     policyTemplateParameters:
       sriov-network-pfNames-1: '["ens1f0"]'
       sriov-network-vlan-1: "110"
@@ -25,7 +29,7 @@ spec:
       cpu-reserved: "2-10"
     clusterInstanceParameters:
       additionalNTPSources:
-        - 192.168.20.34
+        - 192.168.42.10
       baseDomain: oran-sc.example.lab
       clusterName: sno-du-1
       extraLabels:
