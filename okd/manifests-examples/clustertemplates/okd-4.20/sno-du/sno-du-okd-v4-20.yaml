@@ -1,14 +1,14 @@
 apiVersion: clcm.openshift.io/v1alpha1
 kind: ClusterTemplate
 metadata:
-  name: sno-du.okd-v4-19
-  namespace: sno-du-okd-v4-19
+  name: sno-du.okd-v4-20
+  namespace: sno-du-okd-v4-20
   annotations:
     clcm.openshift.io/skip-clusterimageset-validation: "true"
 spec:
   name: sno-du
-  version: okd-v4-19
-  release: 4.19.0-okd-scos.19
+  version: okd-v4-20
+  release: 4.20.0-okd-scos.17
   templates:
     hwTemplate: hpe-dl360
     clusterInstanceDefaults: clusterinstance-defaults-v1
