@@ -21,13 +21,15 @@ stringData:
         ipv6:
           dhcp: false
           enabled: false
-        name: ens10f0
+        name: boot-interface
         type: ethernet
+        mac-address: de:ad:be:ef:ca:fe
+        identifier: mac-address
     routes:
       config:
         - destination: 0.0.0.0/0
           next-hop-address: 192.168.42.1
-          next-hop-interface: ens10f0
+          next-hop-interface: boot-interface
           table-id: 254
 ---
 apiVersion: v1
