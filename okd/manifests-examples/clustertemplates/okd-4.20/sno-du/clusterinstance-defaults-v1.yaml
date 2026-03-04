@@ -2,13 +2,13 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: clusterinstance-defaults-v1
-  namespace: sno-du-okd-v4-19
+  namespace: sno-du-okd-v4-20
 data:
   clusterInstallationTimeout: "90m"
   clusterinstance-defaults: |
     baseDomain: example.com
     clusterType: SNO
-    clusterImageSetNameRef: "4.19.0-okd-scos.19"
+    clusterImageSetNameRef: "4.20.0-okd-scos.17"
     pullSecretRef:
       name: pull-secret
     networkType: OVNKubernetes
