@@ -8,3 +8,11 @@ ocloud_platform_stolostron_assisted_os_images:
   openshiftVersion: "4.19"
   url: https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/4.19/4.19.10/rhcos-4.19.10-x86_64-live-iso.x86_64.iso
   version: 9.6.20250826-1
+- cpuArchitecture: x86_64
+  openshiftVersion: "4.20"
+  url: https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/4.20/4.20.13/rhcos-4.20.13-x86_64-live-iso.x86_64.iso
+  version: 9.6.20260112-0
+- cpuArchitecture: x86_64
+  openshiftVersion: "4.21"
+  url: https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/4.21/4.21.0/rhcos-4.21.0-x86_64-live-iso.x86_64.iso
+  version: 9.6.20251212-1

@@ -6,3 +6,5 @@ resources:
 # MSC binding needed for observability:
 - common/msc-binding-observability.yaml
 - okd-4.19
+- okd-4.20
+- okd-4.21
