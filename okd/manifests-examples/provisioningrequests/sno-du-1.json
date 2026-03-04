@@ -7,6 +7,13 @@
   "templateParameters": {
     "nodeClusterName": "sno-du-1",
     "oCloudSiteId": "oransc-example-lab",
+    "hwTemplateParameters": {
+      "nodeGroupData": {
+        "controller": {
+          "hwProfile": "hpe-dl360-bios-v1.54-bmc-v2.63"
+        }
+      }
+    },
     "policyTemplateParameters": {
       "sriov-network-pfNames-1": "[\"ens1f0\"]",
       "sriov-network-vlan-1": "110",
@@ -64,8 +71,10 @@
                     "dhcp": false,
                     "enabled": false
                   },
-                  "name": "ens10f0",
-                  "type": "ethernet"
+                  "name": "boot-interface",
+                  "type": "ethernet",
+                  "mac-address": "de:ad:be:ef:ca:fe",
+                  "identifier": "mac-address"
                 }
               ],
               "routes": {
@@ -73,7 +82,7 @@
                   {
                     "destination": "0.0.0.0/0",
                     "next-hop-address": "192.168.42.1",
-                    "next-hop-interface": "ens10f0",
+                    "next-hop-interface": "boot-interface",
                     "table-id": 254
                   }
                 ]

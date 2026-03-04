@@ -1,0 +1,5 @@
+resources:
+- 4.19.0-okd-scos.19.yaml
+- 4.20.0-okd-scos.17.yaml
+- 4.21.0-okd-scos.7.yaml
+- 4.22.0-okd-scos.1.yaml
