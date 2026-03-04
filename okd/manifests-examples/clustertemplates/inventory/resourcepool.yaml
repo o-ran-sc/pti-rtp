@@ -1,0 +1,16 @@
+---
+# ResourcePool CR - groups related resources (servers) within an O-Cloud Site
+# Referenced by BareMetalHost label resourcePoolName
+apiVersion: ocloud.openshift.io/v1alpha1
+kind: ResourcePool
+metadata:
+  # Must match: BareMetalHost label resources.clcm.openshift.io/resourcePoolName
+  name: du-pool
+  namespace: oran-o2ims
+spec:
+  # Must match an existing OCloudSite's metadata.name
+  oCloudSiteName: "ocloud1"
+  description: "Site 1, O-Cloud 1, DU Pool"
+  extensions:
+    hardware-profile: "hpe-dl360-bios-v1.54-bmc-v2.63"
+    purpose: "ran-du"

@@ -1,15 +1,15 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
-  name: sno-du-okd-v4-19
+  name: sno-du-okd-v4-20
 policyDefaults:
-  namespace: ztp-sno-du-okd-v4-19
+  namespace: ztp-sno-du-okd-v4-20
   # Use an existing placement rule so that placement bindings can be consolidated
   placement:
     # These labels must match the labels set for the ManagedCluster either through the ProvisioningRequest
     # or the ClusterInstance ConfigMap.
     labelSelector:
-      cluster-version: "v4.19"
+      cluster-version: "v4.20"
       sno-du-policy: "v1"
   remediationAction: enforce
   severity: low
