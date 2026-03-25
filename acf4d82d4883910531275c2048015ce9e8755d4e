@@ -385,6 +385,24 @@
       "parentUuid": "8b5210c8_ddfcbd34",
       "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ed9869bf_60b04981",
+        "filename": "okd/roles/ocloud_infra_vm/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002719
+      },
+      "writtenOn": "2026-03-25T04:11:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c109902_16266c12",
+      "revId": "acf4d82d4883910531275c2048015ce9e8755d4e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
