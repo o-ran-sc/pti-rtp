@@ -22,24 +22,26 @@
     dest: "{{ ocloud_workload_oaicucp_staging_dir['path'] }}/helm"
     remote_src: true
 
-- name: Clone oai-cn5g-fed repo
+- name: Clone charts repo
   ansible.builtin.git:
     repo: "{{ ocloud_workload_oaicucp_repo_url }}"
     version: "{{ ocloud_workload_oaicucp_repo_version }}"
-    dest: "{{ ocloud_workload_oaicucp_staging_dir['path'] }}/git/oai-cn5g-fed"
+    dest: "{{ ocloud_workload_oaicucp_staging_dir['path'] }}/git/charts"
     recursive: false
 
 - name: Deploy oai-cu-cp Helm chart
   kubernetes.core.helm:
     name: oai-cu-cp
-    chart_ref: "{{ ocloud_workload_oaicucp_staging_dir['path'] }}/git/oai-cn5g-fed/charts/oai-5g-ran/oai-cu-cp"
+    chart_ref: "{{ ocloud_workload_oaicucp_staging_dir['path'] }}/git/charts/oai-5g-ran/oai-cu-cp"
     release_namespace: "{{ ocloud_workload_oaicucp_namespace }}"
     create_namespace: true
     values:
+      config:
+        amfHost: "{{ ocloud_workload_oaicucp_amf_host }}"
       kubernetesDistribution: "Openshift"
       nfimage:
-        repository: docker.io/oaisoftwarealliance/oai-gnb
-        version: 2025.w23
+        repository: "{{ ocloud_workload_oaicucp_image_url }}"
+        version: "{{ ocloud_workload_oaicucp_image_tag }}"
     kubeconfig: "{{ ocloud_dms_kubeconfig }}"
     binary_path: "{{ ocloud_workload_oaicucp_staging_dir['path'] }}/helm/linux-amd64/helm"
     state: present
