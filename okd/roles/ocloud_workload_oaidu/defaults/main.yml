@@ -1,0 +1,19 @@
+---
+ocloud_workload_oaidu_repo_url: "https://gitlab.eurecom.fr/oai/orchestration/charts.git"
+ocloud_workload_oaidu_repo_version: "main"
+ocloud_workload_oaidu_namespace: "oai-du"
+ocloud_workload_oaidu_helm_url: "https://get.helm.sh/helm-v3.18.2-linux-amd64.tar.gz"
+ocloud_workload_oaidu_cu_host: "oai-cu.oai-cu-cp.svc"
+ocloud_workload_oaidu_image_url: "docker.io/oaisoftwarealliance/oai-gnb-fhi72"
+ocloud_workload_oaidu_image_tag: "2025.w49"
+ocloud_workload_oaidu_sriov_cplane:
+  resource: du_fh
+  vlan: 110
+ocloud_workload_oaidu_sriov_uplane:
+  resource: du_mh
+  vlan: 110
+ocloud_workload_oaidu_sriov_claims:
+- name: openshift.io/du_fh
+  quantity: 1
+- name: openshift.io/du_mh
+  quantity: 1
