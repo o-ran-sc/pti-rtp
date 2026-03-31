@@ -1,0 +1,7 @@
+---
+ocloud_workload_oaidu_repo_url: "https://gitlab.eurecom.fr/oai/orchestration/charts.git"
+ocloud_workload_oaidu_repo_version: "master"
+ocloud_workload_oaidu_namespace: "oai-du"
+ocloud_workload_oaidu_helm_url: "https://get.helm.sh/helm-v3.18.2-linux-amd64.tar.gz"
+ocloud_workload_oaidu_image_url: registry.connect.redhat.com/oaisoftwarealliance/oai-gnb
+ocloud_workload_oaidu_image_tag: develop
