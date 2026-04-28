@@ -319,7 +319,7 @@ If you need support or add new features/components, please feel free to contact 
 .. _`O-RAN.WG6.O2IMS-INTERFACE-R003-v06.00`: https://specifications.o-ran.org/download?id=674
 .. _`O-RAN.WG6.O2DMS-INTERFACE-K8S-PROFILE-R003-v05.00`: https://specifications.o-ran.org/download?id=677
 .. _`O-RAN.WG6.O-Cloud Notification API-v02.01`: https://specifications.o-ran.org/download?id=300
-.. _`StarlingX PTP Notification API`: https://docs.starlingx.io/releasenotes/index.html#ptp-o-ran-spec-compliant-timing-api-notification
+.. _`StarlingX PTP Notification API`: https://docs.starlingx.io/releasenotes/index.html
 .. _`StarlingX Worker Function Performance Profiles`: https://docs.starlingx.io/deploy/kubernetes/worker-function-performance-profiles.html
 .. _`StarlingX containerd support`: https://opendev.org/starlingx/integ/src/branch/master/kubernetes/containerd/debian
 .. _`StarlingX KubeVirt`: https://docs.starlingx.io/kube-virt/index-kubevirt-f1bfd2a21152.html
