@@ -77,4 +77,4 @@ References
 - `OKD`_
 
 .. _`StarlingX`: https://docs.starlingx.io/
-.. _`OKD`: https://www.okd.io/
+.. _`OKD`: https://okd.io/
