@@ -1,0 +1,152 @@
+<<<<<<< Updated upstream
+# -----------------------------------------------------------------------------
+# Ansible
+# -----------------------------------------------------------------------------
+*.retry
+fact_cache/
+.cache/
+ansible_facts/
+fetched/
+
+# Local inventory (ansible.cfg default); use inventory-examples/ as templates
+inventory/
+
+# Installed collections (commit requirements.yml; install into ./collections per ansible.cfg)
+collections/ansible_collections/
+
+# Vault password material — never commit (encrypted vault.yml is usually fine to commit)
+.vault_pass
+.vault_pass.txt
+*.vault_pass
+**/vault_password*
+
+# -----------------------------------------------------------------------------
+# Kubernetes / OpenShift / OKD (secrets & local cluster state)
+# -----------------------------------------------------------------------------
+kubeconfig
+*.kubeconfig
+.kube/
+/pull-secret*
+/install-config.yaml
+/auth/
+
+# -----------------------------------------------------------------------------
+# Secrets, credentials & keys
+# -----------------------------------------------------------------------------
+*.pem
+*.key
+!*.key.example
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*.p12
+*.pfx
+secrets/
+.secrets/
+.env
+.env.*
+!.env.example
+*.credentials
+.credentials
+
+# Cloud & SCM tool caches that may hold tokens (if ever copied into repo)
+.aws/credentials
+.azure/
+.gcp/
+.netrc
+*_token.txt
+*_password.txt
+
+# -----------------------------------------------------------------------------
+# Python (requirements.txt: kubernetes, netaddr, libvirt-python)
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# -----------------------------------------------------------------------------
+# Editors & IDEs
+# -----------------------------------------------------------------------------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# -----------------------------------------------------------------------------
+# Local development overrides
+# -----------------------------------------------------------------------------
+*.local.*
+CLAUDE.local.md
+settings.local.json
+
+# -----------------------------------------------------------------------------
+# OS
+# -----------------------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# -----------------------------------------------------------------------------
+# Logs & temp
+# -----------------------------------------------------------------------------
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+=======
+# Site inventory (copy from inventory-examples/)
+inventory/
+
+# Ansible
+collections/
+collections-download/
+*.retry
+.ansible/
+
+# Install / fetch artifacts
+fetched/
+tmp/
+temp/
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+
+# Secrets and cluster credentials (local only)
+.env
+.env.*
+*.vault_pass
+.vault_pass
+/kubeconfig
+*.kubeconfig
+pull-secret.json
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Local agent / IDE config
+.claude/
+
+>>>>>>> Stashed changes
