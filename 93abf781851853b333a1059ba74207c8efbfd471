@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "640c6494_aca65245",
+        "filename": "okd/.gitignore",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-05-26T22:49:08Z",
+      "side": 1,
+      "message": "Can this file be consolidated with the .gitignore file at the top level of the repo?",
+      "revId": "93abf781851853b333a1059ba74207c8efbfd471",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0c82bd5f_6fac6032",
+        "filename": "okd/.gitignore",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-05-26T22:49:08Z",
+      "side": 1,
+      "message": "inventory/ should not be ignored since it is maintained as part of the code base (i.e. okd/inventory is a link pointing to inventory-examples/ocloud-vm-okd-aio, but could change in the future)",
+      "revId": "93abf781851853b333a1059ba74207c8efbfd471",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
