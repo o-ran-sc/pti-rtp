@@ -1,5 +1,6 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# Repo-specific paths
 /logs
 /rtp/
 /wrlinux-x/
@@ -7,16 +8,44 @@
 
 # ignored anywhere
 collections/
+collections-download/
+*.retry
+.ansible/
+
+# Install / fetched artifacts
 fetched/
 tmp/
 temp/
+
+# Python
 venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# documentation
-.tox
+# Documentation
 docs/_build/*
+.tox
 
-# editor
-.vscode
+# Secrets and cluster credentials (local only)
+.env
+.env.*
+*.vault_pass
+.vault_pass
+/kubeconfig
+*.kubeconfig
+pull-secret.json
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
 rtp.code-workspace
 
+# Local agent / IDE config
+.claude/
