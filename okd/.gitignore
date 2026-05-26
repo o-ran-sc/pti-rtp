@@ -1,0 +1,42 @@
+# Site inventory (copy from inventory-examples/)
+inventory/
+
+# Ansible
+collections/
+collections-download/
+*.retry
+.ansible/
+
+# Install / fetch artifacts
+fetched/
+tmp/
+temp/
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+
+# Secrets and cluster credentials (local only)
+.env
+.env.*
+*.vault_pass
+.vault_pass
+/kubeconfig
+*.kubeconfig
+pull-secret.json
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Local agent / IDE config
+.claude/
