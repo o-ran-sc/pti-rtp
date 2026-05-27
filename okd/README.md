@@ -3,6 +3,15 @@ The purpose of the contained Ansible playbook and roles is to deploy an ORAN-com
 
 Currently supported Kubernetes platforms and infrastructure targets are:
 
+## Supported Versions
+
+This automation targets the following component versions:
+
+- **OKD**: 4.21.0-okd-scos.12
+- **Stolostron (Advanced Cluster Management)**: 2.16
+- **CentOS Stream CoreOS (SCOS)**: 10.0
+- **OKD CLI**: stable-4.21
+
 ## Platform
 - [OKD](https://www.okd.io/)
 
@@ -165,7 +174,7 @@ The following Ansible variables must be defined in group_vars/all.yml:
 #### Optional
 Optionally, the following variables can be set to override default settings:
 
-- ocloud_platform_okd_release [default=4.20.0-okd-scos.12]: OKD release, as defined in [OKD releases](https://github.com/okd-project/okd/releases)
+- ocloud_platform_okd_release [default=4.21.0-okd-scos.12]: OKD release, as defined in [OKD releases](https://github.com/okd-project/okd/releases)
 - ocloud_platform_okd_pull_secret [default=None]: pull secret for use with non-public image registries
 - ocloud_platform_okd_api_vips [default=None]: list of virtual IPs to use for OKD API access (required if deploying a multi-node cluster)
 - ocloud_platform_okd_ingress_vips [default=None]: list of virtual IPs to use for ingress (required if deploying a multi-node cluster)
