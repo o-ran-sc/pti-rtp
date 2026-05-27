@@ -24,7 +24,8 @@
   delegate_to: "{{ groups['deployer'][0] }}"
   when: ocloud_infra == "baremetal" and ocloud_platform_image is defined
 
-- meta: flush_handlers
+- name: Flush pending handlers before operator installs
+  ansible.builtin.meta: flush_handlers
 
 - name: Include platform role - Stolostron
   ansible.builtin.import_role:
@@ -54,9 +55,3 @@
   run_once: true
   when: ocloud_platform == "okd"
 
-#- name: Include platform role - oran-hwmgr-plugin
-#  ansible.builtin.import_role:
-#    name: "ocloud_platform_hwmgr"
-#  delegate_to: "{{ groups['deployer'][0] }}"
-#  run_once: true
-#  when: ocloud_platform == "okd"
