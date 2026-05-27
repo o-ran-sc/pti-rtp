@@ -56,6 +56,22 @@
     state: present
     kubeconfig: "{{ ocloud_kubeconfig }}"
 
+- name: Get MultiClusterHub
+  kubernetes.core.k8s_info:
+    api_version: operator.open-cluster-management.io/v1
+    kind: MultiClusterHub
+    namespace: open-cluster-management
+    name: multiclusterhub
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+  register: ocloud_platform_stolostron_multiclusterhub
+
+- set_fact:
+    ocloud_platform_stolostron_siteconfig_index: "{{ component_index }}"
+  loop: "{{ ocloud_platform_stolostron_multiclusterhub['resources'][0]['spec']['overrides']['components'] }}"
+  loop_control:
+    index_var: component_index
+  when: item['name'] == "siteconfig"
+
 - name: Enable siteconfig
   kubernetes.core.k8s_json_patch:
     name: multiclusterhub
@@ -68,3 +84,16 @@
         value:
           name: siteconfig
           enabled: true
+  when: ocloud_platform_stolostron_siteconfig_index is undefined
+
+- name: Enable siteconfig
+  kubernetes.core.k8s_json_patch:
+    name: multiclusterhub
+    kind: MultiClusterHub
+    namespace: open-cluster-management
+    kubeconfig: "{{ ocloud_kubeconfig }}"
+    patch:
+      - op: replace
+        path: "/spec/overrides/components/{{ ocloud_platform_stolostron_siteconfig_index }}/enabled"
+        value: true
+  when: ocloud_platform_stolostron_siteconfig_index is defined
