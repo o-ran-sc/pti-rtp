@@ -18,6 +18,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cba94c6_5a0221c9",
+        "filename": "okd/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T19:07:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e10bbc07_cb49d1d8",
+      "revId": "2db04b663fadf41e81fcaae898b935d04e5dda8e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "86d296a3_841d3196",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-06-02T18:49:55Z",
       "side": 1,
       "message": "This CLI version is not published yet",
+      "revId": "2db04b663fadf41e81fcaae898b935d04e5dda8e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2681279_21195628",
+        "filename": "okd/roles/ocloud_setup/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T19:07:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "86d296a3_841d3196",
       "revId": "2db04b663fadf41e81fcaae898b935d04e5dda8e",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
