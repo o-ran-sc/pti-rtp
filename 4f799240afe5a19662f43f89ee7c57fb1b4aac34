@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48db1813_fbe2ea8b",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T17:49:10Z",
+      "side": 1,
+      "message": "This is incorrect, the current target version in 4.22.0-okd-scos.1",
+      "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b4fc6a01_7556df8d",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T17:49:10Z",
+      "side": 1,
+      "message": "Please add the oran-o2ims version",
+      "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9c60dbf_22b39a2c",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T17:49:10Z",
+      "side": 1,
+      "message": "This is incorrect, the current target version in 4.22.0-okd-scos.1",
+      "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
