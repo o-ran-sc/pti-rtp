@@ -18,6 +18,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d49ae33e_012fa4b3",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T18:20:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "48db1813_fbe2ea8b",
+      "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6c27c8e7_427482c9",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-06-02T17:52:55Z",
       "side": 1,
       "message": "Remove (Advanced Cluster Managment) since that is a commercial product",
+      "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f711053b_d29a4f1e",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T18:20:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c27c8e7_427482c9",
       "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -52,6 +88,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3dc8c28d_5d7af985",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T18:20:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4fc6a01_7556df8d",
+      "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e9c60dbf_22b39a2c",
@@ -65,6 +119,24 @@
       "writtenOn": "2026-06-02T17:49:10Z",
       "side": 1,
       "message": "This is incorrect, the current target version in 4.22.0-okd-scos.1",
+      "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f66cc8e9_6ce9dae5",
+        "filename": "okd/README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-02T18:20:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9c60dbf_22b39a2c",
       "revId": "4f799240afe5a19662f43f89ee7c57fb1b4aac34",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
