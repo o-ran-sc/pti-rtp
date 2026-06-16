@@ -18,6 +18,7 @@
       - RESTinstance
       - robotframework-requests
       - robotframework-sshlibrary
+      - jsonpath-ng==1.7.0
     virtualenv: "{{ ocloud_compliance_staging_dir['path'] }}/venv"
 
 - name: Create SSH user
@@ -85,7 +86,7 @@
 - name: Run mock SMO container
   containers.podman.podman_container:
     name: "mocksmo"
-    image: mockserver/mockserver
+    image: docker.io/mockserver/mockserver
     publish:
       - "{{ ocloud_compliance_smo_port }}:{{ ocloud_compliance_smo_port }}"
     state: started
