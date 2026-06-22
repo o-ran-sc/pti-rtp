@@ -22,7 +22,7 @@ This project is a reference implementation of O-Cloud infrastructure which is ba
 
   * OKD
 
-    * CentOS Stream CoreOS 9
+    * CentOS Stream CoreOS 10
 
 Notes:
   * Debian based is the recommended platfrom.

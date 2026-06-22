@@ -249,7 +249,7 @@ Multi O-Clouds and Deployment Configurations
 
   * OKD
 
-    * CentOS Stream CoreOS 9
+    * CentOS Stream CoreOS 10
 
 A variety of deployment configuration options are supported:
 

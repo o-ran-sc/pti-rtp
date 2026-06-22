@@ -58,6 +58,63 @@ Version history
 | 2025-12-31         | 13.0.0             | Jackie Huang       | M Release          |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2026-06-30         | 14.0.0             | Jackie Huang       | N Release          |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
+
+Version 14.0.0, 2026-06-30
+--------------------------
+#. 14th version (N release)
+#. INF Multi O-Cloud and Multi OS support:
+
+   * StarlingX 10.0
+
+     * Supported OS:
+
+       * Debian 11 (bulllseye)
+
+   * OKD 4.22
+
+     * Supported OS:
+
+       * CentOS Stream CoreOS 10
+
+#. INF MultiArch support for StarlingX O-Cloud:
+
+   * Add support for ARM64 arch.
+   * See developer-guide for how to build image for ARM64.
+   * No image will be provided.
+
+#. Support four deployment modes on Debian based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
+
+#. Support four deployment modes on CentOS based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+   * Distributed Cloud
+
+#. Support three deployment modes on Yocto based image for StarlingX O-Cloud:
+
+   * AIO simplex mode
+   * AIO duplex mode (2 servers with High Availabity)
+   * AIO duplex mode (2 servers with High Availabity) with additional worker node
+
+#. Support two deployment modes on OKD O-Cloud:
+
+   * Single-Node OKD (SNO)
+   * Multi-Node OKD (3 control plane nodes minimum)
+
+#. Support VM and bare metal automated deployment for OKD O-Cloud
+#. Support automated integration of Stolostron, multi-cluster-observability,
+   cluster-group-upgrades, and oran-o2ims operators into OKD O-Cloud
+#. Includes supporting playbooks/roles for automating O2 compliance testing
+   and sample workload deployment for OKD O-Cloud
 
 Version 13.0.0, 2025-12-31
 --------------------------
