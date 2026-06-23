@@ -58,6 +58,30 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "07a1d86e_f2152694",
+        "filename": "docs/developer-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-23T21:29:20Z",
+      "side": 1,
+      "message": "Not related to OKD. I\u0027ll let @jackie.huang@windriver.com decide whether to fix.",
+      "parentUuid": "fe61ebfa_96df59aa",
+      "range": {
+        "startLine": 28,
+        "startChar": 37,
+        "endLine": 28,
+        "endChar": 45
+      },
+      "revId": "a60ab65161caf62ce5c6adf8159c29bd7ffbc018",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7a5985ee_cf8084b8",
@@ -71,6 +95,24 @@
       "writtenOn": "2026-06-23T16:37:52Z",
       "side": 1,
       "message": "Typo bulllseye",
+      "revId": "a60ab65161caf62ce5c6adf8159c29bd7ffbc018",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6141a30_4d2de69d",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-06-23T21:29:20Z",
+      "side": 1,
+      "message": "Not related to OKD. I\u0027ll let @jackie.huang@windriver.com decide whether to fix.",
+      "parentUuid": "7a5985ee_cf8084b8",
       "revId": "a60ab65161caf62ce5c6adf8159c29bd7ffbc018",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
