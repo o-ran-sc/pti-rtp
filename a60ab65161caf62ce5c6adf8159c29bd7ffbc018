@@ -16,6 +16,63 @@
       "message": "recheck",
       "revId": "a60ab65161caf62ce5c6adf8159c29bd7ffbc018",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e3ceadb_76a6baba",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-06-23T16:37:52Z",
+      "side": 1,
+      "message": "Just a couple of small changes. Overall HUGE improvements.",
+      "revId": "a60ab65161caf62ce5c6adf8159c29bd7ffbc018",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fe61ebfa_96df59aa",
+        "filename": "docs/developer-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-06-23T16:37:52Z",
+      "side": 1,
+      "message": "Not related to you change but worth fixing.",
+      "range": {
+        "startLine": 28,
+        "startChar": 37,
+        "endLine": 28,
+        "endChar": 45
+      },
+      "revId": "a60ab65161caf62ce5c6adf8159c29bd7ffbc018",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a5985ee_cf8084b8",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-06-23T16:37:52Z",
+      "side": 1,
+      "message": "Typo bulllseye",
+      "revId": "a60ab65161caf62ce5c6adf8159c29bd7ffbc018",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
