@@ -6,7 +6,7 @@
 INF Release Notes
 =================
 
-This document provides the release notes for J-Release (10.0.0) of INF RTP.
+This document provides the release notes for N-Release (14.0.0) of INF RTP.
 
 .. contents::
    :depth: 3
@@ -71,7 +71,7 @@ Version 14.0.0, 2026-06-30
 
      * Supported OS:
 
-       * Debian 11 (bulllseye)
+       * Debian 11 (bullseye)
 
    * OKD 4.22
 
@@ -125,7 +125,7 @@ Version 13.0.0, 2025-12-31
 
      * Supported OS:
 
-       * Debian 11 (bulllseye)
+       * Debian 11 (bullseye)
 
    * OKD 4.20
 
@@ -179,7 +179,7 @@ Version 12.0.0, 2025-06-30
 
      * Supported OS:
 
-       * Debian 11 (bulllseye)
+       * Debian 11 (bullseye)
 
    * OKD 4.19
 
@@ -234,7 +234,7 @@ Version 11.0.0, 2024-12-31
 
      * Supported OS:
 
-       * Debian 11 (bulllseye)
+       * Debian 11 (bullseye)
 
    * OKD 4.16
 
@@ -280,7 +280,7 @@ Version 10.0.0, 2024-06-28
 
      * Supported OS:
 
-       * Debian 11 (bulllseye)
+       * Debian 11 (bullseye)
        * CentOS 7
        * Yocto 2.7 (warrior)
 

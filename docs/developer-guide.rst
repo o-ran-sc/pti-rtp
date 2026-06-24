@@ -25,7 +25,7 @@ This project is a reference implementation of O-Cloud infrastructure which is ba
     * CentOS Stream CoreOS 10
 
 Notes:
-  * Debian based is the recommended platfrom.
+  * Debian based is the recommended platform.
   * The intended audiences of this guide are the developers who want to develop/integrate apps in INF platform, if you just want to install and deploy INF platform, you can ignore this guide and read the `INF Installation Guide`_
 
 Experimental feature:
