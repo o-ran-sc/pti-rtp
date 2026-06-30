@@ -6,7 +6,7 @@ metadata:
   namespace: openshift-marketplace
 spec:
   displayName: OKDerators
-  image: 'quay.io/okderators/catalog-index:4.20'
+  image: 'quay.io/okderators/catalog-index:4.21'
   publisher: OKD Community
   icon:
     base64data: '' # Todo
