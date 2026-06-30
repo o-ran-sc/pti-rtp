@@ -36,6 +36,24 @@ policies:
           source: okderators
           installPlanApproval:
             '{{hub $configMap:=(lookup "v1" "ConfigMap" "" (printf "%s-pg" .ManagedClusterName)) hub}}{{hub dig "data" "install-plan-approval" "Manual" $configMap hub}}'
+    - path: source-crs/PtpSubscriptionNS.yaml
+    - path: source-crs/PtpSubscriptionOperGroup.yaml
+    - path: source-crs/PtpSubscription.yaml
+      patches:
+      - spec:
+          channel: "alpha"
+          source: okderators
+          installPlanApproval:
+            '{{hub $configMap:=(lookup "v1" "ConfigMap" "" (printf "%s-pg" .ManagedClusterName)) hub}}{{hub dig "data" "install-plan-approval" "Manual" $configMap hub}}'
+    - path: source-crs/StorageNS.yaml
+    - path: source-crs/StorageOperGroup.yaml
+    - path: source-crs/StorageSubscription.yaml
+      patches:
+      - spec:
+          channel: "alpha"
+          source: okderators
+          installPlanApproval:
+            '{{hub $configMap:=(lookup "v1" "ConfigMap" "" (printf "%s-pg" .ManagedClusterName)) hub}}{{hub dig "data" "install-plan-approval" "Manual" $configMap hub}}'
 - name: v1-perf-configuration-policy
   manifests:
     - path: source-crs/PerformanceProfile-SetSelector.yaml
@@ -80,6 +98,7 @@ policies:
       patches:
       - spec:
           configDaemonNodeSelector:
+            $patch: replace
             node-role.kubernetes.io/master: ""
           enableInjector: true
           enableOperatorWebhook: true
