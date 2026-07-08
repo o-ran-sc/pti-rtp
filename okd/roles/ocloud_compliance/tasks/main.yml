@@ -21,13 +21,15 @@
       - jsonpath-ng==1.7.0
     virtualenv: "{{ ocloud_compliance_staging_dir['path'] }}/venv"
 
-- name: Create SSH user
+- name: Create SSH user for compliance testing
   become: true
   ansible.builtin.user:
     name: "{{ ocloud_compliance_ssh_user }}"
     state: present
-    password: "{{ ocloud_compliance_ssh_password | password_hash('sha512', 'salt') }}"
+    password: "{{ ocloud_compliance_ssh_password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+    update_password: on_create
   delegate_to: "{{ ocloud_compliance_ssh_host }}"
+  no_log: true
 
 - name: Get oran-o2ims Inventory
   kubernetes.core.k8s_info:
@@ -108,6 +110,8 @@
   ansible.builtin.template:
     src: "test_configs.yaml.j2"
     dest: "{{ ocloud_compliance_staging_dir['path'] }}/git/test_scripts/O2IMS_Compliance_Test/test_configs.yaml"
+    mode: '0600'
+  no_log: true
 
 - block:
   - name: Execute compliance tests
