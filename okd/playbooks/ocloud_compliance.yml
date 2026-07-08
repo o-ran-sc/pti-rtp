@@ -14,5 +14,6 @@
     - ansible.builtin.fail:
         msg: "ocloud_compliance_resource_desc_substring must be set to a substring of a resource description associated with the target O-Cloud"
       when: ocloud_compliance_resource_desc_substring is undefined or not ocloud_compliance_resource_desc_substring
+
   roles:
     - ocloud_compliance
