@@ -14,5 +14,48 @@
     - ansible.builtin.fail:
         msg: "ocloud_compliance_resource_desc_substring must be set to a substring of a resource description associated with the target O-Cloud"
       when: ocloud_compliance_resource_desc_substring is undefined or not ocloud_compliance_resource_desc_substring
+
+    # SSH credential validation
+    - name: Validate SSH credentials are provided
+      ansible.builtin.fail:
+        msg: >-
+          SECURITY ERROR: ocloud_compliance_ssh_user must be set.
+          This variable should be vault-encrypted in your inventory (group_vars/all/vault.yml).
+          Never set this in plain text. See roles/ocloud_compliance/README.md for setup instructions.
+      when: ocloud_compliance_ssh_user is not defined or not ocloud_compliance_ssh_user
+
+    - name: Validate SSH password is provided
+      ansible.builtin.fail:
+        msg: >-
+          SECURITY ERROR: ocloud_compliance_ssh_password must be set.
+          This variable should be vault-encrypted in your inventory (group_vars/all/vault.yml).
+          Never set this in plain text. See roles/ocloud_compliance/README.md for setup instructions.
+      when: ocloud_compliance_ssh_password is not defined or not ocloud_compliance_ssh_password
+
+    - name: Check if SSH credentials appear to be plaintext defaults
+      ansible.builtin.fail:
+        msg: >-
+          SECURITY ERROR: Default credentials detected (user='robot', pass='robot').
+          You must set vault-encrypted credentials in your inventory.
+          See roles/ocloud_compliance/README.md for setup instructions.
+      when:
+        - ocloud_compliance_ssh_user == 'robot'
+        - ocloud_compliance_ssh_password == 'robot'
+
+    - name: Warn if credentials may not be encrypted
+      ansible.builtin.debug:
+        msg: >-
+          WARNING: SSH credentials do not appear to be vault-encrypted.
+          Ansible Vault encrypted strings contain '$ANSIBLE_VAULT'.
+          Consider encrypting with: ansible-vault encrypt_string 'your_value' --name 'variable_name'
+      when:
+        - ocloud_compliance_ssh_user is defined
+        - ocloud_compliance_ssh_password is defined
+        - ocloud_compliance_ssh_user is string
+        - ocloud_compliance_ssh_password is string
+        - "'$ANSIBLE_VAULT' not in ocloud_compliance_ssh_user | string"
+        - "'$ANSIBLE_VAULT' not in ocloud_compliance_ssh_password | string"
+
   roles:
+    - ocloud_token
     - ocloud_compliance
