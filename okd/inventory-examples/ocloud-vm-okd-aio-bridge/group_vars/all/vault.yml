@@ -2,3 +2,17 @@
 # Encrypt with `ansible-vault encrypt vault.yml` before adding secrets
 # Uncomment to override default pull secret from ocloud_platform_okd role:
 #ocloud_platform_okd_pull_secret: ~
+
+# O-Cloud compliance testing SSH credentials (REQUIRED for compliance playbook)
+# Generate encrypted values with:
+#   ansible-vault encrypt_string 'username' --name 'ocloud_compliance_ssh_user'
+#   ansible-vault encrypt_string 'password' --name 'ocloud_compliance_ssh_password'
+# Then paste the output here (uncomment and replace placeholders):
+
+#ocloud_compliance_ssh_user: !vault |
+#          $ANSIBLE_VAULT;1.1;AES256
+#          <paste encrypted username here>
+#
+#ocloud_compliance_ssh_password: !vault |
+#          $ANSIBLE_VAULT;1.1;AES256
+#          <paste encrypted password here>
