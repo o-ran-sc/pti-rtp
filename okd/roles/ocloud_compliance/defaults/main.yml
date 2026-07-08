@@ -10,7 +10,7 @@ ocloud_compliance_resource_desc_substring: ~
 ocloud_compliance_ssh_host: localhost
 ocloud_compliance_ssh_port: 22
 ocloud_compliance_ssh_user: robot
-ocloud_compliance_ssh_password: robot
+ocloud_compliance_ssh_password: "{{ lookup('ansible.builtin.password', '/dev/null', length=16, chars=['ascii_letters', 'digits', '!@#$%^&*-_=+']) }}"
 ocloud_compliance_smo_host: "{{ ansible_default_ipv4['address'] }}"
 ocloud_compliance_smo_port: 1080
 ocloud_compliance_smo_protocol: https
