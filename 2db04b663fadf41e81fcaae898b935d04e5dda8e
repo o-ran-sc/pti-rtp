@@ -36,6 +36,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "033e1574_0028f2d5",
+        "filename": "okd/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-07-13T15:55:44Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "e10bbc07_cb49d1d8",
+      "revId": "2db04b663fadf41e81fcaae898b935d04e5dda8e",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "86d296a3_841d3196",
