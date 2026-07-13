@@ -69,6 +69,24 @@
       "parentUuid": "0c82bd5f_6fac6032",
       "revId": "93abf781851853b333a1059ba74207c8efbfd471",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21a4569b_5107c521",
+        "filename": "okd/.gitignore",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-07-13T15:56:10Z",
+      "side": 1,
+      "message": "Ack. I forgot the symlink was in the repo.",
+      "parentUuid": "0c82bd5f_6fac6032",
+      "revId": "93abf781851853b333a1059ba74207c8efbfd471",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
