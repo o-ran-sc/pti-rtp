@@ -12,6 +12,7 @@
   loop:
     - agent-config.yaml
     - install-config.yaml
+  no_log: true
 
 - name: Copy MachineConfig manifests
   ansible.builtin.template:
