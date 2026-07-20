@@ -20,6 +20,7 @@
   ansible.builtin.template:
     src: "pull-secret.yaml.j2"
     dest: "{{ ocloud_staging_dir['path'] }}/git/stolostron-deploy/prereqs/pull-secret.yaml"
+  no_log: true
 
 - name: Template snapshot version
   ansible.builtin.template:
