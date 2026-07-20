@@ -11,3 +11,7 @@ ocloud_service_net_cidr: "172.30.0.0/16"
 ocloud_network_type: "OVNKubernetes"
 ocloud_ntp_servers: []
 ocloud_dns_servers: []
+
+# WARNING: Setting to true disables no_log and exposes secrets in task output
+ocloud_expose_dangerous_secrets: false
+
