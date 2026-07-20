@@ -15,11 +15,13 @@
     template: "pull-secret.yaml.j2"
     state: present
     kubeconfig: "{{ ocloud_kubeconfig }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Generate S3 access and secret keys
   set_fact:
     ocloud_platform_mco_access_key: "{{ 999999999 | random | to_uuid }}"
     ocloud_platform_mco_secret_key: "{{ 999999999 | random | to_uuid }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Create PersistentVolumeClaim - minio
   kubernetes.core.k8s:
@@ -32,6 +34,7 @@
     template: "secret.yaml.j2"
     state: present
     kubeconfig: "{{ ocloud_kubeconfig }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Create Deployment - minio
   kubernetes.core.k8s:
