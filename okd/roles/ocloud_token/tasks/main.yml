@@ -48,6 +48,9 @@
     namespace: oran-o2ims
     kubeconfig: "{{ ocloud_kubeconfig }}"
   register: test_client_token
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
-- set_fact:
+- name: Decode test-client token
+  set_fact:
     ocloud_token: "{{ test_client_token['resources'][0]['data']['token'] | b64decode }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
