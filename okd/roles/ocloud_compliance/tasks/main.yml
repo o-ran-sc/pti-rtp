@@ -28,6 +28,7 @@
     state: present
     password: "{{ ocloud_compliance_ssh_password | password_hash('sha512', 'salt') }}"
   delegate_to: "{{ ocloud_compliance_ssh_host }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Get oran-o2ims Inventory
   kubernetes.core.k8s_info:
@@ -50,6 +51,7 @@
         Authorization: "Bearer {{ ocloud_token }}"
       validate_certs: false
     register: o2ims_ocloud
+    no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
   - set_fact:
       ocloud_compliance_ocloud_id: "{{ o2ims_ocloud['json']['globalcloudId'] }}"
@@ -64,6 +66,7 @@
         Authorization: "Bearer {{ ocloud_token }}"
       validate_certs: false
     register: o2ims_resource_pools
+    no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
   - set_fact:
       ocloud_compliance_location_id: "{{ o2ims_resource_pools['json'][0]['globalLocationId'] }}"
@@ -78,6 +81,7 @@
         Authorization: "Bearer {{ ocloud_token }}"
       validate_certs: false
     register: o2ims_deployment_managers
+    no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
   - set_fact:
       ocloud_compliance_deployment_manager: "{{ o2ims_deployment_managers['json'][0]['name'] }}"
