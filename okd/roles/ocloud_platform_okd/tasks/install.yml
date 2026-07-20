@@ -12,6 +12,7 @@
   loop:
     - agent-config.yaml
     - install-config.yaml
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Copy MachineConfig manifests
   ansible.builtin.template:

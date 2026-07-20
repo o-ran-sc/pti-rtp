@@ -184,6 +184,23 @@ Optionally, the following variables can be set to override default settings:
 - ocloud_platform_okd_airgapped_org []: Custom image mirror org or username
 - ocloud_platform_okd_airgapped_repo []: Custom image mirror repo
 
+### Security
+
+#### Optional
+
+- ocloud_expose_dangerous_secrets [default=false]: When set to `true`, disables `no_log` on tasks that handle sensitive data (passwords, tokens, API keys, BMC credentials). This is intended **ONLY** for debugging in development/test environments.
+
+  **WARNING**: Never enable this variable in production. When enabled, sensitive data — including Bearer tokens and API keys, BMC/iDRAC/iLO credentials, SSH private keys and pull secrets, and S3 access keys and passwords — will be visible in Ansible console output, log files, and CI/CD logs.
+
+  Affected roles:
+  - `ocloud_compliance`: password hashes, Bearer token API calls
+  - `ocloud_dms`: O2 DMS API calls, kubeconfig templates
+  - `ocloud_infra_baremetal`: Redfish BMC operations
+  - `ocloud_platform_mco`: S3 keys, pull secrets
+  - `ocloud_platform_okd`: install config with SSH keys
+  - `ocloud_platform_stolostron`: pull secrets
+  - `ocloud_token`: token retrieval and decoding
+
 # Installation
 
 Execute the playbook from the base directory as follows:
