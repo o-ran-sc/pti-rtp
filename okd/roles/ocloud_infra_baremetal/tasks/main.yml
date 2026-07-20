@@ -7,10 +7,12 @@
     username: "{{ bmc_user }}"
     password: "{{ bmc_password }}"
   register: redfish_manager_info
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - set_fact:
     ocloud_infra_baremetal_manager_id: "{{ redfish_manager_info['redfish_facts']['manager']['entries'][0][1]['Id'] }}"
     ocloud_infra_baremetal_image_url: "http://{{ hostvars['http_store']['ansible_host'] }}:{{ hostvars['http_store']['http_port'] }}/{{ ocloud_infra_baremetal_image }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Download platform boot image
   ansible.builtin.fetch:
@@ -34,6 +36,7 @@
     baseuri: "{{ bmc_address }}"
     username: "{{ bmc_user }}"
     password: "{{ bmc_password }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Get virtual media information
   community.general.redfish_info:
@@ -43,6 +46,7 @@
     username: "{{ bmc_user }}"
     password: "{{ bmc_password }}"
   register: virtual_media_info
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Eject virtual media
   community.general.redfish_command:
@@ -56,6 +60,7 @@
     resource_id: "{{ ocloud_infra_baremetal_manager_id }}"
   when: item['ConnectedVia'] != "NotConnected" and item['Image'] | length > 0
   loop: "{{ virtual_media_info['redfish_facts']['virtual_media']['entries'][0][1] }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Configure one-time boot from virtual media
   community.general.redfish_command:
@@ -66,6 +71,7 @@
     username: "{{ bmc_user }}"
     password: "{{ bmc_password }}"
     resource_id: "{{ ocloud_infra_baremetal_manager_id }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Insert virtual media
   community.general.redfish_command:
@@ -81,6 +87,7 @@
         - DVD
     resource_id: "{{ ocloud_infra_baremetal_manager_id }}"
     timeout: 120
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Power on
   community.general.redfish_command:
@@ -89,4 +96,5 @@
     baseuri: "{{ bmc_address }}"
     username: "{{ bmc_user }}"
     password: "{{ bmc_password }}"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
   notify: monitor_platform_deployment

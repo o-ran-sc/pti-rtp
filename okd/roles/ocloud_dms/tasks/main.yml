@@ -6,9 +6,11 @@
       Authorization: "Bearer {{ ocloud_token }}"
     validate_certs: false
   register: o2_dms_deployment_mgr_profile
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
 - name: Template deployment manager kubeconfig
   ansible.builtin.template:
     src: "kubeconfig.j2"
     dest: "{{ ocloud_dms_kubeconfig }}"
     mode: "600"
+  no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
