@@ -2,7 +2,20 @@
 - name: Clone cluster-group-upgrades repo
   ansible.builtin.git:
     repo: "{{ ocloud_platform_cgu_repo_url }}"
+    version: "{{ ocloud_platform_cgu_repo_version }}"
     dest: "{{ ocloud_staging_dir['path'] }}/git/cluster-group-upgrades"
+
+- name: Verify cluster-group-upgrades git clone
+  ansible.builtin.command:
+    cmd: "git -C {{ ocloud_staging_dir['path'] }}/git/cluster-group-upgrades rev-parse HEAD"
+  register: ocloud_platform_cgu_clone_sha
+  changed_when: false
+
+- name: Assert cluster-group-upgrades commit SHA
+  ansible.builtin.assert:
+    that:
+      - ocloud_platform_cgu_clone_sha.stdout | length == 40
+    fail_msg: "Cloned repo does not appear to be a valid git repository"
 
 - name: Install cluster-group-upgrades
   ansible.builtin.shell:
