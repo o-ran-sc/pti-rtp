@@ -2,6 +2,7 @@
 - name: Extract OKD installer
   ansible.builtin.shell:
     cmd: "oc adm release extract --command=openshift-install {{ ocloud_platform_okd_base_url }}:{{ ocloud_platform_okd_release }} --to {{ ocloud_staging_dir['path'] }}/bin"
+    chdir: "{{ ocloud_staging_dir['path'] }}"
   environment:
     PATH: "{{ ocloud_staging_dir['path'] }}/bin:{{ ansible_env.PATH }}"
 
@@ -30,6 +31,7 @@
 - name: Generate OKD agent-based installer image
   ansible.builtin.shell:
     cmd: "openshift-install agent create image --dir {{ ocloud_staging_dir['path'] }}/cfg"
+    chdir: "{{ ocloud_staging_dir['path'] }}"
   environment:
     PATH: "{{ ocloud_staging_dir['path'] }}/bin:{{ ansible_env.PATH }}"
 
