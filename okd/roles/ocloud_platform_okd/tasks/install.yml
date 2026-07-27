@@ -1,4 +1,12 @@
 ---
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - ocloud_platform_okd_pull_secret is defined
+      - ocloud_platform_okd_pull_secret is not none
+      - ocloud_platform_okd_pull_secret | length > 0
+    fail_msg: "ocloud_platform_okd_pull_secret must be explicitly configured. Fake credentials are not permitted."
+
 - name: Extract OKD installer
   ansible.builtin.shell:
     cmd: "oc adm release extract --command=openshift-install {{ ocloud_platform_okd_base_url }}:{{ ocloud_platform_okd_release }} --to {{ ocloud_staging_dir['path'] }}/bin"
