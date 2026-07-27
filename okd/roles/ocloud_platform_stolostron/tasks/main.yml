@@ -14,7 +14,20 @@
 - name: Clone stolostron/deploy repo
   ansible.builtin.git:
     repo: "{{ ocloud_platform_stolostron_repo_url }}"
+    version: "{{ ocloud_platform_stolostron_repo_version }}"
     dest: "{{ ocloud_staging_dir['path'] }}/git/stolostron-deploy"
+
+- name: Verify stolostron git clone
+  ansible.builtin.command:
+    cmd: "git -C {{ ocloud_staging_dir['path'] }}/git/stolostron-deploy rev-parse HEAD"
+  register: ocloud_platform_stolostron_clone_sha
+  changed_when: false
+
+- name: Assert stolostron commit SHA
+  ansible.builtin.assert:
+    that:
+      - ocloud_platform_stolostron_clone_sha.stdout | length == 40
+    fail_msg: "Cloned repo does not appear to be a valid git repository"
 
 - name: Template pull secret
   ansible.builtin.template:
