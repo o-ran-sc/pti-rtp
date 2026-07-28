@@ -65,35 +65,32 @@
     kubeconfig: "{{ ocloud_kubeconfig }}"
   register: ocloud_platform_stolostron_multiclusterhub
 
-- set_fact:
-    ocloud_platform_stolostron_siteconfig_index: "{{ component_index }}"
-  loop: "{{ ocloud_platform_stolostron_multiclusterhub['resources'][0]['spec']['overrides']['components'] }}"
-  loop_control:
-    index_var: component_index
-  when: item['name'] == "siteconfig"
+- name: Check if siteconfig is already enabled
+  ansible.builtin.set_fact:
+    ocloud_platform_stolostron_siteconfig_enabled: >-
+      {{ ocloud_platform_stolostron_multiclusterhub['resources'][0]['spec']['overrides']['components']
+         | selectattr('name', 'equalto', 'siteconfig')
+         | selectattr('enabled', 'equalto', true)
+         | list | length > 0 }}
 
-- name: Enable siteconfig
-  kubernetes.core.k8s_json_patch:
-    name: multiclusterhub
-    kind: MultiClusterHub
-    namespace: open-cluster-management
-    kubeconfig: "{{ ocloud_kubeconfig }}"
-    patch:
-      - op: add
-        path: "/spec/overrides/components/-"
-        value:
-          name: siteconfig
-          enabled: true
-  when: ocloud_platform_stolostron_siteconfig_index is undefined
+- name: Build updated components list with siteconfig enabled
+  ansible.builtin.set_fact:
+    ocloud_platform_stolostron_components_updated: >-
+      {{ (ocloud_platform_stolostron_multiclusterhub['resources'][0]['spec']['overrides']['components']
+          | rejectattr('name', 'equalto', 'siteconfig') | list)
+         + [{'name': 'siteconfig', 'enabled': true}] }}
+  when: not (ocloud_platform_stolostron_siteconfig_enabled | bool)
 
-- name: Enable siteconfig
-  kubernetes.core.k8s_json_patch:
-    name: multiclusterhub
+- name: Enable siteconfig in MultiClusterHub (atomic operation)
+  kubernetes.core.k8s:
+    api_version: operator.open-cluster-management.io/v1
     kind: MultiClusterHub
+    name: multiclusterhub
     namespace: open-cluster-management
+    state: present
+    definition:
+      spec:
+        overrides:
+          components: "{{ ocloud_platform_stolostron_components_updated }}"
     kubeconfig: "{{ ocloud_kubeconfig }}"
-    patch:
-      - op: replace
-        path: "/spec/overrides/components/{{ ocloud_platform_stolostron_siteconfig_index }}/enabled"
-        value: true
-  when: ocloud_platform_stolostron_siteconfig_index is defined
+  when: not (ocloud_platform_stolostron_siteconfig_enabled | bool)
