@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4feb710_8430d16d",
+        "filename": "okd/roles/ocloud_platform_cgu/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-20T23:44:25Z",
+      "side": 1,
+      "message": "Why is this needed? Won\u0027t the clone task fail if the repo is inaccessible or invalid?",
+      "revId": "7e608dde029509cc54490b3a786f3a3c0389c607",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cbf6f75d_5cfcef42",
+        "filename": "okd/roles/ocloud_platform_stolostron/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-20T23:44:25Z",
+      "side": 1,
+      "message": "Why is this needed? Won\u0027t the clone task fail if the repo is inaccessible or invalid?",
+      "revId": "7e608dde029509cc54490b3a786f3a3c0389c607",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
