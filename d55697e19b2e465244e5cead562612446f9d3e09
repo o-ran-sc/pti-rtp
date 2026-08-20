@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a295d39_671e0758",
+        "filename": "okd/inventory",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-20T23:41:03Z",
+      "side": 0,
+      "message": "Why is this removed?",
+      "revId": "d55697e19b2e465244e5cead562612446f9d3e09",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}

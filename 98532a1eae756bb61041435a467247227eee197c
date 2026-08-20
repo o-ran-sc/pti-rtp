@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4bdd6dec_323a8fdc",
+        "filename": "okd/roles/ocloud_platform_okd/tasks/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-20T23:41:03Z",
+      "side": 1,
+      "message": "oc is found in the PATH and the absolute path to the bin directory is passed, so it\u0027s unclear why the chdir is necessary.",
+      "revId": "98532a1eae756bb61041435a467247227eee197c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d321bb69_69e52254",
+        "filename": "okd/roles/ocloud_platform_okd/tasks/install.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-20T23:41:03Z",
+      "side": 1,
+      "message": "openshift-install is found in the PATH and the absolute path to the cfg directory is passed, so it\u0027s unclear why the chdir is necessary.",
+      "revId": "98532a1eae756bb61041435a467247227eee197c",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
