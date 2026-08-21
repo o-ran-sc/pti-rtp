@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "105a37db_1f1b4415",
+        "filename": "okd/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:04:22Z",
+      "side": 1,
+      "message": "The default value for this var doesn\u0027t seem to be defined anywhere.",
+      "revId": "9bed6e11cfc60c8063e0869d3c146dabc352d694",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d13ec8d0_fa98b890",
+        "filename": "okd/roles/ocloud_compliance/tasks/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:04:22Z",
+      "side": 1,
+      "message": "If we define the default value for this var (e.g. in roles/ocloud/defaults/main.yml) we don\u0027t need to specify a default on every instance.",
+      "revId": "9bed6e11cfc60c8063e0869d3c146dabc352d694",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b46c80ef_a595ceae",
+        "filename": "okd/roles/ocloud_compliance/tasks/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:04:22Z",
+      "side": 1,
+      "message": "This task doesn\u0027t expose any sensitive data.",
+      "revId": "9bed6e11cfc60c8063e0869d3c146dabc352d694",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f23861eb_975564b8",
+        "filename": "okd/roles/ocloud_compliance/tasks/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:04:22Z",
+      "side": 1,
+      "message": "This task doesn\u0027t expose any sensitive data.",
+      "revId": "9bed6e11cfc60c8063e0869d3c146dabc352d694",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "107d6932_5ce097fc",
+        "filename": "okd/roles/ocloud_infra_baremetal/tasks/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:04:22Z",
+      "side": 1,
+      "message": "This task doesn\u0027t expose any sensitive data.",
+      "revId": "9bed6e11cfc60c8063e0869d3c146dabc352d694",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b6a0d405_a97b76bb",
+        "filename": "okd/roles/ocloud_infra_baremetal/tasks/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:04:22Z",
+      "side": 1,
+      "message": "This is unnecessary for the redfish_command and redfish_info modules, since they already redact the password var.",
+      "revId": "9bed6e11cfc60c8063e0869d3c146dabc352d694",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
