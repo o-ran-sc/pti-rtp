@@ -1,0 +1,225 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49cbbcb9_26beac4f",
+        "filename": "okd/ansible.cfg",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "Why is this disabled? Doesn\u0027t seem related to the topic of this change.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "edaf9286_b40f2022",
+        "filename": "okd/inventory-examples/ocloud-baremetal-okd-aio/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "There is already a note to encrypt the entire vault file before adding secrets. These variables can simply be added with a comment explaining their purpose.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0aa70409_bd4d2924",
+        "filename": "okd/inventory-examples/ocloud-baremetal-okd-multinode/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "There is already a note to encrypt the entire vault file before adding secrets. These variables can simply be added with a comment explaining their purpose.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9ab6f75e_6c9342e9",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio-bridge/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "There is already a note to encrypt the entire vault file before adding secrets. These variables can simply be added with a comment explaining their purpose.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "256c8ad5_8a2369f0",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "There is already a note to encrypt the entire vault file before adding secrets. These variables can simply be added with a comment explaining their purpose.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48d0002c_147784c0",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "There is already a note to encrypt the entire vault file before adding secrets. These variables can simply be added with a comment explaining their purpose.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1f67fb55_9fd2033a",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "There is already a note to encrypt the entire vault file before adding secrets. These variables can simply be added with a comment explaining their purpose.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5493a1d9_f1350955",
+        "filename": "okd/playbooks/ocloud_compliance.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "This role is already defined as a dependency in roles/ocloud_compliance/meta/main.yml",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "45ebab61_f9fbd510",
+        "filename": "okd/roles/ocloud_compliance/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "Let\u0027s keep robot as the default user.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3795d2d_05759aef",
+        "filename": "okd/roles/ocloud_compliance/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "Let\u0027s generate a random password to use as default, e.g.\n\nocloud_compliance_ssh_password: {{ lookup(\u0027ansible.builtin.password\u0027, \u0027/dev/null length\u003d16\u0027) }}",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be8ca895_c3cb90c3",
+        "filename": "okd/tests/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "Does this need to be committed to the repo?",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e750b264_83d3f933",
+        "filename": "okd/tests/integration-test-compliance-vault.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "Does this need to be committed to the repo?",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab66987c_f3fd353f",
+        "filename": "okd/tests/test-compliance-security.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-21T00:19:12Z",
+      "side": 1,
+      "message": "Does this need to be committed to the repo?",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
