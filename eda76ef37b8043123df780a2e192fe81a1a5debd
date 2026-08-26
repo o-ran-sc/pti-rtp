@@ -70,6 +70,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6cd03a86_6c92f10e",
+        "filename": "okd/inventory-examples/ocloud-baremetal-okd-aio/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T18:48:09Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "edaf9286_b40f2022",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0aa70409_bd4d2924",
@@ -315,6 +333,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6319e222_2b43cc6d",
+        "filename": "okd/roles/ocloud_compliance/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T18:48:09Z",
+      "side": 1,
+      "message": "Based on our conversation I will revert to robot as the user and a random password.",
+      "parentUuid": "5dea39d3_0502ce7d",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a3795d2d_05759aef",
@@ -328,6 +364,24 @@
       "writtenOn": "2026-08-21T00:19:12Z",
       "side": 1,
       "message": "Let\u0027s generate a random password to use as default, e.g.\n\nocloud_compliance_ssh_password: {{ lookup(\u0027ansible.builtin.password\u0027, \u0027/dev/null length\u003d16\u0027) }}",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5e82a4eb_5aaf21d8",
+        "filename": "okd/roles/ocloud_compliance/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T18:48:09Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "a3795d2d_05759aef",
       "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
