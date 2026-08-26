@@ -1,5 +1,5 @@
 object-templates-raw: |
-  {{hub range $namespace := (list "ztp-sno-du-okd-v4-19") hub}}
+  {{hub range $namespace := (list "ztp-sno-du-okd-v4-20" "ztp-sno-du-okd-v4-21" "ztp-sno-du-okd-v4-22") hub}}
   - complianceType: musthave
     objectDefinition:
       apiVersion: v1

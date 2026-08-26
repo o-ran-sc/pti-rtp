@@ -2,41 +2,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minio
+  name: seaweedfs
   namespace: "{{ ocloud_platform_mco_namespace }}"
   labels:
-    app.kubernetes.io/name: minio
+    app.kubernetes.io/name: seaweedfs
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: minio
+      app.kubernetes.io/name: seaweedfs
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: minio
+        app.kubernetes.io/name: seaweedfs
     spec:
       containers:
-      - command:
-        - /bin/sh
-        - -c
-        - mkdir -p /storage/thanos && /usr/bin/minio server /storage
+      # Override args (not command) so the image's default entrypoint still
+      # dispatches to `mini`. Disables the WebDAV and Iceberg listeners that
+      # `mini` starts by default — neither is used here, and leaving them
+      # off reduces the container's exposed surface.
+      - args:
+        - mini
+        - -dir=/data
+        - -webdav=false
+        - -s3.port.iceberg=0
         env:
-        - name: MINIO_ACCESS_KEY
+        - name: AWS_ACCESS_KEY_ID
           value: "{{ ocloud_platform_mco_access_key }}"
-        - name: MINIO_SECRET_KEY
+        - name: AWS_SECRET_ACCESS_KEY
           value: "{{ ocloud_platform_mco_secret_key }}"
-        image:  "{{ ocloud_platform_mco_minio_image }}"
-        name: minio
+        - name: S3_BUCKET
+          value: thanos
+        image: "{{ ocloud_platform_mco_seeweedfs_image }}"
+        name: seaweedfs
         ports:
-        - containerPort: 9000
+        - containerPort: 8333
           protocol: TCP
         volumeMounts:
-        - mountPath: /storage
+        - mountPath: /data
           name: storage
       volumes:
       - name: storage
         persistentVolumeClaim:
-          claimName: minio
+          claimName: seaweedfs
