@@ -7,12 +7,13 @@
   "templateParameters": {
     "nodeClusterName": "sno-du-1",
     "oCloudSiteId": "oransc-example-lab",
-    "hwTemplateParameters": {
-      "nodeGroupData": {
-        "controller": {
+    "hwMgmtParameters": {
+      "nodeGroupData": [
+        {
+          "name": "controller",
           "hwProfile": "hpe-dl360-bios-v1.54-bmc-v2.63"
         }
-      }
+      ]
     },
     "policyTemplateParameters": {
       "sriov-network-pfNames-1": "[\"ens1f0\"]",
