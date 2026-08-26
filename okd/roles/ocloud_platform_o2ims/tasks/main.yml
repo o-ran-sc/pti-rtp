@@ -24,4 +24,4 @@
         path: "/spec/template/spec/containers/0/env/1"
         value:
           name: POSTGRES_IMAGE
-          value: quay.io/sclorg/postgresql-16-c9s:c9s
+          value: "{{ ocloud_platform_o2ims_postgresql_image }}"
