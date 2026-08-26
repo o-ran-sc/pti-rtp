@@ -27,27 +27,27 @@ policies:
   manifests:
     - path: custom-crs/namespace-openshift-marketplace.yaml
     - path: custom-crs/catalogsource-okderators.yaml
-    - path: source-crs/SriovSubscriptionNS.yaml
-    - path: source-crs/SriovSubscriptionOperGroup.yaml
-    - path: source-crs/SriovSubscription.yaml
+    - path: source-crs/sriov-operator/SriovSubscriptionNS.yaml
+    - path: source-crs/sriov-operator/SriovSubscriptionOperGroup.yaml
+    - path: source-crs/sriov-operator/SriovSubscription.yaml
       patches:
       - spec:
           channel: "alpha"
           source: okderators
           installPlanApproval:
             '{{hub $configMap:=(lookup "v1" "ConfigMap" "" (printf "%s-pg" .ManagedClusterName)) hub}}{{hub dig "data" "install-plan-approval" "Manual" $configMap hub}}'
-    - path: source-crs/PtpSubscriptionNS.yaml
-    - path: source-crs/PtpSubscriptionOperGroup.yaml
-    - path: source-crs/PtpSubscription.yaml
+    - path: source-crs/ptp-operator/PtpSubscriptionNS.yaml
+    - path: source-crs/ptp-operator/PtpSubscriptionOperGroup.yaml
+    - path: source-crs/ptp-operator/PtpSubscription.yaml
       patches:
       - spec:
           channel: "alpha"
           source: okderators
           installPlanApproval:
             '{{hub $configMap:=(lookup "v1" "ConfigMap" "" (printf "%s-pg" .ManagedClusterName)) hub}}{{hub dig "data" "install-plan-approval" "Manual" $configMap hub}}'
-    - path: source-crs/StorageNS.yaml
-    - path: source-crs/StorageOperGroup.yaml
-    - path: source-crs/StorageSubscription.yaml
+    - path: source-crs/storage-lso/StorageNS.yaml
+    - path: source-crs/storage-lso/StorageOperGroup.yaml
+    - path: source-crs/storage-lso/StorageSubscription.yaml
       patches:
       - spec:
           channel: "alpha"
@@ -56,7 +56,7 @@ policies:
             '{{hub $configMap:=(lookup "v1" "ConfigMap" "" (printf "%s-pg" .ManagedClusterName)) hub}}{{hub dig "data" "install-plan-approval" "Manual" $configMap hub}}'
 - name: v1-perf-configuration-policy
   manifests:
-    - path: source-crs/PerformanceProfile-SetSelector.yaml
+    - path: source-crs/node-tuning-operator/x86_64/PerformanceProfile-SetSelector.yaml
       patches:
       - metadata:
           name: openshift-node-performance-profile
@@ -94,7 +94,7 @@ policies:
             node-role.kubernetes.io/master: ''
 - name: v1-sriov-configuration-policy
   manifests:
-    - path: source-crs/SriovOperatorConfig.yaml
+    - path: source-crs/sriov-operator/SriovOperatorConfig.yaml
       patches:
       - spec:
           configDaemonNodeSelector:
@@ -102,14 +102,14 @@ policies:
             node-role.kubernetes.io/master: ""
           enableInjector: true
           enableOperatorWebhook: true
-    - path: source-crs/SriovNetwork.yaml
+    - path: source-crs/sriov-operator/sriov-operator/SriovNetwork.yaml
       patches:
       - metadata:
           name: sriov-nw-du-fh
         spec:
           resourceName: du_fh
           vlan: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "sriov-network-vlan-1" | toInt hub}}'
-    - path: source-crs/SriovNetworkNodePolicy-SetSelector.yaml
+    - path: source-crs/sriov-operator/sriov-operator/SriovNetworkNodePolicy-SetSelector.yaml
       patches:
       - metadata:
           name: sriov-nnp-du-fh
@@ -124,14 +124,14 @@ policies:
           numVfs: 8
           priority: 10
           resourceName: du_fh
-    - path: source-crs/SriovNetwork.yaml
+    - path: source-crs/sriov-operator/sriov-operator/SriovNetwork.yaml
       patches:
       - metadata:
           name: sriov-nw-du-mh
         spec:
           resourceName: du_mh
           vlan: '{{hub fromConfigMap "" (printf "%s-pg" .ManagedClusterName) "sriov-network-vlan-2" | toInt hub}}'
-    - path: source-crs/SriovNetworkNodePolicy-SetSelector.yaml
+    - path: source-crs/sriov-operator/sriov-operator/SriovNetworkNodePolicy-SetSelector.yaml
       patches:
       - metadata:
           name: sriov-nnp-du-mh
@@ -148,4 +148,4 @@ policies:
           resourceName: du_mh
 - name: v1-sctp-policy
   manifests:
-    - path: source-crs/MachineConfigSctp.yaml
+    - path: source-crs/machine-config/MachineConfigSctp.yaml
