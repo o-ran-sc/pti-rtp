@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9122db55_03df7c58",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "Thanks for the review Chris. I addressed all the issues but one that we should discuss.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "49cbbcb9_26beac4f",
@@ -14,6 +31,24 @@
       "writtenOn": "2026-08-21T00:19:12Z",
       "side": 1,
       "message": "Why is this disabled? Doesn\u0027t seem related to the topic of this change.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e249b05d_3339acf4",
+        "filename": "okd/ansible.cfg",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "This is my mistake.",
+      "parentUuid": "49cbbcb9_26beac4f",
       "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -52,6 +87,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9877681a_e38e448a",
+        "filename": "okd/inventory-examples/ocloud-baremetal-okd-multinode/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "0aa70409_bd4d2924",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9ab6f75e_6c9342e9",
@@ -65,6 +118,24 @@
       "writtenOn": "2026-08-21T00:19:12Z",
       "side": 1,
       "message": "There is already a note to encrypt the entire vault file before adding secrets. These variables can simply be added with a comment explaining their purpose.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c647b65_b2d5b23b",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio-bridge/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "9ab6f75e_6c9342e9",
       "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -86,6 +157,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ab38129_5cc37257",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-aio/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "256c8ad5_8a2369f0",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "48d0002c_147784c0",
@@ -99,6 +188,24 @@
       "writtenOn": "2026-08-21T00:19:12Z",
       "side": 1,
       "message": "There is already a note to encrypt the entire vault file before adding secrets. These variables can simply be added with a comment explaining their purpose.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ce984e2b_7483e242",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode-bridge/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "48d0002c_147784c0",
       "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -120,6 +227,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6bff7692_5b42ac83",
+        "filename": "okd/inventory-examples/ocloud-vm-okd-multinode/group_vars/all/vault.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "1f67fb55_9fd2033a",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5493a1d9_f1350955",
@@ -137,6 +262,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d0558533_8c9029d4",
+        "filename": "okd/playbooks/ocloud_compliance.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "This is definitely a duplicate call. I just checked and its already cleaned on my updated patchset.",
+      "parentUuid": "5493a1d9_f1350955",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "45ebab61_f9fbd510",
@@ -150,6 +293,24 @@
       "writtenOn": "2026-08-21T00:19:12Z",
       "side": 1,
       "message": "Let\u0027s keep robot as the default user.",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5dea39d3_0502ce7d",
+        "filename": "okd/roles/ocloud_compliance/defaults/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "I think this one should be null + fail-if-not-set. There is less chance for robot:robot to sneak its way into a production env.",
+      "parentUuid": "45ebab61_f9fbd510",
       "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
@@ -188,6 +349,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "57825ba3_024698d5",
+        "filename": "okd/tests/README.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "A new home was found.",
+      "parentUuid": "be8ca895_c3cb90c3",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e750b264_83d3f933",
@@ -205,6 +384,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "91108012_63022f0b",
+        "filename": "okd/tests/integration-test-compliance-vault.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "I found a new home it.",
+      "parentUuid": "e750b264_83d3f933",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ab66987c_f3fd353f",
@@ -218,6 +415,24 @@
       "writtenOn": "2026-08-21T00:19:12Z",
       "side": 1,
       "message": "Does this need to be committed to the repo?",
+      "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f78fe5d1_fe97a07d",
+        "filename": "okd/tests/test-compliance-security.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-26T17:38:58Z",
+      "side": 1,
+      "message": "a new home was found.",
+      "parentUuid": "ab66987c_f3fd353f",
       "revId": "eda76ef37b8043123df780a2e192fe81a1a5debd",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
