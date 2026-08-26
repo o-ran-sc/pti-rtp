@@ -1,0 +1,1 @@
+The content of the extra-manifests directory should be copied over from the [telco-reference](https://github.com/openshift-kni/telco-reference/tree/main/telco-ran/configuration/source-crs/extra-manifest) repo.  Make sure to bring over the extra manifests from the branch corresponding to the OCP release provided in the ClusterTemplate CR.
