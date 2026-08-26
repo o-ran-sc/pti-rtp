@@ -1,5 +1,7 @@
 configMapGenerator:
 - files:
+  - extra-manifest/03-sctp-machine-config-master.yaml
+  - extra-manifest/03-sctp-machine-config-worker.yaml
   - extra-manifest/99-sync-time-once-master.yaml
   - extra-manifest/99-sync-time-once-worker.yaml
   name: okd.v1.0.0-extramanifests

@@ -8,7 +8,7 @@ data:
   clusterinstance-defaults: |
     baseDomain: example.com
     clusterType: SNO
-    clusterImageSetNameRef: "4.21.0-okd-scos.7"
+    clusterImageSetNameRef: "4.21.0-okd-scos.11"
     pullSecretRef:
       name: pull-secret
     networkType: OVNKubernetes

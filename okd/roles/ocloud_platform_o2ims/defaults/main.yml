@@ -1,4 +1,5 @@
 ---
 ocloud_kubeconfig: ~
 ocloud_platform_o2ims_repo_url: "https://github.com/openshift-kni/oran-o2ims.git"
-ocloud_platform_o2ims_repo_version: "release-4.21"
+ocloud_platform_o2ims_repo_version: "release-4.22"
+ocloud_platform_o2ims_postgresql_image: "quay.io/sclorg/postgresql-18-c10s:c10s"
