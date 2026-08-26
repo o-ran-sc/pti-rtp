@@ -1,7 +1,12 @@
 ---
+- name: Template pull secret
+  ansible.builtin.copy:
+    dest: "{{ ocloud_staging_dir['path'] }}/pull-secret.json"
+    content: "{{ ocloud_platform_okd_pull_secret }}"
+
 - name: Extract OKD installer
   ansible.builtin.shell:
-    cmd: "oc adm release extract --command=openshift-install {{ ocloud_platform_okd_base_url }}:{{ ocloud_platform_okd_release }} --to {{ ocloud_staging_dir['path'] }}/bin"
+    cmd: "oc adm release extract --registry-config={{ ocloud_staging_dir['path'] }}/pull-secret.json --command=openshift-install {{ ocloud_platform_okd_base_url }}:{{ ocloud_platform_okd_release }} --to {{ ocloud_staging_dir['path'] }}/bin"
   environment:
     PATH: "{{ ocloud_staging_dir['path'] }}/bin:{{ ansible_env.PATH }}"
 
