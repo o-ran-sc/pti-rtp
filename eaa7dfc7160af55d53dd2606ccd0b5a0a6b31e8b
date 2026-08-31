@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1fd58fef_322cf73a",
+        "filename": "okd/roles/ocloud_compliance/README.md",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-31T19:06:14Z",
+      "side": 1,
+      "message": "Please update to indicate that the entire vault file should be encrypted (i.e. `ansible-vault encrypt group_vars/all/vault.yml`) rather than individual variables.",
+      "revId": "eaa7dfc7160af55d53dd2606ccd0b5a0a6b31e8b",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
