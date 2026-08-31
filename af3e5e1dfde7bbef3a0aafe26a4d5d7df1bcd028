@@ -18,6 +18,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb7331f9_d59febe2",
+        "filename": "okd/roles/ocloud_platform_cgu/tasks/main.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-31T17:22:47Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "defc3fa6_72bc1394",
+      "revId": "af3e5e1dfde7bbef3a0aafe26a4d5d7df1bcd028",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e10f71f1_10460923",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-31T16:52:31Z",
       "side": 1,
       "message": "Extraneous white space.",
+      "revId": "af3e5e1dfde7bbef3a0aafe26a4d5d7df1bcd028",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "799891f3_16950631",
+        "filename": "okd/roles/ocloud_platform_stolostron/tasks/main.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-31T17:22:47Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "e10f71f1_10460923",
       "revId": "af3e5e1dfde7bbef3a0aafe26a4d5d7df1bcd028",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
