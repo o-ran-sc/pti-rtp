@@ -71,6 +71,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2471aba5_cc42ce93",
+        "filename": "okd/roles/ocloud_compliance/tasks/main.yml",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-31T17:08:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "691c975a_2d5e7120",
+      "revId": "9bed6e11cfc60c8063e0869d3c146dabc352d694",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b46c80ef_a595ceae",
