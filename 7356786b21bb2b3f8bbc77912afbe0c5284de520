@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c4f1525_22572359",
+        "filename": "okd/inventory-examples/ocloud-baremetal-okd-aio/group_vars/all/vault.yml",
+        "patchSetId": 7
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-08-31T16:41:30Z",
+      "side": 1,
+      "message": "Let\u0027s comment these variables so that the ocloud_compliance role defaults will take effect, along with the same vars in other inventories.",
+      "revId": "7356786b21bb2b3f8bbc77912afbe0c5284de520",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
