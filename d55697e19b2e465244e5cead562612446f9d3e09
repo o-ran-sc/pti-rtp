@@ -16,6 +16,24 @@
       "message": "Why is this removed?",
       "revId": "d55697e19b2e465244e5cead562612446f9d3e09",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d906a49a_342d307c",
+        "filename": "okd/inventory",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-31T15:37:35Z",
+      "side": 0,
+      "message": "the sneaky snake got past me.",
+      "parentUuid": "2a9b0c89_9894f11c",
+      "revId": "d55697e19b2e465244e5cead562612446f9d3e09",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }

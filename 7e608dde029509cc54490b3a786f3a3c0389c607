@@ -18,6 +18,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "90331e23_cff0e8d3",
+        "filename": "okd/roles/ocloud_platform_cgu/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-31T15:37:35Z",
+      "side": 1,
+      "message": "I was approaching this as defensive-programming but keep it simple.",
+      "parentUuid": "e4feb710_8430d16d",
+      "revId": "7e608dde029509cc54490b3a786f3a3c0389c607",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cbf6f75d_5cfcef42",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-08-20T23:44:25Z",
       "side": 1,
       "message": "Why is this needed? Won\u0027t the clone task fail if the repo is inaccessible or invalid?",
+      "revId": "7e608dde029509cc54490b3a786f3a3c0389c607",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e455774d_8e201c1e",
+        "filename": "okd/roles/ocloud_platform_stolostron/tasks/main.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-08-31T15:37:35Z",
+      "side": 1,
+      "message": "same as previous.",
+      "parentUuid": "cbf6f75d_5cfcef42",
       "revId": "7e608dde029509cc54490b3a786f3a3c0389c607",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
