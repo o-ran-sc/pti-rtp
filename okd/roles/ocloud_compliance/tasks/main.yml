@@ -45,35 +45,35 @@
   block:
   - name: Get O-Cloud
     ansible.builtin.uri:
-      url: "https://{{ ocloud_compliance_o2ims_host }}/o2ims-infrastructureInventory/v1"
+      url: "https://{{ ocloud_compliance_o2ims_host }}/o2ims-infrastructureInventory/v2"
       headers:
         Authorization: "Bearer {{ ocloud_token }}"
       validate_certs: false
     register: o2ims_ocloud
 
   - set_fact:
-      ocloud_compliance_ocloud_id: "{{ o2ims_ocloud['json']['globalcloudId'] }}"
+      ocloud_compliance_ocloud_id: "{{ o2ims_ocloud['json']['globalCloudId'] }}"
   when: not ocloud_compliance_ocloud_id
 
 - name: Set ocloud_compliance_location_id
   block:
-  - name: Get O-Cloud resource pools
+  - name: Get O-Cloud locations
     ansible.builtin.uri:
-      url: "https://{{ ocloud_compliance_o2ims_host }}/o2ims-infrastructureInventory/v1/resourcePools"
+      url: "https://{{ ocloud_compliance_o2ims_host }}/o2ims-infrastructureInventory/v2/locations"
       headers:
         Authorization: "Bearer {{ ocloud_token }}"
       validate_certs: false
-    register: o2ims_resource_pools
+    register: o2ims_locations
 
   - set_fact:
-      ocloud_compliance_location_id: "{{ o2ims_resource_pools['json'][0]['globalLocationId'] }}"
+      ocloud_compliance_location_id: "{{ o2ims_locations['json'][0]['globalLocationId'] }}"
   when: not ocloud_compliance_location_id
 
 - name: Set ocloud_compliance_deployment_manager
   block:
   - name: Get O-Cloud deployment managers
     ansible.builtin.uri:
-      url: "https://{{ ocloud_compliance_o2ims_host }}/o2ims-infrastructureInventory/v1/deploymentManagers"
+      url: "https://{{ ocloud_compliance_o2ims_host }}/o2ims-infrastructureInventory/v2/deploymentManagers"
       headers:
         Authorization: "Bearer {{ ocloud_token }}"
       validate_certs: false
