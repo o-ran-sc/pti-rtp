@@ -16,6 +16,24 @@
       "message": "This shouldn\u0027t be indented. The `when` clause is associated with the block, not just this task.",
       "revId": "72d4e329f25c919199cddb11fbd09bae7f11e83a",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7e5e528_ec12a61f",
+        "filename": "okd/roles/ocloud_compliance/tasks/main.yml",
+        "patchSetId": 10
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-11-16T20:44:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "02db2fb6_7922dc60",
+      "revId": "72d4e329f25c919199cddb11fbd09bae7f11e83a",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
