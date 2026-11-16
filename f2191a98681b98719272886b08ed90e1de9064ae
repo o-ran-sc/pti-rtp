@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ec9cd1fb_0d6a43d2",
+        "filename": "okd/roles/ocloud_compliance/README.md",
+        "patchSetId": 10
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-11-16T17:42:51Z",
+      "side": 1,
+      "message": "These vars do have default values, so the role will function without these being set explicitly.",
+      "revId": "f2191a98681b98719272886b08ed90e1de9064ae",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b8265ce_76675c15",
+        "filename": "okd/roles/ocloud_compliance/README.md",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-11-16T17:42:51Z",
+      "side": 1,
+      "message": "I\u0027m a bit confused by this section. Are these sections meant to represent errors that are being triggered somewhere in the code?",
+      "revId": "f2191a98681b98719272886b08ed90e1de9064ae",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b337aa29_8b2b03a0",
+        "filename": "okd/roles/ocloud_compliance/README.md",
+        "patchSetId": 10
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-11-16T17:42:51Z",
+      "side": 1,
+      "message": "I don\u0027t think we need to mention the license in a role README. It is defined in the LICENSE file in the repo root.",
+      "revId": "f2191a98681b98719272886b08ed90e1de9064ae",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee20dff3_a4c062b2",
+        "filename": "okd/roles/ocloud_compliance/README.md",
+        "patchSetId": 10
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-11-16T17:42:51Z",
+      "side": 1,
+      "message": "Let\u0027s remove this section. Attribution is in the Git commit log.",
+      "revId": "f2191a98681b98719272886b08ed90e1de9064ae",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
