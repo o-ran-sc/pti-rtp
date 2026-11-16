@@ -11,17 +11,6 @@ Automates execution of O-RAN O2 IMS compliance tests from the [it/test](https://
 
 ## Role Variables
 
-### Required Variables
-
-These variables **MUST** be provided and have no defaults:
-
-| Variable | Description | Example | Security |
-|----------|-------------|---------|----------|
-| `ocloud_compliance_ssh_user` | SSH username for compliance test access | `compliance-tester` | **MUST be vault-encrypted** |
-| `ocloud_compliance_ssh_password` | SSH password for compliance test access | `SecureP@ssw0rd!` | **MUST be vault-encrypted** |
-
-### Optional Variables
-
 See `defaults/main.yml` for full list.
 
 ## Setting Up SSH Credentials (REQUIRED)
@@ -96,21 +85,3 @@ ansible-playbook -i inventory playbooks/ocloud_compliance.yml \
 - Use `--ask-vault-pass` or `--vault-password-file` when running playbooks
 - Restrict vault file permissions: `chmod 600 group_vars/all/vault*.yml`
 - Rotate credentials regularly
-
-## Troubleshooting
-
-### "ocloud_compliance_ssh_user must be set"
-
-You haven't configured SSH credentials in your vault file. See "Setting Up SSH Credentials" above.
-
-### "Default credentials detected"
-
-You're using the old insecure `robot:robot` credentials. These are no longer allowed. Generate new vault-encrypted credentials.
-
-## License
-
-Apache 2.0
-
-## Author
-
-O-RAN SC Infrastructure (INF) project
