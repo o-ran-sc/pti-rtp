@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "db8e894e_4f00fe4c",
+        "filename": "okd/roles/ocloud_compliance/tasks/main.yml",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1002350
+      },
+      "writtenOn": "2026-11-16T17:47:48Z",
+      "side": 1,
+      "message": "no_log should not be necessary here as the task isn\u0027t referencing any secrets.",
+      "revId": "8cb0bab23269061cfae244fd85e4a2462441f934",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
