@@ -1,0 +1,92 @@
+cu_cp:
+  amf:
+    addr: {{ ocloud_workload_ocudu_gnb_amf_host }}
+    port: {{ ocloud_workload_ocudu_gnb_amf_port }}
+    bind_addr: 127.0.0.1
+    supported_tracking_areas:
+      - tac: 7
+        plmn_list:
+          - plmn: "00101"
+            # Network slicing configuration
+            tai_slice_support_list:
+              - sst: 1
+
+ru_dummy:
+  dl_processing_delay: 1
+  time_scaling: 1
+
+cell_cfg:
+  dl_arfcn: 637212
+  band: 78
+  channel_bandwidth_MHz: 20
+  common_scs: 30
+  plmn: "00101"
+  tac: 7
+  pci: 1
+  nof_antennas_dl: 4
+  nof_antennas_ul: 2
+  prach:
+    prach_config_index: 7
+    prach_root_sequence_index: 1
+    zero_correlation_zone: 0
+    prach_frequency_start: 0
+  tdd_ul_dl_cfg:
+    dl_ul_tx_period: 10
+    nof_dl_slots: 7
+    nof_dl_symbols: 6
+    nof_ul_slots: 2
+    nof_ul_symbols: 4
+
+log:
+  filename: /var/log/ocudu/gnb.log
+  all_level: warning
+
+pcap:
+  mac_enable: false
+  mac_filename: /var/log/ocudu/gnb_mac.pcap
+  ngap_enable: false
+  ngap_filename: /var/log/ocudu/gnb_ngap.pcap
+  xnap_enable: false
+  xnap_filename: /var/log/ocudu/gnb_xnap.pcap
+  n3_enable: false
+  n3_filename: /var/log/ocudu/gnb_n3.pcap
+  e1ap_enable: false
+  e1ap_filename: /var/log/ocudu/gnb_e1ap.pcap
+  f1ap_enable: false
+  f1ap_filename: /var/log/ocudu/gnb_f1ap.pcap
+  f1u_enable: false
+  f1u_filename: /var/log/ocudu/gnb_f1u.pcap
+  rlc_enable: false
+  rlc_filename: /var/log/ocudu/gnb_rlc.pcap
+  e2ap_enable: false
+  e2ap_cu_cp_filename: /var/log/ocudu/gnb_e2ap_cu_cp.pcap
+  e2ap_cu_up_filename: /var/log/ocudu/gnb_e2ap_cu_up.pcap
+  e2ap_du_filename: /var/log/ocudu/gnb_e2ap_du.pcap
+
+metrics:
+  # All options and defaults: https://docs.ocudu.org/user_manual/config_reference/
+  autostart_stdout_metrics: true
+  enable_json: false
+  enable_log: false
+  enable_verbose: false
+  layers:
+    enable_app_usage: false
+    enable_executor: false
+    enable_sched: true
+    enable_sched_ue: true
+    enable_rlc: false
+    enable_mac: false
+    enable_du_proc: false
+    enable_du_low: false
+    enable_ru: false
+    enable_ngap: false
+    enable_rrc: false
+    enable_e1ap: false
+    enable_pdcp: false
+    enable_nrup_cu: false
+    skip_cu_up_executor: true
+
+remote_control:
+  bind_addr: 0.0.0.0
+  enabled: false
+  port: 8001

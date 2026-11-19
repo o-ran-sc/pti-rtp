@@ -1,0 +1,10 @@
+---
+ocloud_workload_ocudu_gnb_repo_url: "https://gitlab.com/ocudu/ocudu_elements/ocudu_helm.git"
+ocloud_workload_ocudu_gnb_repo_version: "main"
+ocloud_workload_ocudu_gnb_namespace: "ocudu"
+ocloud_workload_ocudu_gnb_helm_url: "https://get.helm.sh/helm-v3.18.2-linux-amd64.tar.gz"
+ocloud_workload_ocudu_gnb_amf_host: "open5gs-amf-ngap.open5gs.svc.cluster.local"
+ocloud_workload_ocudu_gnb_amf_port: "38412"
+ocloud_workload_ocudu_gnb_image_url: "registry.gitlab.com/ocudu/ocudu/images/gnb-dpdk"
+ocloud_workload_ocudu_gnb_image_tag: "ubuntu-24.04-avx512-latest"
+ocloud_workload_ocudu_gnb_sriov_resource: "openshift.io/pci_sriov_net_ens1f1"
