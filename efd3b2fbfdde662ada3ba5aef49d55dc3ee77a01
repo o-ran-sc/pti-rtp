@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd60ffeb_4b0b56e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002473
+      },
+      "writtenOn": "2026-11-24T18:51:05Z",
+      "side": 1,
+      "message": "- Through cleanup of old versions.\n- Good overhaul of the source crs.\nLGTM",
+      "revId": "efd3b2fbfdde662ada3ba5aef49d55dc3ee77a01",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
