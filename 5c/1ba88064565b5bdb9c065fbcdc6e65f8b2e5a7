@@ -1,0 +1,11 @@
+Verified+1: ORAN Bypass GHA <releng+oran.bypass.gha@linuxfoundation.org>
+Code-Review+2: Jackie Huang <jackie.huang@windriver.com>
+Code-Review+1: Christopher Wheeler <chwheele@redhat.com>
+Verified+1: ORAN Required GHA <releng+oran.required.gha@linuxfoundation.org>
+Verified+1: ORAN Jobbuilder <releng+oran-jobbuilder@linuxfoundation.org>
+Submitted-by: Jackie Huang <jackie.huang@windriver.com>
+Submitted-at: Wed, 25 Nov 2026 09:44:41 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/pti/rtp/+/15733
+Comments-Total: 17
+Project: pti/rtp
+Branch: refs/heads/master
