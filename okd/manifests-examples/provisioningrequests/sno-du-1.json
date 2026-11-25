@@ -3,16 +3,17 @@
   "name": "sno-du-1",
   "description": "Provisioning request for setting up a Single Node OKD (SNO) cluster in the test environment.",
   "templateName": "sno-du",
-  "templateVersion": "okd-v4-21",
+  "templateVersion": "okd-v4-22",
   "templateParameters": {
     "nodeClusterName": "sno-du-1",
     "oCloudSiteId": "oransc-example-lab",
-    "hwTemplateParameters": {
-      "nodeGroupData": {
-        "controller": {
+    "hwMgmtParameters": {
+      "nodeGroupData": [
+        {
+          "name": "controller",
           "hwProfile": "hpe-dl360-bios-v1.54-bmc-v2.63"
         }
-      }
+      ]
     },
     "policyTemplateParameters": {
       "sriov-network-pfNames-1": "[\"ens1f0\"]",
@@ -30,7 +31,7 @@
       "clusterName": "sno-du-1",
       "extraLabels": {
         "ManagedCluster": {
-          "cluster-version": "v4.21",
+          "cluster-version": "v4.22",
           "sno-du-policy": "v1"
         }
       },

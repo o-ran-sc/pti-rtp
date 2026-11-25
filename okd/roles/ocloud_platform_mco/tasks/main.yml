@@ -23,7 +23,7 @@
     ocloud_platform_mco_secret_key: "{{ 999999999 | random | to_uuid }}"
   no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
-- name: Create PersistentVolumeClaim - minio
+- name: Create PersistentVolumeClaim - seaweedfs
   kubernetes.core.k8s:
     template: "pvc.yaml.j2"
     state: present
@@ -36,13 +36,13 @@
     kubeconfig: "{{ ocloud_kubeconfig }}"
   no_log: "{{ not (ocloud_expose_dangerous_secrets | default(false)) }}"
 
-- name: Create Deployment - minio
+- name: Create Deployment - seaweedfs
   kubernetes.core.k8s:
     template: "deployment.yaml.j2"
     state: present
     kubeconfig: "{{ ocloud_kubeconfig }}"
 
-- name: Create Service - minio
+- name: Create Service - seaweedfs
   kubernetes.core.k8s:
     template: "service.yaml.j2"
     state: present
